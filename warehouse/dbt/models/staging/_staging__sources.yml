@@ -1,0 +1,35 @@
+version: 2
+
+# Sources brutes alimentées par Airbyte (ADR-0003). Airbyte écrit dans le schéma `raw`.
+sources:
+  - name: raw
+    schema: raw
+    description: "Données brutes copiées telles quelles depuis les sources (Airbyte)."
+    tables:
+      - name: odoo_hr_employee
+        description: "Employés Odoo RH (hr.employee)."
+        columns:
+          - name: id
+            description: "Clé naturelle Odoo."
+            tests: [not_null, unique]
+      - name: odoo_hr_payslip
+        description: "Bulletins de paie Odoo (hr.payslip)."
+        columns:
+          - name: id
+            tests: [not_null, unique]
+
+models:
+  - name: stg_odoo__employees
+    description: "Employés nettoyés/typés. 1 ligne = 1 employé."
+    columns:
+      - name: employee_id
+        tests: [not_null, unique]
+      - name: subsidiary_code
+        tests: [not_null]
+  - name: stg_odoo__payslips
+    description: "Bulletins nettoyés. Montants en XOF entiers."
+    columns:
+      - name: payslip_id
+        tests: [not_null, unique]
+      - name: gross_xof
+        tests: [not_null]

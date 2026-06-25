@@ -1,0 +1,17 @@
+[project]
+name = "k-insight-backend"
+version = "0.1.0"
+description = "Backend Governance de k-insight (domaine pur + Django)"
+requires-python = ">=3.12"
+
+# Le domaine pur (src/k_insight) n'a AUCUNE dépendance d'exécution : il se teste
+# avec la stdlib seule (PYTHONPATH=src python -m unittest discover -s tests).
+# Les dépendances ci-dessous concernent la couche Django (à venir), cf. requirements.txt.
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

@@ -1,0 +1,11 @@
+{
+  "name": "k-insight",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "npm --prefix frontend/web run dev",
+    "build": "npm --prefix frontend/web run build",
+    "preview": "npm --prefix frontend/web run preview",
+    "typecheck": "npm --prefix frontend/web run typecheck"
+  }
+}

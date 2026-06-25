@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+envie/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Django / app
+*.sqlite3
+.env
+.env.*
+!.env.example
+staticfiles/
+media/
+
+# dbt
+warehouse/dbt/target/
+warehouse/dbt/dbt_packages/
+warehouse/dbt/logs/
+
+# Frontend
+node_modules/
+frontend/**/dist/
+frontend/**/.vite/
+
+# Divers
+.DS_Store
+*.log

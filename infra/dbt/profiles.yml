@@ -1,0 +1,17 @@
+# Profil dbt consommé par le service kinsight-dbt (docker-compose, profil "dbt").
+# La connexion vise le PostgreSQL EDW ; les identifiants viennent des variables
+# d'environnement injectées par compose (rôle dbt avec droits staging/warehouse/mart).
+k_insight:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DBT_HOST', 'postgres') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | int }}"
+      user: "{{ env_var('DBT_USER', 'k_insight_dbt') }}"
+      password: "{{ env_var('DBT_PASSWORD', 'k_insight_dbt') }}"
+      dbname: "{{ env_var('DBT_DB', 'k_insight_edw') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'warehouse') }}"
+      threads: 4
+      keepalives_idle: 0
+      sslmode: prefer

@@ -1,0 +1,24 @@
+name: k_insight
+version: "0.1.0"
+config-version: 2
+profile: k_insight
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+# Matérialisation par couche (ADR-0002) :
+#  - staging : vues (légères, recalcul à la volée)
+#  - warehouse : tables (dimensions/faits conformes)
+#  - marts : tables (servies à l'API, perf de lecture)
+models:
+  k_insight:
+    staging:
+      +schema: staging
+      +materialized: view
+    warehouse:
+      +schema: warehouse
+      +materialized: table
+    marts:
+      +schema: mart
+      +materialized: table

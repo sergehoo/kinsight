@@ -1,0 +1,228 @@
+# ============================================================================
+# k-insight — infra de PRODUCTION.
+#
+# Noms entièrement préfixés/suffixés `kinsight-…-prod` (container_name, réseau,
+# volumes) pour cohabiter sans conflit avec l'environnement de dev sur une même
+# machine. Chaque service expose un alias réseau court (postgres, redis, minio,
+# backend) afin que la config nginx (proxy_pass backend) et les variables
+# APP_DB_HOST=postgres continuent de résoudre sans modification.
+# ============================================================================
+
+name: k-insight-prod
+
+x-backend-env: &backend-env
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY is required}
+  DJANGO_DEBUG: "0"
+  DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+  APP_DB_HOST: postgres
+  APP_DB_PORT: "5432"
+  APP_DB_NAME: ${APP_DB_NAME:-k_insight_app}
+  APP_DB_USER: ${APP_DB_USER:-k_insight_app}
+  APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD is required}
+  EDW_DB_HOST: postgres
+  EDW_DB_PORT: "5432"
+  EDW_DB_NAME: ${EDW_DB_NAME:-k_insight_edw}
+  EDW_DB_USER: ${EDW_DB_USER:-k_insight_app}
+  EDW_DB_PASSWORD: ${EDW_DB_PASSWORD:?EDW_DB_PASSWORD is required}
+  REDIS_URL: redis://redis:6379/0
+  CELERY_BROKER_URL: redis://redis:6379/1
+
+networks:
+  kinsight-network:
+    name: kinsight-network-prod
+
+volumes:
+  kinsight-postgres-data:
+  kinsight-redis-data:
+  kinsight-minio-data:
+  kinsight-django-static:
+
+services:
+  kinsight-postgres:
+    image: postgres:16-alpine
+    container_name: kinsight-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      APP_DB_NAME: ${APP_DB_NAME:-k_insight_app}
+      APP_DB_USER: ${APP_DB_USER:-k_insight_app}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD is required}
+      EDW_DB_NAME: ${EDW_DB_NAME:-k_insight_edw}
+      EDW_DB_USER: ${EDW_DB_USER:-k_insight_app}
+      EDW_DB_PASSWORD: ${EDW_DB_PASSWORD:?EDW_DB_PASSWORD is required}
+      DBT_DB_USER: ${DBT_DB_USER:-k_insight_dbt}
+      DBT_DB_PASSWORD: ${DBT_DB_PASSWORD:?DBT_DB_PASSWORD is required}
+      AIRBYTE_DB_USER: ${AIRBYTE_DB_USER:-k_insight_airbyte}
+      AIRBYTE_DB_PASSWORD: ${AIRBYTE_DB_PASSWORD:-change-me}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
+    volumes:
+      - kinsight-postgres-data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+      - ../warehouse/ddl:/docker-entrypoint-initdb.d/ddl:ro
+    networks:
+      kinsight-network:
+        aliases: [postgres]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  kinsight-redis:
+    image: redis:7-alpine
+    container_name: kinsight-redis-prod
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - kinsight-redis-data:/data
+    networks:
+      kinsight-network:
+        aliases: [redis]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  kinsight-minio:
+    image: minio/minio:latest
+    container_name: kinsight-minio-prod
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?MINIO_ACCESS_KEY is required}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required}
+    volumes:
+      - kinsight-minio-data:/data
+    networks:
+      kinsight-network:
+        aliases: [minio]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+
+  kinsight-backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: kinsight-backend-prod
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:8080}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL_SYNTHESIS: ${AI_MODEL_SYNTHESIS:-claude-opus-4-8}
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?MINIO_ACCESS_KEY is required}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required}
+      MINIO_BUCKET: ${MINIO_BUCKET:-k-insight-exports}
+    command: >
+      sh -c "python manage.py migrate --noinput
+      && python manage.py collectstatic --noinput
+      && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-3} --timeout 60"
+    volumes:
+      - kinsight-django-static:/app/staticfiles
+    depends_on:
+      kinsight-postgres:
+        condition: service_healthy
+      kinsight-redis:
+        condition: service_healthy
+    networks:
+      kinsight-network:
+        aliases: [backend]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz/', timeout=3).read()\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+
+  kinsight-celery-worker:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: kinsight-celery-worker-prod
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+    command: ["celery", "-A", "config.celery", "worker", "--loglevel=INFO"]
+    depends_on:
+      kinsight-backend:
+        condition: service_healthy
+      kinsight-redis:
+        condition: service_healthy
+    networks:
+      - kinsight-network
+
+  kinsight-celery-beat:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: kinsight-celery-beat-prod
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+    command: ["celery", "-A", "config.celery", "beat", "--loglevel=INFO"]
+    depends_on:
+      kinsight-backend:
+        condition: service_healthy
+      kinsight-redis:
+        condition: service_healthy
+    networks:
+      - kinsight-network
+
+  kinsight-frontend:
+    build:
+      context: ..
+      dockerfile: frontend/web/Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/v1
+        VITE_USE_MOCK: "false"
+        VITE_API_TOKEN: ${VITE_API_TOKEN:-}
+    container_name: kinsight-frontend-prod
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:8080"
+    volumes:
+      - kinsight-django-static:/var/www/django-static:ro
+    depends_on:
+      kinsight-backend:
+        condition: service_healthy
+    networks:
+      kinsight-network:
+        aliases: [frontend]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+
+  # Transformations dbt (opt-in) : `docker compose -f docker-compose.prod.yml --profile dbt run --rm kinsight-dbt build`.
+  kinsight-dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.8.latest
+    container_name: kinsight-dbt-prod
+    profiles: ["dbt"]
+    working_dir: /usr/app
+    environment:
+      DBT_HOST: postgres
+      DBT_PORT: "5432"
+      DBT_DB: ${EDW_DB_NAME:-k_insight_edw}
+      DBT_USER: ${DBT_DB_USER:-k_insight_dbt}
+      DBT_PASSWORD: ${DBT_DB_PASSWORD:?DBT_DB_PASSWORD is required}
+      DBT_SCHEMA: ${DBT_SCHEMA:-warehouse}
+    volumes:
+      - ../warehouse/dbt:/usr/app
+      - ./dbt:/root/.dbt:ro
+    depends_on:
+      kinsight-postgres:
+        condition: service_healthy
+    networks:
+      - kinsight-network
+    entrypoint: ["dbt"]
+    command: ["build"]

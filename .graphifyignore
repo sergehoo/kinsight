@@ -1,0 +1,9 @@
+**/migrations/**
+**/__pycache__/**
+**/.venv/**
+**/kenvi/**
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.next/**
+graphify-out/**
