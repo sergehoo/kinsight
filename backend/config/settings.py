@@ -119,6 +119,19 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
     "CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
 ).split(",")
 
+# Derrière un reverse proxy TLS (Traefik/Nginx en prod, ex. déploiement Dokploy).
+# Tout est piloté par variables d'env et désactivé par défaut → dev/tests inchangés.
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin
+]
+# Le proxy termine le TLS et transmet X-Forwarded-Proto=https : Django doit le reconnaître.
+if os.environ.get("SECURE_SSL_PROXY", "0") == "1":
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# Cookies de session/CSRF en HTTPS uniquement (à activer en prod).
+if os.environ.get("DJANGO_SECURE_COOKIES", "0") == "1":
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 # JWT (simplejwt). Durée de vie d'accès allongée en dev pour le confort ;
 # à resserrer en prod (15 min + refresh).
 SIMPLE_JWT = {"ACCESS_TOKEN_LIFETIME": timedelta(hours=12)}

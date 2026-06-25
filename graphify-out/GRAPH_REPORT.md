@@ -1,16 +1,16 @@
 # Graph Report - k-insight  (2026-06-25)
 
 ## Corpus Check
-- 205 files · ~2,910,222 words
+- 207 files · ~4,214,482 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1403 nodes · 1750 edges · 213 communities (146 shown, 67 thin omitted)
+- 1419 nodes · 1765 edges · 213 communities (146 shown, 67 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 87 edges (avg confidence: 0.64)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d2d11397`
+- Built from commit: `66f4332b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -293,7 +293,7 @@ Nodes (5): AccountsConfig, AppConfig, AuditConfig, GovernanceConfig, Organizatio
 
 ### Community 16 - "Community 16"
 Cohesion: 0.05
-Nodes (38): 6.11.1, 6.12.1, 6.14.1, 6.14.2, 6.22.0, 6.22.1, 6.23.1, 6.25.1 (+30 more)
+Nodes (38): 6.11.1, 6.12.1, 6.14.1, 6.22.0, 6.22.1, 6.23.1, 6.25.1, 6.4.0 (+30 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.22
@@ -364,8 +364,8 @@ Cohesion: 0.12
 Nodes (15): Concurrency, Configuration, Data Loading and Pre-rendering, Invalid Exports, Pre-Rendering, Pre-rendering with a SPA Fallback, Pre-rendering with `ssr:false`, Pre-rendering with `ssr:true` (+7 more)
 
 ### Community 71 - "Community 71"
-Cohesion: 0.12
-Nodes (13): 1. Create a Router, 1. Define Your Routes, 2. Create a static handler, 2. Render the Router, 3. Get Routing Context and Render, 3. Lazy Loading, 4. Hydrate in the browser, Client Rendering (+5 more)
+Cohesion: 0.08
+Nodes (20): Accessing Action Data, Actions, Calling Actions, Calling actions with a fetcher, Calling actions with a Form, Calling actions with useSubmit, Defining Actions, 1. Create a Router (+12 more)
 
 ### Community 72 - "Community 72"
 Cohesion: 0.12
@@ -452,11 +452,11 @@ Cohesion: 0.25
 Nodes (7): Defining a Resource Route, Error Boundaries, Error Handling, Handling different request methods, Linking to Resource Routes, Resource Routes, Return Types
 
 ### Community 93 - "Community 93"
-Cohesion: 0.29
-Nodes (7): Accessing Action Data, Actions, Calling Actions, Calling actions with a fetcher, Calling actions with a Form, Calling actions with useSubmit, Defining Actions
+Cohesion: 0.12
+Nodes (14): 1. Installer Airbyte (abctl), 2. Connecter Airbyte à l'EDW (destination Postgres → schéma `raw`), 3. Orchestration, Airbyte (EL) — déploiement hors `docker-compose`, Alternative : Airbyte « legacy » en `docker-compose`, Airbyte (EL), Architecture servie, Déploiement production — Dokploy (+6 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.29
+Cohesion: 0.33
 Nodes (4): Bootstrap with a Bundler Template, Create a Router and Render, Install React Router, Installation
 
 ### Community 95 - "Community 95"
@@ -688,7 +688,7 @@ Cohesion: 0.67
 Nodes (3): Component (`default`), Props passed to the Component, Using props
 
 ## Knowledge Gaps
-- **655 isolated node(s):** `Role`, `Meta`, `Meta`, `k-insight-backend`, `verify.sh script` (+650 more)
+- **667 isolated node(s):** `Role`, `Meta`, `Meta`, `k-insight-backend`, `verify.sh script` (+662 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **67 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -696,7 +696,7 @@ Nodes (3): Component (`default`), Props passed to the Component, Using props
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does ``react-router`` connect `Community 16` to `Community 118`, `Community 120`, `Community 121`, `Community 122`, `Community 123`, `Community 124`, `Community 125`, `Community 126`, `Community 127`, `Community 128`, `Community 129`, `Community 130`, `Community 131`, `Community 132`, `Community 133`, `Community 134`, `Community 135`, `Community 136`, `Community 137`, `Community 138`, `Community 139`, `Community 140`, `Community 141`, `Community 142`, `Community 143`, `Community 144`, `Community 145`, `Community 146`, `Community 147`, `Community 148`, `Community 149`, `Community 150`, `Community 157`, `Community 158`, `Community 159`, `Community 160`, `Community 161`, `Community 162`, `Community 163`, `Community 164`, `Community 165`, `Community 166`, `Community 167`, `Community 168`, `Community 169`, `Community 170`, `Community 171`, `Community 172`, `Community 173`, `Community 174`, `Community 175`, `Community 176`, `Community 177`, `Community 178`, `Community 179`, `Community 180`, `Community 181`, `Community 182`, `Community 183`, `Community 184`, `Community 185`, `Community 186`, `Community 187`, `Community 188`, `Community 189`, `Community 190`, `Community 191`, `Community 192`, `Community 193`, `Community 194`, `Community 195`, `Community 196`, `Community 197`, `Community 198`, `Community 199`, `Community 200`, `Community 201`, `Community 202`?**
-  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
 - **Why does `Period` connect `Community 12` to `Community 2`, `Community 10`, `Community 11`, `Community 13`, `Community 14`, `Community 18`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Why does `KpiError` connect `Community 18` to `Community 7`, `Community 10`, `Community 11`, `Community 13`, `Community 14`?**
@@ -708,4 +708,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 12 inferred relationships involving `Payslip` (e.g. with `FailingMartGateway` and `GovernanceApiTest`) actually correct?**
   _`Payslip` has 12 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Role`, `Utilisateurs, rôles et périmètres (RBAC multi-filiales, ADR-0005).  Le périmètre`, `Périmètre de visibilité (domaine pur).` to the rest of the system?**
-  _719 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _731 weakly-connected nodes found - possible documentation gaps or missing edges._

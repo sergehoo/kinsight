@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   ".claude/settings.local.json": {
-    "mtime": 1782386056.4603631,
-    "ast_hash": "0a253d1c9884594371428c03c240726b",
+    "mtime": 1782406965.7361786,
+    "ast_hash": "1a1607ad4d922ddd1ea02501ba5a20a0",
     "semantic_hash": ""
   },
   ".codex/hooks.json": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "backend/config/settings.py": {
-    "mtime": 1782347541.0018141,
-    "ast_hash": "823bd38ef3b9b5acae19ee63f1b44a52",
+    "mtime": 1782405724.9235413,
+    "ast_hash": "f03a507bbe6ae50500875a9b2ca621de",
     "semantic_hash": ""
   },
   "backend/config/urls.py": {
@@ -350,8 +350,8 @@
     "semantic_hash": ""
   },
   "infra/postgres/init/00-init-k-insight.sh": {
-    "mtime": 1782346811.6210248,
-    "ast_hash": "592715a655bd8d2083939aa3e13ad833",
+    "mtime": 1782405326.2599032,
+    "ast_hash": "03f504e51f00e953e825c390de5c1cdf",
     "semantic_hash": ""
   },
   "kenvi/bin/Activate.ps1": {
@@ -480,13 +480,13 @@
     "semantic_hash": ""
   },
   "infra/docker-compose.prod.yml": {
-    "mtime": 1782385678.4660428,
-    "ast_hash": "4358f80de6f726c8817f9fbb97a80a1c",
+    "mtime": 1782405344.1045225,
+    "ast_hash": "a375f868347ee347a106899888a34280",
     "semantic_hash": ""
   },
   "infra/docker-compose.yml": {
-    "mtime": 1782385610.980219,
-    "ast_hash": "9763fae95e5b93df1e790350459a3a40",
+    "mtime": 1782405372.304186,
+    "ast_hash": "33a9c955b4d20bbd4eeaf628394a3a0b",
     "semantic_hash": ""
   },
   "knowledge/accounting/kpi.md": {
@@ -1132,6 +1132,21 @@
   "frontend/web/public/assets/african-man-holding-ipad.png": {
     "mtime": 1782386495.0629306,
     "ast_hash": "457f1cd83543cf95cb48678f2b91e29b",
+    "semantic_hash": ""
+  },
+  "docker-compose.dokploy.yml": {
+    "mtime": 1782405825.3150775,
+    "ast_hash": "6217f7b1555d35141c88d47205f83111",
+    "semantic_hash": ""
+  },
+  "infra/airbyte/README.md": {
+    "mtime": 1782405400.6247213,
+    "ast_hash": "090a563e598e04f1209e4e493b72c31d",
+    "semantic_hash": ""
+  },
+  "infra/dokploy/README.md": {
+    "mtime": 1782405874.3595107,
+    "ast_hash": "becfc1de21451dde577c5f4ddfabd7f0",
     "semantic_hash": ""
   }
 }
