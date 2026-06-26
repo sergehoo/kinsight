@@ -1,6 +1,7 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Building, ChartPie, Cog, Help, Layers, Logout, Users, Wallet } from "@/components/overview/icons";
+import { Building, Help, Logout, Users, Wallet } from "@/components/overview/icons";
+import { MODULES } from "@/lib/modules";
 
 import { CircleButton } from "./CircleButton";
 
@@ -10,12 +11,36 @@ const DASHBOARDS = [
   { key: "finance", label: "Finance", icon: <Wallet width={20} height={20} /> },
 ] as const;
 
-/** Rail latéral : sélection de dashboard (via URL) + accès aux modules transverses. */
+const REAL_ESTATE_MODULES = [
+  "executive",
+  "portfolio",
+  "land",
+  "construction",
+  "vrd",
+  "commercialisation",
+  "rental",
+  "finance",
+  "treasury",
+  "accounting",
+  "inventory",
+  "patrimoine",
+  "maintenance",
+  "chantier-resources",
+  "security",
+  "clients",
+  "risques",
+  "ai",
+  "alerts",
+  "reports",
+] as const;
+
+/** Rail latéral : dashboards live + vues du cockpit Real Estate. */
 export function SideRail() {
   const navigate = useNavigate();
   const { dashboard } = useParams();
   const { pathname } = useLocation();
-  const activeKey = dashboard ?? (pathname === "/" ? "realEstate" : undefined);
+  const moduleKey = pathname.startsWith("/modules/") ? pathname.split("/").at(-1) : undefined;
+  const activeDashboard = dashboard ?? (pathname === "/" ? "realEstate" : undefined);
 
   const logout = () => {
     try {
@@ -28,7 +53,7 @@ export function SideRail() {
 
   return (
     <aside
-      className="absolute bottom-auto left-3 top-[220px] z-30 flex h-[520px] w-[72px] flex-col justify-between rounded-full px-2 py-4 sm:left-5 lg:bottom-[4%] lg:left-[2.2%] lg:top-[33%] lg:h-auto"
+      className="absolute left-3 top-[184px] z-30 flex max-h-[calc(100%-212px)] w-[72px] flex-col rounded-full px-2 py-4 sm:left-5 lg:left-[2.2%] lg:top-[205px]"
       style={{
         background: "rgba(255,255,255,0.66)",
         border: "1px solid rgba(255,255,255,0.72)",
@@ -37,24 +62,30 @@ export function SideRail() {
         WebkitBackdropFilter: "blur(18px)",
       }}
     >
-      <div className="flex flex-col items-center gap-3">
+      <div
+        className="flex min-h-0 flex-1 flex-col items-center gap-3 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{ scrollbarWidth: "none" }}
+      >
         {DASHBOARDS.map((d) => (
-          <CircleButton key={d.key} label={d.label} to={`/d/${d.key}`} active={activeKey === d.key}>
+          <CircleButton key={d.key} label={d.label} to={`/d/${d.key}`} active={activeDashboard === d.key}>
             {d.icon}
           </CircleButton>
         ))}
-        <CircleButton label="Vue groupe" to="/modules/groupe" active={pathname === "/modules/groupe"}>
-          <Layers width={20} height={20} />
-        </CircleButton>
-        <CircleButton label="Risques" to="/modules/risques" active={pathname === "/modules/risques"}>
-          <ChartPie width={20} height={20} />
-        </CircleButton>
-        <CircleButton label="Parametres" to="/modules/parametres" active={pathname === "/modules/parametres"}>
-          <Cog width={21} height={21} />
-        </CircleButton>
+
+        <span className="my-1 h-px w-8 shrink-0 bg-[#DDE2E0]" />
+
+        {REAL_ESTATE_MODULES.map((key) => {
+          const module = MODULES[key];
+          return (
+            <CircleButton key={module.key} label={module.title} to={`/modules/${module.key}`} active={moduleKey === module.key}>
+              <span className="grid place-items-center [&_svg]:h-5 [&_svg]:w-5">{module.icon}</span>
+            </CircleButton>
+          );
+        })}
       </div>
-      <div className="flex flex-col items-center gap-3">
-        <CircleButton label="Aide" to="/modules/aide" active={pathname === "/modules/aide"}>
+
+      <div className="mt-3 flex shrink-0 flex-col items-center gap-3 border-t border-[#DDE2E0]/80 pt-3">
+        <CircleButton label="Aide" to="/modules/aide" active={moduleKey === "aide"}>
           <Help width={20} height={20} />
         </CircleButton>
         <CircleButton label="Deconnexion" onClick={logout}>
