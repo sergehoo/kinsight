@@ -28,7 +28,7 @@ export function PageShell({ title, subtitle, status, icon, accent = "#FF8735", c
         <AppHeader />
         <SideRail />
 
-        <main className="relative z-10 px-6 pb-16 pl-24 sm:px-10 lg:pl-[8.6%] lg:pr-[4%]">
+        <main className="relative z-10 px-6 pb-16 pl-[118px] pr-5 sm:pl-[132px] sm:pr-10 lg:pl-[9.5%] lg:pr-[4%]">
           <motion.button
             type="button"
             onClick={() => navigate(-1)}

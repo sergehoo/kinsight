@@ -5,7 +5,7 @@ import { ArrowUpRight } from "@/components/overview/icons";
 import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
 import { EASE_OUT } from "@/lib/motion";
-import { DASHBOARD_LINKS, HOME_MODULE_KEYS, MODULES } from "@/lib/modules";
+import { DASHBOARD_LINKS, HR_MODULE_KEYS, MODULES, REAL_ESTATE_MODULE_KEYS } from "@/lib/modules";
 
 function ModuleTile({
   to,
@@ -56,11 +56,12 @@ function ModuleTile({
 }
 
 export function ModulesHome() {
-  const homeModules = HOME_MODULE_KEYS.map((key) => MODULES[key]);
+  const realEstateModules = REAL_ESTATE_MODULE_KEYS.map((key) => MODULES[key]);
+  const hrModules = HR_MODULE_KEYS.map((key) => MODULES[key]);
   return (
     <PageShell
       title="Dashboard"
-      subtitle="Tous les modules de pilotage du groupe Kaydan. Les dashboards LIVE sont servis par le backend governance."
+      subtitle="Cockpits de gouvernance du groupe Kaydan. Les dashboards LIVE sont servis par le backend governance."
       status="Vue d'ensemble"
     >
       <h2 className="mb-4 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Dashboards servis</h2>
@@ -79,9 +80,9 @@ export function ModulesHome() {
         ))}
       </div>
 
-      <h2 className="mb-4 mt-10 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Modules métiers</h2>
+      <h2 className="mb-4 mt-10 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Real Estate Governance</h2>
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {homeModules.map((module, index) => (
+        {realEstateModules.map((module, index) => (
           <ModuleTile
             key={module.key}
             to={`/modules/${module.key}`}
@@ -90,6 +91,21 @@ export function ModulesHome() {
             accent={module.accent}
             icon={module.icon}
             index={index + DASHBOARD_LINKS.length}
+          />
+        ))}
+      </div>
+
+      <h2 className="mb-4 mt-10 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Human Resources Governance</h2>
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {hrModules.map((module, index) => (
+          <ModuleTile
+            key={module.key}
+            to={`/modules/${module.key}`}
+            title={module.title}
+            subtitle={module.subtitle}
+            accent={module.accent}
+            icon={module.icon}
+            index={index + DASHBOARD_LINKS.length + realEstateModules.length}
           />
         ))}
       </div>

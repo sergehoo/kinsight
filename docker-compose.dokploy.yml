@@ -62,8 +62,7 @@ services:
       SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
     volumes:
       - kinsight-postgres-data:/var/lib/postgresql/data
-      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
-      - ./warehouse/ddl:/docker-entrypoint-initdb.d/ddl:ro
+      - ./infra/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     networks:
       kinsight:
         aliases: [postgres]

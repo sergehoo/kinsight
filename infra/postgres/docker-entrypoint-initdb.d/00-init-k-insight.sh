@@ -1,0 +1,108 @@
+#!/bin/sh
+set -eu
+
+APP_DB_NAME="${APP_DB_NAME:-k_insight_app}"
+APP_DB_USER="${APP_DB_USER:-k_insight_app}"
+APP_DB_PASSWORD="${APP_DB_PASSWORD:-change-me}"
+EDW_DB_NAME="${EDW_DB_NAME:-k_insight_edw}"
+EDW_DB_USER="${EDW_DB_USER:-$APP_DB_USER}"
+EDW_DB_PASSWORD="${EDW_DB_PASSWORD:-$APP_DB_PASSWORD}"
+DBT_DB_USER="${DBT_DB_USER:-k_insight_dbt}"
+DBT_DB_PASSWORD="${DBT_DB_PASSWORD:-change-me}"
+AIRBYTE_DB_USER="${AIRBYTE_DB_USER:-k_insight_airbyte}"
+AIRBYTE_DB_PASSWORD="${AIRBYTE_DB_PASSWORD:-change-me}"
+SEED_DEMO_DATA="${SEED_DEMO_DATA:-false}"
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${APP_DB_USER}') THEN
+    CREATE ROLE ${APP_DB_USER} LOGIN PASSWORD '${APP_DB_PASSWORD}';
+  ELSE
+    ALTER ROLE ${APP_DB_USER} WITH PASSWORD '${APP_DB_PASSWORD}';
+  END IF;
+END
+\$\$;
+
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${EDW_DB_USER}') THEN
+    CREATE ROLE ${EDW_DB_USER} LOGIN PASSWORD '${EDW_DB_PASSWORD}';
+  ELSE
+    ALTER ROLE ${EDW_DB_USER} WITH PASSWORD '${EDW_DB_PASSWORD}';
+  END IF;
+END
+\$\$;
+
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DBT_DB_USER}') THEN
+    CREATE ROLE ${DBT_DB_USER} LOGIN PASSWORD '${DBT_DB_PASSWORD}';
+  ELSE
+    ALTER ROLE ${DBT_DB_USER} WITH PASSWORD '${DBT_DB_PASSWORD}';
+  END IF;
+END
+\$\$;
+
+-- Rôle chargé par Airbyte (EL) : écrit uniquement dans le schéma raw (ADR-0003).
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${AIRBYTE_DB_USER}') THEN
+    CREATE ROLE ${AIRBYTE_DB_USER} LOGIN PASSWORD '${AIRBYTE_DB_PASSWORD}';
+  ELSE
+    ALTER ROLE ${AIRBYTE_DB_USER} WITH PASSWORD '${AIRBYTE_DB_PASSWORD}';
+  END IF;
+END
+\$\$;
+
+SELECT 'CREATE DATABASE ${APP_DB_NAME} OWNER ${APP_DB_USER}'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${APP_DB_NAME}')\\gexec
+
+SELECT 'CREATE DATABASE ${EDW_DB_NAME} OWNER ${POSTGRES_USER}'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${EDW_DB_NAME}')\\gexec
+EOSQL
+
+for file in \
+  /docker-entrypoint-initdb.d/ddl/00_schemas.sql \
+  /docker-entrypoint-initdb.d/ddl/marts/hr_mart.sql
+do
+  if [ -f "$file" ]; then
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" -f "$file"
+  fi
+done
+
+if [ "$SEED_DEMO_DATA" = "true" ] && [ -f /docker-entrypoint-initdb.d/ddl/seeds/hr_demo_seed.sql ]; then
+  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" \
+    -f /docker-entrypoint-initdb.d/ddl/seeds/hr_demo_seed.sql
+fi
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" <<-EOSQL
+GRANT CONNECT ON DATABASE ${EDW_DB_NAME} TO ${EDW_DB_USER}, ${DBT_DB_USER};
+GRANT USAGE ON SCHEMA mart, analytics TO ${EDW_DB_USER};
+GRANT SELECT ON ALL TABLES IN SCHEMA mart, analytics TO ${EDW_DB_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA mart, analytics
+  GRANT SELECT ON TABLES TO ${EDW_DB_USER};
+
+GRANT USAGE ON SCHEMA audit TO ${EDW_DB_USER};
+GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA audit TO ${EDW_DB_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA audit
+  GRANT INSERT, SELECT ON TABLES TO ${EDW_DB_USER};
+
+GRANT USAGE, CREATE ON SCHEMA staging, warehouse, mart TO ${DBT_DB_USER};
+GRANT USAGE ON SCHEMA raw TO ${DBT_DB_USER};
+GRANT SELECT ON ALL TABLES IN SCHEMA raw TO ${DBT_DB_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA raw
+  GRANT SELECT ON TABLES TO ${DBT_DB_USER};
+
+-- Airbyte (EL) : crée et alimente ses tables dans raw uniquement (ADR-0003).
+GRANT CONNECT ON DATABASE ${EDW_DB_NAME} TO ${AIRBYTE_DB_USER};
+GRANT USAGE, CREATE ON SCHEMA raw TO ${AIRBYTE_DB_USER};
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA raw TO ${AIRBYTE_DB_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA raw
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ${AIRBYTE_DB_USER};
+-- dbt lit les tables produites par Airbyte (qui en est le propriétaire) :
+ALTER DEFAULT PRIVILEGES FOR ROLE ${AIRBYTE_DB_USER} IN SCHEMA raw
+  GRANT SELECT ON TABLES TO ${DBT_DB_USER};
+
+REVOKE ALL ON SCHEMA raw, staging, warehouse FROM ${EDW_DB_USER};
+EOSQL

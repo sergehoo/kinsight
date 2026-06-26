@@ -375,6 +375,57 @@ function DataContract({ module }: { module: ModuleDef }) {
   );
 }
 
+function HrGovernanceControls({ module }: { module: ModuleDef }) {
+  if (!module.key.startsWith("hr-")) return null;
+
+  const filters = ["Groupe", "Filiale", "Département", "Site", "Métier", "Période"];
+  const exports = ["PDF", "Excel", "PowerPoint"];
+
+  return (
+    <motion.div
+      className="grid gap-4 rounded-[28px] p-4 lg:grid-cols-[minmax(280px,1fr)_auto_auto]"
+      style={{ ...glass, background: "rgba(255,255,255,0.6)" }}
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.45, ease: EASE_OUT }}
+    >
+      <label className="relative block">
+        <span className="sr-only">Recherche collaborateur</span>
+        <input
+          readOnly
+          value=""
+          placeholder="Collaborateur, matricule, métier"
+          className="h-12 w-full rounded-full border border-white/70 bg-white/72 px-5 text-[13px] font-semibold text-[#1A1F1F] outline-none placeholder:text-[#8B9394]"
+        />
+      </label>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            type="button"
+            className="h-11 rounded-full border border-white/70 bg-white/62 px-4 text-[12px] font-bold text-[#525A5B] shadow-sm transition-transform hover:-translate-y-0.5"
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {exports.map((format) => (
+          <button
+            key={format}
+            type="button"
+            className="h-11 rounded-full bg-[#111313] px-4 text-[12px] font-bold text-white shadow-[0_12px_24px_rgba(0,0,0,0.14)] transition-transform hover:-translate-y-0.5"
+          >
+            {format}
+          </button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 function AiGuardrail({ module }: { module: ModuleDef }) {
   if (module.kind !== "ai") return null;
   return (
@@ -406,6 +457,7 @@ function ModuleBody({ module }: { module: ModuleDef }) {
   return (
     <div className="space-y-8">
       <DataContract module={module} />
+      <HrGovernanceControls module={module} />
       <AiGuardrail module={module} />
 
       {hasKpis ? (
@@ -433,9 +485,13 @@ function ModuleBody({ module }: { module: ModuleDef }) {
   );
 }
 
-export function ModulePage() {
+interface ModulePageProps {
+  moduleKey?: string;
+}
+
+export function ModulePage({ moduleKey }: ModulePageProps = {}) {
   const { key } = useParams();
-  const module = getModule(key);
+  const module = getModule(moduleKey ?? key);
   if (!module) {
     return <Navigate to="/dashboard" replace />;
   }
