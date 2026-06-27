@@ -7,6 +7,7 @@ import { downloadGroupExport } from "@/api/governance";
 import { glass } from "@/components/chrome/theme";
 import { getModuleFromPath } from "@/config/modules.config";
 import { EASE_OUT } from "@/lib/motion";
+import { isAuthenticated } from "@/lib/auth";
 import { SUBSIDIARIES, useFilters } from "@/store/filters";
 import type { CopilotAction, CopilotMessage } from "@/types/copilot";
 
@@ -143,6 +144,9 @@ export function AICopilotPanel() {
   React.useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, chat.isPending]);
+
+  // Le Copilot n'est disponible qu'une fois authentifié (jamais sur /login). Après les hooks.
+  if (!isAuthenticated()) return null;
 
   const send = (text: string) => {
     const msg = text.trim();

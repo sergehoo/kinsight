@@ -36,10 +36,12 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
 };
 
 function parsePermissions(raw: string | null): Permission[] {
-  if (!raw) return [SUPER_ADMIN_PERMISSION];
+  // Défaut = AUCUN accès (l'utilisateur non authentifié est renvoyé vers /login par le garde
+  // de route). Les permissions réelles sont écrites au login depuis /api/v1/auth/me/.
+  if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [SUPER_ADMIN_PERMISSION];
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
   } catch {
     return raw
       .split(",")
@@ -49,13 +51,20 @@ function parsePermissions(raw: string | null): Permission[] {
 }
 
 export function getCurrentPermissions(): Permission[] {
-  if (typeof window === "undefined") return [SUPER_ADMIN_PERMISSION];
+  if (typeof window === "undefined") return [];
   return parsePermissions(window.localStorage.getItem(STORAGE_KEY));
 }
 
-export function getCurrentRole(): Role {
-  if (typeof window === "undefined") return "SUPER_ADMIN";
-  return (window.localStorage.getItem(ROLE_STORAGE_KEY) as Role) || "SUPER_ADMIN";
+export function getCurrentRole(): string {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(ROLE_STORAGE_KEY) || "";
+}
+
+/** Applique les permissions + le rôle reçus du backend (/auth/me) — source de vérité RBAC. */
+export function applyAuthPermissions(permissions: Permission[], role: string): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(permissions));
+  window.localStorage.setItem(ROLE_STORAGE_KEY, role);
 }
 
 /** Applique le périmètre d'un rôle (démo/SSO à venir) : écrit ses permissions. */

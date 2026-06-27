@@ -4,8 +4,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { AppShell } from "@/components/navigation/AppShell";
+import { RequireAuth, RootRedirect } from "@/components/navigation/RequireAuth";
 import "./index.css";
 
+const LoginPage = lazy(() => import("@/pages/LoginPage").then((module) => ({ default: module.LoginPage })));
 const AppLayout = lazy(() => import("@/layouts/AppLayout").then((module) => ({ default: module.AppLayout })));
 const GovernanceOverview = lazy(() => import("@/pages/GovernanceOverview").then((module) => ({ default: module.GovernanceOverview })));
 const HrDashboard = lazy(() => import("@/pages/HrDashboard").then((module) => ({ default: module.HrDashboard })));
@@ -38,28 +40,34 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <AppShell>
           <Suspense fallback={<RouteFallback />}>
             <Routes>
-              {/* Entrée racine : cockpit exécutif consolidé Groupe (Overview Groupe) */}
-              <Route index element={<Navigate to="/dashboard/overview-groupe" replace />} />
-              <Route path="/dashboard" element={<Navigate to="/dashboard/overview-groupe" replace />} />
-              <Route path="/d/:dashboard" element={<GovernanceOverview />} />
+              {/* Page publique d'authentification */}
+              <Route path="/login" element={<LoginPage />} />
 
-              {/* Navigation modulaire canonique : /dashboard/:domaine[/:vue] */}
-              <Route path="/dashboard/:moduleId" element={<ModuleHome />} />
-              <Route path="/dashboard/:moduleId/:itemId" element={<ModuleRouter />} />
-              <Route path="/modules/:key" element={<ModulePage />} />
+              {/* Tout le reste exige une session : redirection vers /login sinon */}
+              <Route element={<RequireAuth />}>
+                {/* Entrée racine : atterrissage selon le rôle de l'utilisateur connecté */}
+                <Route index element={<RootRedirect />} />
+                <Route path="/dashboard" element={<RootRedirect />} />
+                <Route path="/d/:dashboard" element={<GovernanceOverview />} />
 
-              {/* Administration : Connecteurs & Intégrations */}
-              <Route path="/admin/integrations" element={<IntegrationsList />} />
-              <Route path="/admin/integrations/new" element={<IntegrationForm />} />
-              <Route path="/admin/integrations/health" element={<IntegrationHealth />} />
-              <Route path="/admin/integrations/:id" element={<IntegrationForm />} />
+                {/* Navigation modulaire canonique : /dashboard/:domaine[/:vue] */}
+                <Route path="/dashboard/:moduleId" element={<ModuleHome />} />
+                <Route path="/dashboard/:moduleId/:itemId" element={<ModuleRouter />} />
+                <Route path="/modules/:key" element={<ModulePage />} />
 
-              {/* Vue RH détaillée historique (lecture seule) */}
-              <Route element={<AppLayout />}>
-                <Route path="/legacy/rh" element={<HrDashboard />} />
+                {/* Administration : Connecteurs & Intégrations */}
+                <Route path="/admin/integrations" element={<IntegrationsList />} />
+                <Route path="/admin/integrations/new" element={<IntegrationForm />} />
+                <Route path="/admin/integrations/health" element={<IntegrationHealth />} />
+                <Route path="/admin/integrations/:id" element={<IntegrationForm />} />
+
+                {/* Vue RH détaillée historique (lecture seule) */}
+                <Route element={<AppLayout />}>
+                  <Route path="/legacy/rh" element={<HrDashboard />} />
+                </Route>
               </Route>
 
-              <Route path="*" element={<Navigate to="/dashboard/overview-groupe" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
         </AppShell>

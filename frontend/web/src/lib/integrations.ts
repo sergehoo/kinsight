@@ -10,12 +10,12 @@ import type {
   SyncLogItem,
 } from "@/types/integrations";
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1";
-const TOKEN = import.meta.env.VITE_API_TOKEN as string | undefined;
+import { API_BASE as BASE, getToken } from "@/lib/api";
 
 function headers(): Record<string, string> {
   const h: Record<string, string> = { "Content-Type": "application/json", Accept: "application/json" };
-  if (TOKEN) h.Authorization = `Bearer ${TOKEN}`;
+  const token = getToken();
+  if (token) h.Authorization = `Bearer ${token}`;
   return h;
 }
 

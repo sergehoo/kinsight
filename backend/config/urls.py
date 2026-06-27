@@ -19,6 +19,7 @@ urlpatterns = [
     # Auth JWT (brief : JWT)
     path("api/v1/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/v1/auth/", include("apps.accounts.urls")),
     # Modules
     path("api/v1/governance/", include("apps.governance.urls")),
     path("api/v1/integrations/", include("apps.integrations.urls")),
