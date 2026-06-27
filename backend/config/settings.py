@@ -22,6 +22,7 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-key-change-me")
+INTEGRATIONS_SECRET_KEY = os.environ.get("INTEGRATIONS_SECRET_KEY", SECRET_KEY)
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "apps.organizations",
     "apps.governance",
     "apps.audit",
+    "apps.integrations",
 ]
 
 MIDDLEWARE = [

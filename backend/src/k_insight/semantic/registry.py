@@ -64,8 +64,13 @@ class MetricCatalog:
         return list(self._by_key.keys())
 
 
-# Le catalogue global est assemblé à partir des modules par domaine.
-# On l'enrichira incrément après incrément (finance, fleet, security…).
-from . import hr as _hr  # noqa: E402  (import après définition des classes, volontaire)
+# Le catalogue global est assemblé à partir des modules par domaine (RH + domaines métier).
+# Régénérer les domaines métier via scratchpad/gen_semantic.py.
+from . import hr as _hr  # noqa: E402
+from . import immobilier as _immobilier  # noqa: E402
+from . import finance as _finance  # noqa: E402
+from . import operations as _operations  # noqa: E402
+from . import commercial_clients as _commercial_clients  # noqa: E402
+from . import risques_conformite as _risques_conformite  # noqa: E402
 
-CATALOG = MetricCatalog(_hr.METRICS)
+CATALOG = MetricCatalog(_hr.METRICS + _immobilier.METRICS + _finance.METRICS + _operations.METRICS + _commercial_clients.METRICS + _risques_conformite.METRICS)

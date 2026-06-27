@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "@/components/overview/icons";
 import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
+import { getDefaultItemHref, visibleDashboardModules } from "@/config/modules.config";
 import { EASE_OUT } from "@/lib/motion";
-import { DASHBOARD_LINKS, HR_MODULE_KEYS, MODULES, REAL_ESTATE_MODULE_KEYS } from "@/lib/modules";
+import { getCurrentPermissions } from "@/lib/permissions";
+import { HR_MODULE_KEYS, MODULES, REAL_ESTATE_MODULE_KEYS } from "@/lib/modules";
 
 function ModuleTile({
   to,
@@ -56,6 +58,8 @@ function ModuleTile({
 }
 
 export function ModulesHome() {
+  const permissions = getCurrentPermissions();
+  const dashboardModules = visibleDashboardModules(permissions);
   const realEstateModules = REAL_ESTATE_MODULE_KEYS.map((key) => MODULES[key]);
   const hrModules = HR_MODULE_KEYS.map((key) => MODULES[key]);
   return (
@@ -64,20 +68,23 @@ export function ModulesHome() {
       subtitle="Cockpits de gouvernance du groupe Kaydan. Les dashboards LIVE sont servis par le backend governance."
       status="Vue d'ensemble"
     >
-      <h2 className="mb-4 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Dashboards servis</h2>
+      <h2 className="mb-4 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Dashboards métiers</h2>
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {DASHBOARD_LINKS.map((d, index) => (
+        {dashboardModules.map((d, index) => {
+          const Icon = d.icon;
+          return (
           <ModuleTile
-            key={d.key}
-            to={`/d/${d.key}`}
-            title={d.title}
-            subtitle={d.subtitle}
-            accent={d.accent}
-            icon={d.icon}
+            key={d.id}
+            to={getDefaultItemHref(d, permissions)}
+            title={d.label}
+            subtitle={`${d.sidebarItems.length} vues analytiques contextuelles`}
+            accent={index % 3 === 0 ? "#FF8735" : index % 3 === 1 ? "#416FF4" : "#42BFA0"}
+            icon={<Icon width={30} height={30} />}
             index={index}
             live
           />
-        ))}
+          );
+        })}
       </div>
 
       <h2 className="mb-4 mt-10 text-[15px] font-bold uppercase tracking-wider text-[#8A908D]">Real Estate Governance</h2>
@@ -90,7 +97,7 @@ export function ModulesHome() {
             subtitle={module.subtitle}
             accent={module.accent}
             icon={module.icon}
-            index={index + DASHBOARD_LINKS.length}
+            index={index + dashboardModules.length}
           />
         ))}
       </div>
@@ -105,7 +112,7 @@ export function ModulesHome() {
             subtitle={module.subtitle}
             accent={module.accent}
             icon={module.icon}
-            index={index + DASHBOARD_LINKS.length + realEstateModules.length}
+            index={index + dashboardModules.length + realEstateModules.length}
           />
         ))}
       </div>

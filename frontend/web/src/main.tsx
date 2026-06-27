@@ -3,13 +3,19 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { AppShell } from "@/components/navigation/AppShell";
 import "./index.css";
 
 const AppLayout = lazy(() => import("@/layouts/AppLayout").then((module) => ({ default: module.AppLayout })));
 const GovernanceOverview = lazy(() => import("@/pages/GovernanceOverview").then((module) => ({ default: module.GovernanceOverview })));
 const HrDashboard = lazy(() => import("@/pages/HrDashboard").then((module) => ({ default: module.HrDashboard })));
 const ModulePage = lazy(() => import("@/pages/ModulePage").then((module) => ({ default: module.ModulePage })));
+const ModuleRouter = lazy(() => import("@/components/navigation/ModuleRouter").then((module) => ({ default: module.ModuleRouter })));
+const ModuleHome = lazy(() => import("@/pages/ModuleHome").then((module) => ({ default: module.ModuleHome })));
 const ModulesHome = lazy(() => import("@/pages/ModulesHome").then((module) => ({ default: module.ModulesHome })));
+const IntegrationsList = lazy(() => import("@/pages/integrations/IntegrationsList").then((m) => ({ default: m.IntegrationsList })));
+const IntegrationForm = lazy(() => import("@/pages/integrations/IntegrationForm").then((m) => ({ default: m.IntegrationForm })));
+const IntegrationHealth = lazy(() => import("@/pages/integrations/IntegrationHealth").then((m) => ({ default: m.IntegrationHealth })));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, staleTime: 30_000 } },
@@ -29,24 +35,34 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
-            {/* Dashboard hero (governance) — sélection de filiale via l'URL */}
-            <Route index element={<GovernanceOverview />} />
-            <Route path="/d/:dashboard" element={<GovernanceOverview />} />
+        <AppShell>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              {/* Entrée racine : cockpit exécutif consolidé Groupe (Overview Groupe) */}
+              <Route index element={<Navigate to="/dashboard/overview-groupe" replace />} />
+              <Route path="/dashboard" element={<Navigate to="/dashboard/overview-groupe" replace />} />
+              <Route path="/d/:dashboard" element={<GovernanceOverview />} />
 
-            {/* Accueil des modules + pages métiers/transverses */}
-            <Route path="/dashboard" element={<ModulesHome />} />
-            <Route path="/modules/:key" element={<ModulePage />} />
+              {/* Navigation modulaire canonique : /dashboard/:domaine[/:vue] */}
+              <Route path="/dashboard/:moduleId" element={<ModuleHome />} />
+              <Route path="/dashboard/:moduleId/:itemId" element={<ModuleRouter />} />
+              <Route path="/modules/:key" element={<ModulePage />} />
 
-            {/* Vue RH détaillée historique (lecture seule) */}
-            <Route element={<AppLayout />}>
-              <Route path="/legacy/rh" element={<HrDashboard />} />
-            </Route>
+              {/* Administration : Connecteurs & Intégrations */}
+              <Route path="/admin/integrations" element={<IntegrationsList />} />
+              <Route path="/admin/integrations/new" element={<IntegrationForm />} />
+              <Route path="/admin/integrations/health" element={<IntegrationHealth />} />
+              <Route path="/admin/integrations/:id" element={<IntegrationForm />} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
+              {/* Vue RH détaillée historique (lecture seule) */}
+              <Route element={<AppLayout />}>
+                <Route path="/legacy/rh" element={<HrDashboard />} />
+              </Route>
+
+              <Route path="*" element={<Navigate to="/dashboard/overview-groupe" replace />} />
+            </Routes>
+          </Suspense>
+        </AppShell>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>,

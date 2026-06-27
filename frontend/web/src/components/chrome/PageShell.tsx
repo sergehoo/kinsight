@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 import { EASE_OUT } from "@/lib/motion";
+import { GlobalDashboardFilters } from "@/components/navigation/GlobalDashboardFilters";
+import { useNavigationStore } from "@/state/navigationStore";
 
 import { AppHeader } from "./AppHeader";
+import { BrandFooter } from "./BrandFooter";
 import { SideRail } from "./SideRail";
 import { FRAME_BG, glass } from "./theme";
 
@@ -20,6 +23,8 @@ interface PageShellProps {
 /** Cadre commun des pages secondaires : même fond/verre que le dashboard hero. */
 export function PageShell({ title, subtitle, status, icon, accent = "#FF8735", children }: PageShellProps) {
   const navigate = useNavigate();
+  const sidebarExpanded = useNavigationStore((state) => state.sidebarExpanded);
+  const mainPadLeft = sidebarExpanded ? "pl-[96px] md:pl-[296px]" : "pl-[96px] md:pl-[120px]";
   return (
     <div className="min-h-screen bg-[#B8B7B4] p-3 text-black sm:p-5 lg:p-6">
       <div className="relative mx-auto min-h-[760px] w-full max-w-[1840px] overflow-hidden rounded-[42px] border border-white/70 bg-[#F4F7F2] shadow-[0_34px_100px_rgba(36,38,38,0.22)] lg:min-h-[900px]">
@@ -28,7 +33,7 @@ export function PageShell({ title, subtitle, status, icon, accent = "#FF8735", c
         <AppHeader />
         <SideRail />
 
-        <main className="relative z-10 px-6 pb-16 pl-[118px] pr-5 sm:pl-[132px] sm:pr-10 lg:pl-[9.5%] lg:pr-[4%]">
+        <main className={`relative z-10 px-6 pb-16 pr-5 transition-[padding] duration-300 ease-out sm:pr-10 lg:pr-[4%] ${mainPadLeft}`}>
           <motion.button
             type="button"
             onClick={() => navigate(-1)}
@@ -70,8 +75,11 @@ export function PageShell({ title, subtitle, status, icon, accent = "#FF8735", c
               </span>
             ) : null}
           </motion.div>
+          <GlobalDashboardFilters />
 
           <div className="mt-9">{children}</div>
+
+          <BrandFooter />
         </main>
       </div>
     </div>

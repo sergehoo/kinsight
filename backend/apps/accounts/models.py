@@ -13,6 +13,7 @@ from k_insight.access import Scope
 
 class Role(models.TextChoices):
     ADMIN_CA = "ADMIN_CA", "Administrateur / Conseil d'administration"
+    ADMIN_INTEGRATION = "ADMIN_INTEGRATION", "Administrateur intégrations"
     DG_GROUP = "DG_GROUP", "Directeur général groupe"
     CODIR = "CODIR", "Membre du CODIR"
     DAF = "DAF", "Directeur administratif & financier"
@@ -28,7 +29,7 @@ _NOMINATIVE_ROLES = {Role.DRH, Role.DAF, Role.DG_GROUP, Role.ADMIN_CA}
 
 
 class User(AbstractUser):
-    role = models.CharField(max_length=16, choices=Role.choices, default=Role.READER)
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.READER)
     is_group_scope = models.BooleanField(
         default=False, help_text="Accès à toutes les filiales du groupe."
     )

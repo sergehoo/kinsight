@@ -3,14 +3,17 @@ import * as React from "react";
 import { useAnimatedValue } from "@/lib/motion";
 
 interface GaugeProps {
-  value: number; // 0..100
+  value: number | null; // 0..100, ou null = donnée indisponible (N/D, gouverné — ADR-0007)
   color: string;
   track?: string;
 }
 
-/** Mini jauge demi-cercle (arc), façon référence. L'aiguille et l'arc balaient de 0 vers la valeur. */
+/** Mini jauge demi-cercle (arc), façon référence. L'aiguille et l'arc balaient de 0 vers la valeur.
+ *  `value === null` → état « indisponible » : piste vide, ni arc coloré ni aiguille ni chiffre
+ *  (on n'affiche jamais un faux « 0 % » quand la donnée n'est pas branchée). */
 export function Gauge({ value, color, track = "#ECEEF0" }: GaugeProps) {
-  const target = Math.max(0, Math.min(100, value));
+  const isNA = value == null;
+  const target = isNA ? 0 : Math.max(0, Math.min(100, value));
   const pct = useAnimatedValue(target, 1.3);
   const gradientId = React.useId().replace(/:/g, "");
   const glowId = `${gradientId}-glow`;
@@ -94,43 +97,47 @@ export function Gauge({ value, color, track = "#ECEEF0" }: GaugeProps) {
         strokeWidth={18}
         strokeLinecap="round"
       />
-      <path
-        d={arcPath}
-        fill="none"
-        stroke={color}
-        strokeWidth={20}
-        strokeLinecap="round"
-        pathLength={100}
-        strokeDasharray={`${pct} 100`}
-        opacity="0.16"
-      />
-      <path
-        d={arcPath}
-        fill="none"
-        stroke={`url(#${gradientId})`}
-        strokeWidth={18}
-        strokeLinecap="round"
-        pathLength={100}
-        strokeDasharray={`${pct} 100`}
-        filter={`url(#${glowId})`}
-      />
-      <g transform={`rotate(${needleRotation} ${centerX} ${centerY})`}>
-        <line x1={centerX} y1={centerY} x2={centerX} y2="48" stroke="#202526" strokeLinecap="round" strokeWidth="3" opacity="0.30" />
-        <circle cx={centerX} cy={centerY} r="8" fill="#fff" stroke="#D6DBD8" strokeWidth="2.4" />
-      </g>
-      {/* Lecture chiffrée alignée sur l'aiguille, sans pastille ni contour. */}
-      <text
-        x={labelX}
-        y={labelY}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize="13"
-        fontWeight="800"
-        fill="#1F2426"
-        style={{ letterSpacing: "-0.3px" }}
-      >
-        {Math.round(pct)}%
-      </text>
+      {!isNA && (
+        <>
+          <path
+            d={arcPath}
+            fill="none"
+            stroke={color}
+            strokeWidth={20}
+            strokeLinecap="round"
+            pathLength={100}
+            strokeDasharray={`${pct} 100`}
+            opacity="0.16"
+          />
+          <path
+            d={arcPath}
+            fill="none"
+            stroke={`url(#${gradientId})`}
+            strokeWidth={18}
+            strokeLinecap="round"
+            pathLength={100}
+            strokeDasharray={`${pct} 100`}
+            filter={`url(#${glowId})`}
+          />
+          <g transform={`rotate(${needleRotation} ${centerX} ${centerY})`}>
+            <line x1={centerX} y1={centerY} x2={centerX} y2="48" stroke="#202526" strokeLinecap="round" strokeWidth="3" opacity="0.30" />
+            <circle cx={centerX} cy={centerY} r="8" fill="#fff" stroke="#D6DBD8" strokeWidth="2.4" />
+          </g>
+          {/* Lecture chiffrée alignée sur l'aiguille, sans pastille ni contour. */}
+          <text
+            x={labelX}
+            y={labelY}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize="13"
+            fontWeight="800"
+            fill="#1F2426"
+            style={{ letterSpacing: "-0.3px" }}
+          >
+            {Math.round(pct)}%
+          </text>
+        </>
+      )}
     </svg>
   );
 }

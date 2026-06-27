@@ -64,16 +64,25 @@ EOSQL
 
 for file in \
   /docker-entrypoint-initdb.d/ddl/00_schemas.sql \
-  /docker-entrypoint-initdb.d/ddl/marts/hr_mart.sql
+  /docker-entrypoint-initdb.d/ddl/marts/hr_mart.sql \
+  /docker-entrypoint-initdb.d/ddl/marts/hr_score.sql \
+  /docker-entrypoint-initdb.d/ddl/marts/domain_score.sql
 do
   if [ -f "$file" ]; then
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" -f "$file"
   fi
 done
 
-if [ "$SEED_DEMO_DATA" = "true" ] && [ -f /docker-entrypoint-initdb.d/ddl/seeds/hr_demo_seed.sql ]; then
-  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" \
-    -f /docker-entrypoint-initdb.d/ddl/seeds/hr_demo_seed.sql
+if [ "$SEED_DEMO_DATA" = "true" ]; then
+  for seed in \
+    /docker-entrypoint-initdb.d/ddl/seeds/hr_demo_seed.sql \
+    /docker-entrypoint-initdb.d/ddl/seeds/hr_score_demo_seed.sql \
+    /docker-entrypoint-initdb.d/ddl/seeds/domain_score_demo_seed.sql
+  do
+    if [ -f "$seed" ]; then
+      psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" -f "$seed"
+    fi
+  done
 fi
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$EDW_DB_NAME" <<-EOSQL

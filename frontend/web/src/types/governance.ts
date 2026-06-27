@@ -80,3 +80,64 @@ export interface CatalogResponse {
   count: number;
   metrics: CatalogMetric[];
 }
+
+export interface HrScoreDimension {
+  key: string;
+  label: string;
+  weight: number;
+  score: number | null;
+}
+export interface HrScoreResponse {
+  available: boolean;
+  global: number | null;
+  dimensions: HrScoreDimension[];
+  by_subsidiary: { code: string; score: number | null }[];
+  trend: { month: string; score: number | null }[];
+  period?: { start: string; end: string };
+  scope?: "GROUP" | string[];
+}
+
+/** Dimension d'un score de gouvernance de domaine (avec métadonnées de source). */
+export interface GovernanceScoreDimension {
+  key: string;
+  label: string;
+  weight: number;
+  score: number | null;
+  mart_source?: string;
+  rationale?: string;
+}
+/** Réponse générique d'un Score de Gouvernance (HR ou domaine métier). */
+export interface GovernanceScoreResponse {
+  domain?: string;
+  label?: string;
+  available: boolean;
+  global: number | null;
+  dimensions: GovernanceScoreDimension[];
+  by_subsidiary: { code: string; score: number | null }[];
+  trend: { month: string; score: number | null }[];
+  period?: { start: string; end: string };
+  scope?: "GROUP" | string[];
+}
+
+/** Indice de Gouvernance Groupe consolidé (agrégation pondérée des domaines). */
+export interface GroupScoreResponse {
+  available: boolean;
+  global: number | null;
+  domains: { domain: string; label: string; weight: number; score: number | null }[];
+  by_subsidiary: { code: string; score: number | null }[];
+  trend: { month: string; score: number | null }[];
+  period?: { start: string; end: string };
+  scope?: "GROUP" | string[];
+}
+
+export interface ModuleDataValue { value: number; unit: string; format: string; }
+export interface ModuleDataSeries { name: string; type: string; unit?: string; points: { label: string; value: number }[]; }
+export interface ModuleDataResponse {
+  key: string;
+  available: boolean;
+  source: string | null;
+  period?: { start: string; end: string };
+  scope?: "GROUP" | string[];
+  values: Record<string, ModuleDataValue>;
+  series: ModuleDataSeries[];
+}

@@ -8,8 +8,12 @@ import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
 import { AnimatedNumber } from "@/components/overview/AnimatedNumber";
 import { Gauge } from "@/components/overview/Gauge";
+import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
 import { ArrowUpRight, CheckCircle, TriDown, TriUp } from "@/components/overview/icons";
 import { EASE_OUT } from "@/lib/motion";
+import { useModuleData } from "@/api/governance";
+import { formatInt, formatXof } from "@/lib/format";
+import { useFilters } from "@/store/filters";
 import {
   getModule,
   type ModuleChart,
@@ -223,8 +227,16 @@ function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
   };
 }
 
-function KpiCard({ kpi, index }: { kpi: ModuleKpi; index: number }) {
-  const unavailable = isUnavailable(kpi.value);
+function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values?: Record<string, { value: number; unit: string; format: string }> }) {
+  const real = values?.[kpi.label];
+  const realValue = real
+    ? real.format === "currency"
+      ? formatXof(real.value)
+      : real.format === "int"
+        ? formatInt(real.value)
+        : String(real.value)
+    : null;
+  const unavailable = !realValue && isUnavailable(kpi.value);
   return (
     <motion.article
       className="relative h-[168px] overflow-hidden rounded-[30px] p-5"
@@ -238,12 +250,12 @@ function KpiCard({ kpi, index }: { kpi: ModuleKpi; index: number }) {
       <h3 className="max-w-[190px] text-[15px] font-semibold leading-tight text-[#1A1C1C]">{kpi.label}</h3>
       <span
         className="absolute left-5 top-[64px] inline-flex items-center gap-1.5 text-[12px] font-bold"
-        style={{ color: unavailable ? "#C43252" : kpi.up ? "#202526" : "#C43252" }}
+        style={{ color: realValue ? "#1F9E75" : unavailable ? "#C43252" : kpi.up ? "#202526" : "#C43252" }}
       >
-        {kpi.delta}
-        {unavailable ? null : kpi.up ? <TriUp width={10} height={10} /> : <TriDown width={10} height={10} />}
+        {realValue ? "Donnée EDW" : kpi.delta}
+        {realValue || unavailable ? null : kpi.up ? <TriUp width={10} height={10} /> : <TriDown width={10} height={10} />}
       </span>
-      <AnimatedNumber value={kpi.value} className="absolute bottom-8 left-5 text-[32px] font-semibold leading-none text-black" />
+      <AnimatedNumber value={realValue ?? kpi.value} className="absolute bottom-8 left-5 text-[32px] font-semibold leading-none text-black" />
       {kpi.source ? (
         <span className="absolute bottom-3 left-5 max-w-[165px] truncate text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A9291]">
           {kpi.source}
@@ -446,7 +458,7 @@ function AiGuardrail({ module }: { module: ModuleDef }) {
   );
 }
 
-function ModuleBody({ module }: { module: ModuleDef }) {
+function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<string, { value: number; unit: string; format: string }> }) {
   const hasKpis = Boolean(module.kpis?.length);
   const rowsOnly = !hasKpis && module.rows?.length && module.kind !== "ai";
 
@@ -458,12 +470,13 @@ function ModuleBody({ module }: { module: ModuleDef }) {
     <div className="space-y-8">
       <DataContract module={module} />
       <HrGovernanceControls module={module} />
+      {module.key === "hr-executive" ? <HumanCapitalScore /> : null}
       <AiGuardrail module={module} />
 
       {hasKpis ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
           {(module.kpis ?? []).map((kpi, index) => (
-            <KpiCard key={`${kpi.label}-${index}`} kpi={kpi} index={index} />
+            <KpiCard key={`${kpi.label}-${index}`} kpi={kpi} index={index} values={values} />
           ))}
         </div>
       ) : null}
@@ -491,7 +504,10 @@ interface ModulePageProps {
 
 export function ModulePage({ moduleKey }: ModulePageProps = {}) {
   const { key } = useParams();
-  const module = getModule(moduleKey ?? key);
+  const resolvedKey = moduleKey ?? key;
+  const { year, quarter, subsidiary } = useFilters();
+  const { data: moduleData } = useModuleData(resolvedKey, year, quarter, subsidiary);
+  const module = getModule(resolvedKey);
   if (!module) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -503,7 +519,7 @@ export function ModulePage({ moduleKey }: ModulePageProps = {}) {
       icon={module.icon}
       accent={module.accent}
     >
-      <ModuleBody module={module} />
+      <ModuleBody module={module} values={moduleData?.values} />
     </PageShell>
   );
 }

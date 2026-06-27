@@ -20,15 +20,37 @@ class MartGateway(ABC):
     def fetch_hr_kpi(self) -> list[HrKpiRow]:
         """Lit les lignes de `mart.hr_kpi` (maille filiale × département × mois)."""
 
+    def fetch_hr_score(self) -> list[tuple]:
+        """Lignes de `mart.hr_score` : (month_start, subsidiary_code, dimension_key, score). Vide par défaut."""
+        return []
+
+    def fetch_domain_score(self, domain: str) -> list[tuple]:
+        """Lignes de `mart.domain_score` pour un domaine : (month_start, subsidiary_code, dimension_key, score). Vide par défaut."""
+        return []
+
 
 class InMemoryMartGateway(MartGateway):
     """Passerelle de test : sert des lignes fournies en mémoire."""
 
-    def __init__(self, rows: Sequence[HrKpiRow]) -> None:
+    def __init__(
+        self,
+        rows: Sequence[HrKpiRow],
+        score_rows: Sequence[tuple] = (),
+        domain_score_rows: Sequence[tuple] = (),
+    ) -> None:
         self._rows = list(rows)
+        self._score_rows = list(score_rows)
+        # (domain_key, month_start, subsidiary_code, dimension_key, score)
+        self._domain_score_rows = list(domain_score_rows)
 
     def fetch_hr_kpi(self) -> list[HrKpiRow]:
         return list(self._rows)
+
+    def fetch_hr_score(self) -> list[tuple]:
+        return list(self._score_rows)
+
+    def fetch_domain_score(self, domain: str) -> list[tuple]:
+        return [(m, s, d, sc) for (dom, m, s, d, sc) in self._domain_score_rows if dom == domain]
 
 
 class PostgresMartGateway(MartGateway):
@@ -55,6 +77,30 @@ class PostgresMartGateway(MartGateway):
                         exits=int(exits or 0),
                     )
                 )
+        return rows
+
+    def fetch_hr_score(self) -> list[tuple]:
+        import psycopg
+
+        rows: list[tuple] = []
+        with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
+            cur.execute("SELECT month_start, subsidiary_code, dimension_key, score FROM mart.hr_score")
+            for month_start, sub, dim, score in cur.fetchall():
+                rows.append((month_start, sub, dim, float(score)))
+        return rows
+
+    def fetch_domain_score(self, domain: str) -> list[tuple]:
+        import psycopg
+
+        rows: list[tuple] = []
+        sql = (
+            "SELECT month_start, subsidiary_code, dimension_key, score "
+            "FROM mart.domain_score WHERE domain_key = %s"
+        )
+        with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
+            cur.execute(sql, (domain,))
+            for month_start, sub, dim, score in cur.fetchall():
+                rows.append((month_start, sub, dim, float(score)))
         return rows
 
 
