@@ -197,20 +197,10 @@ services:
       interval: 15s
       timeout: 5s
       retries: 8
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=dokploy-network"
-      # HTTP -> HTTPS
-      - "traefik.http.routers.kinsight-web.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.kinsight-web.entrypoints=web"
-      - "traefik.http.routers.kinsight-web.middlewares=kinsight-https-redirect"
-      - "traefik.http.middlewares.kinsight-https-redirect.redirectscheme.scheme=https"
-      # HTTPS (TLS Let's Encrypt via le certresolver de Dokploy)
-      - "traefik.http.routers.kinsight-secure.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.kinsight-secure.entrypoints=websecure"
-      - "traefik.http.routers.kinsight-secure.tls=true"
-      - "traefik.http.routers.kinsight-secure.tls.certresolver=${ACME_RESOLVER:-letsencrypt}"
-      - "traefik.http.services.kinsight-frontend.loadbalancer.server.port=8080"
+    # ⚠️ Routage géré ENTIÈREMENT par l'UI « Domains » de Dokploy (Host + TLS + port cible).
+    # NE PAS ajouter de labels `traefik.*` ici : ils créaient un 2ᵉ jeu de services sur le même
+    # conteneur → erreur Traefik « cannot be linked automatically with multiple Services » → 502.
+    # Dans l'UI Dokploy : domaine insight.kaydan.tech, Path /, Port = 8080 (port nginx), HTTPS.
 
   # Transformations dbt (opt-in) : exécuter via Dokploy "Run" ou
   # `docker compose -f docker-compose.dokploy.yml --profile dbt run --rm dbt build`.
