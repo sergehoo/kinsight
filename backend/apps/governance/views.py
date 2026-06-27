@@ -34,6 +34,15 @@ class CatalogView(APIView):
             }
             for m in metrics
         ]
+        scope = request.user.scope()
+        AccessLog.record(
+            user=request.user,
+            action="view_catalog",
+            metric_key=f"catalog:{domain}" if domain else "catalog",
+            scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
+            payload={"domain": domain, "count": len(data)},
+            ip=request.META.get("REMOTE_ADDR"),
+        )
         return Response({"count": len(data), "metrics": data})
 
 

@@ -130,6 +130,42 @@ export interface GroupScoreResponse {
   scope?: "GROUP" | string[];
 }
 
+/** Centre d'alertes (seuils sur scores réels, gouverné). */
+export interface GovernanceAlert {
+  severity: "info" | "warning" | "critical";
+  label: string;
+  scope: string;
+  source: string;
+  kind: string;
+  value: number;
+  threshold: number;
+}
+export interface AlertsResponse {
+  available: boolean;
+  count: number;
+  counts: { info: number; warning: number; critical: number };
+  alerts: GovernanceAlert[];
+  period?: { start: string; end: string };
+  scope?: "GROUP" | string[];
+}
+
+/** Réponse de l'IA ancrée (sourcée sur le catalogue + mart, jamais inventée). */
+export interface AiAnswer {
+  grounded: boolean;
+  answer: string;
+  value: number | null;
+  source: string | null;
+  metric: {
+    key: string;
+    label: string;
+    domain: string;
+    unit: string;
+    direction: string;
+    mart: string;
+    description: string;
+  } | null;
+}
+
 export interface ModuleDataValue { value: number; unit: string; format: string; }
 export interface ModuleDataSeries { name: string; type: string; unit?: string; points: { label: string; value: number }[]; }
 export interface ModuleDataResponse {

@@ -96,6 +96,17 @@ class GovernanceApiTest(TestCase):
         self.assertEqual(resp.data["metrics"]["hr.entries"]["value"], 1)
         self.assertEqual(resp.data["metrics"]["hr.exits"]["value"], 2)
 
+    def test_hr_kpi_periode_vide_renvoie_zero(self):
+        # Choix de design : les KPI BRUTS (comptages/sommes) renvoient 0 pour une période
+        # sans données — 0 entrées EST la réponse réelle. La gouvernance N/D s'applique au
+        # niveau des SCORES (cf. HrScoreView), pas aux comptages bruts.
+        self.client.force_authenticate(self.dg)
+        resp = self.client.get("/api/v1/governance/hr/kpi/?year=2025&quarter=4")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data["metrics"]["hr.payroll_mass"]["value"], 0)
+        self.assertEqual(resp.data["metrics"]["hr.entries"]["value"], 0)
+        self.assertEqual(resp.data["metrics"]["hr.exits"]["value"], 0)
+
     def test_overview_branche_les_donnees_rh_reelles(self):
         self.client.force_authenticate(self.dg)
         resp = self.client.get("/api/v1/governance/overview/?year=2026&quarter=1")
@@ -415,10 +426,10 @@ class GroupScoreApiTest(TestCase):
         self.assertEqual(resp["Content-Type"], "application/pdf")
         self.assertEqual(resp.content[:4], b"%PDF")
 
-    def test_export_format_inconnu_404(self):
+    def test_export_format_inconnu_400(self):
         self.client.force_authenticate(self.dg)
         resp = self.client.get("/api/v1/governance/export/groupe.docx?year=2026&quarter=1")
-        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.status_code, 400)
 
     def test_export_journalise(self):
         self.client.force_authenticate(self.dg)
@@ -475,3 +486,39 @@ class AlertsApiTest(TestCase):
         self.client.get("/api/v1/governance/alerts/?year=2026&quarter=1")
         log = AccessLog.objects.latest("occurred_at")
         self.assertEqual(log.action, "query_alerts")
+
+
+class AiQueryApiTest(TestCase):
+    """IA ancrée : réponse sourcée sur le catalogue, refus hors catalogue, gouverné N/D."""
+
+    def setUp(self):
+        self.dg = User.objects.create_user("dg", password="x", role="DG_GROUP", is_group_scope=True)
+        self.client = APIClient()
+
+    def test_question_ancree_sur_le_catalogue(self):
+        self.client.force_authenticate(self.dg)
+        resp = self.client.post("/api/v1/governance/ai/query/", {"question": "quel est le DSO finance ?"}, format="json")
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.data["grounded"])
+        self.assertEqual(resp.data["metric"]["key"], "finance.dso")
+        self.assertIsNone(resp.data["value"])  # source non branchée → N/D, jamais inventé
+        self.assertIn("N/D", resp.data["answer"])
+
+    def test_refus_hors_catalogue(self):
+        self.client.force_authenticate(self.dg)
+        resp = self.client.post("/api/v1/governance/ai/query/", {"question": "météo à Abidjan demain ?"}, format="json")
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.data["grounded"])
+        self.assertIsNone(resp.data["metric"])
+
+    def test_question_vide_400(self):
+        self.client.force_authenticate(self.dg)
+        resp = self.client.post("/api/v1/governance/ai/query/", {"question": "  "}, format="json")
+        self.assertEqual(resp.status_code, 400)
+
+    def test_journalise(self):
+        self.client.force_authenticate(self.dg)
+        self.client.post("/api/v1/governance/ai/query/", {"question": "finance.dso"}, format="json")
+        log = AccessLog.objects.latest("occurred_at")
+        self.assertEqual(log.action, "query_ai")
+        self.assertEqual(log.metric_key, "finance.dso")

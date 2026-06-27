@@ -20,6 +20,8 @@ from rest_framework.views import APIView
 from k_insight.access import filter_by_scope
 from k_insight.kpi.alerts import SCORE_RULES, SEVERITY_ORDER, TREND_DROP_RULES, most_severe
 from k_insight.kpi.domain_scores import DOMAIN_SCORES, domain_score
+from k_insight.semantic.grounding import answer as ground_answer
+from k_insight.semantic.registry import CATALOG
 from k_insight.kpi.group_score import GROUP_DOMAINS, group_governance_index
 from k_insight.kpi.hr_score import HC_DIMENSIONS, human_capital_score
 from k_insight.kpi.hr_mart import (
@@ -240,6 +242,7 @@ class HrScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_hr_score",
+            ip=request.META.get("REMOTE_ADDR"),
             metric_key="hr.human_capital_score",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter},
@@ -305,6 +308,7 @@ class DomainScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_domain_score",
+            ip=request.META.get("REMOTE_ADDR"),
             metric_key=f"{domain}.governance_score",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter, "domain": domain},
@@ -347,11 +351,41 @@ class GroupScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_group_score",
+            ip=request.META.get("REMOTE_ADDR"),
             metric_key="group.governance_index",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter},
         )
         return Response(report)
+
+
+class AiQueryView(APIView):
+    """IA de gouvernance ANCRÉE : répond uniquement depuis le catalogue + le mart.
+
+    POST /api/v1/governance/ai/query/  body {"question": "..."}
+    Garantie (ADR-0007) : aucune métrique inventée (refus si hors catalogue), aucune valeur
+    inventée (N/D tant que la source n'est pas branchée). Journalisé (audit).
+    """
+
+    def post(self, request):
+        question = (request.data.get("question") or "").strip()
+        if not question:
+            return Response({"detail": "'question' est requise."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # value_lookup gouverné : aucune métrique du catalogue n'est encore liée au mart
+        # (les bindings arrivent domaine par domaine) → valeur None = N/D, jamais inventée.
+        result = ground_answer(CATALOG, question, lambda _key: None)
+
+        scope = request.user.scope()
+        AccessLog.record(
+            user=request.user,
+            action="query_ai",
+            ip=request.META.get("REMOTE_ADDR"),
+            metric_key=(result["metric"]["key"] if result["metric"] else ""),
+            scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
+            payload={"grounded": result["grounded"], "question": question[:200]},
+        )
+        return Response(result)
 
 
 class AlertsView(APIView):
@@ -406,6 +440,7 @@ class AlertsView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_alerts",
+            ip=request.META.get("REMOTE_ADDR"),
             metric_key="governance.alerts",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter, "count": len(alerts)},
@@ -435,7 +470,7 @@ class ExportGroupScoreView(APIView):
 
     def get(self, request, ext: str):
         if ext not in self._RENDERERS:
-            return Response({"detail": "Format non supporté (xlsx, pdf)."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Format non supporté (xlsx, pdf)."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             year = int(request.query_params.get("year", "2026"))
             quarter = int(request.query_params.get("quarter", "1"))
@@ -452,6 +487,7 @@ class ExportGroupScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="export_group_score",
+            ip=request.META.get("REMOTE_ADDR"),
             metric_key="group.governance_index",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter, "format": ext},

@@ -1,8 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { apiGet, USE_MOCK } from "@/lib/api";
+import { apiDownload, apiGet, apiPost, USE_MOCK } from "@/lib/api";
 import { mockCatalog, mockGovernanceOverview, mockHrKpi } from "@/lib/mock";
-import type { CatalogResponse, GovernanceOverviewResponse, GovernanceScoreResponse, GroupScoreResponse, HrKpiSummary , HrScoreResponse, ModuleDataResponse } from "@/types/governance";
+import type { AiAnswer, AlertsResponse, CatalogResponse, GovernanceOverviewResponse, GovernanceScoreResponse, GroupScoreResponse, HrKpiSummary , HrScoreResponse, ModuleDataResponse } from "@/types/governance";
+
+/** Centre d'alertes (seuils sur scores réels). Gouverné : aucune donnée → aucune alerte. */
+export function useAlerts(year: number, quarter: number, subsidiary = "all") {
+  const sub = subsidiary && subsidiary !== "all" ? `&subsidiary=${subsidiary}` : "";
+  return useQuery<AlertsResponse>({
+    queryKey: ["alerts", year, quarter, subsidiary],
+    enabled: !USE_MOCK,
+    queryFn: () => apiGet<AlertsResponse>(`/governance/alerts/?year=${year}&quarter=${quarter}${sub}`),
+  });
+}
+
+/** IA ancrée : pose une question, renvoie une réponse sourcée (ou un refus). Jamais inventé. */
+export function useAiQuery() {
+  return useMutation<AiAnswer, Error, string>({
+    mutationFn: (question: string) => apiPost<AiAnswer>("/governance/ai/query/", { question }),
+  });
+}
+
+/** Télécharge l'export du tableau de bord Gouvernance Groupe (xlsx | pdf). */
+export function downloadGroupExport(ext: "xlsx" | "pdf", year: number, quarter: number, subsidiary = "all") {
+  const sub = subsidiary && subsidiary !== "all" ? `&subsidiary=${subsidiary}` : "";
+  return apiDownload(
+    `/governance/export/groupe.${ext}?year=${year}&quarter=${quarter}${sub}`,
+    `k-insight-gouvernance-${year}-T${quarter}.${ext}`,
+  );
+}
 
 /** Domaines dotés d'un Score de Gouvernance (capital-humain via /hr/score/, les autres via /score/<domaine>/). */
 export const SCORE_DOMAINS = [

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.governance",
     "apps.audit",
     "apps.integrations",
+    "apps.ai_copilot",
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,26 @@ EDW_DSN = {
     "user": os.environ.get("EDW_DB_USER", "k_insight_app"),
     "password": os.environ.get("EDW_DB_PASSWORD", ""),
 }
+
+# --- Celery (orchestration : syncs, alertes, automatisations Copilot) ---
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", os.environ.get("REDIS_URL", "redis://localhost:6379/1"))
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "")
+CELERY_BEAT_SCHEDULE = {
+    "ai-copilot-run-due-automations": {
+        "task": "ai_copilot.run_due_automations",
+        "schedule": float(os.environ.get("AI_AUTOMATIONS_TICK_SECONDS", "300")),  # vérifie les automatisations dues
+    },
+}
+
+# --- K-Insight AI Copilot : moteurs LLM (multi-provider, fallback) ---
+# DeepSeek = principal, Claude = fallback. Sans clé, le router bascule sur le repli
+# déterministe ancré (catalogue/mart) — aucune donnée inventée.
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
+DEEPSEEK_BASE_URL = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+ANTHROPIC_BASE_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+AI_MODEL_SYNTHESIS = os.environ.get("AI_MODEL_SYNTHESIS", "claude-opus-4-8")
 
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -33,3 +33,6 @@ frontend/**/.vite/
 # Divers
 .DS_Store
 *.log
+.env.odoo
+*.env.odoo
+infra/airbyte/odoo-hr/.env.odoo

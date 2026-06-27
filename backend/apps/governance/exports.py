@@ -14,6 +14,11 @@ def _fmt(v: Optional[float]) -> str:
     return "N/D" if v is None else f"{v:.1f}"
 
 
+def _num(v: Optional[float]):
+    """Cellule XLSX : vrai nombre si disponible (triable/aligné à droite), sinon « N/D »."""
+    return "N/D" if v is None else round(v, 1)
+
+
 def _scope_label(report: dict) -> str:
     scope = report.get("scope")
     return "Groupe (toutes filiales)" if scope == "GROUP" else ", ".join(scope or [])
@@ -48,7 +53,7 @@ def scores_workbook(report: dict) -> bytes:
         row += 1
         ws.cell(row, 1, d["label"])
         ws.cell(row, 2, d["weight"])
-        ws.cell(row, 3, _fmt(d["score"]))
+        ws.cell(row, 3, _num(d["score"]))
 
     row += 2
     ws.cell(row, 1, "Par filiale").font = Font(bold=True)
@@ -60,7 +65,7 @@ def scores_workbook(report: dict) -> bytes:
     for s in report.get("by_subsidiary", []):
         row += 1
         ws.cell(row, 1, s["code"])
-        ws.cell(row, 2, _fmt(s["score"]))
+        ws.cell(row, 2, _num(s["score"]))
 
     row += 2
     ws.cell(row, 1, "Évolution (12 mois)").font = Font(bold=True)
@@ -70,7 +75,7 @@ def scores_workbook(report: dict) -> bytes:
     for s in report.get("trend", []):
         row += 1
         ws.cell(row, 1, s["month"])
-        ws.cell(row, 2, _fmt(s["score"]))
+        ws.cell(row, 2, _num(s["score"]))
 
     ws.column_dimensions["A"].width = 34
     ws.column_dimensions["B"].width = 14

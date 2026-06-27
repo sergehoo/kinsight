@@ -38,6 +38,10 @@ x-backend-env: &backend-env
   MINIO_BUCKET: ${MINIO_BUCKET:-k-insight-exports}
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
   AI_MODEL_SYNTHESIS: ${AI_MODEL_SYNTHESIS:-claude-opus-4-8}
+  # Copilot — DeepSeek = moteur principal, Claude = fallback (ADR-0010). Sans clé : repli ancré.
+  DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+  DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+  DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
 
 networks:
   kinsight-network:

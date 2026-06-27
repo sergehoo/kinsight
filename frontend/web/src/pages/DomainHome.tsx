@@ -2,6 +2,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
+import { downloadGroupExport } from "@/api/governance";
 import { AppHeader } from "@/components/chrome/AppHeader";
 import { BrandFooter } from "@/components/chrome/BrandFooter";
 import { SideRail } from "@/components/chrome/SideRail";
@@ -68,15 +69,27 @@ function PeriodMenu() {
 }
 
 function ActionsMenu() {
+  const { year, quarter, subsidiary } = useFilters();
+  const [busy, setBusy] = React.useState(false);
   const fullscreen = () => {
     if (typeof document === "undefined") return;
     if (document.fullscreenElement) document.exitFullscreen?.();
     else document.documentElement.requestFullscreen?.();
   };
+  const exportAs = async (ext: "xlsx" | "pdf") => {
+    setBusy(true);
+    try {
+      await downloadGroupExport(ext, year, quarter, subsidiary);
+    } catch {
+      /* l'échec réseau reste silencieux ici ; l'API journalise l'accès */
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <Menu
       align="right"
-      width={210}
+      width={230}
       trigger={({ open, toggle }) => (
         <button type="button" aria-label="Plus d'options" aria-haspopup="menu" aria-expanded={open} onClick={toggle} className="grid h-12 w-12 place-items-center rounded-full text-[#242424]" style={glass}>
           <Dots width={20} height={20} />
@@ -86,8 +99,9 @@ function ActionsMenu() {
       {(close) => (
         <>
           <MenuItem onClick={() => { fullscreen(); close(); }}>Plein écran</MenuItem>
-          <MenuItem onClick={close}>Exporter (bientôt)</MenuItem>
-          <MenuItem onClick={close}>Programmer un rapport</MenuItem>
+          <MenuItem onClick={() => { exportAs("xlsx"); close(); }}>{busy ? "Export…" : "Exporter (Excel)"}</MenuItem>
+          <MenuItem onClick={() => { exportAs("pdf"); close(); }}>Exporter (PDF)</MenuItem>
+          <MenuItem onClick={close}>Programmer un rapport (bientôt)</MenuItem>
         </>
       )}
     </Menu>

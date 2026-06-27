@@ -8,6 +8,8 @@ import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
 import { AnimatedNumber } from "@/components/overview/AnimatedNumber";
 import { Gauge } from "@/components/overview/Gauge";
+import { AiQueryBox } from "@/components/overview/AiQueryBox";
+import { AlertsPanel } from "@/components/overview/AlertsPanel";
 import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
 import { ArrowUpRight, CheckCircle, TriDown, TriUp } from "@/components/overview/icons";
 import { EASE_OUT } from "@/lib/motion";
@@ -460,7 +462,9 @@ function AiGuardrail({ module }: { module: ModuleDef }) {
 
 function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<string, { value: number; unit: string; format: string }> }) {
   const hasKpis = Boolean(module.kpis?.length);
-  const rowsOnly = !hasKpis && module.rows?.length && module.kind !== "ai";
+  const isAlerts = module.key === "alerts" || module.key === "hr-alerts";
+  const isAi = module.kind === "ai";
+  const rowsOnly = !hasKpis && module.rows?.length && !isAi && !isAlerts;
 
   if (rowsOnly) {
     return <RowList rows={module.rows ?? []} showArrow={module.kind === "notifications" || module.kind === "help"} />;
@@ -471,7 +475,9 @@ function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<str
       <DataContract module={module} />
       <HrGovernanceControls module={module} />
       {module.key === "hr-executive" ? <HumanCapitalScore /> : null}
+      {isAlerts ? <AlertsPanel /> : null}
       <AiGuardrail module={module} />
+      {isAi ? <AiQueryBox /> : null}
 
       {hasKpis ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">

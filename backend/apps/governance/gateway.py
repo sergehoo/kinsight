@@ -86,6 +86,8 @@ class PostgresMartGateway(MartGateway):
         with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
             cur.execute("SELECT month_start, subsidiary_code, dimension_key, score FROM mart.hr_score")
             for month_start, sub, dim, score in cur.fetchall():
+                if score is None:  # gouverné : pas de valeur → ligne ignorée (jamais 0 inventé)
+                    continue
                 rows.append((month_start, sub, dim, float(score)))
         return rows
 
@@ -100,6 +102,8 @@ class PostgresMartGateway(MartGateway):
         with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
             cur.execute(sql, (domain,))
             for month_start, sub, dim, score in cur.fetchall():
+                if score is None:  # gouverné : pas de valeur → ligne ignorée (jamais 0 inventé)
+                    continue
                 rows.append((month_start, sub, dim, float(score)))
         return rows
 

@@ -22,4 +22,5 @@ urlpatterns = [
     # Modules
     path("api/v1/governance/", include("apps.governance.urls")),
     path("api/v1/integrations/", include("apps.integrations.urls")),
+    path("api/v1/ai/", include("apps.ai_copilot.urls")),
 ]
