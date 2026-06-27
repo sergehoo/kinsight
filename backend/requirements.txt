@@ -6,3 +6,6 @@ djangorestframework-simplejwt>=5.3,<5.4
 gunicorn>=23.0,<24.0
 psycopg[binary]>=3.2,<3.3
 whitenoise>=6.8,<6.9
+# Export des rapports de gouvernance (apps.governance.exports) : XLSX + PDF.
+openpyxl>=3.1,<3.2
+reportlab>=4.2,<4.3
