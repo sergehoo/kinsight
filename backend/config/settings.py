@@ -121,6 +121,12 @@ CELERY_BEAT_SCHEDULE = {
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 DEEPSEEK_BASE_URL = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")
+
+# --- Kaydan Shield (lecture RH) ---
+# Repli d'environnement : la configuration primaire reste le connecteur de la
+# DataSource 'kaydan-shield' (secrets chiffrés en base, jamais en clair ici).
+SHIELD_BASE_URL = os.environ.get("SHIELD_BASE_URL", "")
+SHIELD_API_TOKEN = os.environ.get("SHIELD_API_TOKEN", "")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 ANTHROPIC_BASE_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
 AI_MODEL_SYNTHESIS = os.environ.get("AI_MODEL_SYNTHESIS", "claude-opus-4-8")

@@ -25,6 +25,8 @@ class SourceType(models.TextChoices):
     EXCEL = "excel", "Excel"
     GSHEETS = "gsheets", "Google Sheets"
     AIRBYTE = "airbyte", "Connecteur Airbyte"
+    KAYDAN_SHIELD = "kaydan_shield", "Kaydan Shield (contrôle d'accès / RH)"
+    ODOO_HR = "odoo_hr", "Odoo RH"
 
 
 class TargetModule(models.TextChoices):
@@ -238,6 +240,52 @@ class SyncError(TimestampedUUID):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class Person(TimestampedUUID):
+    """Personne réelle (référentiel identité transverse).
+
+    Squelette volontairement minimal : on ne réconcilie pas encore les IDs des
+    différentes sources (Shield, Odoo à venir). Une `Person` agrège une ou plusieurs
+    `ExternalIdentity`. On ne couple JAMAIS en dur avec de futurs IDs Odoo.
+    """
+
+    class Kind(models.TextChoices):
+        EMPLOYEE = "employee", "Employé"
+        WORKER = "worker", "Ouvrier"
+        OTHER = "other", "Autre"
+
+    display_name = models.CharField(max_length=200, blank=True)
+    kind = models.CharField(max_length=12, choices=Kind.choices, default=Kind.OTHER)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["display_name"]
+        verbose_name = "Personne"
+
+    def __str__(self) -> str:
+        return self.display_name or f"Person {self.pk}"
+
+
+class ExternalIdentity(TimestampedUUID):
+    """Lien 1 personne ↔ 1 identifiant dans une source externe.
+
+    `source` = code de la plateforme (ex. 'kaydan_shield', 'odoo_hr').
+    `external_id` = identifiant natif dans cette source. Unicité (source, external_id).
+    """
+
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="identities")
+    source = models.CharField(max_length=32, help_text="Code source, ex. 'kaydan_shield'.")
+    external_id = models.CharField(max_length=120)
+    payload = models.JSONField(default=dict, blank=True, help_text="Snapshot brut non normalisé (audit).")
+
+    class Meta:
+        ordering = ["source", "external_id"]
+        constraints = [models.UniqueConstraint(fields=["source", "external_id"], name="uniq_source_external_id")]
+        verbose_name = "Identité externe"
+
+    def __str__(self) -> str:
+        return f"{self.source}:{self.external_id}"
 
 
 class WebhookEvent(TimestampedUUID):

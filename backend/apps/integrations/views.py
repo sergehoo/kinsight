@@ -34,6 +34,20 @@ from .serializers import (
     WebhookEventSerializer,
 )
 from .services import run_sync, run_test
+from .shield import fetch_hr_kpis
+
+
+class ShieldHrKpiView(APIView):
+    """KPIs RH normalisés depuis Kaydan Shield (backend → normalisation → API).
+
+    React consomme UNIQUEMENT cet endpoint, jamais Shield en direct. Réponse gouvernée :
+    status = connected | disconnected | error, chaque KPI portant son propre statut.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(fetch_hr_kpis())
 
 
 def _audit(request, action_name: str, source: DataSource | None = None, payload=None):

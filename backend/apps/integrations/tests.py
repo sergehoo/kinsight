@@ -1,10 +1,14 @@
 """Tests du control-plane d'intégration (CRUD, chiffrement, test/sync, permissions, webhook)."""
 
+import urllib.error
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 
 from .encryption import decrypt, encrypt, mask
-from .models import ConnectorCredential, DataSource, SyncJob, SyncLog, WebhookEvent
+from . import odoo, shield
+from .models import ConnectorCredential, DataConnector, DataSource, SyncJob, SyncLog, WebhookEvent
 
 User = get_user_model()
 BASE = "/api/v1/integrations"
@@ -111,3 +115,129 @@ class IntegrationApiTest(APITestCase):
         r = self.client.post(f"{BASE}/webhook/k-shield/", {"event": "ping"}, format="json")
         self.assertEqual(r.status_code, 202, r.content)
         self.assertTrue(WebhookEvent.objects.filter(source=source).exists())
+
+
+class ShieldHrKpiTest(APITestCase):
+    """KPIs RH Shield : gouvernance (aucune donnée inventée) + accès authentifié."""
+
+    URL = f"{BASE}/shield/hr-kpi/"
+    KEYS = {"effectif_total", "employes", "ouvriers", "presents", "absents", "retards", "taux_presence", "sites"}
+
+    def setUp(self):
+        self.user = User.objects.create_user(username="rh", password="x", email="rh@k.co")
+
+    def test_requires_auth(self):
+        self.assertEqual(self.client.get(self.URL).status_code, 401)
+
+    def test_disconnected_when_no_source(self):
+        self.client.force_authenticate(self.user)
+        data = self.client.get(self.URL).json()
+        self.assertEqual(data["status"], "disconnected")
+        keys = {k["key"] for k in data["kpis"]}
+        self.assertEqual(keys, self.KEYS)
+        # Aucune valeur fabriquée tant que non connecté.
+        self.assertTrue(all(k["value"] is None and k["status"] == "disconnected" for k in data["kpis"]))
+
+    def test_disconnected_when_source_not_connected(self):
+        DataSource.objects.create(name="Kaydan Shield", slug="kaydan-shield", source_type="kaydan_shield")
+        self.client.force_authenticate(self.user)
+        data = self.client.get(self.URL).json()
+        self.assertEqual(data["status"], "disconnected")
+        self.assertTrue(all(k["value"] is None for k in data["kpis"]))
+
+
+class ShieldConnectorUnitTest(APITestCase):
+    """Connecteur Shield : sélection du secret, normalisation, dégradation par KPI."""
+
+    def _source(self, status="connected"):
+        source = DataSource.objects.create(name="Kaydan Shield", slug="kaydan-shield", source_type="kaydan_shield", status=status)
+        connector = DataConnector.objects.create(source=source, base_url="https://api.kaydanshield.com", auth_method="bearer")
+        return source, connector
+
+    def test_secret_selection_is_deterministic(self):
+        """Un client_id créé en premier ne doit jamais masquer le vrai token API."""
+        _, connector = self._source()
+        first = ConnectorCredential(connector=connector, kind="client_id")
+        first.set_secret("pas-le-bon")
+        first.save()
+        token = ConnectorCredential(connector=connector, kind="api_token")
+        token.set_secret("le-bon-token")
+        token.save()
+        self.assertEqual(shield._pick_secret(connector), "le-bon-token")
+
+    def test_empty_credential_is_skipped(self):
+        _, connector = self._source()
+        ConnectorCredential.objects.create(connector=connector, kind="api_token")  # secret vide
+        self.assertEqual(shield._pick_secret(connector), "")
+
+    def _payloads(self):
+        return {
+            shield.EP_EMPLOYEES: {"count": 120, "results": []},
+            shield.EP_WORKERS: {"count": 80, "results": []},
+            shield.EP_SITES: {"count": 6, "results": []},
+            shield.EP_ATTENDANCE_TODAY: {"date": "2026-09-05", "present_count": 150, "absent_count": 50, "late_count": 7, "total_workers": 200},
+        }
+
+    def test_connected_normalises_real_shapes(self):
+        self._source()
+        payloads = self._payloads()
+        with patch.object(shield, "_get_json", side_effect=lambda base, path, headers, params=None: payloads[path]):
+            data = shield.fetch_hr_kpis()
+        self.assertEqual(data["status"], "connected")
+        kpis = {k["key"]: k for k in data["kpis"]}
+        self.assertEqual(kpis["employes"]["value"], 120)
+        self.assertEqual(kpis["ouvriers"]["value"], 80)
+        self.assertEqual(kpis["effectif_total"]["value"], 200)
+        self.assertEqual(kpis["presents"]["value"], 150)
+        self.assertEqual(kpis["absents"]["value"], 50)
+        self.assertEqual(kpis["retards"]["value"], 7)
+        self.assertEqual(kpis["taux_presence"]["value"], 75.0)
+        self.assertEqual(kpis["sites"]["value"], 6)
+        self.assertTrue(all(k["status"] == "connected" for k in data["kpis"]))
+
+    def test_partial_failure_never_fabricates(self):
+        """Si l'appel présence échoue, ses KPIs passent en error SANS valeur inventée."""
+        self._source()
+        payloads = self._payloads()
+
+        def flaky(base, path, headers, params=None):
+            if path == shield.EP_ATTENDANCE_TODAY:
+                raise urllib.error.URLError("boom")
+            return payloads[path]
+
+        with patch.object(shield, "_get_json", side_effect=flaky):
+            data = shield.fetch_hr_kpis()
+        kpis = {k["key"]: k for k in data["kpis"]}
+        self.assertEqual(data["status"], "partial")  # honnête : une partie des mesures manque
+        for key in ("presents", "absents", "retards", "taux_presence"):
+            self.assertEqual(kpis[key]["status"], "error")
+            self.assertIsNone(kpis[key]["value"])
+        self.assertEqual(kpis["employes"]["value"], 120)
+
+    def test_zero_is_a_real_value_not_nd(self):
+        """0 présent est une donnée réelle : elle doit rester 0 en statut success."""
+        self._source()
+        payloads = self._payloads()
+        payloads[shield.EP_ATTENDANCE_TODAY] = {"present_count": 0, "absent_count": 0, "late_count": 0}
+        with patch.object(shield, "_get_json", side_effect=lambda base, path, headers, params=None: payloads[path]):
+            data = shield.fetch_hr_kpis()
+        kpis = {k["key"]: k for k in data["kpis"]}
+        self.assertEqual(kpis["presents"]["value"], 0)
+        self.assertEqual(kpis["presents"]["status"], "connected")
+        self.assertIsNone(kpis["taux_presence"]["value"])  # 0/0 : pas de taux inventé
+
+
+class OdooHrSkeletonTest(APITestCase):
+    """Squelette Odoo : jamais de donnée, état explicite uniquement."""
+
+    def test_not_configured_without_source(self):
+        data = odoo.fetch_hr_reference()
+        self.assertEqual(data["status"], "not_configured")
+        self.assertEqual(data["records"], [])
+
+    def test_not_implemented_with_source(self):
+        DataSource.objects.create(name="Odoo RH", slug="odoo-hr", source_type="odoo_hr", status="connected")
+        data = odoo.fetch_hr_reference()
+        self.assertEqual(data["status"], "not_implemented")
+        self.assertEqual(data["records"], [])
+        self.assertIn("hr.employee", data["models"])

@@ -7,6 +7,7 @@ from .views import (
     DataConnectorViewSet,
     DataSourceViewSet,
     FieldMappingViewSet,
+    ShieldHrKpiView,
     SyncErrorViewSet,
     SyncJobViewSet,
     SyncLogViewSet,
@@ -26,5 +27,6 @@ router.register("errors", SyncErrorViewSet, basename="syncerror")
 router.register("webhook-events", WebhookEventViewSet, basename="webhookevent")
 
 urlpatterns = router.urls + [
+    path("shield/hr-kpi/", ShieldHrKpiView.as_view(), name="shield-hr-kpi"),
     path("webhook/<slug:slug>/", WebhookReceiver.as_view(), name="integration-webhook"),
 ]
