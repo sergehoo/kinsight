@@ -825,13 +825,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
-    "mtime": 1788688739.4115705,
-    "ast_hash": "232f33c287ed7a8c81f19943274fbd78",
+    "mtime": 1788711691.6710875,
+    "ast_hash": "e473e5698b2b51c37e72553f76c6d1fc",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788688806.447081,
-    "ast_hash": "2065ad2d03cd274d7154d0dcbbc59661",
+    "mtime": 1788711649.5738378,
+    "ast_hash": "e922fa9985ceae81f5dc312ab84d683a",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -1820,18 +1820,33 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_client.py": {
-    "mtime": 1788686165.5907025,
-    "ast_hash": "6825e08479e3462a7667ef6b7b260ab4",
+    "mtime": 1788711400.0914042,
+    "ast_hash": "b260740602937de382d90e53613d67a2",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_endpoints.py": {
-    "mtime": 1788686181.665581,
-    "ast_hash": "8742e04509432e47638fdf09a00f0d38",
+    "mtime": 1788711359.2230036,
+    "ast_hash": "5752872d4e0031e200c0e4f0a8da2fe4",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_rules.py": {
     "mtime": 1788688693.374463,
     "ast_hash": "cfda26d083635d9225304b01b7a99ddd",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/management/__init__.py": {
+    "mtime": 1788711691.6800501,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/management/commands/__init__.py": {
+    "mtime": 1788711691.6801062,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/management/commands/shield_smoke.py": {
+    "mtime": 1788711691.68238,
+    "ast_hash": "70c8634953155406b4f31d0f362c7d77",
     "semantic_hash": ""
   }
 }
