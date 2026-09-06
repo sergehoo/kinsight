@@ -7,7 +7,11 @@ from .views import (
     DataConnectorViewSet,
     DataSourceViewSet,
     FieldMappingViewSet,
+    ShieldAttendanceSeriesView,
+    ShieldHealthView,
     ShieldHrKpiView,
+    ShieldOverviewView,
+    ShieldSecurityView,
     SyncErrorViewSet,
     SyncJobViewSet,
     SyncLogViewSet,
@@ -28,5 +32,9 @@ router.register("webhook-events", WebhookEventViewSet, basename="webhookevent")
 
 urlpatterns = router.urls + [
     path("shield/hr-kpi/", ShieldHrKpiView.as_view(), name="shield-hr-kpi"),
+    path("shield/attendance-series/", ShieldAttendanceSeriesView.as_view(), name="shield-attendance-series"),
+    path("shield/security/", ShieldSecurityView.as_view(), name="shield-security"),
+    path("shield/overview/", ShieldOverviewView.as_view(), name="shield-overview"),
+    path("shield/health/", ShieldHealthView.as_view(), name="shield-health"),
     path("webhook/<slug:slug>/", WebhookReceiver.as_view(), name="integration-webhook"),
 ]

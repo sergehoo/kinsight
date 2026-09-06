@@ -11,26 +11,22 @@ n'existe pas ou n'est pas connectée, on renvoie un état explicite `disconnecte
 
 from __future__ import annotations
 
-import json
-import urllib.error
-import urllib.parse
-import urllib.request
 from typing import Any
 
 from django.conf import settings
+from datetime import timedelta
+
 from django.utils import timezone
 
+from . import shield_endpoints as EP
 from .models import AuthMethod, CredentialKind, DataSource, SourceStatus, SourceType
+from . import shield_rules as R
+from .shield_client import ShieldClient, ShieldError
 
 SHIELD_SOURCE_SLUG = "kaydan-shield"
 
-# Chemins RÉELS (OpenAPI Kaydan Shield, base /api/v1/). Ne rien inventer ici.
-EP_EMPLOYEES = "/api/v1/employees/employees/"
-EP_WORKERS = "/api/v1/ouvriers/workers/"
-EP_SITES = "/api/v1/sites/sites/"
-EP_ATTENDANCE_TODAY = "/api/v1/attendance/summary/today/"
+# Les chemins RÉELS vivent dans shield_endpoints.py (source unique).
 
-_TIMEOUT = 8
 
 
 # ── Résolution source / configuration ────────────────────────────────────────
@@ -94,91 +90,25 @@ def _auth_headers(source: DataSource) -> dict[str, str]:
     return headers
 
 
-def _get_json(base: str, path: str, headers: dict[str, str], params: dict[str, Any] | None = None) -> Any:
-    url = base + path
-    if params:
-        url += "?" + urllib.parse.urlencode(params)
-    request = urllib.request.Request(url, method="GET", headers=headers)
-    with urllib.request.urlopen(request, timeout=_TIMEOUT) as resp:  # noqa: S310 — hôte configuré, interne
-        return json.loads(resp.read().decode("utf-8"))
+# ── Client ───────────────────────────────────────────────────────────────────
+def build_client(source: DataSource) -> ShieldClient:
+    return ShieldClient(_base_url(source), _auth_headers(source))
 
 
-def _count(base: str, path: str, headers: dict[str, str]) -> int:
-    """Total d'une liste paginée DRF (`count`), sinon longueur des résultats."""
-    data = _get_json(base, path, headers, {"limit": 1})
-    if isinstance(data, dict):
-        if isinstance(data.get("count"), int):
-            return data["count"]
-        results = data.get("results")
-        if isinstance(results, list):
-            return len(results)
-    if isinstance(data, list):
-        return len(data)
-    raise ValueError("Réponse inattendue (ni count ni liste).")
+def _today() -> str:
+    return timezone.localdate().isoformat()
 
 
-def _results(base: str, path: str, headers: dict[str, str], limit: int = 200) -> list[dict[str, Any]]:
-    """Première page d'une liste DRF, normalisée en liste de dicts."""
-    data = _get_json(base, path, headers, {"limit": limit})
-    if isinstance(data, dict):
-        results = data.get("results")
-        if isinstance(results, list):
-            return [r for r in results if isinstance(r, dict)]
-    if isinstance(data, list):
-        return [r for r in data if isinstance(r, dict)]
-    raise ValueError("Réponse inattendue (ni results ni liste).")
-
-
-def _normalize_site(raw: dict[str, Any]) -> dict[str, Any]:
-    """Champs RÉELS du sérialiseur Site de Shield (id, uuid, name, code, type,
-    status, company_name, address_label). Rien d'autre n'est supposé.
-
-    `present_count` reste None : Shield ne documente AUCUN compteur de présence
-    agrégé par site. Le seul endpoint par site est nominatif et signalé par la
-    doc comme plus sensible que des compteurs — l'agréger nous-mêmes reviendrait
-    à inventer une mesure ET à manipuler des données personnelles sans motif.
-    """
-    return {
-        "id": raw.get("id"),
-        "code": raw.get("code") or "",
-        "name": raw.get("name") or raw.get("code") or "Site",
-        "type": raw.get("type") or "",
-        "status": raw.get("status") or "",
-        "company": raw.get("company_name") or "",
-        "present_count": None,
-        "presence_status": "disconnected",
-    }
-
-
-# ── Normalisation KPIs ───────────────────────────────────────────────────────
-# Niveau de donnée : une mesure lue telle quelle dans la source n'a pas le même
-# statut épistémique qu'un chiffre que NOUS calculons. Le distinguer permet à
-# l'UI de le signaler et rend chaque calcul auditable par sa formule.
+# ── Normalisation ────────────────────────────────────────────────────────────
 MEASURED = "measured"
 COMPUTED = "computed"
+UNKNOWN = "unknown"
 
 
-def _kpi(
-    key: str,
-    title: str,
-    value: Any,
-    unit: str = "",
-    status: str = "connected",
-    level: str = MEASURED,
-    formula: str = "",
-    source_field: str = "",
-) -> dict[str, Any]:
+def _kpi(key, title, value, unit="", status="connected", level=MEASURED, formula="", source_field=""):
     return {
-        "key": key,
-        "title": title,
-        "value": value,
-        "unit": unit,
-        "status": status,
-        "level": level,
-        # Vide pour une mesure ; obligatoire dès que K-Insight calcule le chiffre.
-        "formula": formula,
-        # Champ d'origine côté source, pour retrouver d'où vient la mesure.
-        "source_field": source_field,
+        "key": key, "title": title, "value": value, "unit": unit, "status": status,
+        "level": level, "formula": formula, "source_field": source_field,
     }
 
 
@@ -195,103 +125,390 @@ KPI_SPECS: list[tuple[str, str, str, str, str, str]] = [
 ]
 KPI_META = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in KPI_SPECS}
 
+SECURITY_SPECS: list[tuple[str, str, str, str, str, str]] = [
+    ("alertes_critiques", "Alertes critiques ouvertes", "", MEASURED, "", "antifraud.alerts[severity=critical,status=open]"),
+    ("alertes_ouvertes", "Alertes ouvertes", "", MEASURED, "", "antifraud.alerts[status=open]"),
+    ("acces_refuses", "Accès refusés (24 h)", "", MEASURED, "", "access.events[decision=deny]"),
+    ("terminaux_hs", "Terminaux hors service", "", COMPUTED, "terminaux inactifs + en maintenance + perdus", ""),
+    ("terminaux_total", "Terminaux déclarés", "", MEASURED, "", "devices.count"),
+    ("visiteurs_attente", "Visiteurs en attente", "", MEASURED, "", "visitors.requests[status=pending]"),
+]
+SECURITY_META = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in SECURITY_SPECS}
 
-def _kpi_from_spec(key: str, value: Any, status: str) -> dict[str, Any]:
-    title, unit, level, formula, source_field = KPI_META[key]
+
+def _from_spec(meta, key, value, status):
+    title, unit, level, formula, source_field = meta[key]
     return _kpi(key, title, value, unit, status, level, formula, source_field)
 
 
-def _disconnected_kpis(source_label: str) -> list[dict[str, Any]]:
-    return [_kpi_from_spec(k, None, "disconnected") for k, *_ in KPI_SPECS]
+def _disconnected(meta, specs):
+    return [_from_spec(meta, k, None, "disconnected") for k, *_ in specs]
 
 
-def fetch_hr_kpis() -> dict[str, Any]:
-    """Renvoie un état gouverné : disconnected | connected (avec KPIs) | error par KPI."""
+def _state_of(errors: list[ShieldError | None], values: list[Any]) -> str:
+    """État consolidé HONNÊTE d'un lot de lectures.
+
+    `partial` dès qu'une mesure manque : annoncer `connected` alors qu'une partie
+    des appels a échoué donnerait l'illusion d'un tableau complet.
+    """
+    ok = sum(1 for v, e in zip(values, errors) if e is None and v is not None)
+    if ok == len(values):
+        return "connected"
+    if ok:
+        return "partial"
+    return "error"
+
+
+def _envelope(status: str, source: str, kpis: list[dict], **extra) -> dict[str, Any]:
+    return {
+        "status": status,
+        "source": source,
+        "updated_at": timezone.now().isoformat(),
+        "kpis": kpis,
+        **extra,
+    }
+
+
+def _guard(kind: str):
+    """Contexte commun à toutes les lectures : source absente ou non connectée."""
     source = get_shield_source()
     label = "Kaydan Shield"
     if source is None:
-        return {
-            "status": "disconnected",
-            "source": label,
-            "detail": "Source kaydan-shield non configurée.",
-            "kpis": _disconnected_kpis(label),
-            "by_site": {"status": "disconnected", "sites": []},
+        return None, {"status": "disconnected", "source": label,
+                      "detail": "Source kaydan-shield non configurée."}
+    if not _base_url(source) or source.status != SourceStatus.CONNECTED:
+        return None, {"status": "disconnected", "source": source.name or label,
+                      "detail": "Source non connectée — configurez et testez la connexion."}
+    return source, None
+
+
+def _safe(fn):
+    """Exécute une lecture ; renvoie (valeur, erreur) sans jamais laisser fuir."""
+    try:
+        return fn(), None
+    except ShieldError as exc:
+        return None, exc
+    except Exception as exc:  # noqa: BLE001 — un bug de normalisation ne doit pas rendre 500
+        return None, ShieldError("payload", f"{type(exc).__name__}: {exc}")
+
+
+# ── Capital Humain ───────────────────────────────────────────────────────────
+MAX_SITES_DETAILED = 12   # borne le fan-out : ~4 appels par site
+
+
+def _site_row(client: ShieldClient, raw: dict[str, Any], date: str) -> dict[str, Any]:
+    """Une ligne de répartition par site, montée sur des relations RÉELLES.
+
+    `employees` reste `unknown` : l'endpoint employés de Shield n'accepte aucun
+    filtre `site`. Le répartir au prorata donnerait un chiffre crédible et faux.
+    """
+    site_id = raw.get("id")
+    workers, w_err = _safe(lambda: client.count(EP.WORKERS, {"site": site_id}))
+    present, p_err = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {"site": site_id, "date": date, "present": "true"}))
+    absent, a_err = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {"site": site_id, "date": date, "absent": "true"}))
+    late, l_err = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {"site": site_id, "date": date, "late": "true"}))
+    alerts, al_err = _safe(lambda: client.count(EP.ALERTS, {"site": site_id, "status": "open"}))
+
+    rate = R.taux_presence(present, absent)
+    errs = [w_err, p_err, a_err, l_err, al_err]
+    return {
+        "site": {"id": site_id, "code": raw.get("code") or "", "name": raw.get("name") or raw.get("code") or "Site",
+                 "type": raw.get("type") or "", "status": raw.get("status") or "",
+                 "company": raw.get("company_name") or ""},
+        "employees": None,
+        "employees_status": UNKNOWN,
+        "employees_reason": "L'API employés de Shield n'expose pas de filtre par site.",
+        "workers": workers,
+        "total": None,          # employés inconnus → total non calculable
+        "total_status": UNKNOWN,
+        "present": present,
+        "absent": absent,
+        "late": late,
+        "attendance_rate": rate,
+        "alerts": alerts,
+        # Route existante du sous-module Présence : pas de route inventée par site.
+        "drilldown_url": "/dashboard/capital-humain/presence",
+        "status": _state_of(errs, [workers, present, absent, late, alerts]),
+        "updated_at": timezone.now().isoformat(),
+    }
+
+
+def fetch_hr_kpis() -> dict[str, Any]:
+    """KPIs RH gouvernés + répartition par site réelle."""
+    source, blocked = _guard("hr")
+    if blocked:
+        label = blocked["source"]
+        return {**blocked, "kpis": _disconnected(KPI_META, KPI_SPECS),
+                "by_site": {"status": "disconnected", "sites": []}}
+
+    client = build_client(source)
+    src = source.name or "Kaydan Shield"
+    date = _today()
+
+    employes, e_err = _safe(lambda: client.count(EP.EMPLOYEES))
+    ouvriers, o_err = _safe(lambda: client.count(EP.WORKERS))
+    sites_count, s_err = _safe(lambda: client.count(EP.SITES))
+    summary, sum_err = _safe(lambda: client.get_json(EP.ATTENDANCE_TODAY))
+
+    effectif = employes + ouvriers if isinstance(employes, int) and isinstance(ouvriers, int) else None
+    present = absent = late = None
+    if isinstance(summary, dict):
+        present, absent, late = summary.get("present_count"), summary.get("absent_count"), summary.get("late_count")
+
+    taux = R.taux_presence(present, absent)
+
+    def st(err, value=...):
+        return "error" if err else "connected"
+
+    kpis = [
+        _from_spec(KPI_META, "effectif_total", effectif, st(e_err or o_err)),
+        _from_spec(KPI_META, "employes", employes, st(e_err)),
+        _from_spec(KPI_META, "ouvriers", ouvriers, st(o_err)),
+        _from_spec(KPI_META, "presents", present, st(sum_err)),
+        _from_spec(KPI_META, "absents", absent, st(sum_err)),
+        _from_spec(KPI_META, "retards", late, st(sum_err)),
+        _from_spec(KPI_META, "taux_presence", taux, st(sum_err)),
+        _from_spec(KPI_META, "sites", sites_count, st(s_err)),
+    ]
+
+    # Répartition par site : bornée, et détaillée uniquement sur les sites actifs.
+    site_rows, sr_err = _safe(lambda: client.results(EP.SITES, {"status": "active"}, limit=MAX_SITES_DETAILED))
+    if sr_err or not site_rows:
+        by_site = {"status": "error" if sr_err else "disconnected",
+                   "detail": str(sr_err) if sr_err else "Aucun site actif publié par Shield.",
+                   "sites": []}
+    else:
+        rows = [_site_row(client, r, date) for r in site_rows]
+        oks = [r for r in rows if r["status"] == "connected"]
+        by_site = {
+            "status": "connected" if len(oks) == len(rows) else ("partial" if oks else "error"),
+            "detail": "Effectif employés par site non exposé par Shield ; ouvriers et présence le sont.",
+            "date": date,
+            "truncated": len(site_rows) >= MAX_SITES_DETAILED,
+            "sites": rows,
         }
 
-    base = _base_url(source)
-    connected = source.status == SourceStatus.CONNECTED
-    if not base or not connected:
-        return {
-            "status": "disconnected",
-            "source": source.name or label,
-            "detail": "Source non connectée — configurez et testez la connexion.",
-            "kpis": _disconnected_kpis(source.name or label),
-            "by_site": {"status": "disconnected", "sites": []},
-        }
+    by_kind = _presence_by_kind(client, date)
 
-    headers = _auth_headers(source)
-    src = source.name or label
-    kpis: list[dict[str, Any]] = []
+    status = _state_of([e_err, o_err, s_err, sum_err], [employes, ouvriers, sites_count, summary])
+    insights = (R.evaluer_presence_globale(present, absent, late, src, date)
+                + R.evaluer_sites(by_site.get("sites", []), src, date))
+    return _envelope(status, src, kpis, by_site=by_site, by_kind=by_kind, insights=insights)
 
-    def safe(fn):
-        try:
-            return fn(), None
-        except (urllib.error.URLError, urllib.error.HTTPError, ValueError, KeyError, TimeoutError) as exc:
-            return None, f"{type(exc).__name__}"
 
-    employes, e_err = safe(lambda: _count(base, EP_EMPLOYEES, headers))
-    ouvriers, o_err = safe(lambda: _count(base, EP_WORKERS, headers))
-    sites, s_err = safe(lambda: _count(base, EP_SITES, headers))
-    summary, sum_err = safe(lambda: _get_json(base, EP_ATTENDANCE_TODAY, headers))
-    site_rows, site_rows_err = safe(lambda: _results(base, EP_SITES, headers))
+# ── Série de présence ────────────────────────────────────────────────────────
+# `holder_kind` est la SEULE ventilation documentée (employee | worker).
+# `person_kind` existe comme filtre mais le Swagger n'en documente aucune valeur :
+# on ne s'en sert pas plutôt que de deviner.
+HOLDER_KINDS = ("employee", "worker")
+
+
+def _day_counts(client: ShieldClient, date: str, extra: dict | None = None) -> tuple[dict, list]:
+    """Compteurs d'une journée, via les filtres DOCUMENTÉS de /attendance/days/.
+
+    On interroge `present`, `absent` et `late` séparément plutôt que d'agréger les
+    enregistrements bruts : le champ `status` existe, mais le Swagger n'en publie
+    pas les valeurs — en déduire « présent » serait une supposition.
+    """
+    base = {"date": date, **(extra or {})}
+    present, e1 = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {**base, "present": "true"}))
+    absent, e2 = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {**base, "absent": "true"}))
+    late, e3 = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {**base, "late": "true"}))
+    return {"present": present, "absent": absent, "late": late}, [e1, e2, e3]
+
+
+def fetch_attendance_series(days: int = 30) -> dict[str, Any]:
+    """Série journalière de présence sur une fenêtre glissante.
+
+    Un jour sans mesure exploitable reste à `null` : le mettre à 0 le ferait
+    passer pour une journée sans personne, ce qui est un tout autre message.
+    """
+    window = days if days in R.FENETRES_JOURS else R.MAX_JOURS
+    source, blocked = _guard("series")
+    if blocked:
+        return {**blocked, "days": window, "points": [], "insights": []}
+
+    client = build_client(source)
+    src = source.name or "Kaydan Shield"
+    today = timezone.localdate()
+    points: list[dict[str, Any]] = []
+    failures = 0
+
+    for offset in range(window - 1, -1, -1):
+        date = (today - timedelta(days=offset)).isoformat()
+        counts, errs = _day_counts(client, date)
+        failed = [e for e in errs if e is not None]
+        failures += len(failed)
+        points.append({
+            "date": date,
+            "present": counts["present"],
+            "absent": counts["absent"],
+            "late": counts["late"],
+            "taux_presence": R.taux_presence(counts["present"], counts["absent"]),
+            # `unknown` distingue « aucune mesure ce jour-là » de « zéro personne ».
+            "status": "unknown" if failed else "measured",
+        })
+
+    mesures = sum(1 for p in points if p["status"] == "measured")
+    status = "connected" if mesures == len(points) else ("partial" if mesures else "error")
+    return _envelope(status, src, [], days=window, points=points,
+                     measured_days=mesures,
+                     insights=R.evaluer_tendance(points, src))
+
+
+def _presence_by_kind(client: ShieldClient, date: str) -> dict[str, Any]:
+    """Présents du jour ventilés employés / ouvriers, via `holder_kind`."""
+    out: dict[str, Any] = {}
+    errs: list[Any] = []
+    for kind in HOLDER_KINDS:
+        value, err = _safe(lambda k=kind: client.count(
+            EP.ATTENDANCE_DAYS, {"date": date, "present": "true", "holder_kind": k}))
+        out[kind] = value
+        errs.append(err)
+    ok = [v for v, e in zip(out.values(), errs) if e is None and v is not None]
+    total = sum(ok) if len(ok) == len(HOLDER_KINDS) else None
+    return {
+        "status": "connected" if len(ok) == len(HOLDER_KINDS) else ("partial" if ok else "error"),
+        "date": date,
+        "employees": out.get("employee"),
+        "workers": out.get("worker"),
+        "total": total,
+        "employees_share": R._pct(out.get("employee"), total) if total else None,
+        "workers_share": R._pct(out.get("worker"), total) if total else None,
+    }
+
+
+# ── Risques & Conformité ─────────────────────────────────────────────────────
+def fetch_security_kpis() -> dict[str, Any]:
+    source, blocked = _guard("security")
+    if blocked:
+        return {**blocked, "kpis": _disconnected(SECURITY_META, SECURITY_SPECS), "by_site": {"status": "disconnected", "sites": []}}
+
+    client = build_client(source)
+    src = source.name or "Kaydan Shield"
+
+    crit, c_err = _safe(lambda: client.count(EP.ALERTS, {"severity": "critical", "status": "open"}))
+    open_alerts, oa_err = _safe(lambda: client.count(EP.ALERTS, {"status": "open"}))
+    denied, d_err = _safe(lambda: client.count(EP.ACCESS_EVENTS, {"decision": "deny"}))
+    devices_total, dt_err = _safe(lambda: client.count(EP.DEVICES))
+    # « Hors service » = somme des états non opérationnels documentés.
+    down_parts, down_err = [], None
+    for state in ("inactive", "maintenance", "lost"):
+        value, err = _safe(lambda s=state: client.count(EP.DEVICES, {"status": s}))
+        down_parts.append(value)
+        down_err = down_err or err
+    devices_down = sum(v for v in down_parts if isinstance(v, int)) if all(isinstance(v, int) for v in down_parts) else None
+    visitors, v_err = _safe(lambda: client.count(EP.VISITOR_REQUESTS, {"status": "pending"}))
 
     def st(err):
         return "error" if err else "connected"
 
-    effectif = None
-    if employes is not None and ouvriers is not None:
-        effectif = employes + ouvriers
-    kpis.append(_kpi_from_spec("effectif_total", effectif, st(e_err or o_err)))
-    kpis.append(_kpi_from_spec("employes", employes, st(e_err)))
-    kpis.append(_kpi_from_spec("ouvriers", ouvriers, st(o_err)))
+    kpis = [
+        _from_spec(SECURITY_META, "alertes_critiques", crit, st(c_err)),
+        _from_spec(SECURITY_META, "alertes_ouvertes", open_alerts, st(oa_err)),
+        _from_spec(SECURITY_META, "acces_refuses", denied, st(d_err)),
+        _from_spec(SECURITY_META, "terminaux_hs", devices_down, st(down_err)),
+        _from_spec(SECURITY_META, "terminaux_total", devices_total, st(dt_err)),
+        _from_spec(SECURITY_META, "visiteurs_attente", visitors, st(v_err)),
+    ]
+    errors = [c_err, oa_err, d_err, down_err, dt_err, v_err]
+    values = [crit, open_alerts, denied, devices_down, devices_total, visitors]
+    return _envelope(_state_of(errors, values), src, kpis,
+                     insights=security_insights(kpis, src))
 
-    present = absent = late = None
-    if isinstance(summary, dict):
-        present = summary.get("present_count")
-        absent = summary.get("absent_count")
-        late = summary.get("late_count")
-    kpis.append(_kpi_from_spec("presents", present, st(sum_err)))
-    kpis.append(_kpi_from_spec("absents", absent, st(sum_err)))
-    kpis.append(_kpi_from_spec("retards", late, st(sum_err)))
 
-    taux = None
-    if isinstance(present, int) and isinstance(absent, int) and (present + absent) > 0:
-        taux = round(present * 100 / (present + absent), 1)
-    kpis.append(_kpi_from_spec("taux_presence", taux, st(sum_err)))
-    kpis.append(_kpi_from_spec("sites", sites, st(s_err)))
+# ── Overview Groupe ──────────────────────────────────────────────────────────
+def fetch_overview_kpis() -> dict[str, Any]:
+    """Agrégats Shield pour la vue Groupe : effectif, présence, sites, alertes.
 
-    # Statut global HONNÊTE : `partial` dès qu'une mesure manque, jamais « connected »
-    # alors qu'une partie des appels a échoué.
-    ok = sum(1 for k in kpis if k["status"] == "connected")
-    if ok == len(kpis):
-        status = "connected"
-    elif ok:
-        status = "partial"
-    else:
-        status = "error"
-    by_site = {
-        "status": "error" if site_rows_err else "partial" if site_rows else "disconnected",
-        # `partial` et non `connected` : la répartition liste les sites RÉELS mais
-        # aucun effectif présent par site (non exposé par Shield). Annoncer
-        # « connected » laisserait croire à une répartition complète.
-        "detail": "Sites réels ; présence par site non exposée par Kaydan Shield.",
-        "sites": [_normalize_site(r) for r in (site_rows or [])],
-    }
+    Volontairement plus court que les cockpits RH et Risques : la vue Groupe
+    donne le pouls, elle ne duplique pas le détail métier.
+    """
+    source, blocked = _guard("overview")
+    specs = [("workforce", "Effectif Shield", "", COMPUTED, "employés + ouvriers", ""),
+             ("presents", "Présents aujourd'hui", "", MEASURED, "", "attendance.present_count"),
+             ("sites_actifs", "Sites actifs", "", MEASURED, "", "sites[status=active].count"),
+             ("alertes_critiques", "Alertes critiques", "", MEASURED, "", "antifraud.alerts[severity=critical,status=open]")]
+    meta = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in specs}
+    if blocked:
+        return {**blocked, "kpis": _disconnected(meta, specs)}
 
+    client = build_client(source)
+    src = source.name or "Kaydan Shield"
+
+    employes, e_err = _safe(lambda: client.count(EP.EMPLOYEES))
+    ouvriers, o_err = _safe(lambda: client.count(EP.WORKERS))
+    sites_actifs, s_err = _safe(lambda: client.count(EP.SITES, {"status": "active"}))
+    summary, sum_err = _safe(lambda: client.get_json(EP.ATTENDANCE_TODAY))
+    crit, c_err = _safe(lambda: client.count(EP.ALERTS, {"severity": "critical", "status": "open"}))
+
+    workforce = employes + ouvriers if isinstance(employes, int) and isinstance(ouvriers, int) else None
+    present = summary.get("present_count") if isinstance(summary, dict) else None
+
+    def st(err):
+        return "error" if err else "connected"
+
+    kpis = [
+        _from_spec(meta, "workforce", workforce, st(e_err or o_err)),
+        _from_spec(meta, "presents", present, st(sum_err)),
+        _from_spec(meta, "sites_actifs", sites_actifs, st(s_err)),
+        _from_spec(meta, "alertes_critiques", crit, st(c_err)),
+    ]
+    errors = [e_err or o_err, sum_err, s_err, c_err]
+    values = [workforce, present, sites_actifs, crit]
+    return _envelope(_state_of(errors, values), src, kpis)
+
+
+# ── Aide à la décision (déterministe) ────────────────────────────────────────
+# Aucun modèle, aucune inférence : des seuils explicites appliqués à des mesures
+# réelles. Chaque constat porte sa justification chiffrée et sa période.
+
+
+def _value(kpis: list[dict], key: str):
+    for k in kpis:
+        if k["key"] == key and k["status"] == "connected":
+            return k["value"]
+    return None
+
+
+def security_insights(kpis: list[dict], source: str) -> list[dict]:
+    out: list[dict] = []
+    crit = _value(kpis, "alertes_critiques")
+    if isinstance(crit, int) and crit > 0:
+        out.append({
+            "id": "sec.alertes_critiques", "severity": "critical",
+            "title": f"{crit} alerte(s) critique(s) ouverte(s)",
+            "finding": f"Kaydan Shield signale {crit} alerte(s) de sévérité critique non traitée(s).",
+            "impact": "Risque de fraude ou d'intrusion non couvert.",
+            "level": MEASURED, "source": source, "period": "maintenant", "confidence": 1.0,
+            "action": {"label": "Voir les alertes", "to": "/dashboard/risques-conformite/alertes-critiques"},
+        })
+    down, total = _value(kpis, "terminaux_hs"), _value(kpis, "terminaux_total")
+    if isinstance(down, int) and isinstance(total, int) and total > 0 and down > 0:
+        part = round(down * 100 / total, 1)
+        out.append({
+            "id": "sec.terminaux_hs",
+            "severity": "critical" if part >= 20 else "warning",
+            "title": f"{down} terminal(aux) hors service",
+            "finding": f"{down} terminaux sur {total} ne sont pas opérationnels, soit {part} % du parc.",
+            "impact": "Contrôle d'accès dégradé sur les points concernés.",
+            "level": COMPUTED, "formula": "terminaux (inactifs + maintenance + perdus) ÷ total × 100",
+            "source": source, "period": "maintenant", "confidence": 1.0,
+            "action": {"label": "Voir les terminaux", "to": "/dashboard/risques-conformite/controle-acces"},
+        })
+    return out
+
+
+def shield_health() -> dict[str, Any]:
+    """Santé du connecteur, pour SourceHealth et l'écran d'administration."""
+    source, blocked = _guard("health")
+    if blocked:
+        return {**blocked, "reachable": False}
+    ok, message = build_client(source).healthcheck()
     return {
-        "status": status,
-        "source": src,
-        "updated_at": timezone.now().isoformat(),
-        "kpis": kpis,
-        "by_site": by_site,
+        "status": "connected" if ok else "error",
+        "source": source.name or "Kaydan Shield",
+        "reachable": ok,
+        "detail": message,
+        "checked_at": timezone.now().isoformat(),
     }

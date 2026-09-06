@@ -34,7 +34,14 @@ from .serializers import (
     WebhookEventSerializer,
 )
 from .services import run_sync, run_test
-from .shield import fetch_hr_kpis
+from .shield import (
+    fetch_attendance_series,
+    fetch_hr_kpis,
+    fetch_overview_kpis,
+    fetch_security_kpis,
+    shield_health,
+)
+from .shield_rules import FENETRES_JOURS, MAX_JOURS
 
 
 class ShieldHrKpiView(APIView):
@@ -48,6 +55,62 @@ class ShieldHrKpiView(APIView):
 
     def get(self, request):
         return Response(fetch_hr_kpis())
+
+
+class ShieldAttendanceSeriesView(APIView):
+    """Série journalière de présence, sur une fenêtre glissante.
+
+    Endpoint distinct de `hr-kpi/` à dessein : la série se construit par comptages
+    journaliers (3 appels Shield par jour), elle ne doit pas alourdir le
+    chargement des cartes KPI.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            days = int(request.query_params.get("days", 30))
+        except (TypeError, ValueError):
+            days = 30
+        if days not in FENETRES_JOURS:
+            days = MAX_JOURS
+        return Response(fetch_attendance_series(days))
+
+
+class ShieldSecurityView(APIView):
+    """Indicateurs Sécurité & Conformité issus de Kaydan Shield.
+
+    Alimente le cockpit Risques. Comme pour les KPI RH, React ne voit jamais la
+    forme d'une réponse Shield : tout est normalisé ici.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(fetch_security_kpis())
+
+
+class ShieldOverviewView(APIView):
+    """Agrégats Shield pour la vue Groupe : le pouls, pas le détail métier."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(fetch_overview_kpis())
+
+
+class ShieldHealthView(APIView):
+    """Santé du connecteur Shield, lisible par tout utilisateur authentifié.
+
+    Volontairement distinct de `/integrations/sources/health/`, réservé aux
+    administrateurs d'intégration : un décideur doit pouvoir savoir si la source
+    qui alimente son tableau de bord répond, sans avoir accès au control-plane.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(shield_health())
 
 
 def _audit(request, action_name: str, source: DataSource | None = None, payload=None):
