@@ -161,3 +161,17 @@ body {
     --domain-transition: 0ms linear;
   }
 }
+
+/* ── Mode installé (standalone) ────────────────────────────────────────────
+   En mobile la marge autour du cadre tombe à zéro : sans compensation, le
+   contenu passerait sous l'encoche et la barre de gestes. Les encarts ne sont
+   appliqués qu'une fois l'application installée, où ils valent réellement 0
+   dans un navigateur classique. */
+@media (display-mode: standalone) {
+  .ki-shell-safe {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

@@ -10,7 +10,16 @@ import { glass } from "@/components/chrome/theme";
    (API métier interne, Odoo, Kaydan Shield). Aucune donnée n'est inventée :
    un état non `connected` n'affiche JAMAIS de chiffre métier.
    ════════════════════════════════════════════════════════════════════════════ */
-export type DataState = "connected" | "connecting" | "partial" | "disconnected" | "error";
+export type DataState =
+  | "connected"
+  | "connecting"
+  | "partial"
+  | "disconnected"
+  | "error"
+  /** Dernière donnée connue, servie par le cache hors ligne. Toujours signalée. */
+  | "stale"
+  /** Navigateur hors ligne : aucune donnée disponible. */
+  | "offline";
 
 /** Alias rétro-compatible : d'anciens appels utilisent success/loading. */
 export type MetricStatus = DataState | "success" | "loading";
@@ -36,6 +45,8 @@ export const STATE_META: Record<DataState, StateMeta> = {
   partial: { label: "Partiel", color: "#B8791C", bg: "rgba(224,168,30,0.14)", placeholder: "—", hint: "Certaines mesures manquent" },
   disconnected: { label: "Non connecté", color: "#7C8384", bg: "rgba(124,131,132,0.12)", placeholder: "N/D", hint: "Source à raccorder" },
   error: { label: "Indisponible", color: "#D92B55", bg: "rgba(217,43,85,0.11)", placeholder: "—", hint: "Source injoignable" },
+  stale: { label: "Donnée datée", color: "#8A6D1F", bg: "rgba(214,178,62,0.18)", placeholder: "—", hint: "Dernière donnée connue, hors ligne" },
+  offline: { label: "Hors ligne", color: "#5C6370", bg: "rgba(92,99,112,0.12)", placeholder: "N/D", hint: "Réseau indisponible" },
 };
 
 /* ── Fraîcheur vivante ─────────────────────────────────────────────────────
@@ -163,7 +174,9 @@ export function MetricCard(props: MetricCardProps) {
   } = props;
   const state = normalizeState(props.state ?? props.status);
   const meta = STATE_META[state];
-  const hasValue = state === "connected" && value !== null && value !== undefined;
+  // `stale` est le seul état non connecté autorisé à afficher un chiffre : c'est
+  // une donnée réellement observée, et le badge + le pied de carte le disent.
+  const hasValue = (state === "connected" || state === "stale") && value !== null && value !== undefined;
 
   const body = (
     <>
@@ -200,10 +213,17 @@ export function MetricCard(props: MetricCardProps) {
             ? `${source ?? "Source"} à raccorder — aucune donnée publiée.`
             : state === "error"
               ? "Source injoignable — dernière tentative échouée."
-              : "Mesure absente de la réponse de la source."}
+              : state === "offline"
+                ? "Hors ligne — aucune donnée en cache pour cette mesure."
+                : "Mesure absente de la réponse de la source."}
         </p>
       ) : null}
 
+      {state === "stale" ? (
+        <p className="mt-1.5 text-[11px] font-semibold leading-snug" style={{ color: STATE_META.stale.color }}>
+          Dernière donnée connue — non rafraîchie depuis le retour hors ligne.
+        </p>
+      ) : null}
       <SourceMeta source={source} updatedAt={updatedAt} scope={scope} />
     </>
   );

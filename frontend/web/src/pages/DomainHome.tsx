@@ -172,7 +172,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
   return (
     <div className="ki-page relative min-h-screen p-0 text-black sm:p-3 md:p-4 lg:p-6">
       <div className="ki-domain-glow pointer-events-none fixed inset-0 z-0" aria-hidden />
-      <div className="relative z-10 mx-auto min-h-[560px] w-full max-w-[1840px] overflow-hidden rounded-none border-white/70 bg-[#F4F7F2] shadow-[0_18px_60px_rgba(36,38,38,0.10)] sm:rounded-[28px] sm:border sm:shadow-[0_30px_90px_rgba(36,38,38,0.13)] lg:min-h-[860px] lg:rounded-[42px] 2xl:max-w-[2160px]">
+      <div className="ki-shell-safe relative z-10 mx-auto min-h-[560px] w-full max-w-[1840px] overflow-hidden rounded-none border-white/70 bg-[#F4F7F2] shadow-[0_18px_60px_rgba(36,38,38,0.10)] sm:rounded-[28px] sm:border sm:shadow-[0_30px_90px_rgba(36,38,38,0.13)] lg:min-h-[860px] lg:rounded-[42px] 2xl:max-w-[2160px]">
         <div className={`pointer-events-none absolute inset-0 rounded-[inherit] ${FRAME_BG}`} />
         {/* Halo métier à l'intérieur du cadre : anime le hero au changement de domaine. */}
         <div className="ki-domain-glow pointer-events-none absolute inset-0 rounded-[inherit]" aria-hidden />

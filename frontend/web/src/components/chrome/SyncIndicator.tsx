@@ -8,15 +8,21 @@ import { Link } from "react-router-dom";
 
 import { useHealth } from "@/lib/integrations";
 import { STATE_META, useRelativeTime, type DataState } from "@/components/ui/kit";
+import { useOnlineStatus } from "@/pwa/useNetwork";
 
 export function SyncIndicator() {
   const { data, isLoading, isError, dataUpdatedAt } = useHealth();
+  const online = useOnlineStatus();
   const relative = useRelativeTime(dataUpdatedAt ? new Date(dataUpdatedAt).toISOString() : undefined);
 
   let state: DataState = "disconnected";
   let detail = "Aucune source déclarée";
 
-  if (isLoading) {
+  // L'absence de réseau prime : inutile d'accuser les sources d'être en erreur.
+  if (!online) {
+    state = "offline";
+    detail = "Réseau indisponible — données non rafraîchies";
+  } else if (isLoading) {
     state = "connecting";
     detail = "Lecture du control-plane…";
   } else if (isError || !data) {
@@ -47,7 +53,9 @@ export function SyncIndicator() {
       to="/admin/integrations"
       title={title}
       aria-label={`Synchronisation des sources : ${meta.label}. ${detail}.`}
-      className="hidden min-h-[44px] items-center gap-2 rounded-full px-3 transition-colors hover:bg-white/70 xl:inline-flex"
+      className={`min-h-[44px] items-center gap-2 rounded-full px-3 transition-colors hover:bg-white/70 ${
+        state === "offline" ? "inline-flex" : "hidden xl:inline-flex"
+      }`}
       style={{ background: meta.bg }}
     >
       <span
