@@ -800,8 +800,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/models.py": {
-    "mtime": 1788713300.2321343,
-    "ast_hash": "9cfb9082cf01cb40e8f62a13714d3185",
+    "mtime": 1788714656.013471,
+    "ast_hash": "49df0a0bc9f955aad4194bc04caed57d",
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo.py": {
@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/serializers.py": {
-    "mtime": 1788713374.5534077,
-    "ast_hash": "fd8e1d6b89d0b49a499c2d497c1f0ab6",
+    "mtime": 1788714898.0276449,
+    "ast_hash": "a6b703ff28ced1a86ad1d7eb7ea2203d",
     "semantic_hash": ""
   },
   "backend/apps/integrations/services.py": {
@@ -830,8 +830,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788713662.4873326,
-    "ast_hash": "a869c75b2b876ef688968977651b524d",
+    "mtime": 1788715220.0537002,
+    "ast_hash": "05ea6f704de32d1938e661c16318abaa",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1788713626.9776607,
-    "ast_hash": "f0a941c3fa3ba00f211ddfcdc6f84df5",
+    "mtime": 1788714898.027268,
+    "ast_hash": "da4e5b760ffb287ed46ad7f6b9eee936",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/integrations/parts.tsx": {
-    "mtime": 1788713403.2273002,
-    "ast_hash": "be5d29c04ee98a744fbbf37120207685",
+    "mtime": 1788715657.4473965,
+    "ast_hash": "5baddf00461d5266550d90bf6bad7000",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/AppShell.tsx": {
@@ -1100,8 +1100,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/integrations.ts": {
-    "mtime": 1788658644.883003,
-    "ast_hash": "e844f60aaebfb0164bf650a9a62593de",
+    "mtime": 1788715657.4468002,
+    "ast_hash": "1a25ed2e1818a5b817e3fc591c2dd7eb",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/kmetric.ts": {
@@ -1140,8 +1140,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationForm.tsx": {
-    "mtime": 1788713450.8403163,
-    "ast_hash": "1190e30acab7002a1bc7e2d8756bdbe1",
+    "mtime": 1788715011.8448849,
+    "ast_hash": "b176f4f8f3424f55bf89d5c8a6d37654",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationHealth.tsx": {
@@ -1185,8 +1185,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/integrations.ts": {
-    "mtime": 1788713469.1750488,
-    "ast_hash": "8103d072795bef92795583172265b8ca",
+    "mtime": 1788715011.8445802,
+    "ast_hash": "7640a3adc317b24d8c4cc43be5fe89db",
     "semantic_hash": ""
   },
   "infra/postgres/docker-entrypoint-initdb.d/00-init-k-insight.sh": {

@@ -520,7 +520,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_models",
-      "community": 61,
+      "community": 242,
       "norm_label": "models.py"
     },
     {
@@ -530,7 +530,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "ai_copilot_models_providerkind",
-      "community": 61,
+      "community": 242,
       "norm_label": "providerkind"
     },
     {
@@ -540,7 +540,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "ai_copilot_models_aiprovider",
-      "community": 61,
+      "community": 242,
       "norm_label": "aiprovider"
     },
     {
@@ -550,7 +550,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "ai_copilot_models_meta",
-      "community": 61,
+      "community": 242,
       "norm_label": "meta"
     },
     {
@@ -560,7 +560,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "ai_copilot_models_aiprovider_str",
-      "community": 61,
+      "community": 242,
       "norm_label": ".__str__()"
     },
     {
@@ -590,7 +590,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "ai_copilot_models_role",
-      "community": 61,
+      "community": 242,
       "norm_label": "role"
     },
     {
@@ -600,7 +600,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "ai_copilot_models_aitool",
-      "community": 61,
+      "community": 242,
       "norm_label": "aitool"
     },
     {
@@ -610,7 +610,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "ai_copilot_models_mode",
-      "community": 61,
+      "community": 242,
       "norm_label": "mode"
     },
     {
@@ -620,7 +620,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "ai_copilot_models_aitool_str",
-      "community": 61,
+      "community": 242,
       "norm_label": ".__str__()"
     },
     {
@@ -640,7 +640,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "ai_copilot_models_status",
-      "community": 61,
+      "community": 242,
       "norm_label": "status"
     },
     {
@@ -670,7 +670,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "ai_copilot_models_decision",
-      "community": 61,
+      "community": 242,
       "norm_label": "decision"
     },
     {
@@ -720,7 +720,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_models_rationale_1",
-      "community": 61,
+      "community": 242,
       "norm_label": "modeles du k-insight ai copilot (phase 1 \u2014 fondation gouvernee).  principes (adr"
     },
     {
@@ -730,7 +730,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "ai_copilot_models_rationale_28",
-      "community": 61,
+      "community": 242,
       "norm_label": "moteur llm configure. le router les essaie par `priority` croissante (fallback)."
     },
     {
@@ -740,7 +740,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "ai_copilot_models_rationale_79",
-      "community": 61,
+      "community": 242,
       "norm_label": "declaration persistee d'un outil expose a l'ia (miroir de toolregistry)."
     },
     {
@@ -860,7 +860,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "ai_copilot_providers_offlinegroundedprovider",
-      "community": 79,
+      "community": 61,
       "norm_label": "offlinegroundedprovider"
     },
     {
@@ -870,7 +870,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "ai_copilot_providers_offlinegroundedprovider_is_available",
-      "community": 79,
+      "community": 61,
       "norm_label": ".is_available()"
     },
     {
@@ -880,7 +880,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "ai_copilot_providers_offlinegroundedprovider_complete",
-      "community": 79,
+      "community": 83,
       "norm_label": ".complete()"
     },
     {
@@ -990,7 +990,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "ai_copilot_providers_aiproviderrouter",
-      "community": 79,
+      "community": 61,
       "norm_label": "aiproviderrouter"
     },
     {
@@ -1050,7 +1050,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_67",
-      "community": 79,
+      "community": 61,
       "norm_label": "repli deterministe : renvoie la phrase ancree telle quelle (aucune invention, au"
     },
     {
@@ -1070,7 +1070,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_169",
-      "community": 79,
+      "community": 61,
       "norm_label": "essaie les providers dans l'ordre ; renvoie la 1re reponse, en tracant chaque te"
     },
     {
@@ -1150,7 +1150,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "ai_copilot_tasks_run_automation",
-      "community": 65,
+      "community": 269,
       "norm_label": "run_automation()"
     },
     {
@@ -1160,7 +1160,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "ai_copilot_tasks_run_due_automations",
-      "community": 65,
+      "community": 269,
       "norm_label": "run_due_automations()"
     },
     {
@@ -1180,7 +1180,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ai_copilot_tasks_rationale_18",
-      "community": 65,
+      "community": 269,
       "norm_label": "execute une automatisation (appelable directement \u2014 testable hors beat)."
     },
     {
@@ -1190,7 +1190,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "ai_copilot_tasks_rationale_59",
-      "community": 65,
+      "community": 269,
       "norm_label": "tache periodique (beat) : execute les automatisations dues."
     },
     {
@@ -1210,7 +1210,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "ai_copilot_tests_failing",
-      "community": 79,
+      "community": 61,
       "norm_label": "_failing"
     },
     {
@@ -1220,7 +1220,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ai_copilot_tests_failing_is_available",
-      "community": 79,
+      "community": 61,
       "norm_label": ".is_available()"
     },
     {
@@ -1240,7 +1240,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "ai_copilot_tests_working",
-      "community": 79,
+      "community": 61,
       "norm_label": "_working"
     },
     {
@@ -1250,7 +1250,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "ai_copilot_tests_working_is_available",
-      "community": 79,
+      "community": 61,
       "norm_label": ".is_available()"
     },
     {
@@ -1260,7 +1260,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "ai_copilot_tests_working_complete",
-      "community": 79,
+      "community": 61,
       "norm_label": ".complete()"
     },
     {
@@ -1270,7 +1270,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "ai_copilot_tests_routertest",
-      "community": 79,
+      "community": 61,
       "norm_label": "routertest"
     },
     {
@@ -1280,7 +1280,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "ai_copilot_tests_routertest_test_fallback_vers_provider_suivant",
-      "community": 79,
+      "community": 61,
       "norm_label": ".test_fallback_vers_provider_suivant()"
     },
     {
@@ -1290,7 +1290,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "ai_copilot_tests_routertest_test_repli_offline_quand_tout_echoue",
-      "community": 79,
+      "community": 61,
       "norm_label": ".test_repli_offline_quand_tout_echoue()"
     },
     {
@@ -1470,7 +1470,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest",
-      "community": 61,
+      "community": 271,
       "norm_label": "chatapitest"
     },
     {
@@ -1480,7 +1480,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_setup",
-      "community": 61,
+      "community": 271,
       "norm_label": ".setup()"
     },
     {
@@ -1490,7 +1490,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_chat_ancre_offline",
-      "community": 61,
+      "community": 271,
       "norm_label": ".test_chat_ancre_offline()"
     },
     {
@@ -1500,7 +1500,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_chat_refuse_hors_catalogue",
-      "community": 61,
+      "community": 271,
       "norm_label": ".test_chat_refuse_hors_catalogue()"
     },
     {
@@ -1510,7 +1510,7 @@
       "source_location": "L236",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_chat_message_vide_400",
-      "community": 61,
+      "community": 271,
       "norm_label": ".test_chat_message_vide_400()"
     },
     {
@@ -1520,7 +1520,7 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_conversation_listee_et_supprimable",
-      "community": 61,
+      "community": 271,
       "norm_label": ".test_conversation_listee_et_supprimable()"
     },
     {
@@ -1530,7 +1530,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_authentification_requise",
-      "community": 61,
+      "community": 271,
       "norm_label": ".test_authentification_requise()"
     },
     {
@@ -1540,7 +1540,7 @@
       "source_location": "L252",
       "_origin": "ast",
       "id": "ai_copilot_tests_automationtest",
-      "community": 65,
+      "community": 269,
       "norm_label": "automationtest"
     },
     {
@@ -1560,7 +1560,7 @@
       "source_location": "L262",
       "_origin": "ast",
       "id": "ai_copilot_tests_automationtest_teardown",
-      "community": 65,
+      "community": 269,
       "norm_label": ".teardown()"
     },
     {
@@ -1570,7 +1570,7 @@
       "source_location": "L266",
       "_origin": "ast",
       "id": "ai_copilot_tests_automationtest_test_automatisation_lecture_executee",
-      "community": 65,
+      "community": 269,
       "norm_label": ".test_automatisation_lecture_executee()"
     },
     {
@@ -1580,7 +1580,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "ai_copilot_tests_automationtest_test_automatisation_sensible_bloquee",
-      "community": 65,
+      "community": 269,
       "norm_label": ".test_automatisation_sensible_bloquee()"
     },
     {
@@ -1590,7 +1590,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "ai_copilot_tests_automationtest_test_is_due",
-      "community": 65,
+      "community": 269,
       "norm_label": ".test_is_due()"
     },
     {
@@ -1760,7 +1760,7 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "ai_copilot_tests_rationale_253",
-      "community": 65,
+      "community": 269,
       "norm_label": "phase 5 : automatisation lit en auto, mais une action sensible passe par approba"
     },
     {
@@ -2680,7 +2680,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "runtimeerror",
-      "community": 9,
+      "community": 81,
       "norm_label": "runtimeerror"
     },
     {
@@ -2960,7 +2960,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "governance_module_views_governed",
-      "community": 92,
+      "community": 2,
       "norm_label": "_governed()"
     },
     {
@@ -2970,7 +2970,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "response",
-      "community": 92,
+      "community": 2,
       "norm_label": "response"
     },
     {
@@ -3010,7 +3010,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "governance_module_views_domain_rows",
-      "community": 271,
+      "community": 64,
       "norm_label": "_domain_rows()"
     },
     {
@@ -3210,7 +3210,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "governance_module_views_rationale_89",
-      "community": 271,
+      "community": 64,
       "norm_label": "lignes de score brutes d'un domaine : rh via mart.hr_score, autres via mart.doma"
     },
     {
@@ -3310,7 +3310,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "governance_services_period_from_quarter",
-      "community": 92,
+      "community": 2,
       "norm_label": "period_from_quarter()"
     },
     {
@@ -3440,7 +3440,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "governance_services_rationale_24",
-      "community": 92,
+      "community": 2,
       "norm_label": "construit la periode [start, end[ d'un trimestre civil."
     },
     {
@@ -3510,7 +3510,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "governance_tests_failingmartgateway_fetch_hr_kpi",
-      "community": 9,
+      "community": 81,
       "norm_label": ".fetch_hr_kpi()"
     },
     {
@@ -3530,7 +3530,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "governance_tests_governanceapitest_setup",
-      "community": 9,
+      "community": 30,
       "norm_label": ".setup()"
     },
     {
@@ -3760,7 +3760,7 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest",
-      "community": 112,
+      "community": 71,
       "norm_label": "domainscoreapitest"
     },
     {
@@ -3770,7 +3770,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_setup",
-      "community": 112,
+      "community": 71,
       "norm_label": ".setup()"
     },
     {
@@ -3780,7 +3780,7 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_teardown",
-      "community": 112,
+      "community": 71,
       "norm_label": ".teardown()"
     },
     {
@@ -3790,7 +3790,7 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_domaine_non_autorise_403",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_domaine_non_autorise_403()"
     },
     {
@@ -3800,7 +3800,7 @@
       "source_location": "L300",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_domaine_inconnu_404",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_domaine_inconnu_404()"
     },
     {
@@ -3810,7 +3810,7 @@
       "source_location": "L305",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_score_immobilier_pondere",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_score_immobilier_pondere()"
     },
     {
@@ -3820,7 +3820,7 @@
       "source_location": "L319",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_isolation_par_domaine",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_isolation_par_domaine()"
     },
     {
@@ -3830,7 +3830,7 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_par_filiale_et_trend",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_par_filiale_et_trend()"
     },
     {
@@ -3840,7 +3840,7 @@
       "source_location": "L336",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_perimetre_restreint",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_perimetre_restreint()"
     },
     {
@@ -3850,7 +3850,7 @@
       "source_location": "L345",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_gouverne_si_domaine_non_alimente",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_gouverne_si_domaine_non_alimente()"
     },
     {
@@ -3860,7 +3860,7 @@
       "source_location": "L354",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_test_journalise",
-      "community": 112,
+      "community": 71,
       "norm_label": ".test_journalise()"
     },
     {
@@ -3870,7 +3870,7 @@
       "source_location": "L362",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest",
-      "community": 30,
+      "community": 263,
       "norm_label": "groupscoreapitest"
     },
     {
@@ -3880,7 +3880,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_setup",
-      "community": 30,
+      "community": 263,
       "norm_label": ".setup()"
     },
     {
@@ -3890,7 +3890,7 @@
       "source_location": "L382",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_teardown",
-      "community": 30,
+      "community": 263,
       "norm_label": ".teardown()"
     },
     {
@@ -3900,7 +3900,7 @@
       "source_location": "L385",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_indice_consolide_pondere_et_renormalise",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_indice_consolide_pondere_et_renormalise()"
     },
     {
@@ -3910,7 +3910,7 @@
       "source_location": "L399",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_indice_par_filiale",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_indice_par_filiale()"
     },
     {
@@ -3930,7 +3930,7 @@
       "source_location": "L418",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_journalise",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_journalise()"
     },
     {
@@ -3940,7 +3940,7 @@
       "source_location": "L425",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_xlsx",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_export_xlsx()"
     },
     {
@@ -3950,7 +3950,7 @@
       "source_location": "L433",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_pdf",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_export_pdf()"
     },
     {
@@ -3960,7 +3960,7 @@
       "source_location": "L440",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_format_inconnu_400",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_export_format_inconnu_400()"
     },
     {
@@ -3970,7 +3970,7 @@
       "source_location": "L445",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_journalise",
-      "community": 30,
+      "community": 263,
       "norm_label": ".test_export_journalise()"
     },
     {
@@ -4040,7 +4040,7 @@
       "source_location": "L502",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest",
-      "community": 71,
+      "community": 30,
       "norm_label": "rbacdomainenforcementtest"
     },
     {
@@ -4050,7 +4050,7 @@
       "source_location": "L505",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_setup",
-      "community": 71,
+      "community": 30,
       "norm_label": ".setup()"
     },
     {
@@ -4060,7 +4060,7 @@
       "source_location": "L515",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_teardown",
-      "community": 71,
+      "community": 30,
       "norm_label": ".teardown()"
     },
     {
@@ -4070,7 +4070,7 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_refuse_domaine_finance",
-      "community": 71,
+      "community": 30,
       "norm_label": ".test_drh_refuse_domaine_finance()"
     },
     {
@@ -4080,7 +4080,7 @@
       "source_location": "L522",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_autorise_son_domaine_hr",
-      "community": 71,
+      "community": 30,
       "norm_label": ".test_drh_autorise_son_domaine_hr()"
     },
     {
@@ -4090,7 +4090,7 @@
       "source_location": "L526",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_refuse_groupe_consolide",
-      "community": 71,
+      "community": 30,
       "norm_label": ".test_drh_refuse_groupe_consolide()"
     },
     {
@@ -4100,7 +4100,7 @@
       "source_location": "L531",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_reader_refuse_hr_kpi",
-      "community": 71,
+      "community": 30,
       "norm_label": ".test_reader_refuse_hr_kpi()"
     },
     {
@@ -4110,7 +4110,7 @@
       "source_location": "L536",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_reader_autorise_groupe",
-      "community": 71,
+      "community": 30,
       "norm_label": ".test_reader_autorise_groupe()"
     },
     {
@@ -4360,7 +4360,7 @@
       "source_location": "L274",
       "_origin": "ast",
       "id": "governance_tests_rationale_274",
-      "community": 112,
+      "community": 71,
       "norm_label": "score de gouvernance generique : ponderation par domaine, isolation, rbac, gouve"
     },
     {
@@ -4370,7 +4370,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "governance_tests_rationale_363",
-      "community": 30,
+      "community": 263,
       "norm_label": "indice de gouvernance groupe : agregation ponderee des scores de domaine."
     },
     {
@@ -4390,7 +4390,7 @@
       "source_location": "L503",
       "_origin": "ast",
       "id": "governance_tests_rationale_503",
-      "community": 71,
+      "community": 30,
       "norm_label": "frontiere de securite : la rbac par domaine est appliquee cote backend (pas que"
     },
     {
@@ -4450,7 +4450,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views",
-      "community": 64,
+      "community": 2,
       "norm_label": "views.py"
     },
     {
@@ -4460,7 +4460,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "governance_views_forbidden",
-      "community": 92,
+      "community": 2,
       "norm_label": "_forbidden()"
     },
     {
@@ -4470,7 +4470,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "governance_views_catalogview",
-      "community": 64,
+      "community": 2,
       "norm_label": "catalogview"
     },
     {
@@ -4480,7 +4480,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "governance_views_catalogview_get",
-      "community": 92,
+      "community": 2,
       "norm_label": ".get()"
     },
     {
@@ -4500,7 +4500,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "governance_views_hrkpiview_get",
-      "community": 92,
+      "community": 2,
       "norm_label": ".get()"
     },
     {
@@ -4510,7 +4510,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "governance_views_governanceoverviewview",
-      "community": 64,
+      "community": 2,
       "norm_label": "governanceoverviewview"
     },
     {
@@ -4520,7 +4520,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "governance_views_governanceoverviewview_get",
-      "community": 92,
+      "community": 2,
       "norm_label": ".get()"
     },
     {
@@ -4530,7 +4530,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views_rationale_1",
-      "community": 64,
+      "community": 2,
       "norm_label": "api governance (drf). lecture seule, filtree par perimetre, journalisee."
     },
     {
@@ -4540,7 +4540,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "governance_views_rationale_26",
-      "community": 64,
+      "community": 2,
       "norm_label": "catalogue des metriques (source de verite pour le frontend et l'ia, adr-0007)."
     },
     {
@@ -4560,7 +4560,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "governance_views_rationale_99",
-      "community": 64,
+      "community": 2,
       "norm_label": "vue agregee consommee par le dashboard react."
     },
     {
@@ -4877,7 +4877,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L132",
+      "source_location": "L136",
       "_origin": "ast",
       "id": "integrations_models_datasource_str",
       "community": 10,
@@ -4887,7 +4887,7 @@
       "label": ".set_status()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L135",
+      "source_location": "L139",
       "_origin": "ast",
       "id": "integrations_models_datasource_set_status",
       "community": 10,
@@ -4897,7 +4897,7 @@
       "label": "DataConnector",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L140",
+      "source_location": "L144",
       "_origin": "ast",
       "id": "integrations_models_dataconnector",
       "community": 10,
@@ -4907,7 +4907,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L156",
+      "source_location": "L160",
       "_origin": "ast",
       "id": "integrations_models_dataconnector_str",
       "community": 10,
@@ -4917,7 +4917,7 @@
       "label": "ConnectorEndpoint",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L160",
+      "source_location": "L164",
       "_origin": "ast",
       "id": "integrations_models_connectorendpoint",
       "community": 10,
@@ -4927,7 +4927,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L175",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "integrations_models_connectorendpoint_str",
       "community": 10,
@@ -4937,7 +4937,7 @@
       "label": "ConnectorCredential",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L179",
+      "source_location": "L183",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential",
       "community": 18,
@@ -4947,7 +4947,7 @@
       "label": ".set_secret()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L190",
+      "source_location": "L194",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_set_secret",
       "community": 18,
@@ -4957,7 +4957,7 @@
       "label": ".secret()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L194",
+      "source_location": "L198",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_secret",
       "community": 18,
@@ -4967,7 +4967,7 @@
       "label": ".is_set()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L198",
+      "source_location": "L202",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_is_set",
       "community": 18,
@@ -4977,7 +4977,7 @@
       "label": ".masked()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L202",
+      "source_location": "L206",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_masked",
       "community": 18,
@@ -4987,7 +4987,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L205",
+      "source_location": "L209",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_str",
       "community": 18,
@@ -4997,7 +4997,7 @@
       "label": "FieldMapping",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L209",
+      "source_location": "L213",
       "_origin": "ast",
       "id": "integrations_models_fieldmapping",
       "community": 10,
@@ -5007,7 +5007,7 @@
       "label": "SyncJob",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L223",
+      "source_location": "L227",
       "_origin": "ast",
       "id": "integrations_models_syncjob",
       "community": 10,
@@ -5017,7 +5017,7 @@
       "label": "SyncLog",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L238",
+      "source_location": "L242",
       "_origin": "ast",
       "id": "integrations_models_synclog",
       "community": 10,
@@ -5027,7 +5027,7 @@
       "label": "SyncError",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L249",
+      "source_location": "L253",
       "_origin": "ast",
       "id": "integrations_models_syncerror",
       "community": 10,
@@ -5037,7 +5037,7 @@
       "label": "Person",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L261",
+      "source_location": "L265",
       "_origin": "ast",
       "id": "integrations_models_person",
       "community": 265,
@@ -5047,7 +5047,7 @@
       "label": "Kind",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L269",
+      "source_location": "L273",
       "_origin": "ast",
       "id": "integrations_models_kind",
       "community": 18,
@@ -5057,7 +5057,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L282",
+      "source_location": "L286",
       "_origin": "ast",
       "id": "integrations_models_person_str",
       "community": 265,
@@ -5067,7 +5067,7 @@
       "label": "ExternalIdentity",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L286",
+      "source_location": "L290",
       "_origin": "ast",
       "id": "integrations_models_externalidentity",
       "community": 265,
@@ -5077,7 +5077,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L303",
+      "source_location": "L307",
       "_origin": "ast",
       "id": "integrations_models_externalidentity_str",
       "community": 265,
@@ -5087,7 +5087,7 @@
       "label": "WebhookEvent",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L307",
+      "source_location": "L311",
       "_origin": "ast",
       "id": "integrations_models_webhookevent",
       "community": 10,
@@ -5127,9 +5127,9 @@
       "label": "Configuration de connexion d'une source (1-1).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L141",
+      "source_location": "L145",
       "_origin": "ast",
-      "id": "integrations_models_rationale_141",
+      "id": "integrations_models_rationale_145",
       "community": 10,
       "norm_label": "configuration de connexion d'une source (1-1)."
     },
@@ -5137,9 +5137,9 @@
       "label": "Un point d'acc\u00e8s (endpoint REST, requ\u00eate GraphQL, table, fichier\u2026).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L161",
+      "source_location": "L165",
       "_origin": "ast",
-      "id": "integrations_models_rationale_161",
+      "id": "integrations_models_rationale_165",
       "community": 10,
       "norm_label": "un point d'acces (endpoint rest, requete graphql, table, fichier...)."
     },
@@ -5147,9 +5147,9 @@
       "label": "Secret chiffr\u00e9 at-rest. Jamais expos\u00e9 en clair par l'API.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L180",
+      "source_location": "L184",
       "_origin": "ast",
-      "id": "integrations_models_rationale_180",
+      "id": "integrations_models_rationale_184",
       "community": 18,
       "norm_label": "secret chiffre at-rest. jamais expose en clair par l'api."
     },
@@ -5157,9 +5157,9 @@
       "label": "Correspondance champ source \u2192 champ cible (vers le mart).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L210",
+      "source_location": "L214",
       "_origin": "ast",
-      "id": "integrations_models_rationale_210",
+      "id": "integrations_models_rationale_214",
       "community": 10,
       "norm_label": "correspondance champ source \u2192 champ cible (vers le mart)."
     },
@@ -5167,9 +5167,9 @@
       "label": "Personne r\u00e9elle (r\u00e9f\u00e9rentiel identit\u00e9 transverse).      Squelette volontairement",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L262",
+      "source_location": "L266",
       "_origin": "ast",
-      "id": "integrations_models_rationale_262",
+      "id": "integrations_models_rationale_266",
       "community": 265,
       "norm_label": "personne reelle (referentiel identite transverse).      squelette volontairement"
     },
@@ -5177,9 +5177,9 @@
       "label": "Lien 1 personne \u2194 1 identifiant dans une source externe.      `source` = code de",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L287",
+      "source_location": "L291",
       "_origin": "ast",
-      "id": "integrations_models_rationale_287",
+      "id": "integrations_models_rationale_291",
       "community": 265,
       "norm_label": "lien 1 personne \u2194 1 identifiant dans une source externe.      `source` = code de"
     },
@@ -5377,7 +5377,7 @@
       "label": "DataSourceSerializer",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L73",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "integrations_serializers_datasourceserializer",
       "community": 10,
@@ -5387,7 +5387,7 @@
       "label": ".get_jobs_count()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L90",
+      "source_location": "L97",
       "_origin": "ast",
       "id": "integrations_serializers_datasourceserializer_get_jobs_count",
       "community": 10,
@@ -5397,7 +5397,7 @@
       "label": ".get_errors_count()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L93",
+      "source_location": "L100",
       "_origin": "ast",
       "id": "integrations_serializers_datasourceserializer_get_errors_count",
       "community": 10,
@@ -5407,7 +5407,7 @@
       "label": "DataSourceListSerializer",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L97",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "integrations_serializers_datasourcelistserializer",
       "community": 10,
@@ -5417,7 +5417,7 @@
       "label": ".get_last_sync_at()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L114",
+      "source_location": "L121",
       "_origin": "ast",
       "id": "integrations_serializers_datasourcelistserializer_get_last_sync_at",
       "community": 272,
@@ -5427,7 +5427,7 @@
       "label": ".get_recent_errors()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L119",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "integrations_serializers_datasourcelistserializer_get_recent_errors",
       "community": 273,
@@ -5437,7 +5437,7 @@
       "label": "SyncJobSerializer",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L136",
+      "source_location": "L143",
       "_origin": "ast",
       "id": "integrations_serializers_syncjobserializer",
       "community": 10,
@@ -5447,7 +5447,7 @@
       "label": "SyncLogSerializer",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L142",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "integrations_serializers_synclogserializer",
       "community": 10,
@@ -5457,7 +5457,7 @@
       "label": "SyncErrorSerializer",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L148",
+      "source_location": "L155",
       "_origin": "ast",
       "id": "integrations_serializers_syncerrorserializer",
       "community": 10,
@@ -5467,7 +5467,7 @@
       "label": "WebhookEventSerializer",
       "file_type": "code",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L154",
+      "source_location": "L161",
       "_origin": "ast",
       "id": "integrations_serializers_webhookeventserializer",
       "community": 10,
@@ -5477,9 +5477,9 @@
       "label": "Version all\u00e9g\u00e9e pour la liste / sant\u00e9.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L98",
+      "source_location": "L105",
       "_origin": "ast",
-      "id": "integrations_serializers_rationale_98",
+      "id": "integrations_serializers_rationale_105",
       "community": 10,
       "norm_label": "version allegee pour la liste / sante."
     },
@@ -5487,9 +5487,9 @@
       "label": "Fin de la derni\u00e8re synchronisation r\u00e9ellement termin\u00e9e.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L115",
+      "source_location": "L122",
       "_origin": "ast",
-      "id": "integrations_serializers_rationale_115",
+      "id": "integrations_serializers_rationale_122",
       "community": 272,
       "norm_label": "fin de la derniere synchronisation reellement terminee."
     },
@@ -5497,9 +5497,9 @@
       "label": "Erreurs non r\u00e9solues les plus r\u00e9centes. Le message vient du connecteur,",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L120",
+      "source_location": "L127",
       "_origin": "ast",
-      "id": "integrations_serializers_rationale_120",
+      "id": "integrations_serializers_rationale_127",
       "community": 273,
       "norm_label": "erreurs non resolues les plus recentes. le message vient du connecteur,"
     },
@@ -7457,7 +7457,7 @@
       "label": ".test_aucun_secret_dans_les_metriques()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L722",
+      "source_location": "L726",
       "_origin": "ast",
       "id": "integrations_tests_shieldobservabilitytest_test_aucun_secret_dans_les_metriques",
       "community": 213,
@@ -7467,7 +7467,7 @@
       "label": ".test_429_respecte_retry_after_et_est_qualifie()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L732",
+      "source_location": "L736",
       "_origin": "ast",
       "id": "integrations_tests_shieldobservabilitytest_test_429_respecte_retry_after_et_est_qualifie",
       "community": 213,
@@ -7477,7 +7477,7 @@
       "label": ".test_requetes_identiques_dedupliquees()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L743",
+      "source_location": "L747",
       "_origin": "ast",
       "id": "integrations_tests_shieldobservabilitytest_test_requetes_identiques_dedupliquees",
       "community": 213,
@@ -7487,7 +7487,7 @@
       "label": "IntegrationCentreTest",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L764",
+      "source_location": "L768",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest",
       "community": 111,
@@ -7497,7 +7497,7 @@
       "label": ".setUp()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L767",
+      "source_location": "L771",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_setup",
       "community": 111,
@@ -7507,7 +7507,7 @@
       "label": ".test_role_insuffisant_donne_403_et_non_500()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L774",
+      "source_location": "L778",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_role_insuffisant_donne_403_et_non_500",
       "community": 111,
@@ -7517,7 +7517,7 @@
       "label": ".test_non_authentifie_donne_401()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L782",
+      "source_location": "L786",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_non_authentifie_donne_401",
       "community": 111,
@@ -7527,7 +7527,7 @@
       "label": ".test_admin_integration_accede()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L785",
+      "source_location": "L789",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_admin_integration_accede",
       "community": 111,
@@ -7537,7 +7537,7 @@
       "label": "._creer()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L790",
+      "source_location": "L794",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_creer",
       "community": 111,
@@ -7547,7 +7547,7 @@
       "label": ".test_creation_source_avec_environnement()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L797",
+      "source_location": "L801",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_creation_source_avec_environnement",
       "community": 111,
@@ -7557,7 +7557,7 @@
       "label": ".test_types_sap_et_edw_acceptes()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L806",
+      "source_location": "L810",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_types_sap_et_edw_acceptes",
       "community": 111,
@@ -7567,7 +7567,7 @@
       "label": ".test_secret_chiffre_et_jamais_renvoye_en_clair()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L812",
+      "source_location": "L816",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_secret_chiffre_et_jamais_renvoye_en_clair",
       "community": 111,
@@ -7577,7 +7577,7 @@
       "label": ".test_test_connexion_shield_utilise_le_vrai_healthcheck()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L834",
+      "source_location": "L838",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_test_connexion_shield_utilise_le_vrai_healthcheck",
       "community": 111,
@@ -7587,7 +7587,7 @@
       "label": ".test_test_connexion_refus_shield_est_signale()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L851",
+      "source_location": "L855",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_test_connexion_refus_shield_est_signale",
       "community": 111,
@@ -7597,7 +7597,7 @@
       "label": ".test_test_connexion_sans_url_echoue_avant_le_reseau()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L866",
+      "source_location": "L870",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_test_connexion_sans_url_echoue_avant_le_reseau",
       "community": 111,
@@ -7607,7 +7607,7 @@
       "label": ".test_odoo_exige_une_base_de_donnees()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L874",
+      "source_location": "L878",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_odoo_exige_une_base_de_donnees",
       "community": 111,
@@ -7617,7 +7617,7 @@
       "label": ".test_desactivation_change_le_statut()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L886",
+      "source_location": "L890",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_desactivation_change_le_statut",
       "community": 111,
@@ -7627,7 +7627,7 @@
       "label": ".test_sante_globale_expose_partial_stale_et_latence()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L895",
+      "source_location": "L899",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_sante_globale_expose_partial_stale_et_latence",
       "community": 111,
@@ -7637,7 +7637,7 @@
       "label": ".test_source_connectee_mais_non_testee_depuis_longtemps_est_perimee()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L913",
+      "source_location": "L917",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_source_connectee_mais_non_testee_depuis_longtemps_est_perimee",
       "community": 111,
@@ -7647,11 +7647,161 @@
       "label": ".test_liste_expose_les_champs_de_la_carte()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L925",
+      "source_location": "L929",
       "_origin": "ast",
       "id": "integrations_tests_integrationcentretest_test_liste_expose_les_champs_de_la_carte",
       "community": 111,
       "norm_label": ".test_liste_expose_les_champs_de_la_carte()"
+    },
+    {
+      "label": "AssistantCreationTest",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L938",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest",
+      "community": 66,
+      "norm_label": "assistantcreationtest"
+    },
+    {
+      "label": ".setUp()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L947",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_setup",
+      "community": 66,
+      "norm_label": ".setup()"
+    },
+    {
+      "label": "._post()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L959",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_post",
+      "community": 66,
+      "norm_label": "._post()"
+    },
+    {
+      "label": ".test_super_administrateur_peut_creer()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L967",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_super_administrateur_peut_creer",
+      "community": 66,
+      "norm_label": ".test_super_administrateur_peut_creer()"
+    },
+    {
+      "label": ".test_admin_integration_peut_creer()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L970",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_admin_integration_peut_creer",
+      "community": 66,
+      "norm_label": ".test_admin_integration_peut_creer()"
+    },
+    {
+      "label": ".test_role_metier_seul_refuse_avec_un_403_explicite()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L973",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_role_metier_seul_refuse_avec_un_403_explicite",
+      "community": 66,
+      "norm_label": ".test_role_metier_seul_refuse_avec_un_403_explicite()"
+    },
+    {
+      "label": ".test_environnement_non_defaut_persiste_et_revient_dans_la_reponse()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L986",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_environnement_non_defaut_persiste_et_revient_dans_la_reponse",
+      "community": 66,
+      "norm_label": ".test_environnement_non_defaut_persiste_et_revient_dans_la_reponse()"
+    },
+    {
+      "label": ".test_type_et_module_choisis_ne_sont_pas_remplaces()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L998",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_type_et_module_choisis_ne_sont_pas_remplaces",
+      "community": 66,
+      "norm_label": ".test_type_et_module_choisis_ne_sont_pas_remplaces()"
+    },
+    {
+      "label": ".test_creation_odoo_et_rest()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1008",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_creation_odoo_et_rest",
+      "community": 66,
+      "norm_label": ".test_creation_odoo_et_rest()"
+    },
+    {
+      "label": ".test_slug_deja_pris_donne_400_en_nommant_le_champ()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1017",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_slug_deja_pris_donne_400_en_nommant_le_champ",
+      "community": 66,
+      "norm_label": ".test_slug_deja_pris_donne_400_en_nommant_le_champ()"
+    },
+    {
+      "label": ".test_type_inconnu_donne_400_et_non_500()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1024",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_type_inconnu_donne_400_et_non_500",
+      "community": 66,
+      "norm_label": ".test_type_inconnu_donne_400_et_non_500()"
+    },
+    {
+      "label": ".test_mode_demo_desactive_par_defaut()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1030",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_mode_demo_desactive_par_defaut",
+      "community": 66,
+      "norm_label": ".test_mode_demo_desactive_par_defaut()"
+    },
+    {
+      "label": ".test_source_non_connectee_reste_deconnectee_et_ne_synchronise_pas()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1035",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_source_non_connectee_reste_deconnectee_et_ne_synchronise_pas",
+      "community": 66,
+      "norm_label": ".test_source_non_connectee_reste_deconnectee_et_ne_synchronise_pas()"
+    },
+    {
+      "label": ".test_test_connexion_renvoie_la_latence_et_la_date()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1052",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_test_connexion_renvoie_la_latence_et_la_date",
+      "community": 66,
+      "norm_label": ".test_test_connexion_renvoie_la_latence_et_la_date()"
+    },
+    {
+      "label": ".test_parcours_assistant_de_bout_en_bout()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1069",
+      "_origin": "ast",
+      "id": "integrations_tests_assistantcreationtest_test_parcours_assistant_de_bout_en_bout",
+      "community": 66,
+      "norm_label": ".test_parcours_assistant_de_bout_en_bout()"
     },
     {
       "label": "Tests du control-plane d'int\u00e9gration et du connecteur Kaydan Shield.",
@@ -7877,9 +8027,9 @@
       "label": "Deux widgets demandant la m\u00eame donn\u00e9e ne doivent produire qu'un appel.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L744",
+      "source_location": "L748",
       "_origin": "ast",
-      "id": "integrations_tests_rationale_744",
+      "id": "integrations_tests_rationale_748",
       "community": 213,
       "norm_label": "deux widgets demandant la meme donnee ne doivent produire qu'un appel."
     },
@@ -7887,9 +8037,9 @@
       "label": "Centre d'int\u00e9grations : cr\u00e9ation, test r\u00e9el, secrets, sant\u00e9 consolid\u00e9e.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L765",
+      "source_location": "L769",
       "_origin": "ast",
-      "id": "integrations_tests_rationale_765",
+      "id": "integrations_tests_rationale_769",
       "community": 111,
       "norm_label": "centre d'integrations : creation, test reel, secrets, sante consolidee."
     },
@@ -7897,9 +8047,9 @@
       "label": "Le centre est r\u00e9serv\u00e9 : la cause doit \u00eatre un refus explicite.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L775",
+      "source_location": "L779",
       "_origin": "ast",
-      "id": "integrations_tests_rationale_775",
+      "id": "integrations_tests_rationale_779",
       "community": 111,
       "norm_label": "le centre est reserve : la cause doit etre un refus explicite."
     },
@@ -7907,9 +8057,9 @@
       "label": "Un jeton refus\u00e9 ne doit pas passer pour \u00ab h\u00f4te joignable \u00bb.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L852",
+      "source_location": "L856",
       "_origin": "ast",
-      "id": "integrations_tests_rationale_852",
+      "id": "integrations_tests_rationale_856",
       "community": 111,
       "norm_label": "un jeton refuse ne doit pas passer pour \u00ab hote joignable \u00bb."
     },
@@ -7917,11 +8067,81 @@
       "label": "Ne pas inventer l'API Odoo : sans `database`, la config est incompl\u00e8te.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L875",
+      "source_location": "L879",
       "_origin": "ast",
-      "id": "integrations_tests_rationale_875",
+      "id": "integrations_tests_rationale_879",
       "community": 111,
       "norm_label": "ne pas inventer l'api odoo : sans `database`, la config est incomplete."
+    },
+    {
+      "label": "Cr\u00e9ation d'une source depuis l'assistant en trois \u00e9tapes.      Le sympt\u00f4me rappo",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L939",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_939",
+      "community": 66,
+      "norm_label": "creation d'une source depuis l'assistant en trois etapes.      le symptome rappo"
+    },
+    {
+      "label": "Un DG non superutilisateur est refus\u00e9 \u2014 et on doit pouvoir le lire.          C'e",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L974",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_974",
+      "community": 66,
+      "norm_label": "un dg non superutilisateur est refuse \u2014 et on doit pouvoir le lire.          c'e"
+    },
+    {
+      "label": "`environment` absent du s\u00e9rialiseur \u00e9tait ignor\u00e9 SANS erreur.          La requ\u00eat",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L987",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_987",
+      "community": 66,
+      "norm_label": "`environment` absent du serialiseur etait ignore sans erreur.          la requet"
+    },
+    {
+      "label": "La source Shield s'enregistrait en \u00ab API REST / Autre \u00bb.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L999",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_999",
+      "community": 66,
+      "norm_label": "la source shield s'enregistrait en \u00ab api rest / autre \u00bb."
+    },
+    {
+      "label": "Sans demande explicite, aucune source ne part en mode simul\u00e9.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1031",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_1031",
+      "community": 66,
+      "norm_label": "sans demande explicite, aucune source ne part en mode simule."
+    },
+    {
+      "label": "L'\u00e9tape 3 annonce \u00ab connect\u00e9 en N ms \u00bb : la mesure vient du serveur.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1053",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_1053",
+      "community": 66,
+      "norm_label": "l'etape 3 annonce \u00ab connecte en n ms \u00bb : la mesure vient du serveur."
+    },
+    {
+      "label": "Rejoue les quatre appels que l'assistant encha\u00eene \u00e0 l'\u00e9tape 3.          Cr\u00e9er la",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1070",
+      "_origin": "ast",
+      "id": "integrations_tests_rationale_1070",
+      "community": 66,
+      "norm_label": "rejoue les quatre appels que l'assistant enchaine a l'etape 3.          creer la"
     },
     {
       "label": "urls.py",
@@ -8117,7 +8337,7 @@
       "label": ".sync_now()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L166",
+      "source_location": "L177",
       "_origin": "ast",
       "id": "integrations_views_datasourceviewset_sync_now",
       "community": 96,
@@ -8127,7 +8347,7 @@
       "label": ".toggle_active()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L173",
+      "source_location": "L184",
       "_origin": "ast",
       "id": "integrations_views_datasourceviewset_toggle_active",
       "community": 96,
@@ -8137,7 +8357,7 @@
       "label": ".health()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L182",
+      "source_location": "L193",
       "_origin": "ast",
       "id": "integrations_views_datasourceviewset_health",
       "community": 96,
@@ -8147,7 +8367,7 @@
       "label": "DataConnectorViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L235",
+      "source_location": "L246",
       "_origin": "ast",
       "id": "integrations_views_dataconnectorviewset",
       "community": 10,
@@ -8157,7 +8377,7 @@
       "label": "ConnectorEndpointViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L241",
+      "source_location": "L252",
       "_origin": "ast",
       "id": "integrations_views_connectorendpointviewset",
       "community": 10,
@@ -8167,7 +8387,7 @@
       "label": ".get_queryset()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L245",
+      "source_location": "L256",
       "_origin": "ast",
       "id": "integrations_views_connectorendpointviewset_get_queryset",
       "community": 96,
@@ -8177,7 +8397,7 @@
       "label": "ConnectorCredentialViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L251",
+      "source_location": "L262",
       "_origin": "ast",
       "id": "integrations_views_connectorcredentialviewset",
       "community": 10,
@@ -8187,7 +8407,7 @@
       "label": ".get_queryset()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L255",
+      "source_location": "L266",
       "_origin": "ast",
       "id": "integrations_views_connectorcredentialviewset_get_queryset",
       "community": 96,
@@ -8197,7 +8417,7 @@
       "label": "FieldMappingViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L261",
+      "source_location": "L272",
       "_origin": "ast",
       "id": "integrations_views_fieldmappingviewset",
       "community": 10,
@@ -8207,7 +8427,7 @@
       "label": ".get_queryset()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L265",
+      "source_location": "L276",
       "_origin": "ast",
       "id": "integrations_views_fieldmappingviewset_get_queryset",
       "community": 96,
@@ -8217,7 +8437,7 @@
       "label": "_SourceScopedReadOnly",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L271",
+      "source_location": "L282",
       "_origin": "ast",
       "id": "integrations_views_sourcescopedreadonly",
       "community": 10,
@@ -8227,7 +8447,7 @@
       "label": ".get_queryset()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L275",
+      "source_location": "L286",
       "_origin": "ast",
       "id": "integrations_views_sourcescopedreadonly_get_queryset",
       "community": 96,
@@ -8237,7 +8457,7 @@
       "label": "SyncJobViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L281",
+      "source_location": "L292",
       "_origin": "ast",
       "id": "integrations_views_syncjobviewset",
       "community": 10,
@@ -8247,7 +8467,7 @@
       "label": "SyncLogViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L286",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "integrations_views_synclogviewset",
       "community": 10,
@@ -8257,7 +8477,7 @@
       "label": "SyncErrorViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L291",
+      "source_location": "L302",
       "_origin": "ast",
       "id": "integrations_views_syncerrorviewset",
       "community": 10,
@@ -8267,7 +8487,7 @@
       "label": "WebhookEventViewSet",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L296",
+      "source_location": "L307",
       "_origin": "ast",
       "id": "integrations_views_webhookeventviewset",
       "community": 10,
@@ -8277,7 +8497,7 @@
       "label": "WebhookReceiver",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L301",
+      "source_location": "L312",
       "_origin": "ast",
       "id": "integrations_views_webhookreceiver",
       "community": 10,
@@ -8287,7 +8507,7 @@
       "label": ".post()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L307",
+      "source_location": "L318",
       "_origin": "ast",
       "id": "integrations_views_webhookreceiver_post",
       "community": 96,
@@ -8347,9 +8567,9 @@
       "label": "Sant\u00e9 consolid\u00e9e du parc de connecteurs.          `stale` m\u00e9rite une explication",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L183",
+      "source_location": "L194",
       "_origin": "ast",
-      "id": "integrations_views_rationale_183",
+      "id": "integrations_views_rationale_194",
       "community": 96,
       "norm_label": "sante consolidee du parc de connecteurs.          `stale` merite une explication"
     },
@@ -8357,9 +8577,9 @@
       "label": "R\u00e9ception des webhooks sources. Public mais signature v\u00e9rifi\u00e9e + journalis\u00e9e.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L302",
+      "source_location": "L313",
       "_origin": "ast",
-      "id": "integrations_views_rationale_302",
+      "id": "integrations_views_rationale_313",
       "community": 10,
       "norm_label": "reception des webhooks sources. public mais signature verifiee + journalisee."
     },
@@ -8891,7 +9111,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_core",
-      "community": 14,
+      "community": 12,
       "norm_label": "core.py"
     },
     {
@@ -8901,7 +9121,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "kpi_core_kpierror",
-      "community": 14,
+      "community": 11,
       "norm_label": "kpierror"
     },
     {
@@ -8921,7 +9141,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "kpi_core_period",
-      "community": 14,
+      "community": 12,
       "norm_label": "period"
     },
     {
@@ -8931,7 +9151,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "kpi_core_period_post_init",
-      "community": 14,
+      "community": 11,
       "norm_label": ".__post_init__()"
     },
     {
@@ -8941,7 +9161,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "kpi_core_period_contains",
-      "community": 14,
+      "community": 12,
       "norm_label": ".contains()"
     },
     {
@@ -8951,7 +9171,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "date",
-      "community": 14,
+      "community": 12,
       "norm_label": "date"
     },
     {
@@ -8961,7 +9181,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "kpi_core_period_last_instant",
-      "community": 14,
+      "community": 12,
       "norm_label": ".last_instant()"
     },
     {
@@ -8971,7 +9191,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "kpi_core_metricresult",
-      "community": 14,
+      "community": 13,
       "norm_label": "metricresult"
     },
     {
@@ -9021,7 +9241,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_core_rationale_1",
-      "community": 14,
+      "community": 12,
       "norm_label": "types et helpers transverses du moteur de kpi.  conventions (coherentes avec aug"
     },
     {
@@ -9031,7 +9251,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "kpi_core_rationale_22",
-      "community": 14,
+      "community": 11,
       "norm_label": "erreur de coherence dans un calcul de kpi (entree invalide)."
     },
     {
@@ -9041,7 +9261,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "kpi_core_rationale_27",
-      "community": 14,
+      "community": 12,
       "norm_label": "periode d'analyse, bornes demi-ouvertes [start, end[.      `start` est inclus, `"
     },
     {
@@ -9051,7 +9271,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "kpi_core_rationale_41",
-      "community": 14,
+      "community": 12,
       "norm_label": "vrai si `d` appartient a [start, end[."
     },
     {
@@ -9061,7 +9281,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "kpi_core_rationale_46",
-      "community": 14,
+      "community": 12,
       "norm_label": "dernier instant *inclus* dans la periode (end exclu => end n'en fait pas partie)"
     },
     {
@@ -9071,7 +9291,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "kpi_core_rationale_52",
-      "community": 14,
+      "community": 13,
       "norm_label": "resultat d'un kpi : valeur + unite + contexte (periode, dimensions).      `value"
     },
     {
@@ -9241,7 +9461,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_hr",
-      "community": 14,
+      "community": 13,
       "norm_label": "hr.py"
     },
     {
@@ -9381,7 +9601,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "kpi_hr_turnover_result",
-      "community": 14,
+      "community": 13,
       "norm_label": "turnover_result()"
     },
     {
@@ -9391,7 +9611,7 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "kpi_hr_payroll_mass_result",
-      "community": 14,
+      "community": 13,
       "norm_label": "payroll_mass_result()"
     },
     {
@@ -9401,7 +9621,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_hr_rationale_1",
-      "community": 14,
+      "community": 13,
       "norm_label": "kpi de gouvernance rh (domaine pur, teste).  indicateurs couverts par le 1er inc"
     },
     {
@@ -9541,7 +9761,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "kpi_hr_mart_month_start",
-      "community": 30,
+      "community": 12,
       "norm_label": "_month_start()"
     },
     {
@@ -10461,7 +10681,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_periodtest",
-      "community": 14,
+      "community": 11,
       "norm_label": "periodtest"
     },
     {
@@ -10471,7 +10691,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_periodtest_test_demi_ouverte",
-      "community": 14,
+      "community": 11,
       "norm_label": ".test_demi_ouverte()"
     },
     {
@@ -10481,7 +10701,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_periodtest_test_periode_invalide",
-      "community": 14,
+      "community": 11,
       "norm_label": ".test_periode_invalide()"
     },
     {
@@ -11481,7 +11701,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "api_governance_usealerts",
-      "community": 80,
+      "community": 8,
       "norm_label": "usealerts()"
     },
     {
@@ -11491,7 +11711,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "api_governance_useaiquery",
-      "community": 80,
+      "community": 67,
       "norm_label": "useaiquery()"
     },
     {
@@ -11541,7 +11761,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "api_governance_usegovernanceoverview",
-      "community": 8,
+      "community": 112,
       "norm_label": "usegovernanceoverview()"
     },
     {
@@ -11551,7 +11771,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "api_governance_usehrscore",
-      "community": 242,
+      "community": 8,
       "norm_label": "usehrscore()"
     },
     {
@@ -11571,7 +11791,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "api_governance_usegroupscore",
-      "community": 80,
+      "community": 8,
       "norm_label": "usegroupscore()"
     },
     {
@@ -11591,7 +11811,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_globalfilters",
-      "community": 1,
+      "community": 80,
       "norm_label": "globalfilters.tsx"
     },
     {
@@ -11601,7 +11821,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_globalfilters_years",
-      "community": 1,
+      "community": 80,
       "norm_label": "years"
     },
     {
@@ -11611,7 +11831,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_globalfilters_quarters",
-      "community": 1,
+      "community": 80,
       "norm_label": "quarters"
     },
     {
@@ -11621,7 +11841,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_globalfilters_select",
-      "community": 1,
+      "community": 80,
       "norm_label": "select()"
     },
     {
@@ -11631,7 +11851,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "components_globalfilters_globalfilters",
-      "community": 1,
+      "community": 80,
       "norm_label": "globalfilters()"
     },
     {
@@ -11931,7 +12151,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_brandfooter",
-      "community": 80,
+      "community": 69,
       "norm_label": "brandfooter.tsx"
     },
     {
@@ -11941,7 +12161,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "chrome_brandfooter_datariumlogo",
-      "community": 80,
+      "community": 69,
       "norm_label": "datariumlogo()"
     },
     {
@@ -11951,7 +12171,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "chrome_brandfooter_brandfooter",
-      "community": 80,
+      "community": 69,
       "norm_label": "brandfooter()"
     },
     {
@@ -12051,7 +12271,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_pageshell",
-      "community": 80,
+      "community": 69,
       "norm_label": "pageshell.tsx"
     },
     {
@@ -12061,7 +12281,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "chrome_pageshell_pageshellprops",
-      "community": 80,
+      "community": 69,
       "norm_label": "pageshellprops"
     },
     {
@@ -12071,7 +12291,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "chrome_pageshell_pageshell",
-      "community": 80,
+      "community": 69,
       "norm_label": "pageshell()"
     },
     {
@@ -12091,7 +12311,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_siderail_siderail",
-      "community": 80,
+      "community": 69,
       "norm_label": "siderail()"
     },
     {
@@ -12171,7 +12391,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_theme",
-      "community": 80,
+      "community": 19,
       "norm_label": "theme.ts"
     },
     {
@@ -12181,7 +12401,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "chrome_theme_glass",
-      "community": 80,
+      "community": 19,
       "norm_label": "glass"
     },
     {
@@ -12401,7 +12621,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_appshell",
-      "community": 1,
+      "community": 23,
       "norm_label": "appshell.tsx"
     },
     {
@@ -12411,7 +12631,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "navigation_appshell_appshellprops",
-      "community": 1,
+      "community": 23,
       "norm_label": "appshellprops"
     },
     {
@@ -12421,7 +12641,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "navigation_appshell_appshell",
-      "community": 1,
+      "community": 23,
       "norm_label": "appshell()"
     },
     {
@@ -12681,7 +12901,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_aiquerybox",
-      "community": 80,
+      "community": 67,
       "norm_label": "aiquerybox.tsx"
     },
     {
@@ -12691,7 +12911,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "overview_aiquerybox_samples",
-      "community": 80,
+      "community": 67,
       "norm_label": "samples"
     },
     {
@@ -12701,7 +12921,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_aiquerybox_aiquerybox",
-      "community": 80,
+      "community": 67,
       "norm_label": "aiquerybox()"
     },
     {
@@ -12711,7 +12931,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_alertspanel",
-      "community": 80,
+      "community": 8,
       "norm_label": "alertspanel.tsx"
     },
     {
@@ -12721,7 +12941,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "overview_alertspanel_sev",
-      "community": 80,
+      "community": 8,
       "norm_label": "sev"
     },
     {
@@ -12731,7 +12951,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_alertspanel_severitychip",
-      "community": 80,
+      "community": 8,
       "norm_label": "severitychip()"
     },
     {
@@ -12741,7 +12961,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_alertspanel_alertrow",
-      "community": 80,
+      "community": 8,
       "norm_label": "alertrow()"
     },
     {
@@ -12751,7 +12971,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "overview_alertspanel_alertspanel",
-      "community": 80,
+      "community": 8,
       "norm_label": "alertspanel()"
     },
     {
@@ -13101,7 +13321,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex",
-      "community": 80,
+      "community": 8,
       "norm_label": "groupgovernanceindex.tsx"
     },
     {
@@ -13111,7 +13331,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_domain_href",
-      "community": 80,
+      "community": 8,
       "norm_label": "domain_href"
     },
     {
@@ -13121,7 +13341,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_domain_color",
-      "community": 80,
+      "community": 8,
       "norm_label": "domain_color"
     },
     {
@@ -13131,7 +13351,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_fmt",
-      "community": 80,
+      "community": 8,
       "norm_label": "fmt()"
     },
     {
@@ -13141,7 +13361,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_barwidth",
-      "community": 80,
+      "community": 8,
       "norm_label": "barwidth()"
     },
     {
@@ -13151,7 +13371,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_trendinfo",
-      "community": 80,
+      "community": 8,
       "norm_label": "trendinfo()"
     },
     {
@@ -13161,7 +13381,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_groupgovernanceindex",
-      "community": 80,
+      "community": 8,
       "norm_label": "groupgovernanceindex()"
     },
     {
@@ -13171,7 +13391,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_humancapitalscore",
-      "community": 242,
+      "community": 8,
       "norm_label": "humancapitalscore.tsx"
     },
     {
@@ -13181,7 +13401,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "overview_humancapitalscore_dim_colors",
-      "community": 242,
+      "community": 8,
       "norm_label": "dim_colors"
     },
     {
@@ -13191,7 +13411,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_humancapitalscore_fallback_dimensions",
-      "community": 242,
+      "community": 8,
       "norm_label": "fallback_dimensions"
     },
     {
@@ -13201,7 +13421,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "overview_humancapitalscore_filiale_to_code",
-      "community": 242,
+      "community": 8,
       "norm_label": "filiale_to_code"
     },
     {
@@ -13211,7 +13431,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "overview_humancapitalscore_month_labels",
-      "community": 242,
+      "community": 8,
       "norm_label": "month_labels"
     },
     {
@@ -13221,7 +13441,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "overview_humancapitalscore_fmtscore",
-      "community": 242,
+      "community": 8,
       "norm_label": "fmtscore()"
     },
     {
@@ -13231,7 +13451,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "overview_humancapitalscore_barwidth",
-      "community": 242,
+      "community": 8,
       "norm_label": "barwidth()"
     },
     {
@@ -13241,7 +13461,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "overview_humancapitalscore_trenddelta",
-      "community": 242,
+      "community": 8,
       "norm_label": "trenddelta()"
     },
     {
@@ -13251,7 +13471,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "overview_humancapitalscore_drill_levels",
-      "community": 242,
+      "community": 8,
       "norm_label": "drill_levels"
     },
     {
@@ -13261,7 +13481,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "overview_humancapitalscore_childrenat",
-      "community": 242,
+      "community": 8,
       "norm_label": "childrenat()"
     },
     {
@@ -13271,7 +13491,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "overview_humancapitalscore_scoredrilldown",
-      "community": 242,
+      "community": 8,
       "norm_label": "scoredrilldown()"
     },
     {
@@ -13281,7 +13501,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "overview_humancapitalscore_humancapitalscore",
-      "community": 242,
+      "community": 8,
       "norm_label": "humancapitalscore()"
     },
     {
@@ -13541,7 +13761,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "overview_icons_arrowupright",
-      "community": 80,
+      "community": 0,
       "norm_label": "arrowupright()"
     },
     {
@@ -14201,7 +14421,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_domainheroes_generated",
-      "community": 263,
+      "community": 80,
       "norm_label": "domainheroes.generated.ts"
     },
     {
@@ -14211,7 +14431,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "config_domainheroes_generated_generatedheroes",
-      "community": 263,
+      "community": 80,
       "norm_label": "generatedheroes"
     },
     {
@@ -14221,7 +14441,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_domainhome_config",
-      "community": 263,
+      "community": 80,
       "norm_label": "domainhome.config.ts"
     },
     {
@@ -14231,7 +14451,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "config_domainhome_config_herokpi",
-      "community": 263,
+      "community": 80,
       "norm_label": "herokpi"
     },
     {
@@ -14241,7 +14461,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "config_domainhome_config_domainherospec",
-      "community": 263,
+      "community": 80,
       "norm_label": "domainherospec"
     },
     {
@@ -14251,7 +14471,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "config_domainhome_config_photoheroes",
-      "community": 263,
+      "community": 80,
       "norm_label": "photoheroes"
     },
     {
@@ -14261,7 +14481,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "config_domainhome_config_domainheroes",
-      "community": 263,
+      "community": 80,
       "norm_label": "domainheroes"
     },
     {
@@ -14441,7 +14661,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_domaintheme",
-      "community": 66,
+      "community": 80,
       "norm_label": "domaintheme.ts"
     },
     {
@@ -14451,7 +14671,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "config_domaintheme_domainaccent",
-      "community": 66,
+      "community": 80,
       "norm_label": "domainaccent"
     },
     {
@@ -14461,7 +14681,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "config_domaintheme_fallback",
-      "community": 66,
+      "community": 80,
       "norm_label": "fallback"
     },
     {
@@ -14471,7 +14691,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "config_domaintheme_domain_accents",
-      "community": 66,
+      "community": 80,
       "norm_label": "domain_accents"
     },
     {
@@ -14481,7 +14701,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "config_domaintheme_getdomainaccent",
-      "community": 66,
+      "community": 80,
       "norm_label": "getdomainaccent()"
     },
     {
@@ -14491,7 +14711,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "config_domaintheme_withalpha",
-      "community": 66,
+      "community": 80,
       "norm_label": "withalpha()"
     },
     {
@@ -14501,7 +14721,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "config_domaintheme_domaintokens",
-      "community": 66,
+      "community": 80,
       "norm_label": "domaintokens()"
     },
     {
@@ -15208,17 +15428,27 @@
       "label": "req()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L31",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "lib_integrations_req",
       "community": 19,
       "norm_label": "req()"
     },
     {
+      "label": "retryHorsRefus()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/lib/integrations.ts",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "lib_integrations_retryhorsrefus",
+      "community": 19,
+      "norm_label": "retryhorsrefus()"
+    },
+    {
       "label": "useSources()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L37",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "lib_integrations_usesources",
       "community": 19,
@@ -15228,7 +15458,7 @@
       "label": "useSource()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L44",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "lib_integrations_usesource",
       "community": 19,
@@ -15238,7 +15468,7 @@
       "label": "useHealth()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L52",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "lib_integrations_usehealth",
       "community": 74,
@@ -15248,7 +15478,7 @@
       "label": "useInvalidate()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L64",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "lib_integrations_useinvalidate",
       "community": 19,
@@ -15258,7 +15488,7 @@
       "label": "useCreateSource()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L69",
+      "source_location": "L98",
       "_origin": "ast",
       "id": "lib_integrations_usecreatesource",
       "community": 19,
@@ -15268,7 +15498,7 @@
       "label": "useUpdateConnector()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L77",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "lib_integrations_useupdateconnector",
       "community": 19,
@@ -15278,7 +15508,7 @@
       "label": "useTestConnection()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L86",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "lib_integrations_usetestconnection",
       "community": 19,
@@ -15288,7 +15518,7 @@
       "label": "useSyncNow()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L94",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "lib_integrations_usesyncnow",
       "community": 19,
@@ -15298,7 +15528,7 @@
       "label": "useEndpoints()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L102",
+      "source_location": "L135",
       "_origin": "ast",
       "id": "lib_integrations_useendpoints",
       "community": 19,
@@ -15308,7 +15538,7 @@
       "label": "useCreateEndpoint()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L110",
+      "source_location": "L143",
       "_origin": "ast",
       "id": "lib_integrations_usecreateendpoint",
       "community": 19,
@@ -15318,7 +15548,7 @@
       "label": "useDeleteEndpoint()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L119",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "lib_integrations_usedeleteendpoint",
       "community": 19,
@@ -15328,7 +15558,7 @@
       "label": "useMappings()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L124",
+      "source_location": "L157",
       "_origin": "ast",
       "id": "lib_integrations_usemappings",
       "community": 19,
@@ -15338,7 +15568,7 @@
       "label": "useCreateMapping()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L132",
+      "source_location": "L165",
       "_origin": "ast",
       "id": "lib_integrations_usecreatemapping",
       "community": 19,
@@ -15348,7 +15578,7 @@
       "label": "useDeleteMapping()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L141",
+      "source_location": "L174",
       "_origin": "ast",
       "id": "lib_integrations_usedeletemapping",
       "community": 19,
@@ -15358,7 +15588,7 @@
       "label": "useJobs()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L146",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "lib_integrations_usejobs",
       "community": 19,
@@ -15368,7 +15598,7 @@
       "label": "useLogs()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L154",
+      "source_location": "L187",
       "_origin": "ast",
       "id": "lib_integrations_uselogs",
       "community": 19,
@@ -15378,7 +15608,7 @@
       "label": "useErrors()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L162",
+      "source_location": "L195",
       "_origin": "ast",
       "id": "lib_integrations_useerrors",
       "community": 19,
@@ -15388,7 +15618,7 @@
       "label": "useAddCredential()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L170",
+      "source_location": "L203",
       "_origin": "ast",
       "id": "lib_integrations_useaddcredential",
       "community": 19,
@@ -15398,7 +15628,7 @@
       "label": "useToggleActive()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/integrations.ts",
-      "source_location": "L179",
+      "source_location": "L212",
       "_origin": "ast",
       "id": "lib_integrations_usetoggleactive",
       "community": 19,
@@ -15841,7 +16071,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_motion",
-      "community": 80,
+      "community": 5,
       "norm_label": "motion.ts"
     },
     {
@@ -15851,7 +16081,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_motion_ease_out",
-      "community": 80,
+      "community": 5,
       "norm_label": "ease_out"
     },
     {
@@ -16141,7 +16371,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_usedomaintheme",
-      "community": 66,
+      "community": 80,
       "norm_label": "usedomaintheme.ts"
     },
     {
@@ -16151,7 +16381,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_usedomaintheme_usedomaintheme",
-      "community": 66,
+      "community": 80,
       "norm_label": "usedomaintheme()"
     },
     {
@@ -16381,7 +16611,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_governanceoverview",
-      "community": 8,
+      "community": 112,
       "norm_label": "governanceoverview.tsx"
     },
     {
@@ -16391,7 +16621,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "pages_governanceoverview_detailmetric",
-      "community": 8,
+      "community": 112,
       "norm_label": "detailmetric"
     },
     {
@@ -16401,7 +16631,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "pages_governanceoverview_dashboard_keys",
-      "community": 8,
+      "community": 112,
       "norm_label": "dashboard_keys"
     },
     {
@@ -16411,7 +16641,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "pages_governanceoverview_detail_module",
-      "community": 8,
+      "community": 112,
       "norm_label": "detail_module"
     },
     {
@@ -16421,7 +16651,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "pages_governanceoverview_dashboardmodel",
-      "community": 8,
+      "community": 112,
       "norm_label": "dashboardmodel"
     },
     {
@@ -16431,7 +16661,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "pages_governanceoverview_dashboard_images",
-      "community": 8,
+      "community": 112,
       "norm_label": "dashboard_images"
     },
     {
@@ -16441,7 +16671,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "pages_governanceoverview_emptydashboard",
-      "community": 8,
+      "community": 112,
       "norm_label": "emptydashboard()"
     },
     {
@@ -16451,7 +16681,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "pages_governanceoverview_withpresentation",
-      "community": 8,
+      "community": 112,
       "norm_label": "withpresentation()"
     },
     {
@@ -16461,7 +16691,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "pages_governanceoverview_delta",
-      "community": 8,
+      "community": 112,
       "norm_label": "delta()"
     },
     {
@@ -16471,7 +16701,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "pages_governanceoverview_detailcard",
-      "community": 8,
+      "community": 112,
       "norm_label": "detailcard()"
     },
     {
@@ -16481,7 +16711,7 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "pages_governanceoverview_alertspanel",
-      "community": 8,
+      "community": 112,
       "norm_label": "alertspanel()"
     },
     {
@@ -16491,7 +16721,7 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "pages_governanceoverview_programoverlay",
-      "community": 8,
+      "community": 112,
       "norm_label": "programoverlay()"
     },
     {
@@ -16501,7 +16731,7 @@
       "source_location": "L316",
       "_origin": "ast",
       "id": "pages_governanceoverview_chartpanel",
-      "community": 8,
+      "community": 112,
       "norm_label": "chartpanel()"
     },
     {
@@ -16521,7 +16751,7 @@
       "source_location": "L421",
       "_origin": "ast",
       "id": "pages_governanceoverview_actionsmenu",
-      "community": 8,
+      "community": 112,
       "norm_label": "actionsmenu()"
     },
     {
@@ -16531,7 +16761,7 @@
       "source_location": "L459",
       "_origin": "ast",
       "id": "pages_governanceoverview_rightpanel",
-      "community": 8,
+      "community": 112,
       "norm_label": "rightpanel()"
     },
     {
@@ -16541,7 +16771,7 @@
       "source_location": "L493",
       "_origin": "ast",
       "id": "pages_governanceoverview_governanceoverview",
-      "community": 8,
+      "community": 112,
       "norm_label": "governanceoverview()"
     },
     {
@@ -16591,7 +16821,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_loginpage",
-      "community": 80,
+      "community": 5,
       "norm_label": "loginpage.tsx"
     },
     {
@@ -16601,7 +16831,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "pages_loginpage_loginpage",
-      "community": 80,
+      "community": 5,
       "norm_label": "loginpage()"
     },
     {
@@ -16838,7 +17068,7 @@
       "label": "SOURCE_TYPES",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "integrations_integrationform_source_types",
       "community": 19,
@@ -16848,7 +17078,7 @@
       "label": "ENVIRONMENTS",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "integrations_integrationform_environments",
       "community": 19,
@@ -16858,7 +17088,7 @@
       "label": "TARGET_MODULES",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "integrations_integrationform_target_modules",
       "community": 19,
@@ -16868,27 +17098,97 @@
       "label": "AUTH_METHODS",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "integrations_integrationform_auth_methods",
       "community": 19,
       "norm_label": "auth_methods"
     },
     {
+      "label": "TypePreset",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "integrations_integrationform_typepreset",
+      "community": 19,
+      "norm_label": "typepreset"
+    },
+    {
+      "label": "PRESET_PAR_DEFAUT",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "integrations_integrationform_preset_par_defaut",
+      "community": 19,
+      "norm_label": "preset_par_defaut"
+    },
+    {
+      "label": "TYPE_PRESETS",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L86",
+      "_origin": "ast",
+      "id": "integrations_integrationform_type_presets",
+      "community": 19,
+      "norm_label": "type_presets"
+    },
+    {
+      "label": "presetPour()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L131",
+      "_origin": "ast",
+      "id": "integrations_integrationform_presetpour",
+      "community": 19,
+      "norm_label": "presetpour()"
+    },
+    {
       "label": "slugify()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L59",
+      "source_location": "L140",
       "_origin": "ast",
       "id": "integrations_integrationform_slugify",
       "community": 19,
       "norm_label": "slugify()"
     },
     {
+      "label": "ETAPES",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L144",
+      "_origin": "ast",
+      "id": "integrations_integrationform_etapes",
+      "community": 19,
+      "norm_label": "etapes"
+    },
+    {
+      "label": "Stepper()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L146",
+      "_origin": "ast",
+      "id": "integrations_integrationform_stepper",
+      "community": 19,
+      "norm_label": "stepper()"
+    },
+    {
+      "label": "Verdict",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L181",
+      "_origin": "ast",
+      "id": "integrations_integrationform_verdict",
+      "community": 19,
+      "norm_label": "verdict"
+    },
+    {
       "label": "CreateForm()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L63",
+      "source_location": "L183",
       "_origin": "ast",
       "id": "integrations_integrationform_createform",
       "community": 19,
@@ -16898,7 +17198,7 @@
       "label": "ApiConfigTab()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L165",
+      "source_location": "L493",
       "_origin": "ast",
       "id": "integrations_integrationform_apiconfigtab",
       "community": 19,
@@ -16908,7 +17208,7 @@
       "label": "EndpointsTab()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L216",
+      "source_location": "L544",
       "_origin": "ast",
       "id": "integrations_integrationform_endpointstab",
       "community": 19,
@@ -16918,7 +17218,7 @@
       "label": "MappingTab()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L269",
+      "source_location": "L597",
       "_origin": "ast",
       "id": "integrations_integrationform_mappingtab",
       "community": 19,
@@ -16928,7 +17228,7 @@
       "label": "LOG_COLOR",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L331",
+      "source_location": "L659",
       "_origin": "ast",
       "id": "integrations_integrationform_log_color",
       "community": 19,
@@ -16938,7 +17238,7 @@
       "label": "HistoryTab()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L333",
+      "source_location": "L661",
       "_origin": "ast",
       "id": "integrations_integrationform_historytab",
       "community": 19,
@@ -16948,7 +17248,7 @@
       "label": "TABS",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L385",
+      "source_location": "L713",
       "_origin": "ast",
       "id": "integrations_integrationform_tabs",
       "community": 19,
@@ -16958,7 +17258,7 @@
       "label": "ConfigureForm()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L387",
+      "source_location": "L715",
       "_origin": "ast",
       "id": "integrations_integrationform_configureform",
       "community": 19,
@@ -16968,7 +17268,7 @@
       "label": "IntegrationForm()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
-      "source_location": "L417",
+      "source_location": "L794",
       "_origin": "ast",
       "id": "integrations_integrationform_integrationform",
       "community": 19,
@@ -17371,7 +17671,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "types_governance_dashboardsummary",
-      "community": 8,
+      "community": 112,
       "norm_label": "dashboardsummary"
     },
     {
@@ -17441,7 +17741,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "types_governance_governancescoreresponse",
-      "community": 8,
+      "community": 5,
       "norm_label": "governancescoreresponse"
     },
     {
@@ -17461,7 +17761,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "types_governance_governancealert",
-      "community": 80,
+      "community": 8,
       "norm_label": "governancealert"
     },
     {
@@ -17558,7 +17858,7 @@
       "label": "HealthResponse",
       "file_type": "code",
       "source_file": "frontend/web/src/types/integrations.ts",
-      "source_location": "L54",
+      "source_location": "L55",
       "_origin": "ast",
       "id": "types_integrations_healthresponse",
       "community": 19,
@@ -17568,7 +17868,7 @@
       "label": "SyncJob",
       "file_type": "code",
       "source_file": "frontend/web/src/types/integrations.ts",
-      "source_location": "L69",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "types_integrations_syncjob",
       "community": 19,
@@ -17578,7 +17878,7 @@
       "label": "ConnectorEndpoint",
       "file_type": "code",
       "source_file": "frontend/web/src/types/integrations.ts",
-      "source_location": "L80",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "types_integrations_connectorendpoint",
       "community": 19,
@@ -17588,7 +17888,7 @@
       "label": "FieldMapping",
       "file_type": "code",
       "source_file": "frontend/web/src/types/integrations.ts",
-      "source_location": "L92",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "types_integrations_fieldmapping",
       "community": 19,
@@ -17598,7 +17898,7 @@
       "label": "SyncLogItem",
       "file_type": "code",
       "source_file": "frontend/web/src/types/integrations.ts",
-      "source_location": "L102",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "types_integrations_synclogitem",
       "community": 19,
@@ -17608,7 +17908,7 @@
       "label": "SyncErrorItem",
       "file_type": "code",
       "source_file": "frontend/web/src/types/integrations.ts",
-      "source_location": "L109",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "types_integrations_syncerroritem",
       "community": 19,
@@ -19859,7 +20159,7 @@
       "source_location": "L2005",
       "_origin": "ast",
       "id": "docs_changelog_6_24_1",
-      "community": 62,
+      "community": 274,
       "norm_label": "6.24.1"
     },
     {
@@ -19869,7 +20169,7 @@
       "source_location": "L2007",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2007",
-      "community": 62,
+      "community": 274,
       "norm_label": "patch changes"
     },
     {
@@ -19909,7 +20209,7 @@
       "source_location": "L2026",
       "_origin": "ast",
       "id": "docs_changelog_6_23_1",
-      "community": 269,
+      "community": 62,
       "norm_label": "6.23.1"
     },
     {
@@ -19919,7 +20219,7 @@
       "source_location": "L2028",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2028",
-      "community": 269,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -27739,7 +28039,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "lib_api_api_base",
-      "community": 19,
+      "community": 23,
       "norm_label": "api_base"
     }
   ],
@@ -40446,9 +40746,9 @@
       "source_file": "backend/apps/integrations/models.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_models",
-      "target": "integrations_models_environment",
-      "confidence_score": 1.0
+      "target": "integrations_models_environment"
     },
     {
       "relation": "contains",
@@ -40704,9 +41004,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services",
-      "target": "integrations_models_sourcetype",
-      "confidence_score": 1.0
+      "target": "integrations_models_sourcetype"
     },
     {
       "relation": "imports",
@@ -40734,6 +41034,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_sourcetype",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L18",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -40756,9 +41066,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_sourcetype",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcetype"
     },
     {
       "relation": "uses",
@@ -40856,9 +41166,9 @@
       "source_file": "backend/apps/integrations/models.py",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_models_rationale_48",
-      "target": "integrations_models_environment",
-      "confidence_score": 1.0
+      "target": "integrations_models_environment"
     },
     {
       "relation": "imports",
@@ -40897,6 +41207,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_sourcestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L18",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -40919,9 +41239,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_sourcestatus",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcestatus"
     },
     {
       "relation": "uses",
@@ -41210,6 +41530,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_authmethod",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L18",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -41232,9 +41562,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_authmethod",
-      "confidence_score": 0.5
+      "target": "integrations_models_authmethod"
     },
     {
       "relation": "uses",
@@ -41677,9 +42007,9 @@
       "source_file": "backend/apps/integrations/models.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_models_rationale_114",
-      "target": "integrations_models_datasource",
-      "confidence_score": 1.0
+      "target": "integrations_models_datasource"
     },
     {
       "relation": "imports",
@@ -41850,6 +42180,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_datasource",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L11",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -41872,9 +42212,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_datasource",
-      "confidence_score": 0.5
+      "target": "integrations_models_datasource"
     },
     {
       "relation": "uses",
@@ -42151,9 +42491,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L141",
+      "source_location": "L145",
       "weight": 1.0,
-      "source": "integrations_models_rationale_141",
+      "source": "integrations_models_rationale_145",
       "target": "integrations_models_dataconnector",
       "confidence_score": 1.0
     },
@@ -42293,6 +42633,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_dataconnector",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L11",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -42315,9 +42665,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_dataconnector",
-      "confidence_score": 0.5
+      "target": "integrations_models_dataconnector"
     },
     {
       "relation": "uses",
@@ -42594,9 +42944,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L161",
+      "source_location": "L165",
       "weight": 1.0,
-      "source": "integrations_models_rationale_161",
+      "source": "integrations_models_rationale_165",
       "target": "integrations_models_connectorendpoint",
       "confidence_score": 1.0
     },
@@ -42946,9 +43296,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L180",
+      "source_location": "L184",
       "weight": 1.0,
-      "source": "integrations_models_rationale_180",
+      "source": "integrations_models_rationale_184",
       "target": "integrations_models_connectorcredential",
       "confidence_score": 1.0
     },
@@ -43099,6 +43449,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_connectorcredential",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L11",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -43121,9 +43481,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_connectorcredential",
-      "confidence_score": 0.5
+      "target": "integrations_models_connectorcredential"
     },
     {
       "relation": "uses",
@@ -43390,9 +43750,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L210",
+      "source_location": "L214",
       "weight": 1.0,
-      "source": "integrations_models_rationale_210",
+      "source": "integrations_models_rationale_214",
       "target": "integrations_models_fieldmapping",
       "confidence_score": 1.0
     },
@@ -43835,6 +44195,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_syncjob",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L11",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -43857,9 +44227,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_syncjob",
-      "confidence_score": 0.5
+      "target": "integrations_models_syncjob"
     },
     {
       "relation": "uses",
@@ -44269,6 +44639,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_synclog",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L11",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -44291,9 +44671,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_synclog",
-      "confidence_score": 0.5
+      "target": "integrations_models_synclog"
     },
     {
       "relation": "uses",
@@ -44862,9 +45242,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L262",
+      "source_location": "L266",
       "weight": 1.0,
-      "source": "integrations_models_rationale_262",
+      "source": "integrations_models_rationale_266",
       "target": "integrations_models_person",
       "confidence_score": 1.0
     },
@@ -44882,9 +45262,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L287",
+      "source_location": "L291",
       "weight": 1.0,
-      "source": "integrations_models_rationale_287",
+      "source": "integrations_models_rationale_291",
       "target": "integrations_models_externalidentity",
       "confidence_score": 1.0
     },
@@ -45024,6 +45404,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L20",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_models_webhookevent",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L11",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -45046,9 +45436,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L20",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_models_webhookevent",
-      "confidence_score": 0.5
+      "target": "integrations_models_webhookevent"
     },
     {
       "relation": "uses",
@@ -45381,9 +45771,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services_real_healthcheck",
-      "target": "datasource",
-      "confidence_score": 1.0
+      "target": "datasource"
     },
     {
       "relation": "references",
@@ -46727,9 +47117,9 @@
       "source_file": "backend/apps/integrations/serializers.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_serializers_datasourcelistserializer",
-      "target": "integrations_serializers_datasourcelistserializer_get_last_sync_at",
-      "confidence_score": 1.0
+      "target": "integrations_serializers_datasourcelistserializer_get_last_sync_at"
     },
     {
       "relation": "method",
@@ -46737,19 +47127,19 @@
       "source_file": "backend/apps/integrations/serializers.py",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_serializers_datasourcelistserializer",
-      "target": "integrations_serializers_datasourcelistserializer_get_recent_errors",
-      "confidence_score": 1.0
+      "target": "integrations_serializers_datasourcelistserializer_get_recent_errors"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L98",
+      "source_location": "L105",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_serializers_rationale_98",
-      "target": "integrations_serializers_datasourcelistserializer"
+      "source": "integrations_serializers_rationale_105",
+      "target": "integrations_serializers_datasourcelistserializer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -46937,9 +47327,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L115",
+      "source_location": "L122",
       "weight": 1.0,
-      "source": "integrations_serializers_rationale_115",
+      "source": "integrations_serializers_rationale_122",
       "target": "integrations_serializers_datasourcelistserializer_get_last_sync_at",
       "confidence_score": 1.0
     },
@@ -46947,9 +47337,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/serializers.py",
-      "source_location": "L120",
+      "source_location": "L127",
       "weight": 1.0,
-      "source": "integrations_serializers_rationale_120",
+      "source": "integrations_serializers_rationale_127",
       "target": "integrations_serializers_datasourcelistserializer_get_recent_errors",
       "confidence_score": 1.0
     },
@@ -47664,9 +48054,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services",
-      "target": "integrations_services_real_healthcheck",
-      "confidence_score": 1.0
+      "target": "integrations_services_real_healthcheck"
     },
     {
       "relation": "contains",
@@ -47705,9 +48095,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services",
-      "target": "integrations_shield_build_client",
-      "confidence_score": 1.0
+      "target": "integrations_shield_build_client"
     },
     {
       "relation": "rationale_for",
@@ -47747,9 +48137,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services_rationale_63",
-      "target": "integrations_services_network_probe",
-      "confidence_score": 1.0
+      "target": "integrations_services_network_probe"
     },
     {
       "relation": "calls",
@@ -47768,9 +48158,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services_rationale_75",
-      "target": "integrations_services_real_healthcheck",
-      "confidence_score": 1.0
+      "target": "integrations_services_real_healthcheck"
     },
     {
       "relation": "calls",
@@ -47779,9 +48169,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services_real_healthcheck",
-      "target": "integrations_shield_build_client",
-      "confidence_score": 1.0
+      "target": "integrations_shield_build_client"
     },
     {
       "relation": "calls",
@@ -47790,9 +48180,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services_run_test",
-      "target": "integrations_services_real_healthcheck",
-      "confidence_score": 1.0
+      "target": "integrations_services_real_healthcheck"
     },
     {
       "relation": "rationale_for",
@@ -47800,9 +48190,9 @@
       "source_file": "backend/apps/integrations/services.py",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_services_rationale_90",
-      "target": "integrations_services_run_test",
-      "confidence_score": 1.0
+      "target": "integrations_services_run_test"
     },
     {
       "relation": "imports",
@@ -49171,9 +49561,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_37",
-      "target": "integrations_shield_client_retry_after",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_retry_after"
     },
     {
       "relation": "calls",
@@ -49203,9 +49593,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_45",
-      "target": "integrations_shield_client_shielderror",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shielderror"
     },
     {
       "relation": "calls",
@@ -49286,6 +49676,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L31",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_shield_client_shielderror",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L29",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -49308,9 +49708,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L31",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_shield_client_shielderror",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shielderror"
     },
     {
       "relation": "calls",
@@ -49474,9 +49874,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_67",
-      "target": "integrations_shield_client_ttlcache",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_ttlcache"
     },
     {
       "relation": "calls",
@@ -49601,9 +50001,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_95",
-      "target": "integrations_shield_client_shieldmetrics",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldmetrics"
     },
     {
       "relation": "calls",
@@ -49663,9 +50063,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_125",
-      "target": "integrations_shield_client_shieldclient",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldclient"
     },
     {
       "relation": "method",
@@ -49792,6 +50192,16 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L31",
+      "weight": 0.8,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_shield_client_shieldclient",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L29",
       "weight": 0.8,
       "confidence_score": 0.5,
@@ -49814,9 +50224,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L31",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_shield_client_shieldclient",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shieldclient"
     },
     {
       "relation": "uses",
@@ -50013,9 +50423,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L242",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_242",
-      "target": "integrations_shield_client_shieldclient_await_inflight",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldclient_await_inflight"
     },
     {
       "relation": "rationale_for",
@@ -50023,9 +50433,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L260",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_260",
-      "target": "integrations_shield_client_shieldclient_count",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldclient_count"
     },
     {
       "relation": "rationale_for",
@@ -50033,9 +50443,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L277",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_277",
-      "target": "integrations_shield_client_shieldclient_results",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldclient_results"
     },
     {
       "relation": "calls",
@@ -50054,9 +50464,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L286",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_286",
-      "target": "integrations_shield_client_shieldclient_paginate",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldclient_paginate"
     },
     {
       "relation": "rationale_for",
@@ -50064,9 +50474,9 @@
       "source_file": "backend/apps/integrations/shield_client.py",
       "source_location": "L300",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_client_rationale_300",
-      "target": "integrations_shield_client_shieldclient_healthcheck",
-      "confidence_score": 1.0
+      "target": "integrations_shield_client_shieldclient_healthcheck"
     },
     {
       "relation": "rationale_for",
@@ -50364,6 +50774,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L938",
+      "weight": 1.0,
+      "source": "integrations_tests",
+      "target": "integrations_tests_assistantcreationtest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L17",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -50386,9 +50806,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L764",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests",
-      "target": "integrations_tests_integrationcentretest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest"
     },
     {
       "relation": "contains",
@@ -50534,6 +50954,16 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L938",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "apitestcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L32",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -50546,9 +50976,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L764",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "apitestcase",
-      "confidence_score": 1.0
+      "target": "apitestcase"
     },
     {
       "relation": "inherits",
@@ -50742,9 +51172,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_142",
-      "target": "integrations_tests_shieldhrkpitest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldhrkpitest"
     },
     {
       "relation": "method",
@@ -50812,9 +51242,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_172",
-      "target": "integrations_tests_odoohrskeletontest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_odoohrskeletontest"
     },
     {
       "relation": "rationale_for",
@@ -50822,9 +51252,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_188",
-      "target": "integrations_tests_shieldclienttest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldclienttest"
     },
     {
       "relation": "method",
@@ -51052,9 +51482,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L194",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_194",
-      "target": "integrations_tests_shieldclienttest_test_401_et_403_ne_sont_pas_rejoues",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldclienttest_test_401_et_403_ne_sont_pas_rejoues"
     },
     {
       "relation": "calls",
@@ -51117,9 +51547,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L231",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_231",
-      "target": "integrations_tests_shieldclienttest_test_zero_reel_reste_zero",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldclienttest_test_zero_reel_reste_zero"
     },
     {
       "relation": "calls",
@@ -51182,9 +51612,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L261",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_261",
-      "target": "integrations_tests_shieldconnectortest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldconnectortest"
     },
     {
       "relation": "method",
@@ -51342,9 +51772,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L279",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_279",
-      "target": "integrations_tests_shieldconnectortest_routes",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldconnectortest_routes"
     },
     {
       "relation": "calls",
@@ -51440,9 +51870,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L330",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_330",
-      "target": "integrations_tests_shieldconnectortest_test_effectif_employes_par_site_reste_unknown",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldconnectortest_test_effectif_employes_par_site_reste_unknown"
     },
     {
       "relation": "calls",
@@ -51626,9 +52056,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L419",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_419",
-      "target": "integrations_tests_shieldconnectortest_test_aucun_insight_sans_donnee",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldconnectortest_test_aucun_insight_sans_donnee"
     },
     {
       "relation": "calls",
@@ -51680,9 +52110,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L435",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_435",
-      "target": "integrations_tests_shieldapiendpointstest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldapiendpointstest"
     },
     {
       "relation": "method",
@@ -51720,9 +52150,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L453",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_453",
-      "target": "integrations_tests_shieldrulestest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldrulestest"
     },
     {
       "relation": "method",
@@ -51790,9 +52220,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L460",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_460",
-      "target": "integrations_tests_shieldrulestest_test_taux_indeterminable_sans_effectif",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldrulestest_test_taux_indeterminable_sans_effectif"
     },
     {
       "relation": "rationale_for",
@@ -51800,9 +52230,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L489",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_489",
-      "target": "integrations_tests_shieldattendanceseriestest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldattendanceseriestest"
     },
     {
       "relation": "method",
@@ -51962,9 +52392,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L500",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_500",
-      "target": "integrations_tests_shieldattendanceseriestest_records",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldattendanceseriestest_records"
     },
     {
       "relation": "calls",
@@ -52049,9 +52479,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L513",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_513",
-      "target": "integrations_tests_shieldattendanceseriestest_api",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldattendanceseriestest_api"
     },
     {
       "relation": "calls",
@@ -52147,9 +52577,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L565",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_565",
-      "target": "integrations_tests_shieldattendanceseriestest_test_indicateur_en_echec_rend_la_serie_inconnue",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldattendanceseriestest_test_indicateur_en_echec_rend_la_serie_inconnue"
     },
     {
       "relation": "calls",
@@ -52179,9 +52609,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L575",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_575",
-      "target": "integrations_tests_shieldattendanceseriestest_test_jour_sans_enregistrement_vaut_zero",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldattendanceseriestest_test_jour_sans_enregistrement_vaut_zero"
     },
     {
       "relation": "calls",
@@ -52211,9 +52641,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L589",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_589",
-      "target": "integrations_tests_shieldattendanceseriestest_test_troncature_rend_les_jours_anciens_inconnus",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldattendanceseriestest_test_troncature_rend_les_jours_anciens_inconnus"
     },
     {
       "relation": "calls",
@@ -52243,9 +52673,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L620",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_620",
-      "target": "integrations_tests_shieldaggregationtest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldaggregationtest"
     },
     {
       "relation": "method",
@@ -52369,9 +52799,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L684",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_684",
-      "target": "integrations_tests_shieldaggregationtest_test_cout_en_appels_borne",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldaggregationtest_test_cout_en_appels_borne"
     },
     {
       "relation": "rationale_for",
@@ -52379,9 +52809,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L693",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_693",
-      "target": "integrations_tests_shieldobservabilitytest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_shieldobservabilitytest"
     },
     {
       "relation": "method",
@@ -52502,9 +52932,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L744",
+      "source_location": "L748",
       "weight": 1.0,
-      "source": "integrations_tests_rationale_744",
+      "source": "integrations_tests_rationale_748",
       "target": "integrations_tests_shieldobservabilitytest_test_requetes_identiques_dedupliquees",
       "confidence_score": 1.0
     },
@@ -52514,9 +52944,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L790",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "method",
@@ -52524,9 +52954,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L767",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_setup",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_setup"
     },
     {
       "relation": "method",
@@ -52534,9 +52964,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L785",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_admin_integration_accede",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_admin_integration_accede"
     },
     {
       "relation": "method",
@@ -52544,9 +52974,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L797",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_creation_source_avec_environnement",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_creation_source_avec_environnement"
     },
     {
       "relation": "method",
@@ -52554,9 +52984,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L886",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_desactivation_change_le_statut",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_desactivation_change_le_statut"
     },
     {
       "relation": "method",
@@ -52564,9 +52994,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L925",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_liste_expose_les_champs_de_la_carte",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_liste_expose_les_champs_de_la_carte"
     },
     {
       "relation": "method",
@@ -52574,9 +53004,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L782",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_non_authentifie_donne_401",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_non_authentifie_donne_401"
     },
     {
       "relation": "method",
@@ -52584,9 +53014,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L874",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_odoo_exige_une_base_de_donnees",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_odoo_exige_une_base_de_donnees"
     },
     {
       "relation": "method",
@@ -52594,9 +53024,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L774",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_role_insuffisant_donne_403_et_non_500",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_role_insuffisant_donne_403_et_non_500"
     },
     {
       "relation": "method",
@@ -52604,9 +53034,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L895",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_sante_globale_expose_partial_stale_et_latence",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_sante_globale_expose_partial_stale_et_latence"
     },
     {
       "relation": "method",
@@ -52614,9 +53044,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L812",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_secret_chiffre_et_jamais_renvoye_en_clair",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_secret_chiffre_et_jamais_renvoye_en_clair"
     },
     {
       "relation": "method",
@@ -52624,9 +53054,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L913",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_source_connectee_mais_non_testee_depuis_longtemps_est_perimee",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_source_connectee_mais_non_testee_depuis_longtemps_est_perimee"
     },
     {
       "relation": "method",
@@ -52634,9 +53064,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L851",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_test_connexion_refus_shield_est_signale",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_test_connexion_refus_shield_est_signale"
     },
     {
       "relation": "method",
@@ -52644,9 +53074,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L866",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_test_connexion_sans_url_echoue_avant_le_reseau",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_test_connexion_sans_url_echoue_avant_le_reseau"
     },
     {
       "relation": "method",
@@ -52654,9 +53084,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L834",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_test_connexion_shield_utilise_le_vrai_healthcheck",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_test_connexion_shield_utilise_le_vrai_healthcheck"
     },
     {
       "relation": "method",
@@ -52664,17 +53094,17 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L806",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest",
-      "target": "integrations_tests_integrationcentretest_test_types_sap_et_edw_acceptes",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_test_types_sap_et_edw_acceptes"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L765",
+      "source_location": "L769",
       "weight": 1.0,
-      "source": "integrations_tests_rationale_765",
+      "source": "integrations_tests_rationale_769",
       "target": "integrations_tests_integrationcentretest",
       "confidence_score": 1.0
     },
@@ -52682,9 +53112,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L775",
+      "source_location": "L779",
       "weight": 1.0,
-      "source": "integrations_tests_rationale_775",
+      "source": "integrations_tests_rationale_779",
       "target": "integrations_tests_integrationcentretest_test_role_insuffisant_donne_403_et_non_500",
       "confidence_score": 1.0
     },
@@ -52695,9 +53125,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L798",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_creation_source_avec_environnement",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52706,9 +53136,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L887",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_desactivation_change_le_statut",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52717,9 +53147,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L926",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_liste_expose_les_champs_de_la_carte",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52728,9 +53158,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L876",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_odoo_exige_une_base_de_donnees",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52739,9 +53169,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L896",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_sante_globale_expose_partial_stale_et_latence",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52750,9 +53180,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L813",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_secret_chiffre_et_jamais_renvoye_en_clair",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52761,9 +53191,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L914",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_source_connectee_mais_non_testee_depuis_longtemps_est_perimee",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52772,9 +53202,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L853",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_test_connexion_refus_shield_est_signale",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52783,9 +53213,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L867",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_test_connexion_sans_url_echoue_avant_le_reseau",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52794,9 +53224,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L835",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_test_connexion_shield_utilise_le_vrai_healthcheck",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "calls",
@@ -52805,17 +53235,17 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L808",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_integrationcentretest_test_types_sap_et_edw_acceptes",
-      "target": "integrations_tests_integrationcentretest_creer",
-      "confidence_score": 1.0
+      "target": "integrations_tests_integrationcentretest_creer"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L852",
+      "source_location": "L856",
       "weight": 1.0,
-      "source": "integrations_tests_rationale_852",
+      "source": "integrations_tests_rationale_856",
       "target": "integrations_tests_integrationcentretest_test_test_connexion_refus_shield_est_signale",
       "confidence_score": 1.0
     },
@@ -52823,10 +53253,352 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests.py",
-      "source_location": "L875",
+      "source_location": "L879",
       "weight": 1.0,
-      "source": "integrations_tests_rationale_875",
+      "source": "integrations_tests_rationale_879",
       "target": "integrations_tests_integrationcentretest_test_odoo_exige_une_base_de_donnees",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L959",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L947",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L970",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_admin_integration_peut_creer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1008",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_creation_odoo_et_rest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L986",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_environnement_non_defaut_persiste_et_revient_dans_la_reponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1030",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_mode_demo_desactive_par_defaut",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1069",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_parcours_assistant_de_bout_en_bout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L973",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_role_metier_seul_refuse_avec_un_403_explicite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1017",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_slug_deja_pris_donne_400_en_nommant_le_champ",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1035",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_source_non_connectee_reste_deconnectee_et_ne_synchronise_pas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L967",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_super_administrateur_peut_creer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1052",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_test_connexion_renvoie_la_latence_et_la_date",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L998",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_type_et_module_choisis_ne_sont_pas_remplaces",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1024",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest",
+      "target": "integrations_tests_assistantcreationtest_test_type_inconnu_donne_400_et_non_500",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L939",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_939",
+      "target": "integrations_tests_assistantcreationtest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L971",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_admin_integration_peut_creer",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1010",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_creation_odoo_et_rest",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L993",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_environnement_non_defaut_persiste_et_revient_dans_la_reponse",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1032",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_mode_demo_desactive_par_defaut",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1076",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_parcours_assistant_de_bout_en_bout",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L980",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_role_metier_seul_refuse_avec_un_403_explicite",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1018",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_slug_deja_pris_donne_400_en_nommant_le_champ",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1036",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_source_non_connectee_reste_deconnectee_et_ne_synchronise_pas",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L968",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_super_administrateur_peut_creer",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1054",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_test_connexion_renvoie_la_latence_et_la_date",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1000",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_type_et_module_choisis_ne_sont_pas_remplaces",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1025",
+      "weight": 1.0,
+      "source": "integrations_tests_assistantcreationtest_test_type_inconnu_donne_400_et_non_500",
+      "target": "integrations_tests_assistantcreationtest_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L974",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_974",
+      "target": "integrations_tests_assistantcreationtest_test_role_metier_seul_refuse_avec_un_403_explicite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L987",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_987",
+      "target": "integrations_tests_assistantcreationtest_test_environnement_non_defaut_persiste_et_revient_dans_la_reponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L999",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_999",
+      "target": "integrations_tests_assistantcreationtest_test_type_et_module_choisis_ne_sont_pas_remplaces",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1031",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_1031",
+      "target": "integrations_tests_assistantcreationtest_test_mode_demo_desactive_par_defaut",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1053",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_1053",
+      "target": "integrations_tests_assistantcreationtest_test_test_connexion_renvoie_la_latence_et_la_date",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests.py",
+      "source_location": "L1070",
+      "weight": 1.0,
+      "source": "integrations_tests_rationale_1070",
+      "target": "integrations_tests_assistantcreationtest_test_parcours_assistant_de_bout_en_bout",
       "confidence_score": 1.0
     },
     {
@@ -53181,9 +53953,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_55",
-      "target": "integrations_views_shieldhrkpiview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldhrkpiview"
     },
     {
       "relation": "method",
@@ -53289,9 +54061,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_68",
-      "target": "integrations_views_shieldattendanceseriesview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldattendanceseriesview"
     },
     {
       "relation": "method",
@@ -53320,9 +54092,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L88",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_88",
-      "target": "integrations_views_shieldsecurityview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldsecurityview"
     },
     {
       "relation": "method",
@@ -53340,9 +54112,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_101",
-      "target": "integrations_views_shieldoverviewview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldoverviewview"
     },
     {
       "relation": "method",
@@ -53360,9 +54132,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_110",
-      "target": "integrations_views_shieldhealthview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldhealthview"
     },
     {
       "relation": "method",
@@ -53623,9 +54395,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L183",
+      "source_location": "L194",
       "weight": 1.0,
-      "source": "integrations_views_rationale_183",
+      "source": "integrations_views_rationale_194",
       "target": "integrations_views_datasourceviewset_health",
       "confidence_score": 1.0
     },
@@ -53713,9 +54485,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/views.py",
-      "source_location": "L302",
+      "source_location": "L313",
       "weight": 1.0,
-      "source": "integrations_views_rationale_302",
+      "source": "integrations_views_rationale_313",
       "target": "integrations_views_webhookreceiver",
       "confidence_score": 1.0
     },
@@ -62545,9 +63317,9 @@
       "source_file": "frontend/web/src/components/integrations/parts.tsx",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_parts",
-      "target": "integrations_parts_integrationserror",
-      "confidence_score": 1.0
+      "target": "integrations_parts_integrationserror"
     },
     {
       "relation": "contains",
@@ -62606,9 +63378,9 @@
       "source_file": "frontend/web/src/components/integrations/parts.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_parts",
-      "target": "lib_integrations",
-      "confidence_score": 1.0
+      "target": "lib_integrations"
     },
     {
       "relation": "imports",
@@ -62617,9 +63389,9 @@
       "source_file": "frontend/web/src/components/integrations/parts.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_parts",
-      "target": "lib_integrations_apierror",
-      "confidence_score": 1.0
+      "target": "lib_integrations_apierror"
     },
     {
       "relation": "imports_from",
@@ -62727,9 +63499,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationform",
-      "target": "integrations_parts_integrationserror",
-      "confidence_score": 1.0
+      "target": "integrations_parts_integrationserror"
     },
     {
       "relation": "imports",
@@ -62738,9 +63510,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationHealth.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationhealth",
-      "target": "integrations_parts_integrationserror",
-      "confidence_score": 1.0
+      "target": "integrations_parts_integrationserror"
     },
     {
       "relation": "imports",
@@ -62749,9 +63521,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "integrations_parts_integrationserror",
-      "confidence_score": 1.0
+      "target": "integrations_parts_integrationserror"
     },
     {
       "relation": "contains",
@@ -68632,9 +69404,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationHealth.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationhealth",
-      "target": "ui_kit",
-      "confidence_score": 1.0
+      "target": "ui_kit"
     },
     {
       "relation": "imports_from",
@@ -68643,9 +69415,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "ui_kit",
-      "confidence_score": 1.0
+      "target": "ui_kit"
     },
     {
       "relation": "imports_from",
@@ -69029,9 +69801,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationHealth.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationhealth",
-      "target": "ui_kit_userelativetime",
-      "confidence_score": 1.0
+      "target": "ui_kit_userelativetime"
     },
     {
       "relation": "calls",
@@ -69051,9 +69823,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "ui_kit_userelativetime",
-      "confidence_score": 1.0
+      "target": "ui_kit_userelativetime"
     },
     {
       "relation": "calls",
@@ -71269,6 +72041,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/lib/integrations.ts",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "lib_integrations",
+      "target": "lib_integrations_retryhorsrefus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/lib/integrations.ts",
       "source_location": "L170",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -71785,6 +72567,17 @@
       "target": "lib_integrations_useupdateconnector"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L186",
+      "weight": 1.0,
+      "source": "integrations_integrationform_createform",
+      "target": "lib_integrations_useupdateconnector"
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -71804,6 +72597,28 @@
       "source_location": "L107",
       "weight": 1.0,
       "source": "integrations_integrationform_apiconfigtab",
+      "target": "lib_integrations_usetestconnection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L717",
+      "weight": 1.0,
+      "source": "integrations_integrationform_configureform",
+      "target": "lib_integrations_usetestconnection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L188",
+      "weight": 1.0,
+      "source": "integrations_integrationform_createform",
       "target": "lib_integrations_usetestconnection"
     },
     {
@@ -72104,15 +72919,48 @@
       "target": "lib_integrations_useaddcredential"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L187",
+      "weight": 1.0,
+      "source": "integrations_integrationform_createform",
+      "target": "lib_integrations_useaddcredential"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "lib_integrations_usetoggleactive",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L718",
+      "weight": 1.0,
+      "source": "integrations_integrationform_configureform",
+      "target": "lib_integrations_usetoggleactive"
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "lib_integrations_usetoggleactive",
-      "confidence_score": 1.0
+      "target": "lib_integrations_usetoggleactive"
     },
     {
       "relation": "calls",
@@ -74508,8 +75356,18 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationform",
-      "target": "integrations_integrationform_environments",
+      "target": "integrations_integrationform_environments"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_etapes",
       "confidence_score": 1.0
     },
     {
@@ -74556,6 +75414,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_preset_par_defaut",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_presetpour",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
       "source_location": "L40",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -74576,6 +75454,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_stepper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
       "source_location": "L324",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -74591,6 +75479,47 @@
       "confidence_score": 1.0,
       "source": "integrations_integrationform",
       "target": "integrations_integrationform_target_modules"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_type_presets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_typepreset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L181",
+      "weight": 1.0,
+      "source": "integrations_integrationform",
+      "target": "integrations_integrationform_verdict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/integrations/IntegrationForm.tsx",
+      "source_location": "L217",
+      "weight": 1.0,
+      "source": "integrations_integrationform_createform",
+      "target": "integrations_integrationform_presetpour",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -74639,9 +75568,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "integrations_integrationslist_sourcerow",
-      "confidence_score": 1.0
+      "target": "integrations_integrationslist_sourcerow"
     },
     {
       "relation": "imports_from",
@@ -74650,9 +75579,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "types_integrations",
-      "confidence_score": 1.0
+      "target": "types_integrations"
     },
     {
       "relation": "imports",
@@ -74661,9 +75590,9 @@
       "source_file": "frontend/web/src/pages/integrations/IntegrationsList.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_integrationslist",
-      "target": "types_integrations_datasource",
-      "confidence_score": 1.0
+      "target": "types_integrations_datasource"
     },
     {
       "relation": "contains",
@@ -84325,5 +85254,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "40d5086e4a685214bb49d4dc161b4a9eb812e2c5"
+  "built_at_commit": "ebba723a98011315a4c0448d915de058ab1aa2eb"
 }
