@@ -57,7 +57,12 @@ const OVERVIEW: MetricSpec[] = [
   { id: "groupe.ca_consolide", title: "CA consolidé", unit: "XOF", source: "edw", level: "computed", formula: "somme des CA filiales, retraitée des flux intragroupe" },
   { id: "groupe.tresorerie", title: "Trésorerie", unit: "XOF", source: "edw" },
   { id: "groupe.marge", title: "Marge / EBITDA", unit: "%", source: "edw", level: "computed", formula: "EBITDA ÷ CA consolidé × 100" },
-  { id: "groupe.effectif", title: "Effectif Groupe", source: "shield", level: "computed", formula: "employés + ouvriers, toutes filiales" },
+  // Identifiants alignés sur ceux que produit l'adaptateur Shield : sans cela le
+  // même indicateur apparaîtrait deux fois, une version déclarée et une version vivante.
+  { id: "groupe.workforce", title: "Effectif Shield", source: "shield", level: "computed", formula: "employés + ouvriers, toutes filiales" },
+  { id: "groupe.presents", title: "Présents aujourd'hui", source: "shield" },
+  { id: "groupe.sites_actifs", title: "Sites actifs", source: "shield" },
+  { id: "groupe.alertes_critiques", title: "Alertes critiques", source: "shield" },
   { id: "groupe.patrimoine", title: "Patrimoine", unit: "XOF", source: "edw" },
   { id: "groupe.risque_global", title: "Risque global", unit: "index", source: "edw", level: "computed", formula: "score pondéré des dimensions de risque alimentées" },
   { id: "groupe.budget_realise", title: "Budget vs réalisé", unit: "%", source: "edw", level: "computed", formula: "réalisé ÷ budget × 100" },
@@ -140,12 +145,17 @@ const COMMERCIAL: MetricSpec[] = [
 /* ── Risques & Conformité ──────────────────────────────────────────────────── */
 const RISQUES: MetricSpec[] = [
   { id: "risk.exposition", title: "Exposition globale", unit: "index", source: "edw", level: "computed", formula: "moyenne pondérée des risques résiduels par dimension alimentée" },
-  { id: "risk.alertes_critiques", title: "Alertes critiques", source: "shield" },
+  { id: "risk.alertes_critiques", title: "Alertes critiques ouvertes", source: "shield" },
+  { id: "risk.alertes_ouvertes", title: "Alertes ouvertes", source: "shield" },
+  { id: "risk.acces_refuses", title: "Accès refusés (24 h)", source: "shield" },
+  { id: "risk.terminaux_hs", title: "Terminaux hors service", source: "shield", level: "computed", formula: "terminaux inactifs + en maintenance + perdus" },
+  { id: "risk.terminaux_total", title: "Terminaux déclarés", source: "shield" },
+  { id: "risk.visiteurs_attente", title: "Visiteurs en attente", source: "shield" },
   { id: "risk.incidents", title: "Incidents", source: "edw" },
   { id: "risk.conformite", title: "Taux de conformité", unit: "%", source: "edw", level: "computed", formula: "contrôles conformes ÷ contrôles réalisés × 100" },
   { id: "risk.actions_correctives", title: "Actions correctives", source: "edw" },
   { id: "risk.actions_retard", title: "Actions en retard", source: "edw" },
-  { id: "risk.anomalies_acces", title: "Anomalies d'accès", source: "shield" },
+  
 ];
 
 export const DOMAIN_METRICS: Record<string, MetricSpec[]> = {
