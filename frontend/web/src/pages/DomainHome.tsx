@@ -7,11 +7,11 @@ import { AppHeader } from "@/components/chrome/AppHeader";
 import { BrandFooter } from "@/components/chrome/BrandFooter";
 import { SideRail } from "@/components/chrome/SideRail";
 import { BLACK, FRAME_BG, ORANGE, glass } from "@/components/chrome/theme";
-import { CrossSectionChart } from "@/components/overview/CrossSectionChart";
 import { DomainScoreCard } from "@/components/overview/DomainScoreCard";
-import { Gauge } from "@/components/overview/Gauge";
 import { GroupGovernanceIndex } from "@/components/overview/GroupGovernanceIndex";
-import { ArrowUpRight, ChevronDown, Cog, Dots, TriUp } from "@/components/overview/icons";
+import { ShieldHrKpis } from "@/components/overview/ShieldHrKpis";
+import { ArrowUpRight, ChevronDown, Dots } from "@/components/overview/icons";
+import { EmptyChartState, IconButton, MetricCard, StateBadge, type DataState } from "@/components/ui/kit";
 import { Menu, MenuItem } from "@/components/ui/Menu";
 import { getDefaultItemHref, type DashboardModuleConfig } from "@/config/modules.config";
 import type { DomainHeroSpec } from "@/config/domainHome.config";
@@ -108,41 +108,6 @@ function ActionsMenu() {
   );
 }
 
-function DetailCard({ label, color, highlighted, href, index }: { label: string; color: string; highlighted?: boolean; href: string; index: number }) {
-  return (
-    <motion.article
-      className="relative h-[150px] overflow-hidden rounded-[26px] p-5"
-      style={{
-        ...glass,
-        background: "linear-gradient(135deg,rgba(255,255,255,0.82),rgba(243,248,249,0.56))",
-        border: highlighted ? `2.5px solid ${ORANGE}` : glass.border,
-        boxShadow: highlighted ? "0 22px 46px rgba(255,135,53,0.12)" : glass.boxShadow,
-      }}
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, transition: { duration: 0.22, ease: EASE_OUT } }}
-      transition={{ delay: 0.12 + index * 0.08, duration: 0.5, ease: EASE_OUT }}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex min-w-0 items-center gap-3 pr-2">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF0F0] text-[#7B8084]">
-            <Cog width={18} height={18} />
-          </span>
-          <span className="truncate text-[15px] font-semibold text-[#16191A]">{label}</span>
-        </div>
-        <Link to={href} aria-label={`Détails ${label}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/60 text-[#222] shadow-sm transition-transform hover:-translate-y-0.5">
-          <ArrowUpRight width={16} height={16} />
-        </Link>
-      </div>
-      <div className="absolute left-5 top-[72px] text-[11px] font-bold uppercase tracking-[0.1em] text-[#9AA09D]">mart à connecter</div>
-      <div className="absolute bottom-5 left-5 text-[34px] font-semibold leading-none text-black">N/D</div>
-      <div className="absolute -bottom-4 right-[-38px] h-[110px] w-[176px] opacity-95">
-        <Gauge value={8} color={color} />
-      </div>
-    </motion.article>
-  );
-}
-
 function SignalsCard({ spec }: { spec: DomainHeroSpec }) {
   const [open, setOpen] = React.useState(true);
   return (
@@ -154,13 +119,18 @@ function SignalsCard({ spec }: { spec: DomainHeroSpec }) {
       transition={{ delay: 0.4, duration: 0.5, ease: EASE_OUT }}
     >
       <div className="flex items-start justify-between">
-        <div>
-          <h3 className="text-[17px] font-semibold text-black">Signaux & seuils</h3>
-          <p className="mt-0.5 text-[11.5px] font-medium text-[#8A8F8E]">Données EDW — lecture seule</p>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-[17px] font-semibold text-black">Signaux &amp; seuils</h3>
+            <StateBadge state="disconnected" />
+          </div>
+          <p className="mt-0.5 text-[11.5px] font-medium text-[#8A8F8E]">
+            {spec.alertLabels.length} seuils déclarés · aucun encore alimenté
+          </p>
         </div>
-        <button type="button" aria-label={open ? "Réduire" : "Développer"} onClick={() => setOpen((v) => !v)} className="grid h-9 w-9 place-items-center rounded-full bg-white/60 text-[#222] shadow-sm">
+        <IconButton label={open ? "Réduire" : "Développer"} onClick={() => setOpen((v) => !v)} variant="ghost" size="sm">
           <ChevronDown width={16} height={16} style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform .3s ease" }} />
-        </button>
+        </IconButton>
       </div>
       {open ? (
         <div className="mt-4 grid grid-cols-2 gap-2">
@@ -180,24 +150,39 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
   const sidebarExpanded = useNavigationStore((state) => state.sidebarExpanded);
   const permissions = getCurrentPermissions();
   const exploreHref = getDefaultItemHref(module, permissions);
-  const padLeft = sidebarExpanded ? "pl-[88px] md:pl-[296px]" : "pl-[88px] md:pl-[120px]";
+  // Décalage sidebar appliqué à partir de md seulement (rail masqué en mobile).
+  const padLeft = sidebarExpanded ? "md:pl-[296px]" : "md:pl-[120px]";
   const details = spec.kpis.slice(0, 3);
   const [showFeatured, setShowFeatured] = React.useState(true);
+  // Aucune série temporelle n'est encore publiée par le mart, quel que soit le
+  // domaine : on l'assume explicitement plutôt que d'afficher un graphe décoratif.
+  const chartState: DataState = "disconnected";
+  const chartSource = "Mart EDW";
 
   return (
-    <div className="min-h-screen bg-[#B8B7B4] p-3 text-black sm:p-5 lg:p-6">
-      <div className="relative mx-auto min-h-[900px] w-full max-w-[1840px] overflow-hidden rounded-[42px] border border-white/70 bg-[#F4F7F2] shadow-[0_34px_100px_rgba(36,38,38,0.22)]">
+    <div className="min-h-screen bg-[#B8B7B4] p-2 text-black sm:p-4 lg:p-6">
+      <div className="relative mx-auto min-h-[560px] w-full max-w-[1840px] overflow-hidden rounded-[24px] border border-white/70 bg-[#F4F7F2] shadow-[0_34px_100px_rgba(36,38,38,0.22)] sm:rounded-[32px] lg:min-h-[860px] lg:rounded-[42px] 2xl:max-w-[2160px]">
         <div className={`pointer-events-none absolute inset-0 rounded-[inherit] ${FRAME_BG}`} />
 
         <AppHeader />
         <SideRail />
 
-        <main className={`relative z-10 pb-12 pr-5 pt-2 transition-[padding] duration-300 ease-out sm:pr-8 lg:pr-[3%] ${padLeft}`}>
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+        {/* pb-28 en mobile : dégage le bouton Copilot flottant (fixed bottom-6 h-14),
+            qui recouvrait le bas du contenu sur petits écrans. */}
+        <main className={`relative z-10 pb-28 pl-4 pr-4 pt-2 transition-[padding] duration-300 ease-out sm:pb-10 sm:pl-5 sm:pr-8 lg:pr-[3%] ${padLeft}`}>
+          {/* `key` = domaine : au changement de domaine le bloc se remonte, donc les
+              animations d'entrée rejouent → transition douce au lieu d'un saut sec. */}
+          <motion.div
+            key={module.id}
+            className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.42, ease: EASE_OUT }}
+          >
             {/* Colonne principale */}
             <div className="flex min-w-0 flex-col gap-6">
               {/* Zone hero : titre + visuel + carte vedette */}
-              <div className="relative min-h-[360px] lg:min-h-[430px]">
+              <div className="relative min-h-[200px] lg:min-h-[430px]">
                 <div className="absolute right-0 top-0 hidden h-full w-[64%] lg:block">
                   {spec.image ? (
                     <img
@@ -211,11 +196,13 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                   <div className="pointer-events-none absolute inset-y-0 left-0 w-[28%] bg-gradient-to-r from-[#F4F7F2] to-transparent" />
                 </div>
 
-                <section className="relative z-20 max-w-[460px] pt-4">
-                  <p className="text-[12px] font-bold uppercase tracking-[0.18em]" style={{ color: spec.accent }}>{spec.kicker}</p>
-                  <h1 className="mt-2 text-[46px] font-semibold leading-[1.02] tracking-tight text-black lg:text-[60px]">{spec.title}</h1>
-                  <p className="mt-4 max-w-[400px] text-[15px] font-medium leading-relaxed text-[#777C7D]">{spec.tagline}</p>
-                  <Link to={exploreHref} className="mt-6 inline-flex items-center gap-2 rounded-full px-5 py-3 text-[13.5px] font-bold text-white shadow-[0_16px_32px_rgba(0,0,0,0.16)] transition-transform hover:-translate-y-0.5" style={{ background: BLACK }}>
+                {/* Sur lg+, le texte s'arrête AVANT la carte vedette : elle ne peut
+                    plus recouvrir le titre ni la description (z-30 sur z-20). */}
+                <section className="relative z-20 max-w-[460px] pt-4 lg:max-w-[min(460px,calc(100%-320px))]">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] sm:text-[12px]" style={{ color: spec.accent }}>{spec.kicker}</p>
+                  <h1 className="mt-2 text-[clamp(28px,7vw,60px)] font-semibold leading-[1.03] tracking-tight text-black">{spec.title}</h1>
+                  <p className="mt-3 max-w-[400px] text-[14px] font-medium leading-relaxed text-[#777C7D] sm:mt-4 sm:text-[15px]">{spec.tagline}</p>
+                  <Link to={exploreHref} className="mt-5 inline-flex items-center gap-2 rounded-full px-5 py-3 text-[13px] font-bold text-white shadow-[0_16px_32px_rgba(0,0,0,0.16)] transition-transform hover:-translate-y-0.5 sm:mt-6 sm:text-[13.5px]" style={{ background: BLACK }}>
                     Explorer les {module.sidebarItems.length} sous-modules
                     <ArrowUpRight width={16} height={16} />
                   </Link>
@@ -223,7 +210,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
 
                 {showFeatured ? (
                   <motion.div
-                    className="absolute left-1/2 top-[54%] z-30 w-[284px] -translate-x-1/2 rounded-[22px] p-5 text-white lg:left-auto lg:right-2 lg:top-[24%] lg:translate-x-0"
+                    className="relative z-30 mt-6 w-full max-w-[320px] rounded-[22px] p-5 text-white lg:absolute lg:right-2 lg:top-[24%] lg:mt-0 lg:w-[284px]"
                     style={{ background: "rgba(18,21,24,0.62)", border: "1px solid rgba(255,255,255,0.34)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 26px 60px rgba(9,12,15,0.32)" }}
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -243,8 +230,14 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                         </button>
                       </div>
                     </div>
-                    <div className="mt-5 flex items-end justify-between">
-                      <span className="text-[36px] font-semibold leading-none">N/D</span>
+                    <div className="mt-5 flex items-end justify-between gap-3">
+                      <div className="min-w-0">
+                        <span className="block text-[36px] font-semibold leading-none">N/D</span>
+                        <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.06em] text-white/75">
+                          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
+                          {chartSource} à raccorder
+                        </span>
+                      </div>
                       <div className="flex items-center">
                         {spec.featuredBadges.slice(0, 3).map((initials, i) => (
                           <span key={initials} className="grid h-8 w-8 place-items-center rounded-full border-2 border-white/70 text-[10px] font-bold" style={{ marginLeft: i ? -8 : 0, background: i === 1 ? "#fff" : spec.accent, color: i === 1 ? "#111" : "#fff" }}>
@@ -260,7 +253,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                     type="button"
                     onClick={() => setShowFeatured(true)}
                     aria-label="Afficher le résumé du programme"
-                    className="absolute left-1/2 top-[54%] z-30 inline-flex -translate-x-1/2 items-center gap-2 rounded-full px-4 py-2.5 text-[12px] font-bold text-white lg:left-auto lg:right-2 lg:top-[24%] lg:translate-x-0"
+                    className="relative z-30 mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] font-bold text-white lg:absolute lg:right-2 lg:top-[24%] lg:mt-0"
                     style={{ background: "rgba(18,21,24,0.62)", border: "1px solid rgba(255,255,255,0.34)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 18px 40px rgba(9,12,15,0.28)" }}
                     initial={{ opacity: 0, scale: 0.92 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -280,21 +273,27 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.18, duration: 0.6, ease: EASE_OUT }}
               >
-                <div className="flex items-start justify-between gap-5">
-                  <div>
-                    <h2 className="text-[16px] font-semibold text-[#202020]">{spec.chartTitle}</h2>
-                    <div className="mt-3 flex items-end gap-3">
-                      <span className="text-[34px] font-semibold leading-none text-black">N/D</span>
-                      <span className="flex items-center gap-1 text-[12px] font-bold text-[#9AA09D]">à connecter</span>
+                <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-5">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-[16px] font-semibold text-[#202020]">{spec.chartTitle}</h2>
+                      <StateBadge state={chartState} />
                     </div>
+                    <p className="mt-1 text-[11.5px] font-medium text-[#8C9391]">
+                      Série {spec.chartUnit} · périmètre Groupe consolidé
+                    </p>
                   </div>
-                  <div className="flex items-center gap-3 pt-2 text-[15px] font-semibold text-[#242424]">
+                  <div className="flex items-center gap-3 pt-1 text-[14px] font-semibold text-[#242424]">
                     <span className="h-2.5 w-[60px] rounded-full" style={{ background: ORANGE }} />
                     {spec.chartUnit}
                   </div>
                 </div>
-                <div className="mt-4 h-[230px]">
-                  <CrossSectionChart accent={ORANGE} />
+                <div className="mt-4 min-h-[230px]">
+                  <EmptyChartState
+                    state={chartState}
+                    source={chartSource}
+                    action={{ label: "Configurer la source", to: "/admin/integrations" }}
+                  />
                 </div>
               </motion.section>
 
@@ -307,18 +306,33 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
               )}
             </div>
 
-            {/* Colonne droite */}
+            {/* Colonne droite (KPI + signaux) — grille fluide : 2-up tablette, empilé desktop */}
             <aside className="flex flex-col gap-4">
-              <div className="mb-1 flex items-center justify-end gap-3">
+              <div className="mb-1 flex flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <PeriodMenu />
                 <ActionsMenu />
               </div>
-              {details.map((kpi, i) => (
-                <DetailCard key={kpi.label} label={kpi.label} color={kpi.color} highlighted={i === 0} href={exploreHref} index={i} />
-              ))}
+              {module.id === "capital-humain" ? (
+                <ShieldHrKpis />
+              ) : (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                  {details.map((kpi, i) => (
+                    <MetricCard
+                      key={kpi.label}
+                      title={kpi.label}
+                      state="disconnected"
+                      source={chartSource}
+                      scope="Groupe consolidé"
+                      accent={kpi.color}
+                      highlighted={i === 0}
+                      href={exploreHref}
+                    />
+                  ))}
+                </div>
+              )}
               <SignalsCard spec={spec} />
             </aside>
-          </div>
+          </motion.div>
 
           <BrandFooter />
         </main>

@@ -95,7 +95,7 @@ export function DynamicSidebar() {
 
   return (
     <aside
-      className="absolute left-3 top-[184px] z-30 flex max-h-[calc(100%-212px)] flex-col rounded-[30px] p-3 transition-[width] duration-300 ease-out sm:left-5 lg:left-[2%] lg:top-[205px]"
+      className="absolute left-3 top-[184px] z-30 hidden max-h-[calc(100%-212px)] flex-col rounded-[30px] p-3 transition-[width] duration-300 ease-out md:flex sm:left-5 lg:left-[2%] lg:top-[205px]"
       style={{ ...PANEL_STYLE, width: expanded ? 264 : 76 }}
       aria-label="Navigation du cockpit"
     >

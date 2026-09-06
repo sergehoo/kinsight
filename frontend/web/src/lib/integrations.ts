@@ -44,6 +44,11 @@ export function useHealth() {
   return useQuery<HealthResponse>({
     queryKey: ["integrations", "health"],
     queryFn: () => req<HealthResponse>("GET", "/integrations/sources/health/"),
+    // Rafraîchissement discret : l'indicateur global du header reste vivant
+    // sans rechargement de page. `retry: false` évite d'insister si l'API est down.
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
+    retry: false,
   });
 }
 

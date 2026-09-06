@@ -31,3 +31,37 @@ body {
 .echarts-for-react {
   width: 100% !important;
 }
+
+/* ── États de données : shimmer des squelettes & pulsation de synchronisation ──
+   Réutilisés par le kit UI (MetricCard, Skeleton, StateBadge). */
+@keyframes ki-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes ki-sync-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+.ki-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    rgba(226, 232, 230, 0.42) 0%,
+    rgba(255, 255, 255, 0.92) 50%,
+    rgba(226, 232, 230, 0.42) 100%
+  );
+  background-size: 200% 100%;
+  animation: ki-shimmer 1.6s ease-in-out infinite;
+}
+
+.ki-sync-dot {
+  animation: ki-sync-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ki-shimmer,
+  .ki-sync-dot {
+    animation: none;
+  }
+}

@@ -1,12 +1,14 @@
 import { Bell, Briefcase, Network } from "@/components/overview/icons";
 
 import { CircleButton } from "./CircleButton";
+import { SyncIndicator } from "./SyncIndicator";
 import { UserMenu } from "./UserMenu";
 
-/** Actions de l'en-tête : intégrations, portefeuille, notifications, utilisateur connecté. */
+/** Actions de l'en-tête : état de synchronisation, intégrations, portefeuille, notifications, utilisateur. */
 export function HeaderActions() {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
+      <SyncIndicator />
       <CircleButton label="Connecteurs & Intégrations" to="/admin/integrations">
         <Network width={21} height={21} />
       </CircleButton>
