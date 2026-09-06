@@ -1,16 +1,16 @@
-# Graph Report - k-insight  (2026-06-25)
+# Graph Report - k-insight  (2026-09-06)
 
 ## Corpus Check
-- 207 files · ~4,214,482 words
+- 329 files · ~2,956,591 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1419 nodes · 1765 edges · 213 communities (146 shown, 67 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 87 edges (avg confidence: 0.64)
+- 2549 nodes · 4772 edges · 259 communities (182 shown, 77 thin omitted)
+- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 831 edges (avg confidence: 0.54)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `66f4332b`
+- Built from commit: `29406af4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -52,6 +52,7 @@
 - [[_COMMUNITY_Community 36|Community 36]]
 - [[_COMMUNITY_Community 38|Community 38]]
 - [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 41|Community 41]]
 - [[_COMMUNITY_Community 57|Community 57]]
 - [[_COMMUNITY_Community 61|Community 61]]
 - [[_COMMUNITY_Community 62|Community 62]]
@@ -197,115 +198,161 @@
 - [[_COMMUNITY_Community 202|Community 202]]
 - [[_COMMUNITY_Community 203|Community 203]]
 - [[_COMMUNITY_Community 204|Community 204]]
+- [[_COMMUNITY_Community 205|Community 205]]
+- [[_COMMUNITY_Community 206|Community 206]]
+- [[_COMMUNITY_Community 207|Community 207]]
+- [[_COMMUNITY_Community 208|Community 208]]
+- [[_COMMUNITY_Community 209|Community 209]]
+- [[_COMMUNITY_Community 210|Community 210]]
+- [[_COMMUNITY_Community 211|Community 211]]
+- [[_COMMUNITY_Community 212|Community 212]]
+- [[_COMMUNITY_Community 213|Community 213]]
+- [[_COMMUNITY_Community 214|Community 214]]
+- [[_COMMUNITY_Community 215|Community 215]]
+- [[_COMMUNITY_Community 216|Community 216]]
+- [[_COMMUNITY_Community 217|Community 217]]
+- [[_COMMUNITY_Community 218|Community 218]]
+- [[_COMMUNITY_Community 219|Community 219]]
+- [[_COMMUNITY_Community 220|Community 220]]
+- [[_COMMUNITY_Community 221|Community 221]]
+- [[_COMMUNITY_Community 222|Community 222]]
+- [[_COMMUNITY_Community 223|Community 223]]
+- [[_COMMUNITY_Community 224|Community 224]]
+- [[_COMMUNITY_Community 225|Community 225]]
+- [[_COMMUNITY_Community 226|Community 226]]
+- [[_COMMUNITY_Community 227|Community 227]]
+- [[_COMMUNITY_Community 228|Community 228]]
+- [[_COMMUNITY_Community 229|Community 229]]
+- [[_COMMUNITY_Community 230|Community 230]]
+- [[_COMMUNITY_Community 231|Community 231]]
+- [[_COMMUNITY_Community 232|Community 232]]
+- [[_COMMUNITY_Community 233|Community 233]]
+- [[_COMMUNITY_Community 234|Community 234]]
+- [[_COMMUNITY_Community 235|Community 235]]
+- [[_COMMUNITY_Community 236|Community 236]]
+- [[_COMMUNITY_Community 237|Community 237]]
+- [[_COMMUNITY_Community 238|Community 238]]
+- [[_COMMUNITY_Community 239|Community 239]]
+- [[_COMMUNITY_Community 240|Community 240]]
+- [[_COMMUNITY_Community 241|Community 241]]
+- [[_COMMUNITY_Community 242|Community 242]]
+- [[_COMMUNITY_Community 243|Community 243]]
+- [[_COMMUNITY_Community 244|Community 244]]
+- [[_COMMUNITY_Community 245|Community 245]]
+- [[_COMMUNITY_Community 246|Community 246]]
+- [[_COMMUNITY_Community 247|Community 247]]
+- [[_COMMUNITY_Community 248|Community 248]]
+- [[_COMMUNITY_Community 249|Community 249]]
+- [[_COMMUNITY_Community 250|Community 250]]
 
 ## God Nodes (most connected - your core abstractions)
 1. ``react-router`` - 100 edges
-2. `Period` - 36 edges
-3. `svg()` - 34 edges
-4. `Employee` - 24 edges
-5. `Payslip` - 20 edges
-6. `HrKpiRow` - 19 edges
-7. `compilerOptions` - 19 edges
-8. `Route Module` - 16 edges
-9. `GovernanceApiTest` - 15 edges
-10. `hr_kpi_summary()` - 13 edges
+2. `InMemoryMartGateway` - 43 edges
+3. `ConnectorCredential` - 41 edges
+4. `DataSource` - 39 edges
+5. `Period` - 36 edges
+6. `DataConnector` - 35 edges
+7. `SyncJob` - 34 edges
+8. `SyncLog` - 34 edges
+9. `svg()` - 34 edges
+10. `ToolError` - 33 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `MartGateway` --uses--> `HrKpiRow`  [INFERRED]
-  backend/apps/governance/gateway.py → backend/src/k_insight/kpi/hr_mart.py
-- `InMemoryMartGateway` --uses--> `HrKpiRow`  [INFERRED]
-  backend/apps/governance/gateway.py → backend/src/k_insight/kpi/hr_mart.py
-- `PostgresMartGateway` --uses--> `HrKpiRow`  [INFERRED]
-  backend/apps/governance/gateway.py → backend/src/k_insight/kpi/hr_mart.py
-- `hr_kpi_summary()` --calls--> `filter_by_scope()`  [INFERRED]
-  backend/apps/governance/services.py → backend/src/k_insight/access/perimeter.py
-- `FailingMartGateway` --uses--> `Employee`  [INFERRED]
-  backend/apps/governance/tests.py → backend/src/k_insight/kpi/hr.py
+- `_tool_generate_report()` --calls--> `can_access_domain()`  [INFERRED]
+  backend/apps/ai_copilot/tools.py → backend/apps/accounts/rbac.py
+- `_tool_group_score()` --calls--> `can_access_domain()`  [INFERRED]
+  backend/apps/ai_copilot/tools.py → backend/apps/accounts/rbac.py
+- `build_value_lookup()` --calls--> `can_access_domain()`  [INFERRED]
+  backend/apps/ai_copilot/value_resolver.py → backend/apps/accounts/rbac.py
+- `ActionableChatTest` --uses--> `AIConversation`  [INFERRED]
+  backend/apps/ai_copilot/tests.py → backend/apps/ai_copilot/models.py
+- `AutomationTest` --uses--> `AIConversation`  [INFERRED]
+  backend/apps/ai_copilot/tests.py → backend/apps/ai_copilot/models.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (213 total, 67 thin omitted)
+## Communities (259 total, 77 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.11
-Nodes (37): DASHBOARDS, DashboardLink, GAUGE_COLORS, ICON_SIZE, ModuleKind, BarChart(), BriefcaseBusiness(), Building() (+29 more)
+Cohesion: 0.10
+Nodes (49): dashboardModules, FILTERS_COM, FILTERS_FIN, FILTERS_HR, FILTERS_OPS, FILTERS_RE, FILTERS_RISK, ModuleIcon (+41 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.08
-Nodes (40): useHrKpi(), GlobalFilters(), QUARTERS, YEARS, base(), IconArrowDownRight(), IconProps, IconShield() (+32 more)
+Cohesion: 0.13
+Nodes (23): GlobalFilters(), QUARTERS, YEARS, base(), IconArrowDownRight(), IconProps, IconShield(), IconTrend() (+15 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.08
-Nodes (33): ABC, Any, APIView, AccessLog, Meta, Journal des consultations / accès (historique exigé par le brief, ADR-0005).  En, get_mart_gateway(), MartGateway (+25 more)
+Cohesion: 0.18
+Nodes (16): _availability_dashboard(), blank_hr_summary(), _clamp_gauge(), _compact_xof(), _format_compact(), _format_int(), governance_overview(), _hr_dashboard() (+8 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.06
-Nodes (30): dependencies, class-variance-authority, clsx, echarts, echarts-for-react, framer-motion, react, react-dom (+22 more)
+Cohesion: 0.05
+Nodes (37): dependencies, class-variance-authority, clsx, echarts, echarts-for-react, framer-motion, react, react-dom (+29 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.10
-Nodes (15): AbstractUser, Contrôle d'accès multi-filiales (domaine pur) — cf. ADR-0005.  Le filtrage par p, filter_by_scope(), Périmètre de visibilité multi-filiales (ADR-0005).  Un `Scope` exprime ce qu'un, Périmètre d'accès. `is_group=True` => accès à toutes les filiales.      Sinon, a, Vrai si la filiale `subsidiary_code` est visible dans ce périmètre., Ne conserve que les lignes dont la filiale (via `key`) est autorisée par `scope`, Scope (+7 more)
+Nodes (12): AbstractUser, Contrôle d'accès multi-filiales (domaine pur) — cf. ADR-0005.  Le filtrage par p, Périmètre de visibilité multi-filiales (ADR-0005).  Un `Scope` exprime ce qu'un, Périmètre d'accès. `is_group=True` => accès à toutes les filiales.      Sinon, a, Vrai si la filiale `subsidiary_code` est visible dans ce périmètre., Scope, Utilisateurs, rôles et périmètres (RBAC multi-filiales, ADR-0005).  Le périmètre, Périmètre de visibilité (domaine pur). (+4 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.13
-Nodes (15): getModule(), ModuleDef, ModuleKpi, ModuleRow, useAnimatedValue(), AnimatedNumber(), AnimatedNumberProps, NUMBER_RE (+7 more)
+Cohesion: 0.11
+Nodes (22): SCORE_DOMAINS, useDomainScore(), useAnimatedValue(), AnimatedNumber(), AnimatedNumberProps, NUMBER_RE, ONE_SPACE_RE, Parsed (+14 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.09
 Nodes (21): compilerOptions, allowImportingTsExtensions, baseUrl, isolatedModules, jsx, lib, module, moduleDetection (+13 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.14
-Nodes (12): Enum, Catalogue sémantique du domaine RH (1er incrément).  Ces définitions doivent res, Couche sémantique : catalogue déclaratif des métriques de gouvernance.  Ce catal, Direction, Metric, MetricCatalog, Registre des métriques : structures + catalogue global.  Chaque métrique déclare, Sens « favorable » d'une variation de la métrique. (+4 more)
+Cohesion: 0.07
+Nodes (25): Enum, Catalogue sémantique du domaine « commercial-clients » (GÉNÉRÉ).  Définitions dé, Catalogue sémantique du domaine « finance » (GÉNÉRÉ).  Définitions déclaratives, answer(), _norm(), Ancrage IA : résolution question → métrique du catalogue (domaine pur, testé)., Métrique du catalogue la plus proche de `query`, ou None si rien de pertinent., Réponse ANCRÉE à une question, ou refus motivé. Jamais d'invention. (+17 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.15
-Nodes (17): apiGet(), TOKEN, mockCatalog, mockGovernanceOverview(), mockHrKpi(), QUARTER_BOUNDS, unavailableDashboard(), DashboardModel (+9 more)
+Cohesion: 0.09
+Nodes (32): useHrScore(), mockCatalog, mockGovernanceOverview(), mockHrKpi(), QUARTER_BOUNDS, unavailableDashboard(), childrenAt(), DIM_COLORS (+24 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.12
-Nodes (6): InMemoryMartGateway, Passerelle de test : sert des lignes fournies en mémoire., FailingMartGateway, GovernanceApiTest, Tests d'API governance : catalogue + KPI RH avec RBAC par périmètre.  Exécution, TestCase
+Cohesion: 0.13
+Nodes (3): FailingMartGateway, GovernanceApiTest, RuntimeError
 
 ### Community 10 - "Community 10"
-Cohesion: 0.22
-Nodes (7): entries(), exits(), Nombre d'embauches dont la date tombe dans [start, end[., Nombre de départs dont la date tombe dans [start, end[., Taux de turnover = départs sur la période / effectif moyen.      Retourne une fr, turnover_rate(), TurnoverTest
+Cohesion: 0.06
+Nodes (87): APITestCase, BasePermission, decrypt(), encrypt(), _key(), _keystream(), mask(), Chiffrement at-rest des secrets de connecteurs (tokens, mots de passe…).  `crypt (+79 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.17
-Nodes (5): PeriodTest, Tests du moteur de KPI RH (domaine pur).  Exécution : PYTHONPATH=src python3 -m, Ancrage IA : toute métrique calculée doit être déclarée au catalogue (ADR-0007)., SemanticCatalogTest, Réconciliation domaine pur ↔ grain du mart (ADR-0006).  On reconstruit les ligne
+Cohesion: 0.12
+Nodes (10): KpiError, Erreur de cohérence dans un calcul de KPI (entrée invalide)., absenteeism_rate(), Taux d'absentéisme = jours d'absence / jours théoriques travaillés.      Fonctio, AbsenteeismTest, PeriodTest, Tests du moteur de KPI RH (domaine pur).  Exécution : PYTHONPATH=src python3 -m, Ancrage IA : toute métrique calculée doit être déclarée au catalogue (ADR-0007). (+2 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.23
-Nodes (16): hr_kpi_summary(), Synthèse RH filtrée par périmètre, sur la période demandée.      NB : le turnove, Period, Période d'analyse, bornes demi-ouvertes [start, end[.      `start` est inclus, `, build_hr_kpi_rows(), HrKpiRow, _in_period(), _month_start() (+8 more)
+Cohesion: 0.25
+Nodes (14): filter_by_scope(), Ne conserve que les lignes dont la filiale (via `key`) est autorisée par `scope`, build_value_lookup(), Résolution métrique → valeur réelle du mart (binding, Phase 6).  Fournit le `val, hr_kpi_summary(), Synthèse RH filtrée par périmètre, sur la période demandée.      NB : le turnove, HrKpiRow, _in_period() (+6 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.17
-Nodes (14): MetricResult, Résultat d'un KPI : valeur + unité + contexte (période, dimensions).      `value, payroll_mass(), payroll_mass_by_department(), payroll_mass_by_subsidiary(), payroll_mass_result(), Payslip, KPI de Gouvernance RH (domaine pur, testé).  Indicateurs couverts par le 1er inc (+6 more)
+Cohesion: 0.15
+Nodes (10): payroll_mass(), payroll_mass_by_department(), payroll_mass_by_subsidiary(), Payslip, Masse salariale brute (XOF) sur la période. Entier — pas de float sur l'argent., Masse salariale brute ventilée par filiale (XOF entiers)., Masse salariale brute ventilée par département (XOF entiers)., Ligne de bulletin de paie (grain du mart `fact_payroll`).      `gross_xof` : sal (+2 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.15
-Nodes (13): date, Vrai si `d` appartient à [start, end[., Dernier instant *inclus* dans la période (end exclu => end n'en fait pas partie), average_headcount(), Employee, headcount(), headcount_result(), is_active() (+5 more)
+Cohesion: 0.12
+Nodes (27): MetricResult, Period, Types et helpers transverses du moteur de KPI.  Conventions (cohérentes avec AUG, Période d'analyse, bornes demi-ouvertes [start, end[.      `start` est inclus, `, Résultat d'un KPI : valeur + unité + contexte (période, dimensions).      `value, Ratio robuste : retourne 0.0 si le dénominateur est nul (évite la division par z, safe_ratio(), average_headcount() (+19 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.22
-Nodes (5): AccountsConfig, AppConfig, AuditConfig, GovernanceConfig, OrganizationsConfig
+Cohesion: 0.15
+Nodes (7): AccountsConfig, AiCopilotConfig, AppConfig, AuditConfig, GovernanceConfig, IntegrationsConfig, OrganizationsConfig
 
 ### Community 16 - "Community 16"
-Cohesion: 0.05
-Nodes (38): 6.11.1, 6.12.1, 6.14.1, 6.22.0, 6.22.1, 6.23.1, 6.25.1, 6.4.0 (+30 more)
+Cohesion: 0.07
+Nodes (50): DEFAULT_WIDTHS, HeroImage(), HeroImageProps, generatedHeroes, domainHeroes, DomainHeroSpec, getDomainHero(), HeroKpi (+42 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.22
 Nodes (8): Commercialisation & Encaissements, Construction, Finance, Gouvernance Immobilière, Immobilier, KPI Groupe K-Insight, RH, Stock
 
 ### Community 18 - "Community 18"
-Cohesion: 0.12
-Nodes (14): K, aggregate_by(), KpiError, pct_change(), Types et helpers transverses du moteur de KPI.  Conventions (cohérentes avec AUG, Erreur de cohérence dans un calcul de KPI (entrée invalide)., Somme `value_fn` par clé `key_fn`. Base de toute ventilation (par filiale, etc.), Ratio robuste : retourne 0.0 si le dénominateur est nul (évite la division par z (+6 more)
+Cohesion: 0.20
+Nodes (7): K, aggregate_by(), pct_change(), Somme `value_fn` par clé `key_fn`. Base de toute ventilation (par filiale, etc.), Variation relative (current - previous) / |previous|. 0.0 si previous == 0., T, CoreHelpersTest
 
 ### Community 19 - "Community 19"
-Cohesion: 0.22
-Nodes (8): name, private, scripts, build, dev, preview, typecheck, version
+Cohesion: 0.07
+Nodes (51): BrandFooter(), ApiConfigTab(), AUTH_METHODS, ConfigureForm(), CreateForm(), EndpointsTab(), HistoryTab(), LOG_COLOR (+43 more)
 
 ### Community 20 - "Community 20"
 Cohesion: 0.33
@@ -317,395 +364,543 @@ Nodes (5): Concepts clés, Décisions de gouvernance, Gouvernance immobilière K
 
 ### Community 23 - "Community 23"
 Cohesion: 0.06
-Nodes (29): Performance, Progressive Enhancement, Resilience and Accessibility, Simplicity, Why Progressive Enhancement Matters, Additional cookie utils, Additional session utils, Cookie attributes (+21 more)
+Nodes (47): ChatBody, useApproveAction(), useCopilotChat(), useRejectAction(), downloadGroupExport(), ActionCard(), AICopilotPanel(), SUGGESTIONS (+39 more)
 
 ### Community 24 - "Community 24"
 Cohesion: 0.50
 Nodes (3): Axes d'analyse, Indicateurs principaux, KPI Finance
 
+### Community 28 - "Community 28"
+Cohesion: 0.06
+Nodes (19): domain_score(), DomainDimension, DomainScoreFramework, Catalogue des Scores de Gouvernance par domaine (domaine pur, GÉNÉRÉ).  Source d, Score global 0–100 d'un domaine ; None si domaine inconnu ou aucune dimension di, group_governance_index(), Indice de Gouvernance Groupe — score consolidé du Groupe Kaydan (domaine pur, te, Indice Groupe 0–100 = moyenne pondérée des scores de domaine **disponibles**. (+11 more)
+
+### Community 30 - "Community 30"
+Cohesion: 0.07
+Nodes (11): InMemoryMartGateway, Passerelle de test : sert des lignes fournies en mémoire., AlertsApiTest, HrKpiZeroVsAbsentTest, HrScoreApiTest, Human Capital Score : pondération renormalisée, périmètre, période, gouverné N/D, Centre d'alertes : seuils sur scores réels, gouverné N/D, périmètre RBAC., Un mart vide ne doit pas produire « 0 XOF » : 0 est une mesure, pas une absence. (+3 more)
+
+### Community 41 - "Community 41"
+Cohesion: 0.18
+Nodes (7): can_access_domain(), permissions_for(), RBAC autoritative : rôle utilisateur → permissions de domaines + page d'atterris, Frontière de sécurité : l'utilisateur a-t-il le droit d'accéder aux données de c, MeView, API comptes : profil de l'utilisateur connecté (rôle, périmètre, permissions, at, GET /api/v1/auth/me/ — identité + droits de l'utilisateur authentifié (source de
+
 ### Community 61 - "Community 61"
+Cohesion: 0.12
+Nodes (20): AIAutomation, AIMessage, AIToolExecution, Tâche planifiée du Copilot (Phase 5). Exécutée par Celery Beat.      Gouverné :, AIProviderRouter, OfflineGroundedProvider, Essaie les providers dans l'ordre ; renvoie la 1re réponse, en traçant chaque te, Repli déterministe : renvoie la phrase ancrée telle quelle (aucune invention, au (+12 more)
+
+### Community 62 - "Community 62"
+Cohesion: 0.05
+Nodes (38): 6.11.1, 6.12.1, 6.14.1, 6.14.2, 6.22.0, 6.22.1, 6.24.1, 6.25.1 (+30 more)
+
+### Community 63 - "Community 63"
+Cohesion: 0.18
+Nodes (23): AIActionApproval, AIActionRequest, AIConversation, Demande d'action SENSIBLE en attente d'approbation (rien n'est exécuté avant)., ActionApprovalService, PermissionAwareToolExecutor, Outil inconnu ou désactivé., L'utilisateur n'a pas les droits pour cet outil. (+15 more)
+
+### Community 64 - "Community 64"
+Cohesion: 0.09
+Nodes (28): hr_binding(), Registre des liaisons module ↔ mart (gabarit de branchement des données réelles), fetch_or_unavailable(), Exécute une lecture du mart. Retourne `(résultat, disponible)`.      Aucune exce, aggregate_score(), AlertsView, build_group_report(), _dims_avg() (+20 more)
+
+### Community 65 - "Community 65"
+Cohesion: 0.11
+Nodes (20): AIAuditLog, Trace complète des interactions IA (provider, latence, erreurs, actions)., Tâches Celery du Copilot (Phase 5) — automatisations planifiées.  Gouvernance :, build_default_registry(), can_use(), Outils contrôlés du Copilot : registre déclaratif + exécuteur conscient des perm, Lance une synchronisation d'un connecteur (écriture sensible — passe par approba, Génère la synthèse de gouvernance Groupe + indique les exports disponibles (lect (+12 more)
+
+### Community 66 - "Community 66"
+Cohesion: 0.09
+Nodes (18): useGovernanceOverview(), SideRail(), formatCompact(), buildSpectrum(), FALLBACK, makeRng(), SalesHistogram(), SalesHistogramProps (+10 more)
+
+### Community 67 - "Community 67"
+Cohesion: 0.08
+Nodes (24): useModuleData(), compact, formatInt(), formatSigned(), formatXof(), xof, getModule(), ModuleChart (+16 more)
+
+### Community 68 - "Community 68"
+Cohesion: 0.06
+Nodes (29): Performance, Progressive Enhancement, Resilience and Accessibility, Simplicity, Why Progressive Enhancement Matters, Additional cookie utils, Additional session utils, Cookie attributes (+21 more)
+
+### Community 69 - "Community 69"
+Cohesion: 0.07
+Nodes (30): useAiQuery(), useAlerts(), AppHeader(), Avatar(), Brand(), CircleButton(), CircleButtonProps, HeaderActions() (+22 more)
+
+### Community 70 - "Community 70"
 Cohesion: 0.06
 Nodes (30): 1. Enable the middleware flag, 1. TypeScript: augment `Future` for loader/action `context`, 2. Create a context, 2. Create a context, 3. Add `middleware` to route objects, 3. Export middleware from your routes, 4. Add a `getContext` function (optional), 4. Update your `getLoadContext` function (if applicable) (+22 more)
 
-### Community 62 - "Community 62"
+### Community 71 - "Community 71"
+Cohesion: 0.07
+Nodes (8): AiQueryApiTest, BrokenGateway, MartUnavailableDegradationTest, Tests d'API governance : catalogue + KPI RH avec RBAC par périmètre.  Exécution, Frontière de sécurité : la RBAC par domaine est appliquée CÔTÉ BACKEND (pas que, IA ancrée : réponse sourcée sur le catalogue, refus hors catalogue, gouverné N/D, Une panne du mart doit dégrader en état gouverné, JAMAIS en HTTP 500.      Avant, RbacDomainEnforcementTest
+
+### Community 72 - "Community 72"
 Cohesion: 0.07
 Nodes (27): Basic Override Pattern, Build Output, Bundler Configuration, Client Properties, Configuring Routes, Copying Default Entries, Custom Entry Files, `entry.browser.tsx` (+19 more)
 
-### Community 63 - "Community 63"
+### Community 73 - "Community 73"
+Cohesion: 0.14
+Nodes (26): Any, DataSource, AuthMethod, CredentialKind, fetch_hr_reference(), get_odoo_source(), État gouverné du référentiel RH Odoo. Ne renvoie jamais de données.      `not_co, _auth_headers() (+18 more)
+
+### Community 74 - "Community 74"
+Cohesion: 0.11
+Nodes (21): SyncIndicator(), useShieldHrKpis(), PLACEHOLDERS, ShieldHrKpis(), useOnlineStatus(), formatRelative(), IB_VARIANT, IconButton() (+13 more)
+
+### Community 75 - "Community 75"
 Cohesion: 0.08
 Nodes (24): 1. Install the Vite plugin, 2. Add the React Router config, 3. Add the Root entry point, 4. Add client entry module, 5. Shuffle stuff around, 6. Set up your routes, 7. Boot the app, 8. Render your app (+16 more)
 
-### Community 64 - "Community 64"
+### Community 76 - "Community 76"
 Cohesion: 0.08
 Nodes (23): 1. Add a root error boundary, 2. Write a bug, 3. Throw data in loaders/actions, 4. Nested error boundaries, Data Mode, Data Mode, Error Boundaries, Error Sanitization (+15 more)
 
-### Community 65 - "Community 65"
+### Community 77 - "Community 77"
 Cohesion: 0.09
 Nodes (21): Conclusion, Concurrent Submissions and Revalidation, Example, Form Submission, Link Navigation, Natural Alignment with Browser Behavior, Network Concurrency Management, Potential for Stale Data (+13 more)
 
-### Community 66 - "Community 66"
-Cohesion: 0.12
-Nodes (11): useGovernanceOverview(), AppLayout(), DASHBOARD_IMAGES, DASHBOARD_KEYS, DETAIL_MODULE, DetailMetric, emptyDashboard(), GovernanceOverview() (+3 more)
-
-### Community 67 - "Community 67"
-Cohesion: 0.10
-Nodes (19): 1. Handler Level (Server), 1. Server-side Instrumentation, 2. Client-side Instrumentation, 2. Router Level (Client), 3. Route Level (Server + Client), Client-side Performance Tracking, Common Patterns, Composition (+11 more)
-
-### Community 68 - "Community 68"
-Cohesion: 0.15
-Nodes (11): AppHeader(), Avatar(), Brand(), CircleButton(), CircleButtonProps, HeaderActions(), ITEMS, NavItem (+3 more)
-
-### Community 69 - "Community 69"
-Cohesion: 0.17
-Nodes (12): PageShell(), PageShellProps, SideRail(), glass, DASHBOARD_LINKS, HOME_MODULE_KEYS, MODULES, EASE_OUT (+4 more)
-
-### Community 70 - "Community 70"
-Cohesion: 0.12
-Nodes (15): Concurrency, Configuration, Data Loading and Pre-rendering, Invalid Exports, Pre-Rendering, Pre-rendering with a SPA Fallback, Pre-rendering with `ssr:false`, Pre-rendering with `ssr:true` (+7 more)
-
-### Community 71 - "Community 71"
-Cohesion: 0.08
-Nodes (20): Accessing Action Data, Actions, Calling Actions, Calling actions with a fetcher, Calling actions with a Form, Calling actions with useSubmit, Defining Actions, 1. Create a Router (+12 more)
-
-### Community 72 - "Community 72"
-Cohesion: 0.12
-Nodes (15): 1. Add an action, 1. Create a search route, 2. Create a fetcher, 2. Render a fetcher in a combobox component, 3. Add type inference, 3. Submit the form, 4. Render pending state, 4. Render the data (+7 more)
-
-### Community 73 - "Community 73"
-Cohesion: 0.13
-Nodes (15): `action`, `clientAction`, `clientLoader`, `clientMiddleware`, `ErrorBoundary`, `handle`, `headers`, `HydrateFallback` (+7 more)
-
-### Community 74 - "Community 74"
-Cohesion: 0.14
-Nodes (13): Basic Routes, Catch-all Route, Dot Delimiters, Dynamic Segments, Escaping Special Characters, File Route Conventions, Folders for Organization, Nested Layouts without Nested URLs (+5 more)
-
-### Community 75 - "Community 75"
-Cohesion: 0.14
-Nodes (12): Arborescence, Architecture (résumé), Démarrage rapide (domaine pur — vérifiable sans infra), k-insight, État, Comment vérifier, Décisions ouvertes (à trancher avec le métier / en ADR), Fondation (transverse) (+4 more)
-
-### Community 76 - "Community 76"
-Cohesion: 0.15
-Nodes (12): 1. Create the image gallery route, 1. Enable view transitions on navigation, 1. Using render props, 2. Add transition styles, 2. Enable view transitions with programmatic navigation, 2. Using the `useViewTransitionState` hook, 3. Create the image detail route, 4. Add matching transition styles for the detail view (+4 more)
-
-### Community 77 - "Community 77"
-Cohesion: 0.17
-Nodes (11): Cloudflare Workers, DeployHQ, Deploying, EdgeOne Pages, Introduction, Netlify, Node.js with Docker, Node with Docker and Postgres (+3 more)
-
 ### Community 78 - "Community 78"
-Cohesion: 0.18
-Nodes (10): Advanced handler execution, Advanced Use Cases, Calling Route Middleware, Custom Handler, Custom Middleware, Custom Revalidation Behavior, Data Strategy, Migrating away from `shouldLoad` (+2 more)
+Cohesion: 0.15
+Nodes (19): assertGoverned(), deltaOf(), deltaPercentOf(), effectiveStatus(), hasValue(), KMetric, KSeriesPoint, LEVEL_LABEL (+11 more)
 
 ### Community 79 - "Community 79"
 Cohesion: 0.18
-Nodes (10): 1. Add the storage package, 1. Setup some routes, 2. Add the form data parser, 2. Create a storage configuration, 3. Create a route with an upload action, 3. Implement the upload handler, 4. Add a route to serve the uploaded file, Basic File Upload (+2 more)
+Nodes (10): ClaudeClient, DeepSeekClient, default_providers(), _HttpLLMClient, ProviderClient, ProviderResult, ProviderUnavailable, Routage multi-provider du Copilot : DeepSeek (principal) → Claude (fallback) → r (+2 more)
 
 ### Community 80 - "Community 80"
-Cohesion: 0.18
-Nodes (10): 1. Adopt future flags, 2. Update dependencies, 3. Change `scripts` in `package.json`, 4. Add a `routes.ts` file, 5. Add a React Router config, 6. Add React Router plugin to `vite.config`, 7. Enable type safety, 8. Rename components in entry files (+2 more)
+Cohesion: 0.14
+Nodes (18): useGroupScore(), FilterTrigger(), GenericFilter(), PeriodFilter(), SubsidiaryFilter(), DOMAIN_COLOR, DOMAIN_HREF, fmt() (+10 more)
 
 ### Community 81 - "Community 81"
-Cohesion: 0.18
-Nodes (10): Deprecations, Update to latest v6.x, Upgrade to v7, Upgrading from v6, v7_fetcherPersist, v7_normalizeFormMethod, v7_partialHydration, v7_relativeSplatPath (+2 more)
+Cohesion: 0.14
+Nodes (14): ABC, get_mart_gateway(), _mart_errors(), MartGateway, MartUnavailable, PostgresMartGateway, Passerelle d'accès au Data Warehouse (mart) — ADR-0004.  Le backend lit le mart, Traduit toute erreur psycopg (connexion, auth, schéma) en `MartUnavailable`. (+6 more)
 
 ### Community 82 - "Community 82"
-Cohesion: 0.20
-Nodes (9): Appending, From `entry.server.tsx`, From loaders and actions, From Route Modules, HTTP Headers, Merging with parent headers, Reading request headers, Setting (+1 more)
+Cohesion: 0.10
+Nodes (19): 1. Handler Level (Server), 1. Server-side Instrumentation, 2. Client-side Instrumentation, 2. Router Level (Client), 3. Route Level (Server + Client), Client-side Performance Tracking, Common Patterns, Composition (+11 more)
 
 ### Community 83 - "Community 83"
-Cohesion: 0.20
-Nodes (10): Configuring Routes, Dynamic Segments, Index Routes, Layout Routes, Nested Routes, Optional Segments, Prefix Route, Route Objects (+2 more)
+Cohesion: 0.16
+Nodes (14): build_context(), Construction du contexte dynamique transmis au Copilot à chaque message.  Le con, detect_tool_intent(), _first_int(), _norm(), Routage d'intention → outil (déterministe, hors-ligne).  Permet au Copilot d'AGI, (tool_name, args) si une intention d'action claire est détectée, sinon None., GroundedFacts (+6 more)
 
 ### Community 84 - "Community 84"
-Cohesion: 0.22
-Nodes (8): 1. Vision, 2. Principes architecturaux (non négociables), 3. Chaîne de données, 4. Composants, 5. Modules backend, 6. Data Marts cibles, 7. État d'avancement, Canon d'architecture — k-insight
+Cohesion: 0.11
+Nodes (18): `action`, `clientAction`, `clientLoader`, `clientMiddleware`, Component (`default`), `ErrorBoundary`, `handle`, `headers` (+10 more)
 
 ### Community 85 - "Community 85"
-Cohesion: 0.22
-Nodes (8): Future Flags and Deprecations, `future.v8_middleware`, `future.v8_passThroughRequests`, `future.v8_splitRouteModules`, `future.v8_trailingSlashAwareDataRequests`, `future.v8_viteEnvironmentApi`, Unstable Future Flags (Optional), Update to latest v7.x
+Cohesion: 0.18
+Nodes (9): Alert, AlertRule, most_severe(), Moteur d'alertes de gouvernance (domaine pur, testé).  Une *règle* compare la va, La règle se déclenche-t-elle ? `None` (donnée absente) → jamais (gouverné)., Alerte la PLUS sévère déclenchée par `value` parmi `rules`, sinon None.      Évi, triggers(), AlertEngineTest (+1 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.22
-Nodes (8): 1. Add `.react-router/` to `.gitignore`, 2. Include the generated types in tsconfig, 3. Generate types before type checking, 4. Typing `AppLoadContext`, 5. Type-only auto-imports (optional), Conclusion, Extending app `Context` types, Route Module Type Safety
+Nodes (15): AXIS_LABEL, BASE_GRID, BASE_TOOLTIP, ChartFrame(), ChartFrameProps, SPLIT_LINE, toEchartsValues(), useAccent() (+7 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.22
-Nodes (9): `action`, Component, `handle`, Introduction, `lazy`, `loader`, `middleware`, Route Object (+1 more)
+Cohesion: 0.12
+Nodes (15): Concurrency, Configuration, Data Loading and Pre-rendering, Invalid Exports, Pre-Rendering, Pre-rendering with a SPA Fallback, Pre-rendering with `ssr:false`, Pre-rendering with `ssr:true` (+7 more)
 
 ### Community 88 - "Community 88"
-Cohesion: 0.25
-Nodes (7): 1. Une instance PostgreSQL pour l'EDW, 2. DDL + seed de démonstration, 3. Backend Django branché sur l'EDW, 4. Frontend sur l'API réelle, Démarrage local — flux complet RH (vérifié), Option A — Docker (recommandé), Option B — cluster éphémère local (ce qui a été utilisé pour la démo)
+Cohesion: 0.15
+Nodes (15): build(), CAPITAL_HUMAIN, COMMERCIAL, declaredMetricsFor(), DOMAIN_METRICS, FINANCE, IMMOBILIER, mergeMetrics() (+7 more)
 
 ### Community 89 - "Community 89"
-Cohesion: 0.25
-Nodes (7): Changing Hooks, Class Component State, Component Keys, Hot Module Replacement, Named Function Components, React Fast Refresh, Supported Exports
+Cohesion: 0.12
+Nodes (15): 1. Add an action, 1. Create a search route, 2. Create a fetcher, 2. Render a fetcher in a combobox component, 3. Add type inference, 3. Submit the form, 4. Render pending state, 4. Render the data (+7 more)
 
 ### Community 90 - "Community 90"
-Cohesion: 0.25
-Nodes (7): 1. Set up a route with a form, 2. Add dirty state and onChange handler, 3. Block navigation when the form is dirty, 4. Show confirmation UI, 5. Reset the blocker when the action resolves, 6. Clear the form when the action resolves, Navigation Blocking
+Cohesion: 0.13
+Nodes (14): 0. Décisions / accès (bloquants), 10. Rapports, 11. Observabilité & CI/CD, 1. Socle (infra persistante), 2. Ingestion — Airbyte (EL), 3. Transformation — dbt, 4. Couche sémantique (domaine pur + catalogue), 5. API backend governance (+6 more)
 
 ### Community 91 - "Community 91"
-Cohesion: 0.25
-Nodes (6): Defining preset config, Presets, Using a preset, Validating config, Build manifest, Server Bundles
+Cohesion: 0.14
+Nodes (11): AIProvider, AITool, Decision, Meta, Mode, ProviderKind, Modèles du K-Insight AI Copilot (Phase 1 — fondation gouvernée).  Principes (ADR, Moteur LLM configuré. Le router les essaie par `priority` croissante (fallback). (+3 more)
 
 ### Community 92 - "Community 92"
-Cohesion: 0.25
-Nodes (7): Defining a Resource Route, Error Boundaries, Error Handling, Handling different request methods, Linking to Resource Routes, Resource Routes, Return Types
+Cohesion: 0.22
+Nodes (11): APIView, AiQueryView, ModuleDataView, IA de gouvernance ANCRÉE : répond uniquement depuis le catalogue + le mart., CatalogView, GovernanceOverviewView, HrKpiView, API governance (DRF). Lecture seule, filtrée par périmètre, journalisée. (+3 more)
 
 ### Community 93 - "Community 93"
 Cohesion: 0.12
 Nodes (14): 1. Installer Airbyte (abctl), 2. Connecter Airbyte à l'EDW (destination Postgres → schéma `raw`), 3. Orchestration, Airbyte (EL) — déploiement hors `docker-compose`, Alternative : Airbyte « legacy » en `docker-compose`, Airbyte (EL), Architecture servie, Déploiement production — Dokploy (+6 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.33
-Nodes (4): Bootstrap with a Bundler Template, Create a Router and Render, Install React Router, Installation
+Cohesion: 0.14
+Nodes (13): Basic Routes, Catch-all Route, Dot Delimiters, Dynamic Segments, Escaping Special Characters, File Route Conventions, Folders for Organization, Nested Layouts without Nested URLs (+5 more)
 
 ### Community 95 - "Community 95"
+Cohesion: 0.14
+Nodes (12): Arborescence, Architecture (résumé), Démarrage rapide (domaine pur — vérifiable sans infra), k-insight, État, Comment vérifier, Décisions ouvertes (à trancher avec le métier / en ADR), Fondation (transverse) (+4 more)
+
+### Community 96 - "Community 96"
+Cohesion: 0.23
+Nodes (8): CommonProps, DataLevel, ShieldHrQuery, ShieldHrResponse, ShieldKpi, ShieldKpiKey, ShieldSite, DataState
+
+### Community 97 - "Community 97"
+Cohesion: 0.15
+Nodes (12): 1. Create the image gallery route, 1. Enable view transitions on navigation, 1. Using render props, 2. Add transition styles, 2. Enable view transitions with programmatic navigation, 2. Using the `useViewTransitionState` hook, 3. Create the image detail route, 4. Add matching transition styles for the detail view (+4 more)
+
+### Community 98 - "Community 98"
+Cohesion: 0.15
+Nodes (12): 0. Prérequis (§0 — bloquants d'accès), 1. Démarrer l'infra persistante, 2. Déclarer la source dans le control-plane, 2bis. Préflight Odoo (dé-risque tout), 3. Configurer Airbyte (connecteur Odoo natif → schéma `raw`), 4. Première synchronisation, 5. Transformer (dbt) puis tester, 6. Répétition LOCALE sans Odoo (déjà vérifiée) (+4 more)
+
+### Community 100 - "Community 100"
+Cohesion: 0.29
+Nodes (9): hrMartMetrics(), payrollBreakdown(), shieldKpisToMetrics(), useHrKpi(), sourcesFor(), KBreakdownItem, DomainPanel(), useDomainMetrics() (+1 more)
+
+### Community 102 - "Community 102"
+Cohesion: 0.17
+Nodes (8): Accessing Data, Data Loading, Providing Data, Client Side Rendering, Introduction, Rendering Strategies, Server Side Rendering, Static Pre-rendering
+
+### Community 103 - "Community 103"
+Cohesion: 0.17
+Nodes (11): Cloudflare Workers, DeployHQ, Deploying, EdgeOne Pages, Introduction, Netlify, Node.js with Docker, Node with Docker and Postgres (+3 more)
+
+### Community 105 - "Community 105"
+Cohesion: 0.18
+Nodes (10): 1. Ancrage avant génération (jamais d'invention), 2. Architecture multi-provider extensible avec fallback, 3. Actions sous contrôle (lecture seule par défaut), 4. Contexte dynamique, 5. Modèles & API (Phase 1), ADR-0010 — K-Insight AI Copilot (assistant gouverné, multi-provider, actionnable), Conséquences, Contexte (+2 more)
+
+### Community 106 - "Community 106"
+Cohesion: 0.18
+Nodes (11): 1. Create a Router, 1. Define Your Routes, 2. Create a static handler, 2. Render the Router, 3. Get Routing Context and Render, 3. Lazy Loading, 4. Hydrate in the browser, Client Rendering (+3 more)
+
+### Community 107 - "Community 107"
+Cohesion: 0.18
+Nodes (10): Advanced handler execution, Advanced Use Cases, Calling Route Middleware, Custom Handler, Custom Middleware, Custom Revalidation Behavior, Data Strategy, Migrating away from `shouldLoad` (+2 more)
+
+### Community 108 - "Community 108"
+Cohesion: 0.18
+Nodes (10): 1. Add the storage package, 1. Setup some routes, 2. Add the form data parser, 2. Create a storage configuration, 3. Create a route with an upload action, 3. Implement the upload handler, 4. Add a route to serve the uploaded file, Basic File Upload (+2 more)
+
+### Community 109 - "Community 109"
+Cohesion: 0.18
+Nodes (10): 1. Adopt future flags, 2. Update dependencies, 3. Change `scripts` in `package.json`, 4. Add a `routes.ts` file, 5. Add a React Router config, 6. Add React Router plugin to `vite.config`, 7. Enable type safety, 8. Rename components in entry files (+2 more)
+
+### Community 110 - "Community 110"
+Cohesion: 0.18
+Nodes (10): Deprecations, Update to latest v6.x, Upgrade to v7, Upgrading from v6, v7_fetcherPersist, v7_normalizeFormMethod, v7_partialHydration, v7_relativeSplatPath (+2 more)
+
+### Community 112 - "Community 112"
+Cohesion: 0.22
+Nodes (6): Exécute une automatisation (appelable directement — testable hors Beat)., Tâche périodique (Beat) : exécute les automatisations dues., run_automation(), run_due_automations(), AutomationTest, Phase 5 : automatisation lit en auto, mais une action sensible passe par approba
+
+### Community 113 - "Community 113"
+Cohesion: 0.20
+Nodes (9): Appending, From `entry.server.tsx`, From loaders and actions, From Route Modules, HTTP Headers, Merging with parent headers, Reading request headers, Setting (+1 more)
+
+### Community 114 - "Community 114"
+Cohesion: 0.20
+Nodes (9): BLOCKERS, Corrections de vrais défauts (constatés sur les captures de prod), DONE, Données, K-Insight — Progress, NEXT, Socle UI gouverné (mutualisé, réutilisable), Temps réel (+1 more)
+
+### Community 115 - "Community 115"
+Cohesion: 0.20
+Nodes (10): Configuring Routes, Dynamic Segments, Index Routes, Layout Routes, Nested Routes, Optional Segments, Prefix Route, Route Objects (+2 more)
+
+### Community 116 - "Community 116"
+Cohesion: 0.31
+Nodes (9): _fmt(), _num(), Export du tableau de bord Gouvernance (Indice Groupe) en XLSX et PDF.  Rend un r, Cellule XLSX : vrai nombre si disponible (triable/aligné à droite), sinon « N/D, Classeur XLSX : synthèse + domaines + filiales + tendance., Document PDF A4 : synthèse + domaines + filiales., _scope_label(), scores_pdf() (+1 more)
+
+### Community 117 - "Community 117"
+Cohesion: 0.22
+Nodes (8): 1. Vision, 2. Principes architecturaux (non négociables), 3. Chaîne de données, 4. Composants, 5. Modules backend, 6. Data Marts cibles, 7. État d'avancement, Canon d'architecture — k-insight
+
+### Community 118 - "Community 118"
+Cohesion: 0.22
+Nodes (8): Future Flags and Deprecations, `future.v8_middleware`, `future.v8_passThroughRequests`, `future.v8_splitRouteModules`, `future.v8_trailingSlashAwareDataRequests`, `future.v8_viteEnvironmentApi`, Unstable Future Flags (Optional), Update to latest v7.x
+
+### Community 119 - "Community 119"
+Cohesion: 0.22
+Nodes (8): Historique — première tentative (bloquée), Les six autres métiers : rien d'intégré, et pourquoi, Optimisation livrée, Photo intégrée — Capital Humain, ⚠️ Point d'attention juridique — à trancher avant mise en production, Procédure à suivre une fois la clé d'API disponible, Sources testées, Visuels métier K-Insight — provenance et licences
+
+### Community 120 - "Community 120"
+Cohesion: 0.22
+Nodes (8): name, private, scripts, build, dev, preview, typecheck, version
+
+### Community 121 - "Community 121"
+Cohesion: 0.22
+Nodes (8): 1. Add `.react-router/` to `.gitignore`, 2. Include the generated types in tsconfig, 3. Generate types before type checking, 4. Typing `AppLoadContext`, 5. Type-only auto-imports (optional), Conclusion, Extending app `Context` types, Route Module Type Safety
+
+### Community 122 - "Community 122"
+Cohesion: 0.22
+Nodes (9): `action`, Component, `handle`, Introduction, `lazy`, `loader`, `middleware`, Route Object (+1 more)
+
+### Community 123 - "Community 123"
+Cohesion: 0.22
+Nodes (8): 0. Préflight (obligatoire, avant Airbyte), 1. Source — choisir UNE voie, 2. Streams → tables `raw` (mapping 1:1), 3. Destination (Postgres → `raw`), 4. Lancer + enchaîner, Airbyte — Source Odoo RH → schéma `raw`, Voie A — Source **Postgres directe** sur la base Odoo (RECOMMANDÉE, la + fiable), Voie B — Connecteur **low-code (Connector Builder)** sur l'API Odoo (si la base n'est pas joignable)
+
+### Community 124 - "Community 124"
+Cohesion: 0.25
+Nodes (7): 1. Une instance PostgreSQL pour l'EDW, 2. DDL + seed de démonstration, 3. Backend Django branché sur l'EDW, 4. Frontend sur l'API réelle, Démarrage local — flux complet RH (vérifié), Option A — Docker (recommandé), Option B — cluster éphémère local (ce qui a été utilisé pour la démo)
+
+### Community 125 - "Community 125"
+Cohesion: 0.25
+Nodes (7): Changing Hooks, Class Component State, Component Keys, Hot Module Replacement, Named Function Components, React Fast Refresh, Supported Exports
+
+### Community 126 - "Community 126"
+Cohesion: 0.25
+Nodes (7): 1. Set up a route with a form, 2. Add dirty state and onChange handler, 3. Block navigation when the form is dirty, 4. Show confirmation UI, 5. Reset the blocker when the action resolves, 6. Clear the form when the action resolves, Navigation Blocking
+
+### Community 127 - "Community 127"
+Cohesion: 0.25
+Nodes (6): Defining preset config, Presets, Using a preset, Validating config, Build manifest, Server Bundles
+
+### Community 128 - "Community 128"
+Cohesion: 0.25
+Nodes (7): Defining a Resource Route, Error Boundaries, Error Handling, Handling different request methods, Linking to Resource Routes, Resource Routes, Return Types
+
+### Community 129 - "Community 129"
+Cohesion: 0.39
+Nodes (4): PwaLayer(), BeforeInstallPromptEvent, useInstallPrompt(), useResyncOnReconnect()
+
+### Community 131 - "Community 131"
+Cohesion: 0.29
+Nodes (3): AccessLog, Meta, Journal des consultations / accès (historique exigé par le brief, ADR-0005).  En
+
+### Community 132 - "Community 132"
+Cohesion: 0.29
+Nodes (7): Accessing Action Data, Actions, Calling Actions, Calling actions with a fetcher, Calling actions with a Form, Calling actions with useSubmit, Defining Actions
+
+### Community 133 - "Community 133"
+Cohesion: 0.29
+Nodes (4): Bootstrap with a Bundler Template, Create a Router and Render, Install React Router, Installation
+
+### Community 134 - "Community 134"
 Cohesion: 0.29
 Nodes (6): Configuration, Deployment Considerations, Eager Discovery Optimization, Lazy Route Discovery, Performance Benefits, Route Discovery Process
 
-### Community 96 - "Community 96"
+### Community 135 - "Community 135"
 Cohesion: 0.29
 Nodes (6): API + Mode Availability Table, Data, Decision Advice, Declarative, Framework, Picking a Mode
 
-### Community 97 - "Community 97"
+### Community 136 - "Community 136"
 Cohesion: 0.29
 Nodes (6): Current Behavior, Opt-in via `useTransitions=true`, Opt-out via `useTransitions=false`, `popstate` navigations, React Transitions, Transitions in React Router
 
-### Community 98 - "Community 98"
-Cohesion: 0.29
-Nodes (5): Client Side Rendering, Introduction, Rendering Strategies, Server Side Rendering, Static Pre-rendering
-
-### Community 99 - "Community 99"
+### Community 137 - "Community 137"
 Cohesion: 0.29
 Nodes (6): 1. Return a promise from loader, 2. Render the fallback and resolved UI, Handling early rejections (Node), Streaming with Suspense, Timeouts, With React 19
 
-### Community 100 - "Community 100"
+### Community 138 - "Community 138"
+Cohesion: 0.33
+Nodes (4): date, Vrai si `d` appartient à [start, end[., Dernier instant *inclus* dans la période (end exclu => end n'en fait pas partie), _month_start()
+
+### Community 139 - "Community 139"
 Cohesion: 0.33
 Nodes (5): Choosing Server or Client Data Loading, Client Data, Client-Side Caching, Fullstack State, Skip the Server Hop
 
-### Community 101 - "Community 101"
+### Community 140 - "Community 140"
 Cohesion: 0.33
 Nodes (5): Direct `<link>` Rendering, Everything Else, `links` Export, Side-Effect CSS Imports, Styling
 
-### Community 102 - "Community 102"
+### Community 141 - "Community 141"
 Cohesion: 0.33
 Nodes (5): Additional Resources, Defining Route `handle`s, Understanding the Basics, Using `handle`, Using Route `handle`s
 
-### Community 103 - "Community 103"
+### Community 142 - "Community 142"
 Cohesion: 0.40
-Nodes (3): Accessing Data, Data Loading, Providing Data
+Nodes (5): LANG, LC_ALL, P(), PATH, edw_dev.sh script
 
-### Community 104 - "Community 104"
+### Community 144 - "Community 144"
 Cohesion: 0.40
 Nodes (4): Form Submission Targeting, Index Query Param, Overview, Understanding Index Routes
 
-### Community 105 - "Community 105"
+### Community 145 - "Community 145"
 Cohesion: 0.40
 Nodes (4): File extension fully specified, NOTICE about package.json, Public and private, Use physical entry file or alias in `"exports"` of `package.json`
 
-### Community 106 - "Community 106"
+### Community 146 - "Community 146"
 Cohesion: 0.40
 Nodes (4): Browser Behavior, Practical Benefits, Race Conditions, React Router Behavior
 
-### Community 107 - "Community 107"
+### Community 147 - "Community 147"
 Cohesion: 0.40
 Nodes (4): How it works, Type Safety, `typegen` command, --watch
 
-### Community 108 - "Community 108"
+### Community 148 - "Community 148"
 Cohesion: 0.40
 Nodes (4): Location Object, Route Params, URL Search Params, URL Values
 
-### Community 109 - "Community 109"
+### Community 149 - "Community 149"
+Cohesion: 0.50
+Nodes (3): ADR-0009 — Control-plane d'intégration dynamique, source-agnostic, Conséquences, Décision
+
+### Community 150 - "Community 150"
 Cohesion: 0.50
 Nodes (3): ADR-0001 — k-insight est un projet autonome, intégré aux autres via API, Conséquences, Décision
 
-### Community 110 - "Community 110"
+### Community 151 - "Community 151"
 Cohesion: 0.50
 Nodes (3): ADR-0002 — EDW PostgreSQL multi-schémas, modélisation Kimball, Conséquences, Décision
 
-### Community 111 - "Community 111"
+### Community 152 - "Community 152"
 Cohesion: 0.50
 Nodes (3): ADR-0003 — Airbyte = EL seul ; dbt-core = transformations, Conséquences, Décision
 
-### Community 112 - "Community 112"
+### Community 153 - "Community 153"
 Cohesion: 0.50
 Nodes (3): ADR-0004 — Le backend lit le `mart` en lecture seule, jamais les sources, Conséquences, Décision
 
-### Community 113 - "Community 113"
+### Community 154 - "Community 154"
 Cohesion: 0.50
 Nodes (3): ADR-0005 — Multi-filiales / multi-entités, RBAC et masquage, Conséquences, Décision
 
-### Community 114 - "Community 114"
+### Community 155 - "Community 155"
 Cohesion: 0.50
 Nodes (3): ADR-0006 — La sémantique des KPI vit dans un domaine pur Python testé, Conséquences, Décision
 
-### Community 115 - "Community 115"
+### Community 156 - "Community 156"
 Cohesion: 0.50
 Nodes (3): ADR-0007 — IA décisionnelle strictement ancrée sur la couche sémantique, Conséquences, Décision
 
-### Community 116 - "Community 116"
+### Community 157 - "Community 157"
 Cohesion: 0.50
 Nodes (3): ADR-0008 — Conventions techniques : UUID v7, BIGINT, XOF entier, UTC, Conséquences, Décision
 
-### Community 117 - "Community 117"
+### Community 158 - "Community 158"
 Cohesion: 0.50
 Nodes (3): Accessibility, Links, Routing
 
-### Community 118 - "Community 118"
+### Community 159 - "Community 159"
 Cohesion: 0.50
 Nodes (4): 7.0.0, Major Changes, Minor Changes, Patch Changes
 
-### Community 119 - "Community 119"
+### Community 160 - "Community 160"
 Cohesion: 0.50
 Nodes (3): Automatic Code Splitting, Code Splitting by Route, Removal of Server Code
 
-### Community 120 - "Community 120"
+### Community 163 - "Community 163"
 Cohesion: 0.67
 Nodes (3): 6.10.0, Minor Changes, Patch Changes
 
-### Community 121 - "Community 121"
+### Community 164 - "Community 164"
 Cohesion: 0.67
 Nodes (3): 6.12.0, Minor Changes, Patch Changes
 
-### Community 122 - "Community 122"
+### Community 165 - "Community 165"
 Cohesion: 0.67
 Nodes (3): 6.13.0, Minor Changes, Patch Changes
 
-### Community 123 - "Community 123"
+### Community 166 - "Community 166"
 Cohesion: 0.67
 Nodes (3): 6.15.0, Minor Changes, Patch Changes
 
-### Community 124 - "Community 124"
+### Community 167 - "Community 167"
 Cohesion: 0.67
 Nodes (3): 6.16.0, Minor Changes, Patch Changes
 
-### Community 125 - "Community 125"
+### Community 168 - "Community 168"
 Cohesion: 0.67
 Nodes (3): 6.19.0, Minor Changes, Patch Changes
 
-### Community 126 - "Community 126"
+### Community 169 - "Community 169"
 Cohesion: 0.67
 Nodes (3): 6.20.0, Minor Changes, Patch Changes
 
-### Community 127 - "Community 127"
+### Community 170 - "Community 170"
 Cohesion: 0.67
 Nodes (3): 6.21.0, Minor Changes, Patch Changes
 
-### Community 128 - "Community 128"
+### Community 171 - "Community 171"
 Cohesion: 0.67
 Nodes (3): 6.23.0, Minor Changes, Patch Changes
 
-### Community 129 - "Community 129"
+### Community 172 - "Community 172"
 Cohesion: 0.67
 Nodes (3): 6.24.0, Minor Changes, Patch Changes
 
-### Community 130 - "Community 130"
+### Community 173 - "Community 173"
 Cohesion: 0.67
 Nodes (3): 6.25.0, Minor Changes, Patch Changes
 
-### Community 131 - "Community 131"
+### Community 174 - "Community 174"
 Cohesion: 0.67
 Nodes (3): 6.26.0, Minor Changes, Patch Changes
 
-### Community 132 - "Community 132"
+### Community 175 - "Community 175"
 Cohesion: 0.67
 Nodes (3): 6.27.0, Minor Changes, Patch Changes
 
-### Community 133 - "Community 133"
+### Community 176 - "Community 176"
 Cohesion: 0.67
 Nodes (3): 6.28.0, Minor Changes, Patch Changes
 
-### Community 134 - "Community 134"
+### Community 177 - "Community 177"
 Cohesion: 0.67
 Nodes (3): 6.5.0, Minor Changes, Patch Changes
 
-### Community 135 - "Community 135"
+### Community 178 - "Community 178"
 Cohesion: 0.67
 Nodes (3): 6.7.0, Minor Changes, Patch Changes
 
-### Community 136 - "Community 136"
+### Community 179 - "Community 179"
 Cohesion: 0.67
 Nodes (3): 6.9.0, Minor Changes, Patch Changes
 
-### Community 137 - "Community 137"
+### Community 180 - "Community 180"
 Cohesion: 0.67
 Nodes (3): 7.10.0, Minor Changes, Patch Changes
 
-### Community 138 - "Community 138"
+### Community 181 - "Community 181"
 Cohesion: 0.67
 Nodes (3): 7.11.0, Minor Changes, Patch Changes
 
-### Community 139 - "Community 139"
+### Community 182 - "Community 182"
 Cohesion: 0.67
 Nodes (3): 7.12.0, Minor Changes, Patch Changes
 
-### Community 140 - "Community 140"
+### Community 183 - "Community 183"
 Cohesion: 0.67
 Nodes (3): 7.13.0, Minor Changes, Patch Changes
 
-### Community 141 - "Community 141"
+### Community 184 - "Community 184"
 Cohesion: 0.67
 Nodes (3): 7.2.0, Minor Changes, Patch Changes
 
-### Community 142 - "Community 142"
+### Community 185 - "Community 185"
 Cohesion: 0.67
 Nodes (3): 7.3.0, Minor Changes, Patch Changes
 
-### Community 143 - "Community 143"
+### Community 186 - "Community 186"
 Cohesion: 0.67
 Nodes (3): 7.5.0, Minor Changes, Patch Changes
 
-### Community 144 - "Community 144"
+### Community 187 - "Community 187"
 Cohesion: 0.67
 Nodes (3): 7.6.0, Minor Changes, Patch Changes
 
-### Community 145 - "Community 145"
+### Community 188 - "Community 188"
 Cohesion: 0.67
 Nodes (3): 7.7.0, Minor Changes, Patch Changes
 
-### Community 146 - "Community 146"
+### Community 189 - "Community 189"
 Cohesion: 0.67
 Nodes (3): 7.8.0, Minor Changes, Patch Changes
 
-### Community 147 - "Community 147"
+### Community 190 - "Community 190"
 Cohesion: 0.67
 Nodes (3): 7.9.0, Minor Changes, Patch Changes
 
-### Community 148 - "Community 148"
+### Community 191 - "Community 191"
 Cohesion: 0.67
 Nodes (3): Minor Changes, Patch Changes, v7.16.0
 
-### Community 149 - "Community 149"
+### Community 192 - "Community 192"
 Cohesion: 0.67
 Nodes (3): Minor Changes, Patch Changes, v7.15.0
 
-### Community 150 - "Community 150"
+### Community 193 - "Community 193"
 Cohesion: 0.67
 Nodes (3): Patch Changes, Unstable Changes, v7.15.1
 
-### Community 152 - "Community 152"
-Cohesion: 0.67
-Nodes (3): Component (`default`), Props passed to the Component, Using props
-
 ## Knowledge Gaps
-- **667 isolated node(s):** `Role`, `Meta`, `Meta`, `k-insight-backend`, `verify.sh script` (+662 more)
+- **836 isolated node(s):** `Role`, `ProviderKind`, `Meta`, `Role`, `Mode` (+831 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **67 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **77 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does ``react-router`` connect `Community 16` to `Community 118`, `Community 120`, `Community 121`, `Community 122`, `Community 123`, `Community 124`, `Community 125`, `Community 126`, `Community 127`, `Community 128`, `Community 129`, `Community 130`, `Community 131`, `Community 132`, `Community 133`, `Community 134`, `Community 135`, `Community 136`, `Community 137`, `Community 138`, `Community 139`, `Community 140`, `Community 141`, `Community 142`, `Community 143`, `Community 144`, `Community 145`, `Community 146`, `Community 147`, `Community 148`, `Community 149`, `Community 150`, `Community 157`, `Community 158`, `Community 159`, `Community 160`, `Community 161`, `Community 162`, `Community 163`, `Community 164`, `Community 165`, `Community 166`, `Community 167`, `Community 168`, `Community 169`, `Community 170`, `Community 171`, `Community 172`, `Community 173`, `Community 174`, `Community 175`, `Community 176`, `Community 177`, `Community 178`, `Community 179`, `Community 180`, `Community 181`, `Community 182`, `Community 183`, `Community 184`, `Community 185`, `Community 186`, `Community 187`, `Community 188`, `Community 189`, `Community 190`, `Community 191`, `Community 192`, `Community 193`, `Community 194`, `Community 195`, `Community 196`, `Community 197`, `Community 198`, `Community 199`, `Community 200`, `Community 201`, `Community 202`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
-- **Why does `Period` connect `Community 12` to `Community 2`, `Community 10`, `Community 11`, `Community 13`, `Community 14`, `Community 18`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `KpiError` connect `Community 18` to `Community 7`, `Community 10`, `Community 11`, `Community 13`, `Community 14`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+- **Why does `InMemoryMartGateway` connect `Community 30` to `Community 130`, `Community 101`, `Community 71`, `Community 104`, `Community 9`, `Community 12`, `Community 111`, `Community 112`, `Community 81`, `Community 61`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+- **Why does `KpiError` connect `Community 11` to `Community 65`, `Community 18`, `Community 13`, `Community 14`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `Employee` connect `Community 14` to `Community 71`, `Community 104`, `Community 9`, `Community 11`, `Community 12`, `Community 13`, `Community 111`, `Community 18`, `Community 30`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Are the 26 inferred relationships involving `InMemoryMartGateway` (e.g. with `ActionableChatTest` and `.setUp()`) actually correct?**
+  _`InMemoryMartGateway` has 26 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 28 inferred relationships involving `ConnectorCredential` (e.g. with `ConnectorCredentialSerializer` and `ConnectorEndpointSerializer`) actually correct?**
+  _`ConnectorCredential` has 28 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 28 inferred relationships involving `DataSource` (e.g. with `ConnectorCredentialSerializer` and `ConnectorEndpointSerializer`) actually correct?**
+  _`DataSource` has 28 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 12 inferred relationships involving `Period` (e.g. with `Employee` and `HrKpiRow`) actually correct?**
   _`Period` has 12 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 12 inferred relationships involving `Employee` (e.g. with `FailingMartGateway` and `GovernanceApiTest`) actually correct?**
-  _`Employee` has 12 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 12 inferred relationships involving `Payslip` (e.g. with `FailingMartGateway` and `GovernanceApiTest`) actually correct?**
-  _`Payslip` has 12 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Role`, `Utilisateurs, rôles et périmètres (RBAC multi-filiales, ADR-0005).  Le périmètre`, `Périmètre de visibilité (domaine pur).` to the rest of the system?**
-  _731 weakly-connected nodes found - possible documentation gaps or missing edges._
