@@ -800,8 +800,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/models.py": {
-    "mtime": 1787585503.3551793,
-    "ast_hash": "2a6dae1d754d4d84b7ad5e35a3367337",
+    "mtime": 1788713300.2321343,
+    "ast_hash": "9cfb9082cf01cb40e8f62a13714d3185",
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo.py": {
@@ -815,13 +815,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/serializers.py": {
-    "mtime": 1782505126.9255717,
-    "ast_hash": "8a077a35529bd64de401616b171758ba",
+    "mtime": 1788713374.5534077,
+    "ast_hash": "fd8e1d6b89d0b49a499c2d497c1f0ab6",
     "semantic_hash": ""
   },
   "backend/apps/integrations/services.py": {
-    "mtime": 1782513566.1481702,
-    "ast_hash": "5bc537494ed146a3ae12cec1a505eaaa",
+    "mtime": 1788713325.287341,
+    "ast_hash": "8ccf47ece751664f61afe17e34e8b190",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
@@ -830,8 +830,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788711649.5738378,
-    "ast_hash": "e922fa9985ceae81f5dc312ab84d683a",
+    "mtime": 1788713662.4873326,
+    "ast_hash": "a869c75b2b876ef688968977651b524d",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1788688752.959164,
-    "ast_hash": "a45d9ed7b99a343b53020631335074de",
+    "mtime": 1788713626.9776607,
+    "ast_hash": "f0a941c3fa3ba00f211ddfcdc6f84df5",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -950,8 +950,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/SyncIndicator.tsx": {
-    "mtime": 1788658644.883575,
-    "ast_hash": "69c88ade16c73199e72377febfb4e915",
+    "mtime": 1788713766.9857113,
+    "ast_hash": "982099e204d3a34f60b9d2f02d9df3fe",
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/UserMenu.tsx": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/integrations/parts.tsx": {
-    "mtime": 1788655669.6365077,
-    "ast_hash": "449c8c89196de5829821a2ffacb5ff2d",
+    "mtime": 1788713403.2273002,
+    "ast_hash": "be5d29c04ee98a744fbbf37120207685",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/AppShell.tsx": {
@@ -1140,18 +1140,18 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationForm.tsx": {
-    "mtime": 1782511781.300333,
-    "ast_hash": "0869b3c9701d3912721b530baa6a57e2",
+    "mtime": 1788713450.8403163,
+    "ast_hash": "1190e30acab7002a1bc7e2d8756bdbe1",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationHealth.tsx": {
-    "mtime": 1782505474.8280993,
-    "ast_hash": "2244149372fe80e5541aa5e34be2437f",
+    "mtime": 1788713538.2229161,
+    "ast_hash": "eb3fc2f629e74d26c85d5463e84303a5",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationsList.tsx": {
-    "mtime": 1782505457.8437984,
-    "ast_hash": "0ff65a0570529526581bbc56779bc56b",
+    "mtime": 1788713509.7947829,
+    "ast_hash": "3a29a14f196b46db7234a5d8338694c6",
     "semantic_hash": ""
   },
   "frontend/web/src/pwa/PwaLayer.tsx": {
@@ -1185,8 +1185,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/integrations.ts": {
-    "mtime": 1782511663.969283,
-    "ast_hash": "709f5069462eec7b130d83545be4d9ad",
+    "mtime": 1788713469.1750488,
+    "ast_hash": "8103d072795bef92795583172265b8ca",
     "semantic_hash": ""
   },
   "infra/postgres/docker-entrypoint-initdb.d/00-init-k-insight.sh": {
@@ -1820,8 +1820,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_client.py": {
-    "mtime": 1788711400.0914042,
-    "ast_hash": "b260740602937de382d90e53613d67a2",
+    "mtime": 1788713897.5870123,
+    "ast_hash": "5cff7e856186b02ab33d99f6bb3e114a",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_endpoints.py": {
