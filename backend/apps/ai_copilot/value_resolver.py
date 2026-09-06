@@ -14,10 +14,16 @@ from typing import Callable, Optional
 def build_value_lookup(user, year: int, quarter: int, subsidiary: str = "all") -> Callable[[str], Optional[float]]:
     values: dict[str, float] = {}
     try:
+        from apps.accounts.rbac import can_access_domain
         from apps.governance.gateway import get_mart_gateway
         from apps.governance.services import period_from_quarter
         from k_insight.access import filter_by_scope
         from k_insight.kpi.hr_mart import total_entries, total_exits, total_payroll_mass
+
+        # Frontière RBAC : on ne sert des valeurs HR qu'aux utilisateurs habilités au domaine
+        # (sinon l'IA fuiterait des chiffres non autorisés). Sinon → tout N/D.
+        if not can_access_domain(user, "capital-humain"):
+            return lambda _key: None
 
         period = period_from_quarter(year, quarter)
         scope = user.scope()

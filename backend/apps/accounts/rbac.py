@@ -51,6 +51,37 @@ def permissions_for(user) -> list[str]:
     return list(perms)
 
 
+# Domaine (clé frontend) → permission requise pour accéder à SES données (endpoints par domaine).
+DOMAIN_PERMISSION = {
+    "overview": P_OVERVIEW,
+    "groupe": P_OVERVIEW,
+    "immobilier": P_IMMO,
+    "capital-humain": P_HR,
+    "hr": P_HR,
+    "finance": P_FINANCE,
+    "operations": P_OPS,
+    "commercial-clients": P_COMMERCIAL,
+    "risques-conformite": P_RISK,
+    "ia": P_AI,
+    "reports": P_REPORTS,
+}
+
+
+def can_access_domain(user, domain: str) -> bool:
+    """Frontière de sécurité : l'utilisateur a-t-il le droit d'accéder aux données de ce domaine ?
+
+    Indépendante du frontend (qui ne fait que MASQUER la navigation). Superuser / ADMIN_CA /
+    DG / CODIR (accès total) → True. Domaine inconnu → refus par défaut.
+    """
+    if getattr(user, "is_superuser", False):
+        return True
+    perms = permissions_for(user)
+    if P_SUPERADMIN in perms or P_ALL in perms:
+        return True
+    needed = DOMAIN_PERMISSION.get(domain)
+    return needed is not None and needed in perms
+
+
 def landing_for(user) -> str:
     if getattr(user, "is_superuser", False):
         return L_OVERVIEW

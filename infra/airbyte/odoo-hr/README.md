@@ -15,13 +15,28 @@ python3 scripts/odoo_hr_preflight.py
 Attendu : `✓ Préflight OK — schéma compatible`. Si des champs sont **ABSENTS**, le script
 propose des candidats → on ajuste le mapping (étape 2) avant de continuer.
 
-## 1. Source (connecteur Odoo)
-| Champ Airbyte | Valeur |
+## 1. Source — choisir UNE voie
+⚠️ Airbyte n'a **pas** de connecteur Odoo « natif » certifié. Deux voies réellement déployables :
+
+### Voie A — Source **Postgres directe** sur la base Odoo (RECOMMANDÉE, la + fiable)
+Odoo stocke tout dans PostgreSQL → une source Airbyte **Postgres** lit directement les tables
+`hr_employee`, `hr_payslip` (+ `hr_contract` si besoin). Plus simple, robuste, incrémental natif (CDC/curseur).
+| Champ Airbyte (Postgres source) | Valeur |
 |---|---|
-| Host / URL | `${ODOO_URL}` |
-| Database | `${ODOO_DB}` |
-| Username | `${ODOO_LOGIN}` |
-| Password / API key | `${ODOO_API_KEY}` — **stocké chiffré par Airbyte**, jamais en clair |
+| Host / Port | hôte de la base Odoo / 5432 |
+| Database | base Odoo (`${ODOO_DB}`) |
+| User | **utilisateur Postgres en LECTURE SEULE** sur la base Odoo (à créer côté Odoo) |
+| Schemas / Tables | `public` → `hr_employee`, `hr_payslip` |
+| Replication | **CDC (logical replication)** ou **xmin/curseur `write_date`** |
+> Nécessite un accès réseau à la base Postgres d'Odoo + un rôle lecture seule. La clé API Odoo
+> ne sert PAS ici (c'est un accès base). Mappez les colonnes Odoo réelles vers le contrat `raw`
+> (le préflight liste les noms réels ; renommage dans le staging dbt si besoin).
+
+### Voie B — Connecteur **low-code (Connector Builder)** sur l'API Odoo (si la base n'est pas joignable)
+Construire un connecteur HTTP low-code interrogeant l'API JSON-RPC d'Odoo
+(`POST ${ODOO_URL}/web/dataset/call_kw`, modèle `hr.employee`/`hr.payslip`, méthode `search_read`),
+authentifié par **`${ODOO_API_KEY}`** (stocké chiffré par Airbyte). Plus de travail (auth, pagination,
+typage). C'est la voie qui utilise la clé API que vous avez.
 
 ## 2. Streams → tables `raw` (mapping 1:1)
 Sélectionner uniquement les deux streams et les champs du contrat :

@@ -221,8 +221,11 @@ def _tool_explain_kpi(args: dict, user, context: dict) -> dict:
 
 
 def _tool_group_score(args: dict, user, context: dict) -> dict:
+    from apps.accounts.rbac import can_access_domain
     from apps.governance.module_views import build_group_report
 
+    if not can_access_domain(user, "overview"):
+        raise ValueError("Accès au tableau de bord Groupe non autorisé pour votre rôle.")
     period = context.get("period", {}) if context else {}
     report = build_group_report(
         user, int(period.get("year", 2026)), int(period.get("quarter", 1)), context.get("subsidiary", "all")
@@ -243,8 +246,11 @@ def _tool_run_connector_sync(args: dict, user, context: dict) -> dict:
 
 def _tool_generate_report(args: dict, user, context: dict) -> dict:
     """Génère la synthèse de gouvernance Groupe + indique les exports disponibles (lecture)."""
+    from apps.accounts.rbac import can_access_domain
     from apps.governance.module_views import build_group_report
 
+    if not can_access_domain(user, "overview"):
+        raise ValueError("Génération du rapport Groupe non autorisée pour votre rôle.")
     period = context.get("period", {}) if context else {}
     year, quarter = int(period.get("year", 2026)), int(period.get("quarter", 1))
     report = build_group_report(user, year, quarter, (context or {}).get("subsidiary", "all"))
