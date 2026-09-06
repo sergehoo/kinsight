@@ -25,6 +25,17 @@ export interface DataSource {
   jobs_count?: number;
   errors_count?: number;
   connector?: DataConnector;
+  /** production | staging | sandbox — distingue un connecteur de recette. */
+  environment?: string;
+  environment_label?: string;
+  /** Champs du connecteur remontés à plat pour la carte source. */
+  base_url?: string;
+  last_tested_at?: string | null;
+  last_test_ok?: boolean | null;
+  last_test_message?: string;
+  last_latency_ms?: number | null;
+  last_sync_at?: string | null;
+  recent_errors?: Array<{ code: string; message: string; at: string }>;
 }
 
 export interface DataConnector {
@@ -47,6 +58,12 @@ export interface HealthResponse {
   error: number;
   by_status: Record<string, number>;
   sources: DataSource[];
+  partial?: number;
+  stale?: number;
+  disabled?: number;
+  avg_latency_ms?: number | null;
+  last_sync?: string | null;
+  stale_after_hours?: number;
 }
 
 export interface SyncJob {

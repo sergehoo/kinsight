@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppHeader } from "@/components/chrome/AppHeader";
 import { BrandFooter } from "@/components/chrome/BrandFooter";
 import { FRAME_BG, glass } from "@/components/chrome/theme";
+import { ApiError } from "@/lib/integrations";
 import type { SourceStatus } from "@/types/integrations";
 
 const STATUS_STYLE: Record<SourceStatus, { bg: string; fg: string; label: string }> = {
@@ -65,5 +66,50 @@ export function PrimaryLink({ to, children }: { to: string; children: React.Reac
     <Link to={to} className="inline-flex items-center gap-2 rounded-full bg-[#0B0B0C] px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_14px_28px_rgba(0,0,0,0.16)] transition-transform hover:-translate-y-0.5">
       {children}
     </Link>
+  );
+}
+
+/** Diagnostic d'un échec d'appel au control-plane.
+ *
+ *  Le centre d'intégrations affichait « Backend indisponible — vérifiez l'API »
+ *  quelle que soit la cause. Or les trois causes probables appellent trois
+ *  gestes différents : un 403 se règle par un droit, un 401 par une reconnexion,
+ *  une panne réseau par une vérification du service. Confondre les trois envoie
+ *  chercher un problème d'infrastructure là où il manque une permission.
+ */
+export function IntegrationsError({ error }: { error: unknown }) {
+  const status = error instanceof ApiError ? error.status : undefined;
+
+  const cases: Record<number, { titre: string; explication: string; geste: string }> = {
+    403: {
+      titre: "Accès réservé aux administrateurs d'intégration",
+      explication:
+        "Votre compte est bien authentifié, mais le centre de connecteurs exige le rôle « Administrateur intégrations » ou « Administrateur / Conseil d'administration ».",
+      geste: "Demandez ce rôle à un administrateur, ou connectez-vous avec un compte qui le porte.",
+    },
+    401: {
+      titre: "Session expirée",
+      explication: "Le serveur ne reconnaît plus votre session.",
+      geste: "Reconnectez-vous pour continuer.",
+    },
+  };
+
+  const known = status !== undefined ? cases[status] : undefined;
+  const titre = known?.titre ?? "Control-plane injoignable";
+  const explication =
+    known?.explication ??
+    (status
+      ? `Le serveur a répondu ${status} sur la liste des sources.`
+      : "Aucune réponse du backend K-Insight sur /api/v1/integrations/.");
+  const geste =
+    known?.geste ??
+    "Vérifiez que le service backend tourne et que le proxy route bien /api/ vers lui.";
+
+  return (
+    <div className="rounded-[20px] border border-[#F0D2D2] bg-[#FCEBEB] px-5 py-4">
+      <p className="text-[14px] font-bold text-[#A32D2D]">{titre}</p>
+      <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#8C4141]">{explication}</p>
+      <p className="mt-1.5 text-[12.5px] font-semibold text-[#A32D2D]">{geste}</p>
+    </div>
   );
 }

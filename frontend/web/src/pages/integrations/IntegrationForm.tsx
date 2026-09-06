@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { glass } from "@/components/chrome/theme";
-import { IntegrationsShell, StatusBadge } from "@/components/integrations/parts";
+import { IntegrationsError, IntegrationsShell, StatusBadge } from "@/components/integrations/parts";
 import {
   useAddCredential,
   useCreateEndpoint,
@@ -21,9 +21,28 @@ import {
   useUpdateConnector,
 } from "@/lib/integrations";
 
-const SOURCE_TYPES = [
-  ["rest", "API REST"], ["graphql", "API GraphQL"], ["webhook", "Webhook"], ["postgres", "PostgreSQL (RO)"],
-  ["mysql", "MySQL (RO)"], ["csv", "CSV"], ["excel", "Excel"], ["gsheets", "Google Sheets"], ["airbyte", "Airbyte"],
+// Les cinq plateformes visées d'abord ; les formats de fichier restent
+// disponibles plus bas, mais ne sont pas ce qu'on branche au quotidien.
+const SOURCE_TYPES: Array<[string, string]> = [
+  ["kaydan_shield", "Kaydan Shield"],
+  ["odoo_hr", "Odoo"],
+  ["sap", "SAP"],
+  ["edw", "Entrepôt de données (mart)"],
+  ["rest", "API REST"],
+  ["graphql", "API GraphQL"],
+  ["webhook", "Webhook"],
+  ["postgres", "PostgreSQL (lecture seule)"],
+  ["mysql", "MySQL (lecture seule)"],
+  ["airbyte", "Connecteur Airbyte"],
+  ["csv", "Fichier CSV"],
+  ["excel", "Excel"],
+  ["gsheets", "Google Sheets"],
+];
+
+const ENVIRONMENTS: Array<[string, string]> = [
+  ["production", "Production"],
+  ["staging", "Recette"],
+  ["sandbox", "Bac à sable"],
 ];
 const TARGET_MODULES = [
   ["rh", "Capital Humain"], ["immobilier", "Immobilier"], ["finance", "Finance"], ["stocks", "Stocks & Logistique"],
@@ -45,7 +64,11 @@ function CreateForm() {
   const navigate = useNavigate();
   const create = useCreateSource();
   const [name, setName] = React.useState("");
-  const [sourceType, setSourceType] = React.useState("rest");
+  // Le code est proposé depuis le nom, mais reste modifiable : `kaydan-shield`
+  // est attendu tel quel par le connecteur Shield.
+  const [code, setCode] = React.useState("");
+  const [environment, setEnvironment] = React.useState("production");
+  const [sourceType, setSourceType] = React.useState("kaydan_shield");
   const [target, setTarget] = React.useState("autre");
   const [frequency, setFrequency] = React.useState("manual");
   const [demo, setDemo] = React.useState(true);
@@ -54,7 +77,16 @@ function CreateForm() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     create.mutate(
-      { name, slug: slugify(name), source_type: sourceType, target_module: target, sync_frequency: frequency, demo_mode: demo, description },
+      {
+        name,
+        slug: code.trim() || slugify(name),
+        source_type: sourceType,
+        environment,
+        target_module: target,
+        sync_frequency: frequency,
+        demo_mode: demo,
+        description,
+      },
       { onSuccess: (s) => navigate(`/admin/integrations/${s.id}`) },
     );
   };
@@ -64,12 +96,41 @@ function CreateForm() {
       <div>
         <label className={labelCls}>Nom de la plateforme</label>
         <input className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="K-Shield, K-Express, CRM…" required />
-        {name ? <p className="mt-1 text-[11px] text-[#9AA09D]">slug : {slugify(name)}</p> : null}
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className={labelCls}>Code</label>
+          <input
+            className={field}
+            value={code}
+            onChange={(e) => setCode(slugify(e.target.value))}
+            placeholder={name ? slugify(name) : "kaydan-shield"}
+          />
+          <p className="mt-1 text-[11px] text-[#9AA09D]">
+            {sourceType === "kaydan_shield"
+              ? "Le connecteur Shield attend exactement « kaydan-shield »."
+              : `Identifiant technique, non modifiable ensuite. Par défaut : ${slugify(name) || "—"}`}
+          </p>
+        </div>
+        <div>
+          <label className={labelCls}>Environnement</label>
+          <select className={field} value={environment} onChange={(e) => setEnvironment(e.target.value)}>
+            {ENVIRONMENTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+        </div>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={labelCls}>Type de source</label>
-          <select className={field} value={sourceType} onChange={(e) => setSourceType(e.target.value)}>
+          <select
+            className={field}
+            value={sourceType}
+            onChange={(e) => {
+              setSourceType(e.target.value);
+              // Le connecteur Shield résout la source par ce code exact.
+              if (e.target.value === "kaydan_shield" && !code) setCode("kaydan-shield");
+            }}
+          >
             {SOURCE_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </select>
         </div>
@@ -92,7 +153,7 @@ function CreateForm() {
         <label className={labelCls}>Description</label>
         <textarea className="min-h-[80px] w-full rounded-xl border border-[#DDE2E0] bg-white/80 px-4 py-3 text-[14px] outline-none focus:border-[#FF8735]" value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
-      {create.isError ? <p className="text-[13px] font-semibold text-[#A32D2D]">Échec de création (backend indisponible ou droits insuffisants).</p> : null}
+      {create.isError ? <IntegrationsError error={create.error} /> : null}
       <div className="flex gap-3">
         <button type="submit" disabled={create.isPending} className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-60">{create.isPending ? "Création…" : "Créer la source"}</button>
         <button type="button" onClick={() => navigate("/admin/integrations")} className="rounded-full border border-[#DDE2E0] bg-white/70 px-6 py-3 text-[14px] font-bold text-[#3A3E3E]">Annuler</button>
