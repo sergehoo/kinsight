@@ -26,6 +26,10 @@ export interface DomainHeroSpec {
   imageSlug?: string;
   /** Description réelle du visuel ; vide si purement décoratif. */
   imageAlt?: string;
+  /** Largeurs réellement générées dans /assets/opt pour ce visuel. */
+  imageWidths?: number[];
+  /** Ancrage du recadrage : « right » garde le sujet visible côté droit. */
+  imageFocus?: "center" | "right" | "left";
 }
 
 /** Domaines disposant d'une vraie photo (assets existants). */
@@ -71,9 +75,11 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartTitle: "Évolution de l'effectif",
     chartUnit: "pers.",
     alertLabels: ["Turnover élevé", "Contrat à échéance", "Effectif critique", "Absentéisme", "Recrutement"],
-    image: "/assets/businesswoman-holding-folder-smiling-camera.jpg",
+    image: "/assets/capital-humain-equipe-stocksnap.jpg",
     imageSlug: "capital-humain-equipe",
-    imageAlt: "Collaboratrice en environnement professionnel, dossier à la main",
+    imageWidths: [640, 960],
+    imageFocus: "right",
+    imageAlt: "Équipe pluridisciplinaire en réunion de travail autour d'une table, ordinateurs et notes",
     imageMode: "cover",
   },
   finance: {

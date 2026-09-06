@@ -202,6 +202,8 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                       slug={spec.imageSlug}
                       fallback={spec.image}
                       alt={spec.imageAlt ?? ""}
+                      widths={spec.imageWidths}
+                      focus={spec.imageFocus}
                       fit={spec.imageMode === "cover" ? "cover" : "contain"}
                       priority
                     />

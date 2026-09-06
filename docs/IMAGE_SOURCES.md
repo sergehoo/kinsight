@@ -19,7 +19,7 @@ portent des noms de fichier caractéristiques de banques d'images payantes :
 commerciale a bien été acquise, ou les remplacer. Ce document n'affirme aucune
 licence qui n'aurait pas été constatée.
 
-## Remplacement par des photos libres — bloqué techniquement
+## Historique — première tentative (bloquée)
 
 La recherche de photos sous licence vérifiable a été tentée depuis cet
 environnement, sans succès :
@@ -51,10 +51,11 @@ dans `public/assets/opt/` et rendues par `components/chrome/HeroImage.tsx`
 | Domaine | Variantes | Poids source | Poids servi (1024, AVIF) |
 |---|---|---|---|
 | Immobilier | `immobilier-crane-{640,1024,1600}.{avif,webp}` | 13,4 Mo | **143 Ko** |
-| Capital Humain | `capital-humain-equipe-{640,1024,1600}.{avif,webp}` | 6,1 Mo | **27 Ko** |
+| Capital Humain | `capital-humain-equipe-{640,960}.{avif,webp}` | 57 Ko (photo CC0, voir plus bas) | **32 Ko** |
 | Finance | `finance-tresorerie-{640,1024,1600}.{avif,webp}` | 7,1 Mo | **23 Ko** |
 
-Soit 27,3 Mo de sources ramenés à 1,75 Mo pour l'ensemble des 18 variantes.
+Les deux visuels hérités passent de 20,5 Mo de sources à 1,3 Mo de variantes ; le
+troisième a été remplacé par une photo CC0 vérifiée (voir plus bas).
 Le héros porte `fetchpriority="high"` et `loading="eager"` (il est le LCP) ;
 tout autre visuel passe en `loading="lazy"`. Chaque image porte un `alt`
 descriptif, et une variante manquante fait automatiquement repli sur l'original.
@@ -72,3 +73,58 @@ les combler.
    du texte de héros à gauche.
 3. Télécharger dans `public/assets/`, régénérer les variantes, et consigner ici
    pour chaque image : URL de la photo, auteur, licence, date de récupération.
+
+## Photo intégrée — Capital Humain
+
+| Champ | Valeur |
+|---|---|
+| Fichier | `public/assets/capital-humain-equipe-stocksnap.jpg` |
+| Titre | Team Meeting |
+| Auteur | Startup Stock Photos |
+| Source | StockSnap.io |
+| Page d'origine | https://stocksnap.io/photo/team-meeting-VQXYE2ZEHC |
+| Licence | **CC0 1.0** (domaine public — aucune attribution imposée, usage commercial autorisé) |
+| Vérification | Métadonnées de licence fournies par l'API Openverse (`api.openverse.org/v1/images/`), qui indexe StockSnap. Identifiant Openverse conservé dans l'historique de recherche. |
+| Récupérée le | 2026-09-06 |
+| Résolution source | 960 × 640 (la page StockSnap répond 403 hors navigateur ; seule la variante 960 px du CDN est accessible) |
+| Variantes | `capital-humain-equipe-{640,960}.{avif,webp}` — pas de 1024/1600 : agrandir une source de 960 px la dégraderait sans rien apporter |
+| Cadrage | `object-position: right` — le cadre du héros est presque carré (428 × 430) alors que la photo est en 3:2 ; un recadrage centré amputait le sujet principal |
+
+Cette photo **remplace** `businesswoman-holding-folder-smiling-camera.jpg`, dont la
+licence n'était pas documentée (voir le risque juridique ci-dessus). C'est donc à
+la fois un gain éditorial et la suppression d'une exposition.
+
+## Les six autres métiers : rien d'intégré, et pourquoi
+
+Une recherche a bien été menée pour chacun via Openverse (licences CC0, domaine
+public et CC-BY uniquement — SA et ND écartés, incompatibles avec un produit
+propriétaire qui redimensionne). Les candidats ont été téléchargés et **regardés**,
+pas jugés sur leurs métadonnées. Verdict :
+
+| Métier | Ce que le corpus propose | Décision |
+|---|---|---|
+| Overview | Skylines amateurs en 1024 px, ciels gris | Écarté — en dessous de l'existant |
+| Immobilier | Grues sur ciel, correct mais amateur et 1024 px | Écarté — le visuel actuel est meilleur |
+| Finance | Diagramme d'enquête criminelle avec portraits, stylos sur papier, vieille carte | Écarté — hors sujet |
+| Opérations | Conteneurs maritimes photographiés au bord de route | Écarté — qualité amateur |
+| Commercial | Poignées de main officielles, **personnalités politiques identifiables** devant des drapeaux | Écarté — hors sujet et droit à l'image |
+| Risques | Armoire électrique, salle de contrôle avec **militaires identifiables** | Écarté — hors sujet et droit à l'image |
+
+Intégrer ces images aurait dégradé la direction artistique et rompu la cohérence
+demandée entre métiers. Deux d'entre elles posaient en outre un problème de droit
+à l'image : une licence CC couvre la photographie, pas l'usage commercial de
+l'apparence des personnes qui y figurent.
+
+## Sources testées
+
+| Source | Résultat |
+|---|---|
+| **Openverse** | ✅ Fonctionne (`api.openverse.org`). Licences vérifiées à la source. Corpus surtout Flickr : très inégal hors CC0 StockSnap. |
+| Unsplash | ❌ Anti-bot (« Making sure you're not a bot! »). Non contourné : ce serait un contournement de détection. |
+| Pexels | ❌ 403 sans clé d'API |
+| Pixabay | ❌ Clé d'API requise |
+| Wikimedia Commons | ⚠️ Fonctionne, mais corpus encyclopédique inadapté |
+
+**Pour aller plus loin** : une clé Unsplash ou Pexels (gratuites) ouvrirait un
+corpus réellement premium et permettrait de traiter les six métiers restants avec
+la même rigueur de licence.

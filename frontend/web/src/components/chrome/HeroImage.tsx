@@ -20,9 +20,16 @@ export interface HeroImageProps {
   className?: string;
   /** `contain` conserve la silhouette (visuels détourés), `cover` remplit le cadre. */
   fit?: "cover" | "contain";
+  /** Largeurs RÉELLEMENT générées pour ce visuel. Déclarer une variante
+   *  inexistante provoquerait un 404 puis un repli inutile sur l'original. */
+  widths?: number[];
+  /** Point d'ancrage du recadrage `cover`. Le cadre du héros est presque carré
+   *  alors que les photos sont en 3:2 : un recadrage centré ampute le sujet, qui
+   *  est justement placé à droite pour laisser le texte respirer à gauche. */
+  focus?: "center" | "right" | "left";
 }
 
-const WIDTHS = [640, 1024, 1600];
+const DEFAULT_WIDTHS = [640, 1024, 1600];
 
 /** Largeurs MESURÉES du cadre, pas estimées : à 1440 px de fenêtre, le visuel
  *  occupe 428 px (la colonne principale est amputée du rail et de la colonne KPI).
@@ -30,10 +37,20 @@ const WIDTHS = [640, 1024, 1600];
  *  428 px — soit 231 Ko au lieu de 143 Ko sur le chemin critique du LCP. */
 const SIZES = "(max-width: 640px) 92vw, (max-width: 1024px) 55vw, (max-width: 1536px) 32vw, 480px";
 
-export function HeroImage({ slug, fallback, alt, priority = false, className = "", fit = "cover" }: HeroImageProps) {
+export function HeroImage({
+  slug,
+  fallback,
+  alt,
+  priority = false,
+  className = "",
+  fit = "cover",
+  widths = DEFAULT_WIDTHS,
+  focus = "center",
+}: HeroImageProps) {
   const [failed, setFailed] = React.useState(false);
   const useOptimized = Boolean(slug) && !failed;
-  const srcSet = (ext: string) => WIDTHS.map((w) => `/assets/opt/${slug}-${w}.${ext} ${w}w`).join(", ");
+  const srcSet = (ext: string) => widths.map((w) => `/assets/opt/${slug}-${w}.${ext} ${w}w`).join(", ");
+  const largest = widths[widths.length - 1];
 
   const imgClass =
     `h-full w-full ${fit === "cover" ? "rounded-[28px] object-cover opacity-[0.94]" : "scale-[1.05] object-contain drop-shadow-[0_30px_44px_rgba(32,34,34,0.16)]"} ${className}`;
@@ -41,6 +58,7 @@ export function HeroImage({ slug, fallback, alt, priority = false, className = "
   const common = {
     alt,
     className: imgClass,
+    style: fit === "cover" ? { objectPosition: `${focus} center` } : undefined,
     // Le héros est le plus grand élément peint : le charger tôt protège le LCP.
     loading: priority ? ("eager" as const) : ("lazy" as const),
     fetchPriority: priority ? ("high" as const) : ("auto" as const),
@@ -55,7 +73,7 @@ export function HeroImage({ slug, fallback, alt, priority = false, className = "
     <picture>
       <source type="image/avif" srcSet={srcSet("avif")} sizes={SIZES} />
       <source type="image/webp" srcSet={srcSet("webp")} sizes={SIZES} />
-      <img src={`/assets/opt/${slug}-1024.webp`} {...common} />
+      <img src={`/assets/opt/${slug}-${largest}.webp`} {...common} />
     </picture>
   );
 }
