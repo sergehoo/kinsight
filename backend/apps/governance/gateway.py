@@ -7,12 +7,49 @@ mémoire pour les tests (pas de Postgres requis).
 
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
+from contextlib import contextmanager
 from typing import Optional, Sequence
 
 from django.conf import settings
 
 from k_insight.kpi.hr_mart import HrKpiRow
+
+logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def _mart_errors():
+    """Traduit toute erreur psycopg (connexion, auth, schéma) en `MartUnavailable`."""
+    import psycopg
+
+    try:
+        yield
+    except psycopg.Error as exc:  # connexion refusée, auth, relation absente…
+        raise MartUnavailable(str(exc)) from exc
+
+
+class MartUnavailable(RuntimeError):
+    """Le mart (EDW) est injoignable.
+
+    Levée par la passerelle Postgres au lieu de laisser fuir une `OperationalError`
+    en HTTP 500 : une panne du warehouse doit dégrader en état gouverné (N/D +
+    `source_state: error`), pas casser toutes les pages domaine.
+    """
+
+
+def fetch_or_unavailable(fetch, default):
+    """Exécute une lecture du mart. Retourne `(résultat, disponible)`.
+
+    Aucune exception de connexion ne remonte à la vue : l'appelant décide de
+    l'état affiché. `default` est renvoyé quand le mart est injoignable.
+    """
+    try:
+        return fetch(), True
+    except MartUnavailable:
+        logger.warning("Mart injoignable : dégradation en état gouverné (aucune donnée servie).")
+        return default, False
 
 
 class MartGateway(ABC):
@@ -64,7 +101,7 @@ class PostgresMartGateway(MartGateway):
             "payroll_mass_xof, entries, exits FROM mart.hr_kpi"
         )
         rows: list[HrKpiRow] = []
-        with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
+        with _mart_errors(), psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
             cur.execute(sql)
             for month_start, sub, dep, payroll, entries, exits in cur.fetchall():
                 rows.append(
@@ -83,7 +120,7 @@ class PostgresMartGateway(MartGateway):
         import psycopg
 
         rows: list[tuple] = []
-        with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
+        with _mart_errors(), psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
             cur.execute("SELECT month_start, subsidiary_code, dimension_key, score FROM mart.hr_score")
             for month_start, sub, dim, score in cur.fetchall():
                 if score is None:  # gouverné : pas de valeur → ligne ignorée (jamais 0 inventé)
@@ -99,7 +136,7 @@ class PostgresMartGateway(MartGateway):
             "SELECT month_start, subsidiary_code, dimension_key, score "
             "FROM mart.domain_score WHERE domain_key = %s"
         )
-        with psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
+        with _mart_errors(), psycopg.connect(**settings.EDW_DSN) as conn, conn.cursor() as cur:
             cur.execute(sql, (domain,))
             for month_start, sub, dim, score in cur.fetchall():
                 if score is None:  # gouverné : pas de valeur → ligne ignorée (jamais 0 inventé)

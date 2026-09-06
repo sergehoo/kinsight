@@ -8,9 +8,17 @@ from rest_framework.views import APIView
 
 from k_insight.semantic import CATALOG
 
+from apps.accounts.rbac import can_access_domain
 from apps.audit.models import AccessLog
 
-from .gateway import get_mart_gateway
+
+def _forbidden(domain: str) -> Response:
+    return Response(
+        {"detail": f"Accès au domaine « {domain} » non autorisé pour votre rôle."},
+        status=status.HTTP_403_FORBIDDEN,
+    )
+
+from .gateway import fetch_or_unavailable, get_mart_gateway
 from .services import governance_overview, hr_kpi_summary, period_from_quarter
 
 
@@ -50,6 +58,8 @@ class HrKpiView(APIView):
     """Synthèse RH (filiale × période), filtrée par le périmètre de l'utilisateur."""
 
     def get(self, request):
+        if not can_access_domain(request.user, "capital-humain"):
+            return _forbidden("capital-humain")
         try:
             year = int(request.query_params["year"])
             quarter = int(request.query_params["quarter"])
@@ -66,7 +76,7 @@ class HrKpiView(APIView):
 
         period = period_from_quarter(year, quarter)
         scope = request.user.scope()
-        rows = get_mart_gateway().fetch_hr_kpi()
+        rows, _mart_ok = fetch_or_unavailable(lambda: get_mart_gateway().fetch_hr_kpi(), [])
         summary = hr_kpi_summary(rows, scope, period)
 
         AccessLog.record(
@@ -84,6 +94,8 @@ class GovernanceOverviewView(APIView):
     """Vue agrégée consommée par le dashboard React."""
 
     def get(self, request):
+        if not can_access_domain(request.user, "overview"):
+            return _forbidden("overview")
         try:
             year = int(request.query_params["year"])
             quarter = int(request.query_params["quarter"])

@@ -17,6 +17,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.accounts.rbac import can_access_domain
+
 from k_insight.access import filter_by_scope
 from k_insight.kpi.alerts import SCORE_RULES, SEVERITY_ORDER, TREND_DROP_RULES, most_severe
 from k_insight.kpi.domain_scores import DOMAIN_SCORES, domain_score
@@ -35,12 +37,19 @@ from apps.audit.models import AccessLog
 
 from .bindings import HR_MART_SOURCE, hr_binding
 from .exports import scores_pdf, scores_workbook
-from .gateway import get_mart_gateway
+from .gateway import fetch_or_unavailable, get_mart_gateway
 from .services import period_from_quarter
 
 
 def _governed(key: str) -> Response:
     return Response({"key": key, "available": False, "source": None, "values": {}, "series": []})
+
+
+def _forbidden(domain: str) -> Response:
+    return Response(
+        {"detail": f"Accès au domaine « {domain} » non autorisé pour votre rôle."},
+        status=status.HTTP_403_FORBIDDEN,
+    )
 
 
 def _dims_avg(rows):
@@ -151,6 +160,9 @@ class ModuleDataView(APIView):
         binding = hr_binding(key)
         if not binding:
             return _governed(key)
+        # Bindings actuels = RH → exige la permission du domaine Capital Humain.
+        if not can_access_domain(request.user, "capital-humain"):
+            return _forbidden("capital-humain")
 
         try:
             year = int(request.query_params.get("year", "2026"))
@@ -220,6 +232,8 @@ class HrScoreView(APIView):
     """
 
     def get(self, request):
+        if not can_access_domain(request.user, "capital-humain"):
+            return _forbidden("capital-humain")
         try:
             year = int(request.query_params.get("year", "2026"))
             quarter = int(request.query_params.get("quarter", "1"))
@@ -233,7 +247,8 @@ class HrScoreView(APIView):
         def allowed(code: str) -> bool:
             return scope.allows(code) and (not sub_param or sub_param == "all" or code == sub_param)
 
-        rows = [r for r in get_mart_gateway().fetch_hr_score() if allowed(r[1])]
+        raw, mart_ok = fetch_or_unavailable(lambda: get_mart_gateway().fetch_hr_score(), [])
+        rows = [r for r in raw if allowed(r[1])]
         dim_meta = [{"key": d.key, "label": d.label, "weight": d.weight} for d in HC_DIMENSIONS]
         global_score, dimensions, by_subsidiary, trend = aggregate_score(
             rows, period, dim_meta, human_capital_score
@@ -250,6 +265,7 @@ class HrScoreView(APIView):
         return Response(
             {
                 "available": global_score is not None,
+                "source_state": "connected" if mart_ok else "error",
                 "global": global_score,
                 "dimensions": dimensions,
                 "by_subsidiary": by_subsidiary,
@@ -275,6 +291,8 @@ class DomainScoreView(APIView):
                 {"detail": f"Aucun cadre de score pour le domaine « {domain} »."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+        if not can_access_domain(request.user, domain):
+            return _forbidden(domain)
         try:
             year = int(request.query_params.get("year", "2026"))
             quarter = int(request.query_params.get("quarter", "1"))
@@ -290,7 +308,8 @@ class DomainScoreView(APIView):
         def allowed(code: str) -> bool:
             return scope.allows(code) and (not sub_param or sub_param == "all" or code == sub_param)
 
-        rows = [r for r in get_mart_gateway().fetch_domain_score(domain) if allowed(r[1])]
+        raw, mart_ok = fetch_or_unavailable(lambda: get_mart_gateway().fetch_domain_score(domain), [])
+        rows = [r for r in raw if allowed(r[1])]
         dim_meta = [
             {
                 "key": d.key,
@@ -318,6 +337,7 @@ class DomainScoreView(APIView):
                 "domain": domain,
                 "label": framework.label,
                 "available": global_score is not None,
+                "source_state": "connected" if mart_ok else "error",
                 "global": global_score,
                 "dimensions": dimensions,
                 "by_subsidiary": by_subsidiary,
@@ -338,6 +358,9 @@ class GroupScoreView(APIView):
     """
 
     def get(self, request):
+        # Indice consolidé Groupe → réservé aux profils ayant l'accès « Groupe / Overview ».
+        if not can_access_domain(request.user, "overview"):
+            return _forbidden("overview")
         try:
             year = int(request.query_params.get("year", "2026"))
             quarter = int(request.query_params.get("quarter", "1"))
@@ -396,6 +419,8 @@ class AlertsView(APIView):
     """
 
     def get(self, request):
+        if not can_access_domain(request.user, "overview"):
+            return _forbidden("overview")
         try:
             year = int(request.query_params.get("year", "2026"))
             quarter = int(request.query_params.get("quarter", "1"))
@@ -469,6 +494,8 @@ class ExportGroupScoreView(APIView):
     }
 
     def get(self, request, ext: str):
+        if not can_access_domain(request.user, "overview"):
+            return _forbidden("overview")
         if ext not in self._RENDERERS:
             return Response({"detail": "Format non supporté (xlsx, pdf)."}, status=status.HTTP_400_BAD_REQUEST)
         try:

@@ -283,10 +283,19 @@ class DomainScoreApiTest(TestCase):
         self.dg = User.objects.create_user("dg", password="x", role="DG_GROUP", is_group_scope=True)
         self.drh_kre = User.objects.create_user("drh_kre", password="x", role="DRH")
         self.drh_kre.subsidiaries.add(self.kre)
+        # DIR_OPS a l'accès Immobilier (view_real_estate) ; scopé KRE pour tester la filiale.
+        self.dir_kre = User.objects.create_user("dir_kre", password="x", role="DIR_OPS")
+        self.dir_kre.subsidiaries.add(self.kre)
         self.client = APIClient()
 
     def tearDown(self):
         gateway.set_mart_gateway(None)
+
+    def test_domaine_non_autorise_403(self):
+        # Frontière RBAC : un DRH (view_hr) ne peut pas accéder aux données Immobilier.
+        self.client.force_authenticate(self.drh_kre)
+        resp = self.client.get("/api/v1/governance/score/immobilier/?year=2026&quarter=1")
+        self.assertEqual(resp.status_code, 403)
 
     def test_domaine_inconnu_404(self):
         self.client.force_authenticate(self.dg)
@@ -325,8 +334,10 @@ class DomainScoreApiTest(TestCase):
         self.assertEqual(trend["2026-01-01"], 67.1)
 
     def test_perimetre_restreint(self):
-        self.client.force_authenticate(self.drh_kre)
+        # Utilisateur HABILITÉ à l'Immobilier mais scopé KRE → ne voit que sa filiale.
+        self.client.force_authenticate(self.dir_kre)
         resp = self.client.get("/api/v1/governance/score/immobilier/?year=2026&quarter=1")
+        self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data["scope"], ["KRE"])
         self.assertEqual(resp.data["global"], 72.5)
         self.assertEqual([s["code"] for s in resp.data["by_subsidiary"]], ["KRE"])
@@ -488,6 +499,46 @@ class AlertsApiTest(TestCase):
         self.assertEqual(log.action, "query_alerts")
 
 
+class RbacDomainEnforcementTest(TestCase):
+    """Frontière de sécurité : la RBAC par domaine est appliquée CÔTÉ BACKEND (pas que l'UI)."""
+
+    def setUp(self):
+        gateway.set_mart_gateway(
+            InMemoryMartGateway(build_hr_kpi_rows(EMP, PAY), score_rows=[(date(2026, 1, 1), "KRE", "effectifs_stabilite", 80.0)])
+        )
+        for code in ("KRE", "KSH", "MYK"):
+            Subsidiary.objects.create(code=code, name=code)
+        self.drh = User.objects.create_user("drh", password="x", role="DRH", is_group_scope=True)
+        self.reader = User.objects.create_user("reader", password="x", role="READER", is_group_scope=True)
+        self.client = APIClient()
+
+    def tearDown(self):
+        gateway.set_mart_gateway(None)
+
+    def test_drh_refuse_domaine_finance(self):
+        self.client.force_authenticate(self.drh)
+        self.assertEqual(self.client.get("/api/v1/governance/score/finance/?year=2026&quarter=1").status_code, 403)
+
+    def test_drh_autorise_son_domaine_hr(self):
+        self.client.force_authenticate(self.drh)
+        self.assertEqual(self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1").status_code, 200)
+
+    def test_drh_refuse_groupe_consolide(self):
+        # DRH n'a pas l'accès « Groupe / Overview » → indice consolidé refusé.
+        self.client.force_authenticate(self.drh)
+        self.assertEqual(self.client.get("/api/v1/governance/score-group/?year=2026&quarter=1").status_code, 403)
+
+    def test_reader_refuse_hr_kpi(self):
+        # READER n'a pas view_hr → données RH refusées.
+        self.client.force_authenticate(self.reader)
+        self.assertEqual(self.client.get("/api/v1/governance/hr/kpi/?year=2026&quarter=1").status_code, 403)
+
+    def test_reader_autorise_groupe(self):
+        # READER a l'accès « Groupe consolidé » (vue lecture) → 200.
+        self.client.force_authenticate(self.reader)
+        self.assertEqual(self.client.get("/api/v1/governance/score-group/?year=2026&quarter=1").status_code, 200)
+
+
 class AiQueryApiTest(TestCase):
     """IA ancrée : réponse sourcée sur le catalogue, refus hors catalogue, gouverné N/D."""
 
@@ -522,3 +573,52 @@ class AiQueryApiTest(TestCase):
         log = AccessLog.objects.latest("occurred_at")
         self.assertEqual(log.action, "query_ai")
         self.assertEqual(log.metric_key, "finance.dso")
+
+
+class MartUnavailableDegradationTest(TestCase):
+    """Une panne du mart doit dégrader en état gouverné, JAMAIS en HTTP 500.
+
+    Avant ce garde-fou, une `OperationalError` psycopg (EDW injoignable) remontait
+    telle quelle : toutes les pages domaine cassaient dès que le warehouse tombait.
+    """
+
+    class BrokenGateway(InMemoryMartGateway):
+        def __init__(self):
+            super().__init__([])
+
+        def fetch_hr_score(self):
+            raise gateway.MartUnavailable("EDW injoignable")
+
+        def fetch_domain_score(self, domain):
+            raise gateway.MartUnavailable("EDW injoignable")
+
+        def fetch_hr_kpi(self):
+            raise gateway.MartUnavailable("EDW injoignable")
+
+    def setUp(self):
+        gateway.set_mart_gateway(self.BrokenGateway())
+        Subsidiary.objects.create(code="KRE", name="K-Express")
+        self.dg = User.objects.create_user("dg2", password="x", role="DG_GROUP", is_group_scope=True)
+        self.client = APIClient()
+        self.client.force_authenticate(self.dg)
+
+    def tearDown(self):
+        gateway.set_mart_gateway(None)
+
+    def test_hr_score_degrade_sans_500(self):
+        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
+        self.assertEqual(resp.status_code, 200)
+        body = resp.json()
+        self.assertFalse(body["available"])
+        self.assertEqual(body["source_state"], "error")
+        self.assertIsNone(body["global"])
+        # Aucune dimension ne doit porter de score inventé.
+        self.assertTrue(all(d["score"] is None for d in body["dimensions"]))
+
+    def test_domain_score_degrade_sans_500(self):
+        resp = self.client.get("/api/v1/governance/score/immobilier/?year=2026&quarter=1")
+        self.assertEqual(resp.status_code, 200)
+        body = resp.json()
+        self.assertFalse(body["available"])
+        self.assertEqual(body["source_state"], "error")
+        self.assertIsNone(body["global"])
