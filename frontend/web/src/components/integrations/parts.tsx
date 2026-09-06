@@ -109,15 +109,39 @@ export function IntegrationsError({ error }: { error: unknown }) {
       explication: "Le serveur ne connaît pas cette route. L'URL d'API du build ou le routage du proxy est incorrect.",
       geste: "Vérifiez VITE_API_BASE_URL au build et la règle de proxy sur /api/.",
     },
+    // Un 502 n'est PAS une erreur applicative : il est émis par le proxy, qui n'a
+    // pas réussi à joindre le service. Le présenter comme « le backend a échoué à
+    // traiter la requête » envoie lire des journaux applicatifs qui ne contiennent
+    // rien, alors que le service est simplement absent de l'autre côté du proxy.
+    502: {
+      titre: "Le proxy n'a pas pu joindre le service",
+      explication:
+        "Réponse 502 émise par le serveur web, pas par K-Insight : la requête n'est jamais arrivée à " +
+        "l'application. Le conteneur backend est arrêté, ou le proxy pointe vers une adresse qui n'existe plus " +
+        "(cas classique après un redéploiement).",
+      geste: "Vérifiez que le service backend tourne, puis redémarrez le conteneur frontend pour qu'il résolve à nouveau son amont.",
+    },
+    503: {
+      titre: "Service temporairement indisponible",
+      explication: "Réponse 503 : le service est en cours de démarrage ou de redéploiement.",
+      geste: "Réessayez dans une minute.",
+    },
+    504: {
+      titre: "Délai dépassé côté proxy",
+      explication:
+        "Réponse 504 : le service a bien été joint mais n'a pas répondu dans le temps imparti. " +
+        "L'opération est peut-être allée à son terme côté serveur.",
+      geste: "Vérifiez l'état réel avant de réessayer, pour ne pas créer de doublon.",
+    },
   };
 
   const known = status !== undefined ? cases[status] : undefined;
   const cinqCents = status !== undefined && status >= 500;
-  const titre = known?.titre ?? (cinqCents ? "Backend en erreur" : "API inaccessible");
+  const titre = known?.titre ?? (cinqCents ? "Erreur applicative du backend" : "API inaccessible");
   const explication =
     known?.explication ??
     (cinqCents
-      ? `Le serveur a répondu ${status} : la requête est parvenue au backend, qui a échoué à la traiter.`
+      ? `Le serveur a répondu ${status} : la requête est parvenue à l'application, qui a échoué à la traiter.`
       : "Aucune réponse du backend K-Insight. La requête n'a pas abouti (réseau, service arrêté ou proxy).");
   const geste =
     known?.geste ??

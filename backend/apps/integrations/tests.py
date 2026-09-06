@@ -1,6 +1,8 @@
 """Tests du control-plane d'intégration et du connecteur Kaydan Shield."""
 
 import json
+import socket
+import ssl
 import time
 import urllib.error
 from unittest.mock import patch
@@ -13,7 +15,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from . import odoo, shield
+from . import odoo, services, shield
 from . import shield_rules as R
 from . import shield_endpoints as EP
 from .encryption import decrypt, encrypt, mask
@@ -108,13 +110,20 @@ class IntegrationApiTest(APITestCase):
         self.client.patch(f"{BASE}/connectors/{source.connector.id}/", {"base_url": "https://api.k-shield.io"}, format="json")
         r2 = self.client.post(f"{BASE}/sources/{source.id}/test-connection/?probe=0")
         self.assertTrue(r2.data["ok"])
-        self.assertEqual(r2.data["status"], "connected")
+        # « configurée » et NON « connectée » : sans sonde, rien n'a répondu. Déclarer
+        # connectée une source dont on n'a jamais rien lu autorisait ensuite sa
+        # synchronisation — c'est exactement ce qu'il ne faut pas.
+        self.assertEqual(r2.data["status"], "configured")
+        source.refresh_from_db()
+        self.assertIsNone(source.connector.last_test_ok, "sans preuve, le verdict est inconnu, pas vrai")
 
     def test_sync_now_creates_job_and_log(self):
         self._create_source()
         source = DataSource.objects.get(slug="k-shield")
         self.client.patch(f"{BASE}/connectors/{source.connector.id}/", {"base_url": "https://api.k-shield.io"}, format="json")
-        self.client.post(f"{BASE}/sources/{source.id}/test-connection/?probe=0")
+        # Sonde réelle simulée : la synchronisation exige une source PROUVÉE connectée.
+        with patch("apps.integrations.services.network_probe", return_value=(True, "Endpoint interrogé avec succès (HTTP 200).")):
+            self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
         r = self.client.post(f"{BASE}/sources/{source.id}/sync-now/")
         self.assertEqual(r.status_code, 202, r.content)
         self.assertTrue(SyncJob.objects.filter(source=source).exists())
@@ -1106,3 +1115,299 @@ class AssistantCreationTest(APITestCase):
         self.assertIsNotNone(detail["connector"]["last_latency_ms"])
         self.assertTrue(detail["connector"]["credentials"][0]["is_set"])
         self.assertNotIn("jeton-assistant-999", json.dumps(detail))
+
+
+class SondeConnexionTest(APITestCase):
+    """Une source n'est « connectée » qu'après une réponse VALIDE.
+
+    Avant, `network_probe` traitait n'importe quelle réponse HTTP comme un succès :
+    un 404 sur l'URL de base — le cas ordinaire quand on interroge la racine d'une
+    API — faisait basculer la source en `connected`, et `run_sync` s'autorisait
+    ensuite à partir sur une source dont rien n'avait jamais été lu.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="sonde-admin", password="x",
+                                              email="s@k.co", role="ADMIN_INTEGRATION")
+        self.client.force_authenticate(self.admin)
+
+    def _source(self, source_type="rest", base_url="https://api.exemple.test"):
+        self.client.post(f"{BASE}/sources/", {
+            "name": f"Sonde {source_type}", "slug": f"sonde-{source_type}",
+            "source_type": source_type, "target_module": "autre",
+        }, format="json")
+        source = DataSource.objects.get(slug=f"sonde-{source_type}")
+        if base_url:
+            source.connector.base_url = base_url
+            source.connector.save(update_fields=["base_url"])
+        return source
+
+    # ── La sonde elle-même ───────────────────────────────────────────────────
+    def test_404_nest_pas_un_succes(self):
+        erreur = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
+        with patch("apps.integrations.services.urllib.request.urlopen", side_effect=erreur):
+            ok, message = services.network_probe("https://api.exemple.test")
+        self.assertFalse(ok, "un 404 ne prouve pas qu'on lit quoi que ce soit")
+        self.assertIn("404", message)
+        self.assertIn("URL de base", message)
+
+    def test_401_distingue_du_404(self):
+        """Un 401 prouve qu'une API répond et refuse le jeton — ce n'est pas la
+        même chose qu'une adresse qui ne correspond à rien."""
+        erreur = urllib.error.HTTPError("u", 401, "Unauthorized", {}, None)
+        with patch("apps.integrations.services.urllib.request.urlopen", side_effect=erreur):
+            ok, message = services.network_probe("https://api.exemple.test")
+        self.assertFalse(ok)
+        self.assertIn("jeton", message.lower())
+
+    def test_403_qualifie_en_permissions(self):
+        erreur = urllib.error.HTTPError("u", 403, "Forbidden", {}, None)
+        with patch("apps.integrations.services.urllib.request.urlopen", side_effect=erreur):
+            ok, message = services.network_probe("https://api.exemple.test")
+        self.assertFalse(ok)
+        self.assertIn("permissions", message.lower())
+
+    def test_500_impute_la_panne_a_la_source(self):
+        erreur = urllib.error.HTTPError("u", 503, "Unavailable", {}, None)
+        with patch("apps.integrations.services.urllib.request.urlopen", side_effect=erreur):
+            ok, message = services.network_probe("https://api.exemple.test")
+        self.assertFalse(ok)
+        self.assertIn("de son côté", message)
+
+    def test_2xx_seul_vaut_succes(self):
+        class _Reponse:
+            status = 200
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+        with patch("apps.integrations.services.urllib.request.urlopen", return_value=_Reponse()):
+            ok, message = services.network_probe("https://api.exemple.test")
+        self.assertTrue(ok)
+        self.assertIn("200", message)
+
+    def test_causes_reseau_nommees_une_par_une(self):
+        """« Injoignable » ne dit pas s'il faut corriger un certificat ou un DNS."""
+        cas = [
+            (ssl.SSLCertVerificationError("bad cert"), "Certificat TLS"),
+            (socket.gaierror("no such host"), "DNS"),
+            (TimeoutError(), "Délai dépassé"),
+            (ConnectionRefusedError(), "Connexion refusée"),
+        ]
+        for exc, attendu in cas:
+            with patch("apps.integrations.services.urllib.request.urlopen", side_effect=exc):
+                ok, message = services.network_probe("https://api.exemple.test")
+            self.assertFalse(ok, attendu)
+            self.assertIn(attendu, message, f"{type(exc).__name__} mal qualifié : {message}")
+
+    # ── Ce que la sonde change pour la source ────────────────────────────────
+    def test_404_laisse_la_source_en_erreur_et_bloque_la_synchro(self):
+        source = self._source("rest")
+        erreur = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
+        with patch("apps.integrations.services.urllib.request.urlopen", side_effect=erreur):
+            body = self.client.post(f"{BASE}/sources/{source.id}/test-connection/").json()
+        self.assertFalse(body["ok"])
+        source.refresh_from_db()
+        self.assertEqual(source.status, SourceStatus.ERROR)
+        sync = self.client.post(f"{BASE}/sources/{source.id}/sync-now/").json()
+        self.assertEqual(sync["status"], "error")
+
+    def test_source_sans_sonde_reste_configuree_et_non_connectee(self):
+        """PostgreSQL, fichiers, Airbyte, mart : aucune sonde n'existe. L'état doit
+        le dire, au lieu d'affirmer une connexion que personne n'a vérifiée."""
+        source = self._source("postgres", base_url="")
+        source.connector.config = {"host": "db.interne", "dbname": "k_insight"}
+        source.connector.save(update_fields=["config"])
+        body = self.client.post(f"{BASE}/sources/{source.id}/test-connection/").json()
+        self.assertTrue(body["ok"], "la configuration est complète")
+        self.assertEqual(body["status"], SourceStatus.CONFIGURED)
+        self.assertIn("Aucune sonde", body["message"])
+        source.refresh_from_db()
+        self.assertIsNone(source.connector.last_test_ok)
+        self.assertIsNone(body["latency_ms"], "aucune sonde lancée : aucune latence à annoncer")
+        # Et la synchronisation refuse, faute de connexion prouvée.
+        self.assertEqual(self.client.post(f"{BASE}/sources/{source.id}/sync-now/").json()["status"], "error")
+
+    def test_probe0_ne_declare_jamais_connectee(self):
+        source = self._source("rest")
+        body = self.client.post(f"{BASE}/sources/{source.id}/test-connection/?probe=0").json()
+        self.assertTrue(body["ok"])
+        self.assertEqual(body["status"], SourceStatus.CONFIGURED)
+        self.assertIn("rien n'est vérifié", body["message"])
+
+    def test_endpoint_declare_prefere_a_la_racine(self):
+        """Interroger la racine d'une API renvoie 404 le plus souvent : si un
+        endpoint métier est déclaré, c'est lui qui fait foi."""
+        source = self._source("rest")
+        source.connector.endpoints.create(name="Employés", path="/v1/employees/", is_active=True)
+        self.assertEqual(services.probe_target(source), "https://api.exemple.test/v1/employees/")
+        # Endpoint désactivé → on retombe sur l'URL de base.
+        source.connector.endpoints.update(is_active=False)
+        self.assertEqual(services.probe_target(source), "https://api.exemple.test")
+
+
+class EchecsShieldQualifiesTest(APITestCase):
+    """Un refus de Shield n'est pas une panne de K-Insight.
+
+    Le symptôme de production — « 502 » au clic sur « Créer et tester » — venait du
+    proxy, pas de Shield. Mais la confusion inverse guette tout autant : si un jeton
+    refusé ou un certificat invalide remontait en 5xx Django, l'utilisateur irait
+    chercher une panne serveur là où il faut renouveler un jeton. Ces tests
+    verrouillent la frontière : quoi que réponde Shield, l'API répond 200 avec un
+    verdict qualifié.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="qualif-admin", password="x",
+                                              email="q@k.co", role="ADMIN_INTEGRATION")
+        self.client.force_authenticate(self.admin)
+        self.client.post(f"{BASE}/sources/", {
+            "name": "Shield", "slug": "kaydan-shield", "source_type": "kaydan_shield",
+            "target_module": "rh",
+        }, format="json")
+        self.source = DataSource.objects.get(slug="kaydan-shield")
+        self.source.connector.base_url = "https://api.kaydanshield.test/api/v1"
+        self.source.connector.save(update_fields=["base_url"])
+        self.cred = ConnectorCredential(connector=self.source.connector, kind="api_token", label="Jeton")
+        self.cred.set_secret("jeton-tres-secret-qualif")
+        self.cred.save()
+
+    def _tester(self, exception):
+        with patch.object(ShieldClient, "get_json", side_effect=exception):
+            return self.client.post(f"{BASE}/sources/{self.source.id}/test-connection/")
+
+    def test_aucune_reponse_shield_ne_devient_un_5xx(self):
+        cas = [
+            (ShieldError("auth", "Jeton refusé (401)", 401), "auth"),
+            (ShieldError("auth", "Accès interdit (403)", 403), "auth"),
+            (ShieldError("timeout", "Délai dépassé", None), "timeout"),
+            (ShieldError("network", "Certificat TLS non vérifiable", None), "network"),
+            (ShieldError("rate_limit", "Quota atteint (429)", 429), "rate_limit"),
+            (ShieldError("http", "Shield en erreur (500)", 500), "http"),
+        ]
+        for exception, marqueur in cas:
+            resp = self._tester(exception)
+            self.assertEqual(resp.status_code, 200, f"{marqueur} : l'API doit répondre 200 avec un verdict")
+            body = resp.json()
+            self.assertFalse(body["ok"], marqueur)
+            self.assertEqual(body["status"], SourceStatus.ERROR, marqueur)
+            # La cause remonte jusqu'à l'écran, elle n'est pas aplatie en « erreur ».
+            self.assertIn(marqueur, body["message"], f"la cause « {marqueur} » doit être lisible : {body['message']}")
+
+    def test_le_secret_ne_fuit_ni_dans_la_reponse_ni_dans_les_journaux(self):
+        resp = self._tester(ShieldError("auth", "Jeton refusé (401)", 401))
+        self.assertNotIn("jeton-tres-secret-qualif", resp.content.decode())
+        journaux = " ".join(SyncLog.objects.values_list("message", flat=True))
+        self.assertNotIn("jeton-tres-secret-qualif", journaux)
+        self.assertNotIn("Bearer", journaux)
+
+    def test_une_exception_inattendue_ne_passe_pas_pour_un_succes(self):
+        """Si un jour une exception non prévue s'échappe, mieux vaut une erreur
+        franche qu'une source déclarée connectée par accident."""
+        with patch.object(ShieldClient, "get_json", side_effect=RuntimeError("bug interne")):
+            with self.assertRaises(RuntimeError):
+                self.client.post(f"{BASE}/sources/{self.source.id}/test-connection/")
+        self.source.refresh_from_db()
+        self.assertNotEqual(self.source.status, SourceStatus.CONNECTED)
+
+
+class TestInteractifBorneTest(APITestCase):
+    """Un test lancé à la main ne doit pas immobiliser un worker pendant 26 s.
+
+    Les reprises servent les collectes de fond. Ici l'utilisateur attend devant
+    l'écran, et il n'y a que trois workers gunicorn : trois essais espacés de
+    pauses bloqueraient un tiers de la capacité de l'application pour un verdict
+    qui ne changerait pas.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="borne-admin", password="x",
+                                              email="b@k.co", role="ADMIN_INTEGRATION")
+        self.client.force_authenticate(self.admin)
+        self.client.post(f"{BASE}/sources/", {
+            "name": "Shield", "slug": "kaydan-shield", "source_type": "kaydan_shield",
+            "target_module": "rh",
+        }, format="json")
+        self.source = DataSource.objects.get(slug="kaydan-shield")
+        self.source.connector.base_url = "https://api.kaydanshield.test/api/v1"
+        self.source.connector.save(update_fields=["base_url"])
+
+    def test_un_seul_appel_sortant_par_test_de_connexion(self):
+        with patch.object(ShieldClient, "_fetch", side_effect=TimeoutError()) as fetch, patch("time.sleep") as dodo:
+            body = self.client.post(f"{BASE}/sources/{self.source.id}/test-connection/").json()
+        self.assertEqual(fetch.call_count, 1, "un test interactif ne se reprend pas tout seul")
+        dodo.assert_not_called()
+        self.assertFalse(body["ok"])
+        self.assertIn("timeout", body["message"])
+
+    def test_les_collectes_de_fond_conservent_leurs_reprises(self):
+        """La borne ne s'applique qu'au test interactif : une série de fond garde
+        ses trois tentatives, sinon un incident passager trouerait la donnée."""
+        client = ShieldClient("https://api.kaydanshield.test", {"Authorization": "Bearer x"})
+        with patch.object(ShieldClient, "_fetch", side_effect=TimeoutError()) as fetch, patch("time.sleep"):
+            with self.assertRaises(ShieldError):
+                client.get_json("/api/v1/sites/sites/", use_cache=False)
+        self.assertEqual(fetch.call_count, 3)
+
+
+class RobustesseClientShieldTest(TestCase):
+    """Trois pièges trouvés à l'audit, chacun capable de faire passer une source
+    saine pour une source en panne — ou une panne pour un plantage serveur."""
+
+    def _client(self, base="https://api.kaydanshield.com", **kw):
+        return ShieldClient(base, {"Authorization": "Bearer x"}, **kw)
+
+    def test_url_documentee_ne_double_pas_le_prefixe(self):
+        """La doc Shield donne « …/api/v1 » comme URL de base, et c'est ce que
+        l'utilisateur copie. Les chemins portent déjà ce préfixe : concaténer
+        produisait /api/v1/api/v1/… donc un 404, lu comme « source injoignable »."""
+        avec_prefixe = self._client("https://api.kaydanshield.com/api/v1")
+        sans_prefixe = self._client("https://api.kaydanshield.com")
+        attendu = "https://api.kaydanshield.com/api/v1/sites/sites/?limit=1"
+        self.assertEqual(avec_prefixe._url("/api/v1/sites/sites/", {"limit": 1}), attendu)
+        self.assertEqual(sans_prefixe._url("/api/v1/sites/sites/", {"limit": 1}), attendu)
+
+    def test_pagination_rend_la_main_avant_que_gunicorn_ne_tue_le_worker(self):
+        """Sans budget de temps, une source lente retenait la requête au-delà des
+        60 s de gunicorn : le worker était tué et le proxy renvoyait un 502 muet."""
+        client = self._client(budget_seconds=0)
+        page = {"count": 10_000, "results": [{"id": i} for i in range(200)]}
+        with patch.object(ShieldClient, "_fetch", return_value=page):
+            with self.assertRaises(ShieldError) as ctx:
+                client.paginate("/api/v1/attendance/attendance/", page_size=200, max_pages=12)
+        self.assertEqual(ctx.exception.kind, "timeout")
+        self.assertIn("trop lentement", str(ctx.exception))
+
+    def test_coupure_pendant_la_lecture_est_un_incident_reseau(self):
+        """Étiqueter « payload » une liaison coupée envoie chercher un problème de
+        schéma là où il faut regarder la connexion."""
+        with patch.object(ShieldClient, "_fetch", side_effect=ConnectionResetError()), patch("time.sleep"):
+            with self.assertRaises(ShieldError) as ctx:
+                self._client().get_json("/api/v1/sites/sites/", use_cache=False)
+        self.assertEqual(ctx.exception.kind, "network")
+
+
+class SecretIllisibleTest(APITestCase):
+    """Un secret que le backend ne sait plus déchiffrer — clé de chiffrement
+    changée, par exemple — doit produire un verdict, pas un 500."""
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="secret-admin", password="x",
+                                              email="x@k.co", role="ADMIN_INTEGRATION")
+        self.client.force_authenticate(self.admin)
+        self.client.post(f"{BASE}/sources/", {
+            "name": "Shield", "slug": "kaydan-shield", "source_type": "kaydan_shield",
+            "target_module": "rh",
+        }, format="json")
+        self.source = DataSource.objects.get(slug="kaydan-shield")
+        self.source.connector.base_url = "https://api.kaydanshield.test/api/v1"
+        self.source.connector.save(update_fields=["base_url"])
+
+    def test_secret_indechiffrable_donne_un_verdict_et_non_un_500(self):
+        with patch("apps.integrations.shield.build_client", side_effect=ValueError("clé invalide")):
+            resp = self.client.post(f"{BASE}/sources/{self.source.id}/test-connection/")
+        self.assertEqual(resp.status_code, 200)
+        body = resp.json()
+        self.assertFalse(body["ok"])
+        self.assertIn("illisible", body["message"])
+        self.assertIn("Ré-enregistrez", body["message"])
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.status, SourceStatus.ERROR)

@@ -133,8 +133,14 @@ services:
     environment:
       <<: *backend-env
     # Dev : migrations puis serveur Django auto-reload (source montée ci-dessous).
+    # `lock_timeout` sur migrate : sans lui, un ALTER TABLE qui attend un verrou
+    # (une session restée « idle in transaction » suffit) bloque INDÉFINIMENT. Le
+    # conteneur reste alors « Up » — donc `restart: unless-stopped` ne le relance
+    # pas — avec rien qui écoute sur 8000, et le proxy renvoie un 502 immédiat sans
+    # la moindre trace de cause. Avec la borne, migrate ÉCHOUE bruyamment dans les
+    # journaux au bout de 10 s, ce qui est diagnosticable.
     command: >
-      sh -c "python manage.py migrate --noinput
+      sh -c "PGOPTIONS='-c lock_timeout=10s' python manage.py migrate --noinput
       && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ../backend:/app

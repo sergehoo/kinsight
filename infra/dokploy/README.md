@@ -44,6 +44,52 @@ Seul le **frontend** est exposé par Traefik ; tout le reste reste sur le résea
    python manage.py createsuperuser
    ```
 
+## Dépannage — « 502 Bad Gateway » sur /api/ alors que le site s'affiche
+
+Symptôme : `https://DOMAIN/` et `/healthz` répondent 200, `/static/` aussi, mais **tout**
+ce qui passe par `/api/` et `/admin/` renvoie 502 — et vite (moins d'une seconde),
+pas après un délai. Le corps de la réponse est celui de nginx, pas de Traefik.
+
+Ce n'est pas un dépassement de délai (qui donnerait un 504 après ~60 s) : c'est
+`proxy_pass` qui n'arrive pas à ouvrir la connexion vers `backend:8000`.
+
+Deux causes, à départager dans cet ordre :
+
+1. **nginx pointe vers une adresse périmée.** C'est le cas le plus fréquent après
+   un redéploiement : le conteneur backend repart avec une nouvelle IP, et un nginx
+   qui n'a pas été recréé continue d'écrire vers l'ancienne. Le journal du conteneur
+   frontend le dit mot pour mot :
+
+   ```bash
+   docker compose logs --tail=50 frontend | grep "connect() failed"
+   # connect() failed (111: Connection refused) while connecting to upstream,
+   # upstream: "http://172.19.0.2:8000/api/v1/..."
+   ```
+
+   Si l'IP citée n'est pas celle du conteneur backend actuel
+   (`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <backend>`),
+   c'est cette cause. Remède immédiat : recréer le conteneur frontend. Remède durable :
+   déjà en place dans [`frontend/web/nginx.conf`](../../frontend/web/nginx.conf) — un
+   `resolver 127.0.0.11` et un nom d'hôte passé par variable forcent nginx à
+   redemander l'adresse à chaque requête au lieu de la figer au démarrage.
+
+2. **Le backend n'écoute pas.** `migrate`, `collectstatic` ou `gunicorn` a échoué au
+   démarrage, et le conteneur boucle :
+
+   ```bash
+   docker compose ps backend
+   docker compose logs --tail=100 backend
+   ```
+
+   Le healthcheck interroge `/healthz/` : un conteneur durablement `unhealthy` signale
+   que gunicorn n'a jamais répondu.
+
+Pour trancher la sortie réseau du backend (DNS, TLS, endpoint, jeton), couche par couche :
+
+```bash
+docker compose exec backend python manage.py integrations_doctor
+```
+
 ## Transformations dbt
 
 Service `dbt` en profil opt-in. Depuis le serveur (ou un "Run" Dokploy) :

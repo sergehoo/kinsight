@@ -21,7 +21,7 @@ from django.utils import timezone
 from . import shield_endpoints as EP
 from .models import AuthMethod, CredentialKind, DataSource, SourceStatus, SourceType
 from . import shield_rules as R
-from .shield_client import ShieldClient, ShieldError
+from .shield_client import MAX_ATTEMPTS, ShieldClient, ShieldError
 
 SHIELD_SOURCE_SLUG = "kaydan-shield"
 
@@ -91,8 +91,8 @@ def _auth_headers(source: DataSource) -> dict[str, str]:
 
 
 # ── Client ───────────────────────────────────────────────────────────────────
-def build_client(source: DataSource) -> ShieldClient:
-    return ShieldClient(_base_url(source), _auth_headers(source))
+def build_client(source: DataSource, max_attempts: int = MAX_ATTEMPTS) -> ShieldClient:
+    return ShieldClient(_base_url(source), _auth_headers(source), max_attempts=max_attempts)
 
 
 def _today() -> str:

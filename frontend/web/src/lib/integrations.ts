@@ -58,7 +58,11 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
  */
 function retryHorsRefus(nbEchecs: number, error: unknown) {
   if (error instanceof ApiError && error.status >= 400 && error.status < 500) return false;
-  return nbEchecs < 2;
+  // UNE seule reprise, pas deux. Face à un amont mort, chaque tentative
+  // supplémentaire triple la charge sur un service déjà en difficulté et retarde
+  // d'autant le message qui, lui, ne changera pas. Une reprise reste utile : elle
+  // absorbe la fenêtre de quelques secondes d'un redéploiement.
+  return nbEchecs < 1;
 }
 
 export function useSources() {
@@ -93,6 +97,23 @@ export function useHealth() {
 function useInvalidate() {
   const qc = useQueryClient();
   return () => qc.invalidateQueries({ queryKey: ["integrations"] });
+}
+
+/** Retrouve une source par son code.
+ *
+ *  Sert au rattrapage : si la création a échoué de façon AMBIGUË (502, coupure —
+ *  la requête est peut-être arrivée, la réponse non), la ligne peut exister côté
+ *  serveur. Réessayer à l'aveugle buterait alors sur « ce code existe déjà ».
+ */
+export async function fetchSourceBySlug(slug: string): Promise<DataSource | undefined> {
+  const sources = await req<DataSource[]>("GET", "/integrations/sources/");
+  const trouvee = sources.find((s) => s.slug === slug);
+  if (!trouvee) return undefined;
+  // La LISTE est servie par un sérialiseur allégé qui aplatit le connecteur au lieu
+  // de l'imbriquer : `connector.id` y est absent. S'en contenter faisait sauter la
+  // configuration du connecteur au réessai, et le test échouait ensuite sur
+  // « Configuration incomplète : URL de base ». On relit donc le détail.
+  return req<DataSource>("GET", `/integrations/sources/${trouvee.id}/`);
 }
 
 export function useCreateSource() {

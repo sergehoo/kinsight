@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import socket
 import ssl
 import threading
 import time
@@ -31,6 +32,10 @@ BACKOFF_SECONDS = (0.4, 1.2)
 CACHE_TTL_SECONDS = 45    # court : on veut du frais, pas une rafale d'appels
 MAX_RETRY_AFTER = 5       # on respecte `Retry-After`, sans bloquer une requête web
 MAX_PAGES = 10            # garde-fou : jamais de pagination sans fin
+# Budget de bout en bout d'une lecture paginée. gunicorn tue le worker à 60 s et
+# nginx transforme cette mise à mort en 502 : il faut rendre la main AVANT, avec
+# un état gouverné, plutôt que de laisser le proxy inventer une panne.
+BUDGET_TOTAL_SECONDS = 40
 
 
 def _retry_after(exc) -> float:
@@ -124,10 +129,18 @@ class ShieldMetrics:
 class ShieldClient:
     """Accès en lecture à l'API Shield. Ne connaît aucune règle métier."""
 
-    def __init__(self, base_url: str, headers: dict[str, str], timeout: int = DEFAULT_TIMEOUT):
+    def __init__(self, base_url: str, headers: dict[str, str], timeout: int = DEFAULT_TIMEOUT,
+                 max_attempts: int = MAX_ATTEMPTS, budget_seconds: int = BUDGET_TOTAL_SECONDS):
         self.base_url = (base_url or "").rstrip("/")
         self.headers = headers
         self.timeout = timeout
+        # Les reprises servent les collectes de fond, où un incident passager ne
+        # doit pas trouer une série. Elles desservent un test lancé À LA MAIN :
+        # l'utilisateur attend devant l'écran pendant trois essais et deux pauses,
+        # et un worker gunicorn — il n'y en a que trois — reste bloqué tout ce
+        # temps. Pour ce cas, un seul essai, et c'est l'utilisateur qui recommence.
+        self.max_attempts = max(1, max_attempts)
+        self.budget_seconds = budget_seconds
         self._cache = _TTLCache()
         self.metrics = ShieldMetrics()
         # Déduplication : deux widgets demandant la même donnée en même temps ne
@@ -136,8 +149,18 @@ class ShieldClient:
         self._inflight_lock = threading.Lock()
 
     # ── Transport ────────────────────────────────────────────────────────────
+    # Les chemins de `shield_endpoints` portent déjà le préfixe de l'API. Or la
+    # documentation Shield — et donc ce que l'utilisateur copie dans le formulaire —
+    # donne « https://api.kaydanshield.com/api/v1 ». Concaténer naïvement produisait
+    # « /api/v1/api/v1/sites/sites/ » : un 404, interprété comme « source injoignable »
+    # alors que l'URL saisie était la bonne.
+    PREFIXE_API = "/api/v1"
+
     def _url(self, path: str, params: dict[str, Any] | None) -> str:
-        url = self.base_url + path
+        base = self.base_url
+        if path.startswith(self.PREFIXE_API) and base.endswith(self.PREFIXE_API):
+            base = base[: -len(self.PREFIXE_API)]
+        url = base + path
         if params:
             clean = {k: v for k, v in params.items() if v is not None}
             if clean:
@@ -174,7 +197,7 @@ class ShieldClient:
         last: ShieldError | None = None
         started = time.monotonic()
         try:
-            for attempt in range(MAX_ATTEMPTS):
+            for attempt in range(self.max_attempts):
                 if attempt:
                     self.metrics.retries += 1
                 try:
@@ -191,7 +214,7 @@ class ShieldClient:
                     if exc.code == 429:
                         wait = _retry_after(exc)
                         last = ShieldError("rate_limit", f"Shield limite le débit sur {path}", 429)
-                        if attempt < MAX_ATTEMPTS - 1:
+                        if attempt < self.max_attempts - 1:
                             time.sleep(min(wait, MAX_RETRY_AFTER))
                             continue
                         break
@@ -222,10 +245,15 @@ class ShieldClient:
                         last = ShieldError("network", f"Shield injoignable sur {path} : {reason}")
                 except ShieldError as exc:
                     raise exc
+                except (ConnectionError, socket.timeout, OSError) as exc:
+                    # Coupure pendant la lecture du corps : c'est du réseau, pas une
+                    # réponse mal formée. Étiqueter « payload » enverrait chercher un
+                    # problème de schéma là où il faut regarder la liaison.
+                    last = ShieldError("network", f"Liaison interrompue sur {path} : {type(exc).__name__}")
                 except Exception as exc:  # noqa: BLE001 — filet : jamais de 500 qui remonte
                     last = ShieldError("payload", f"Échec inattendu sur {path} : {type(exc).__name__}")
 
-                if attempt < MAX_ATTEMPTS - 1:
+                if attempt < self.max_attempts - 1:
                     time.sleep(BACKOFF_SECONDS[min(attempt, len(BACKOFF_SECONDS) - 1)])
         finally:
             self.metrics.duration_ms += (time.monotonic() - started) * 1000
@@ -283,13 +311,23 @@ class ShieldClient:
 
     def paginate(self, path: str, params: dict[str, Any] | None = None,
                  page_size: int = 200, max_pages: int = MAX_PAGES) -> list[dict[str, Any]]:
-        """Parcourt les pages via offset, borné par `max_pages`.
+        """Parcourt les pages via offset, borné par `max_pages` ET par le temps.
 
-        Le plafond est délibéré : une pagination non bornée sur une API distante
-        est un moyen sûr de faire tomber le backend qui l'interroge.
+        Deux plafonds, parce qu'ils protègent de deux choses différentes : le
+        nombre de pages borne le volume, le budget de temps borne l'occupation
+        d'un worker. Sans le second, une source lente pouvait retenir une requête
+        web au-delà de la limite de gunicorn — le worker était tué et l'utilisateur
+        recevait un 502 du proxy, sans la moindre indication de cause.
         """
         rows: list[dict[str, Any]] = []
+        echeance = time.monotonic() + self.budget_seconds
         for page in range(max_pages):
+            if page and time.monotonic() >= echeance:
+                raise ShieldError(
+                    "timeout",
+                    f"Lecture interrompue sur {path} après {self.budget_seconds} s : "
+                    f"{len(rows)} enregistrements lus, la source répond trop lentement.",
+                )
             batch = self.results(path, {**(params or {}), "offset": page * page_size}, limit=page_size)
             rows.extend(batch)
             if len(batch) < page_size:

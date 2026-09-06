@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { glass } from "@/components/chrome/theme";
 import { IntegrationsError, IntegrationsShell, StatusBadge } from "@/components/integrations/parts";
 import {
+  ApiError,
+  fetchSourceBySlug,
   useAddCredential,
   useCreateEndpoint,
   useCreateMapping,
@@ -180,6 +182,33 @@ function Stepper({ etape, onAller }: { etape: number; onAller: (n: number) => vo
 
 type Verdict = { ok: boolean; message: string; status: string; latency_ms?: number | null };
 
+/** Où la chaîne s'est arrêtée. Sans cette information, un échec du test Shield
+ *  s'affichait « Backend en erreur » alors que le backend avait parfaitement
+ *  répondu et que la source était bel et bien créée. */
+type Etape = "creation" | "connecteur" | "secret" | "test";
+
+const LIBELLE_ETAPE: Record<Etape, { titre: string; acquis: string }> = {
+  creation: { titre: "Échec de la création de la source", acquis: "" },
+  connecteur: { titre: "Échec de la configuration du connecteur", acquis: "Source créée" },
+  secret: { titre: "Échec de l'enregistrement du secret", acquis: "Source créée · connecteur configuré" },
+  test: { titre: "Échec du test de connexion", acquis: "Source créée · connecteur configuré · secret enregistré" },
+};
+
+/** « Échec du test Kaydan Shield » situe la panne mieux que « test de connexion ». */
+function titreEtape(etape: Etape, typeLabel: string) {
+  const base = LIBELLE_ETAPE[etape];
+  const titre = etape === "test" ? `Échec du test ${typeLabel}` : base.titre;
+  return base.acquis ? `${base.acquis} · ${titre}` : titre;
+};
+
+/** Un échec dont on ne sait pas s'il a atteint le serveur : la requête est
+ *  peut-être passée, seule la réponse manque. C'est le cas d'un 502 émis par le
+ *  proxy et de toute coupure réseau. */
+function estAmbigu(error: unknown) {
+  if (!(error instanceof ApiError)) return true; // pas de réponse du tout
+  return error.status === 502 || error.status === 503 || error.status === 504;
+}
+
 function CreateForm() {
   const navigate = useNavigate();
   const create = useCreateSource();
@@ -211,7 +240,8 @@ function CreateForm() {
   const [etape, setEtape] = React.useState(1);
   const [sourceCreee, setSourceCreee] = React.useState<{ id: string; connectorId?: string } | null>(null);
   const [enCours, setEnCours] = React.useState(false);
-  const [echec, setEchec] = React.useState<unknown>(null);
+  const [echec, setEchec] = React.useState<{ etape: Etape; erreur: unknown } | null>(null);
+  const [creationAmbigue, setCreationAmbigue] = React.useState(false);
   const [verdict, setVerdict] = React.useState<Verdict | null>(null);
 
   const preset = presetPour(sourceType);
@@ -240,24 +270,44 @@ function CreateForm() {
     setEnCours(true);
     setEchec(null);
     setVerdict(null);
+    let etape: Etape = "creation";
     try {
       let cible = sourceCreee;
       if (!cible) {
-        const source = await create.mutateAsync({
-          name: name.trim(),
-          slug: codeFinal,
-          source_type: sourceType,
-          environment,
-          target_module: target,
-          sync_frequency: frequency.trim() || "manual",
-          demo_mode: demo,
-          description,
-        });
+        let source: { id: string; connector?: { id: string } };
+        try {
+          source = await create.mutateAsync({
+            name: name.trim(),
+            slug: codeFinal,
+            source_type: sourceType,
+            environment,
+            target_module: target,
+            sync_frequency: frequency.trim() || "manual",
+            demo_mode: demo,
+            description,
+          });
+        } catch (e) {
+          // Rattrapage du cas ambigu : un essai précédent s'est peut-être écrit
+          // côté serveur sans que la réponse revienne. Le code est alors « déjà
+          // pris »… par nous. On reprend cette source au lieu d'échouer, et sans
+          // jamais créer de doublon.
+          const conflitDeCode =
+            e instanceof ApiError && e.status === 400 && Boolean(e.details && "slug" in e.details);
+          if (!(conflitDeCode && creationAmbigue)) {
+            if (estAmbigu(e)) setCreationAmbigue(true);
+            throw e;
+          }
+          const existante = await fetchSourceBySlug(codeFinal);
+          if (!existante) throw e;
+          source = existante;
+        }
         cible = { id: source.id, connectorId: source.connector?.id };
         setSourceCreee(cible);
+        setCreationAmbigue(false);
       }
 
       if (cible.connectorId) {
+        etape = "connecteur";
         const config: Record<string, unknown> = {};
         if (preset.requiresDatabase && database.trim()) config.database = database.trim();
         await updateConnector.mutateAsync({
@@ -265,6 +315,7 @@ function CreateForm() {
           patch: { base_url: baseUrl.trim(), auth_method: auth, config },
         });
         if (secret.trim()) {
+          etape = "secret";
           await addCredential.mutateAsync({
             connector: cible.connectorId,
             kind: preset.credentialKind,
@@ -276,12 +327,26 @@ function CreateForm() {
         }
       }
 
+      etape = "test";
       setVerdict(await test.mutateAsync(cible.id));
     } catch (e) {
-      setEchec(e);
+      setEchec({ etape, erreur: e });
     } finally {
       setEnCours(false);
     }
+  };
+
+  /** Revenir en arrière EFFACE le verdict et l'erreur.
+   *
+   *  Sinon l'écran ment deux fois : le bandeau « Backend en erreur » reste
+   *  affiché sous les champs des étapes 1 et 2, et un verdict obtenu avec
+   *  l'ancienne URL continue de décrire une configuration qu'on vient de
+   *  modifier. La source déjà créée, elle, est conservée : le réessai la reprend.
+   */
+  const allerA = (n: number) => {
+    setEtape(n);
+    setEchec(null);
+    setVerdict(null);
   };
 
   const suivant = (e: React.FormEvent) => {
@@ -293,7 +358,7 @@ function CreateForm() {
   return (
     <div className="grid max-w-[820px] gap-5">
       <div className="rounded-[20px] px-5 py-4" style={glass}>
-        <Stepper etape={etape} onAller={setEtape} />
+        <Stepper etape={etape} onAller={allerA} />
       </div>
 
       <form onSubmit={suivant} className="grid gap-5 rounded-[24px] p-7" style={glass}>
@@ -462,11 +527,34 @@ function CreateForm() {
           </>
         ) : null}
 
-        {echec ? <IntegrationsError error={echec} /> : null}
+        {echec ? (
+          <div className="grid gap-2">
+            <div className="rounded-[18px] border border-[#EFE3CE] bg-[#FDF6EA] px-5 py-3">
+              <p className="text-[13.5px] font-bold text-[#6B4E1E]">
+                {titreEtape(echec.etape, SOURCE_TYPES.find(([v]) => v === sourceType)?.[1] ?? "de connexion")}
+              </p>
+              {echec.etape !== "creation" ? (
+                <p className="mt-0.5 text-[12.5px] font-medium text-[#8A6E36]">
+                  Les étapes précédentes ont abouti : la source existe et reste consultable. Seule celle-ci a échoué.
+                </p>
+              ) : null}
+            </div>
+            <IntegrationsError error={echec.erreur} />
+            {sourceCreee ? (
+              <button
+                type="button"
+                onClick={() => navigate(`/admin/integrations/${sourceCreee.id}`)}
+                className={btnGhost + " justify-self-start"}
+              >
+                Ouvrir la fiche de la source
+              </button>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap gap-3">
           {etape > 1 ? (
-            <button type="button" onClick={() => setEtape(etape - 1)} className={btnGhost}>Retour</button>
+            <button type="button" onClick={() => allerA(etape - 1)} className={btnGhost}>Retour</button>
           ) : null}
           {etape < 3 ? (
             <button type="submit" disabled={etape === 1 ? !etape1Ok : !etape2Ok} className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-40">
