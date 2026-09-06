@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { AppShell } from "@/components/navigation/AppShell";
 import { RequireAuth, RootRedirect } from "@/components/navigation/RequireAuth";
+import { PwaLayer } from "@/pwa/PwaLayer";
 import "./index.css";
 
 const LoginPage = lazy(() => import("@/pages/LoginPage").then((module) => ({ default: module.LoginPage })));
@@ -20,7 +21,11 @@ const IntegrationForm = lazy(() => import("@/pages/integrations/IntegrationForm"
 const IntegrationHealth = lazy(() => import("@/pages/integrations/IntegrationHealth").then((m) => ({ default: m.IntegrationHealth })));
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false, staleTime: 30_000 } },
+  // `refetchOnReconnect` : au retour du réseau, les vues quittent d'elles-mêmes
+  // l'état « donnée datée » sans intervention de l'utilisateur.
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false, refetchOnReconnect: true, staleTime: 30_000 },
+  },
 });
 
 function RouteFallback() {
@@ -70,6 +75,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
+          <PwaLayer />
         </AppShell>
       </BrowserRouter>
     </QueryClientProvider>
