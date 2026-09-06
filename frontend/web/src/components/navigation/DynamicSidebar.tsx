@@ -208,7 +208,7 @@ export function DynamicSidebar() {
                 <Icon width={19} height={19} />
               </span>
               {expanded ? <span className="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{item.label}</span> : null}
-              {expanded && active ? <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: activeModule?.icon ? "#FF8735" : "#fff" }} /> : null}
+              {expanded && active ? <span className="ki-accent-fill h-1.5 w-1.5 shrink-0 rounded-full" /> : null}
             </Link>
           );
         })}

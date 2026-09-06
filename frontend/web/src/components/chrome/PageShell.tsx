@@ -26,7 +26,7 @@ export function PageShell({ title, subtitle, status, icon, accent = "#FF8735", c
   const sidebarExpanded = useNavigationStore((state) => state.sidebarExpanded);
   const mainPadLeft = sidebarExpanded ? "pl-[96px] md:pl-[296px]" : "pl-[96px] md:pl-[120px]";
   return (
-    <div className="min-h-screen bg-[#B8B7B4] p-3 text-black sm:p-5 lg:p-6">
+    <div className="min-h-screen ki-page p-3 text-black sm:p-5 lg:p-6">
       <div className="relative mx-auto min-h-[760px] w-full max-w-[1840px] overflow-hidden rounded-[42px] border border-white/70 bg-[#F4F7F2] shadow-[0_34px_100px_rgba(36,38,38,0.22)] lg:min-h-[900px]">
         <div className={`pointer-events-none absolute inset-0 rounded-[inherit] ${FRAME_BG}`} />
 

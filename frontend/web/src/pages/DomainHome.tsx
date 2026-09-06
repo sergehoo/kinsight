@@ -14,6 +14,8 @@ import { ArrowUpRight, ChevronDown, Dots } from "@/components/overview/icons";
 import { EmptyChartState, IconButton, MetricCard, StateBadge, type DataState } from "@/components/ui/kit";
 import { Menu, MenuItem } from "@/components/ui/Menu";
 import { getDefaultItemHref, type DashboardModuleConfig } from "@/config/modules.config";
+import { getDomainAccent } from "@/config/domainTheme";
+import { useDomainTheme } from "@/lib/useDomainTheme";
 import type { DomainHeroSpec } from "@/config/domainHome.config";
 import { getCurrentPermissions } from "@/lib/permissions";
 import { EASE_OUT } from "@/lib/motion";
@@ -158,11 +160,22 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
   // domaine : on l'assume explicitement plutôt que d'afficher un graphe décoratif.
   const chartState: DataState = "disconnected";
   const chartSource = "Mart EDW";
+  // Pose les tokens --domain-* sur <html> : header, rail et panneaux flottants
+  // partagent le même accent, la transition étant gérée en CSS.
+  useDomainTheme(module.id);
+  // Les attributs SVG (stopColor…) ne résolvent pas var() : couleur concrète,
+  // mais issue de la MÊME source que les tokens.
+  const accentHex = getDomainAccent(module.id).accent;
 
+  // Fond de page clair + halo teinté par le domaine (plus de gris « désactivé »).
+  // Marge nulle en mobile, respirante à partir de sm.
   return (
-    <div className="min-h-screen bg-[#B8B7B4] p-2 text-black sm:p-4 lg:p-6">
-      <div className="relative mx-auto min-h-[560px] w-full max-w-[1840px] overflow-hidden rounded-[24px] border border-white/70 bg-[#F4F7F2] shadow-[0_34px_100px_rgba(36,38,38,0.22)] sm:rounded-[32px] lg:min-h-[860px] lg:rounded-[42px] 2xl:max-w-[2160px]">
+    <div className="ki-page relative min-h-screen p-0 text-black sm:p-3 md:p-4 lg:p-6">
+      <div className="ki-domain-glow pointer-events-none fixed inset-0 z-0" aria-hidden />
+      <div className="relative z-10 mx-auto min-h-[560px] w-full max-w-[1840px] overflow-hidden rounded-none border-white/70 bg-[#F4F7F2] shadow-[0_18px_60px_rgba(36,38,38,0.10)] sm:rounded-[28px] sm:border sm:shadow-[0_30px_90px_rgba(36,38,38,0.13)] lg:min-h-[860px] lg:rounded-[42px] 2xl:max-w-[2160px]">
         <div className={`pointer-events-none absolute inset-0 rounded-[inherit] ${FRAME_BG}`} />
+        {/* Halo métier à l'intérieur du cadre : anime le hero au changement de domaine. */}
+        <div className="ki-domain-glow pointer-events-none absolute inset-0 rounded-[inherit]" aria-hidden />
 
         <AppHeader />
         <SideRail />
@@ -199,7 +212,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                 {/* Sur lg+, le texte s'arrête AVANT la carte vedette : elle ne peut
                     plus recouvrir le titre ni la description (z-30 sur z-20). */}
                 <section className="relative z-20 max-w-[460px] pt-4 lg:max-w-[min(460px,calc(100%-320px))]">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] sm:text-[12px]" style={{ color: spec.accent }}>{spec.kicker}</p>
+                  <p className="ki-accent-text text-[11px] font-bold uppercase tracking-[0.18em] sm:text-[12px]">{spec.kicker}</p>
                   <h1 className="mt-2 text-[clamp(28px,7vw,60px)] font-semibold leading-[1.03] tracking-tight text-black">{spec.title}</h1>
                   <p className="mt-3 max-w-[400px] text-[14px] font-medium leading-relaxed text-[#777C7D] sm:mt-4 sm:text-[15px]">{spec.tagline}</p>
                   <Link to={exploreHref} className="mt-5 inline-flex items-center gap-2 rounded-full px-5 py-3 text-[13px] font-bold text-white shadow-[0_16px_32px_rgba(0,0,0,0.16)] transition-transform hover:-translate-y-0.5 sm:mt-6 sm:text-[13.5px]" style={{ background: BLACK }}>
@@ -240,7 +253,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                       </div>
                       <div className="flex items-center">
                         {spec.featuredBadges.slice(0, 3).map((initials, i) => (
-                          <span key={initials} className="grid h-8 w-8 place-items-center rounded-full border-2 border-white/70 text-[10px] font-bold" style={{ marginLeft: i ? -8 : 0, background: i === 1 ? "#fff" : spec.accent, color: i === 1 ? "#111" : "#fff" }}>
+                          <span key={initials} className="grid h-8 w-8 place-items-center rounded-full border-2 border-white/70 text-[10px] font-bold" style={{ marginLeft: i ? -8 : 0, background: i === 1 ? "#fff" : accentHex, color: i === 1 ? "#111" : "#fff" }}>
                             {initials}
                           </span>
                         ))}
@@ -284,7 +297,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                     </p>
                   </div>
                   <div className="flex items-center gap-3 pt-1 text-[14px] font-semibold text-[#242424]">
-                    <span className="h-2.5 w-[60px] rounded-full" style={{ background: ORANGE }} />
+                    <span className="ki-accent-fill h-2.5 w-[60px] rounded-full" />
                     {spec.chartUnit}
                   </div>
                 </div>
@@ -300,9 +313,9 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
               {/* Score de Gouvernance (branché mart, gouverné N/D) :
                   Overview → indice Groupe consolidé ; autres domaines → score du domaine. */}
               {module.id === "overview" ? (
-                <GroupGovernanceIndex accent={spec.accent} />
+                <GroupGovernanceIndex accent={accentHex} />
               ) : (
-                <DomainScoreCard domainId={module.id} accent={spec.accent} />
+                <DomainScoreCard domainId={module.id} accent={accentHex} />
               )}
             </div>
 
@@ -323,7 +336,6 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                       state="disconnected"
                       source={chartSource}
                       scope="Groupe consolidé"
-                      accent={kpi.color}
                       highlighted={i === 0}
                       href={exploreHref}
                     />

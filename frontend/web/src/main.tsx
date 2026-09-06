@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
 
 function RouteFallback() {
   return (
-    <div className="grid min-h-screen place-items-center bg-[#B8B7B4] text-black">
+    <div className="grid min-h-screen place-items-center ki-page text-black">
       <div className="rounded-full border border-white/70 bg-white/65 px-5 py-3 text-[13px] font-bold shadow-[0_18px_42px_rgba(40,44,48,0.08)] backdrop-blur-2xl">
         Chargement du cockpit
       </div>

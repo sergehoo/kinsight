@@ -37,7 +37,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-[#B8B7B4] p-4">
+    <div className="grid min-h-screen place-items-center ki-page p-4">
       <motion.div
         className="w-full max-w-[420px] rounded-[32px] p-8 sm:p-10"
         style={{ ...glass, background: "linear-gradient(160deg,rgba(255,255,255,0.92),rgba(240,245,246,0.86))" }}

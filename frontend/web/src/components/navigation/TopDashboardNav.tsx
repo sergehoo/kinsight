@@ -92,17 +92,27 @@ export function TopDashboardNav() {
             {modules.map((module) => {
               const active = activeModule?.id === module.id;
               const Icon = module.icon;
+              // Pastille sombre conservée pour l'onglet actif : un aplat d'accent sous
+              // texte blanc échoue le contraste AA sur la plupart des domaines (ambre,
+              // teal, vert…). L'accent passe donc par le halo et l'icône, non soumis
+              // au seuil 4.5:1.
               return (
                 <button
                   key={module.id}
                   type="button"
                   onClick={() => selectModule(module.id)}
-                  className="flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-[13.5px] font-semibold transition-transform hover:-translate-y-0.5"
-                  style={active ? { background: BLACK, color: "#fff", boxShadow: "0 18px 32px rgba(0,0,0,0.18)" } : { color: "#222" }}
+                  className={`ki-accent-ring flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-[13.5px] font-semibold transition-all duration-200 hover:-translate-y-0.5 ${active ? "" : "hover:bg-[var(--domain-soft)]"}`}
+                  style={
+                    active
+                      ? { background: BLACK, color: "#fff", boxShadow: "0 14px 30px var(--domain-ring)", transition: "box-shadow var(--domain-transition)" }
+                      : { color: "#222" }
+                  }
                   aria-current={active ? "page" : undefined}
                   title={`${group} · ${module.label}`}
                 >
-                  <Icon width={16} height={16} />
+                  <span className={active ? "ki-accent-icon" : undefined}>
+                    <Icon width={16} height={16} />
+                  </span>
                   <span className="whitespace-nowrap">{module.label}</span>
                 </button>
               );

@@ -118,7 +118,7 @@ const IB_VARIANT = {
 export function IconButton({ children, label, to, onClick, variant = "ghost", size = "md" }: IconButtonProps) {
   const cls =
     `inline-grid min-h-[44px] min-w-[44px] place-items-center rounded-full transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 ` +
-    `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#416FF4]/60 ${IB_VARIANT[variant]} ` +
+    `ki-accent-ring ${IB_VARIANT[variant]} ` +
     (size === "sm" ? "h-9 w-9 sm:min-h-0 sm:min-w-0" : "h-11 w-11");
   const style = variant === "glass" ? glass : variant === "dark" ? { background: "#16191A" } : undefined;
   if (to) return <Link to={to} aria-label={label} className={cls} style={style}>{children}</Link>;
@@ -159,7 +159,7 @@ export interface MetricCardProps {
 export function MetricCard(props: MetricCardProps) {
   const {
     title, value, unit, trend, trendUp, comparison,
-    source, updatedAt, scope, accent = "#416FF4", highlighted = false, href,
+    source, updatedAt, scope, accent = "var(--domain-accent)", highlighted = false, href,
   } = props;
   const state = normalizeState(props.state ?? props.status);
   const meta = STATE_META[state];
@@ -213,12 +213,12 @@ export function MetricCard(props: MetricCardProps) {
   const style: React.CSSProperties = {
     ...glass,
     background: "linear-gradient(135deg,rgba(255,255,255,0.86),rgba(243,248,249,0.58))",
-    ...(highlighted ? { border: `1.5px solid ${accent}` } : null),
+    ...(highlighted ? { border: `1.5px solid ${accent}`, transition: "border-color var(--domain-transition)" } : null),
   };
 
   if (href) {
     return (
-      <Link to={href} className={`${className} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#416FF4]/60`} style={style}>
+      <Link to={href} className={`${className} ki-accent-ring`} style={style}>
         {body}
       </Link>
     );
@@ -248,7 +248,7 @@ export function EmptyChartState({
           ))}
         </div>
       ) : (
-        <span className="grid h-11 w-11 place-items-center rounded-full" style={{ background: meta.bg, color: meta.color }}>
+        <span className="ki-accent-bg ki-accent-icon grid h-11 w-11 place-items-center rounded-full">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 3v18h18" />
             <path d="m7 14 3-3 3 3 4-5" />

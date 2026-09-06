@@ -65,3 +65,99 @@ body {
     animation: none;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ACCENT MÉTIER — tokens `--domain-*`
+   Posés sur <html> par `useDomainTheme`. Déclarés via @property pour que le
+   navigateur INTERPOLE la couleur au changement de domaine (sans @property,
+   une variable bascule d'un coup et aucune transition n'est possible).
+   L'orange Kaydan (#FF8735) reste la couleur de marque et sert de repli.
+   ══════════════════════════════════════════════════════════════════════════ */
+@property --domain-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ff8735;
+}
+@property --domain-ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #b4470d;
+}
+@property --domain-soft {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(255 135 53 / 0.12);
+}
+@property --domain-glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(255 135 53 / 0.16);
+}
+@property --domain-ring {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(255 135 53 / 0.45);
+}
+
+:root {
+  --domain-transition: 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Fond de page clair premium : plus de gris sombre uniforme autour du shell. */
+.ki-page {
+  background-color: #f7f8f9;
+  background-image: linear-gradient(180deg, #fbfcfb 0%, #f2f4f6 100%);
+  /* Teinte métier diffuse : portée par un box-shadow interne, donc interpolée
+     au changement de domaine (un background-image en dégradé ne l'est pas). */
+  box-shadow:
+    inset 0 260px 280px -220px var(--domain-glow),
+    inset 0 -220px 260px -230px var(--domain-soft);
+  transition: box-shadow var(--domain-transition);
+}
+
+/* Halo teinté par le domaine. La couleur est portée par `background-color`
+   (interpolable) et la FORME par un masque radial fixe : un `background-image`
+   en dégradé ne saurait pas se transitionner. */
+.ki-domain-glow {
+  background-color: var(--domain-glow);
+  transition: background-color var(--domain-transition);
+  -webkit-mask-image:
+    radial-gradient(58% 52% at 14% -4%, #000 0%, transparent 72%),
+    radial-gradient(52% 46% at 92% 2%, #000 0%, transparent 68%);
+  mask-image:
+    radial-gradient(58% 52% at 14% -4%, #000 0%, transparent 72%),
+    radial-gradient(52% 46% at 92% 2%, #000 0%, transparent 68%);
+}
+
+/* Utilitaires : tout composant qui consomme l'accent passe par ces classes ou
+   par `var(--domain-*)`, jamais par une couleur écrite en dur. */
+.ki-accent-text {
+  color: var(--domain-ink);
+  transition: color var(--domain-transition);
+}
+.ki-accent-bg {
+  background-color: var(--domain-soft);
+  transition: background-color var(--domain-transition);
+}
+.ki-accent-border {
+  border-color: var(--domain-accent);
+  transition: border-color var(--domain-transition);
+}
+.ki-accent-fill {
+  background-color: var(--domain-accent);
+  transition: background-color var(--domain-transition);
+}
+.ki-accent-icon {
+  color: var(--domain-accent);
+  transition: color var(--domain-transition);
+}
+.ki-accent-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--domain-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --domain-transition: 0ms linear;
+  }
+}
