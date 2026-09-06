@@ -99,10 +99,38 @@ class DataSourceListSerializer(serializers.ModelSerializer):
 
     status_label = serializers.CharField(source="get_status_display", read_only=True)
     source_type_label = serializers.CharField(source="get_source_type_display", read_only=True)
+    target_module_label = serializers.CharField(source="get_target_module_display", read_only=True)
+    environment_label = serializers.CharField(source="get_environment_display", read_only=True)
+    # Champs du connecteur remontés à plat : la carte a besoin de l'état de la
+    # connexion, pas de la structure interne du modèle.
+    base_url = serializers.CharField(source="connector.base_url", read_only=True, default="")
+    last_tested_at = serializers.DateTimeField(source="connector.last_tested_at", read_only=True, default=None)
+    last_test_ok = serializers.BooleanField(source="connector.last_test_ok", read_only=True, default=None)
+    last_test_message = serializers.CharField(source="connector.last_test_message", read_only=True, default="")
+    last_latency_ms = serializers.IntegerField(source="connector.last_latency_ms", read_only=True, default=None)
+    last_sync_at = serializers.SerializerMethodField()
+    recent_errors = serializers.SerializerMethodField()
+
+    def get_last_sync_at(self, obj):
+        """Fin de la dernière synchronisation réellement terminée."""
+        job = obj.jobs.filter(finished_at__isnull=False).order_by("-finished_at").first()
+        return job.finished_at.isoformat() if job else None
+
+    def get_recent_errors(self, obj):
+        """Erreurs non résolues les plus récentes. Le message vient du connecteur,
+        jamais d'un secret : `SyncError.message` est écrit par nos soins."""
+        return [
+            {"code": e.code, "message": e.message[:200], "at": e.created_at.isoformat()}
+            for e in obj.errors.filter(resolved=False).order_by("-created_at")[:3]
+        ]
 
     class Meta:
         model = DataSource
-        fields = ["id", "name", "slug", "source_type", "source_type_label", "target_module", "status", "status_label", "is_active", "demo_mode", "sync_frequency", "updated_at"]
+        fields = ["id", "name", "slug", "source_type", "source_type_label", "target_module",
+            "target_module_label", "status", "status_label", "environment",
+            "environment_label", "is_active", "demo_mode", "sync_frequency",
+            "base_url", "last_tested_at", "last_test_ok", "last_test_message",
+            "last_latency_ms", "last_sync_at", "recent_errors", "updated_at"]
 
 
 class SyncJobSerializer(serializers.ModelSerializer):

@@ -98,14 +98,15 @@ class IntegrationApiTest(APITestCase):
     def test_test_connection_incomplete_then_complete(self):
         self._create_source()
         source = DataSource.objects.get(slug="k-shield")
-        # base_url manquant → erreur
-        r1 = self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+        # `probe=0` : on vérifie ici la COMPLÉTUDE de la configuration, pas la
+        # joignabilité de l'hôte — le test réseau réel est couvert ailleurs.
+        r1 = self.client.post(f"{BASE}/sources/{source.id}/test-connection/?probe=0")
         self.assertEqual(r1.status_code, 200)
         self.assertFalse(r1.data["ok"])
         self.assertEqual(r1.data["status"], "error")
-        # on renseigne base_url → connecté
+        # on renseigne base_url → configuration complète
         self.client.patch(f"{BASE}/connectors/{source.connector.id}/", {"base_url": "https://api.k-shield.io"}, format="json")
-        r2 = self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+        r2 = self.client.post(f"{BASE}/sources/{source.id}/test-connection/?probe=0")
         self.assertTrue(r2.data["ok"])
         self.assertEqual(r2.data["status"], "connected")
 
@@ -113,7 +114,7 @@ class IntegrationApiTest(APITestCase):
         self._create_source()
         source = DataSource.objects.get(slug="k-shield")
         self.client.patch(f"{BASE}/connectors/{source.connector.id}/", {"base_url": "https://api.k-shield.io"}, format="json")
-        self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+        self.client.post(f"{BASE}/sources/{source.id}/test-connection/?probe=0")
         r = self.client.post(f"{BASE}/sources/{source.id}/sync-now/")
         self.assertEqual(r.status_code, 202, r.content)
         self.assertTrue(SyncJob.objects.filter(source=source).exists())
@@ -758,3 +759,173 @@ class ShieldObservabilityTest(TestCase):
             premier.join(timeout=5); second.join(timeout=5)
         self.assertEqual(len(resultats), 2, "les deux appelants doivent obtenir la donnée")
         self.assertEqual(fetch.call_count, 1, "l'appel identique concurrent doit être mutualisé")
+
+
+class IntegrationCentreTest(APITestCase):
+    """Centre d'intégrations : création, test réel, secrets, santé consolidée."""
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="int-admin", password="x",
+                                              email="a@k.co", role="ADMIN_INTEGRATION")
+        self.lecteur = User.objects.create_user(username="dg-lecteur", password="x",
+                                                email="d@k.co", role="DG_GROUP")
+
+    # ── Le blocage constaté : un 403, pas une panne ──────────────────────────
+    def test_role_insuffisant_donne_403_et_non_500(self):
+        """Le centre est réservé : la cause doit être un refus explicite."""
+        self.client.force_authenticate(self.lecteur)
+        for path in ("sources/", "sources/health/"):
+            resp = self.client.get(f"{BASE}/{path}")
+            self.assertEqual(resp.status_code, 403, path)
+            self.assertIn("administrateurs", resp.json()["detail"].lower())
+
+    def test_non_authentifie_donne_401(self):
+        self.assertEqual(self.client.get(f"{BASE}/sources/").status_code, 401)
+
+    def test_admin_integration_accede(self):
+        self.client.force_authenticate(self.admin)
+        self.assertEqual(self.client.get(f"{BASE}/sources/").status_code, 200)
+
+    # ── Création ─────────────────────────────────────────────────────────────
+    def _creer(self, **overrides):
+        self.client.force_authenticate(self.admin)
+        payload = {"name": "Kaydan Shield", "slug": "kaydan-shield",
+                   "source_type": "kaydan_shield", "environment": "production",
+                   "target_module": "rh", **overrides}
+        return self.client.post(f"{BASE}/sources/", payload, format="json")
+
+    def test_creation_source_avec_environnement(self):
+        resp = self._creer()
+        self.assertEqual(resp.status_code, 201)
+        source = DataSource.objects.get(slug="kaydan-shield")
+        self.assertEqual(source.environment, "production")
+        self.assertEqual(source.status, SourceStatus.CONFIGURED)
+        # Le connecteur est créé d'office : pas d'écran de config orphelin.
+        self.assertTrue(hasattr(source, "connector"))
+
+    def test_types_sap_et_edw_acceptes(self):
+        for code, stype in (("sap-fi", "sap"), ("mart-edw", "edw")):
+            resp = self._creer(name=stype.upper(), slug=code, source_type=stype)
+            self.assertEqual(resp.status_code, 201, f"{stype} refusé : {resp.content[:120]}")
+
+    # ── Secrets ──────────────────────────────────────────────────────────────
+    def test_secret_chiffre_et_jamais_renvoye_en_clair(self):
+        self._creer()
+        source = DataSource.objects.get(slug="kaydan-shield")
+        self.client.force_authenticate(self.admin)
+        resp = self.client.post(f"{BASE}/credentials/", {
+            "connector": str(source.connector.id), "kind": "api_token",
+            "label": "Jeton Shield", "secret": "jeton-tres-secret-123",
+        }, format="json")
+        self.assertEqual(resp.status_code, 201)
+        # Ni dans la réponse de création…
+        self.assertNotIn("jeton-tres-secret-123", resp.content.decode())
+        # …ni dans la relecture, ni dans la source sérialisée.
+        listing = self.client.get(f"{BASE}/credentials/?connector={source.connector.id}").content.decode()
+        self.assertNotIn("jeton-tres-secret-123", listing)
+        detail = self.client.get(f"{BASE}/sources/{source.id}/").content.decode()
+        self.assertNotIn("jeton-tres-secret-123", detail)
+        # Mais il est bien stocké, chiffré, et relisible par le connecteur.
+        cred = ConnectorCredential.objects.get(connector=source.connector)
+        self.assertNotIn("jeton-tres-secret-123", cred.secret_ciphertext)
+        self.assertEqual(cred.secret, "jeton-tres-secret-123")
+
+    # ── Test de connexion ────────────────────────────────────────────────────
+    def test_test_connexion_shield_utilise_le_vrai_healthcheck(self):
+        self._creer()
+        source = DataSource.objects.get(slug="kaydan-shield")
+        source.connector.base_url = "https://shield.test"
+        source.connector.auth_method = AuthMethod.BEARER
+        source.connector.save()
+        self.client.force_authenticate(self.admin)
+
+        with patch.object(ShieldClient, "get_json", return_value={"count": 3}):
+            resp = self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.json()["ok"])
+        source.connector.refresh_from_db()
+        self.assertTrue(source.connector.last_test_ok)
+        self.assertIsNotNone(source.connector.last_tested_at)
+        self.assertIsNotNone(source.connector.last_latency_ms, "la latence doit être mesurée")
+
+    def test_test_connexion_refus_shield_est_signale(self):
+        """Un jeton refusé ne doit pas passer pour « hôte joignable »."""
+        self._creer()
+        source = DataSource.objects.get(slug="kaydan-shield")
+        source.connector.base_url = "https://shield.test"
+        source.connector.save()
+        self.client.force_authenticate(self.admin)
+        with patch.object(ShieldClient, "get_json",
+                          side_effect=ShieldError("auth", "Accès refusé", 403)):
+            body = self.client.post(f"{BASE}/sources/{source.id}/test-connection/").json()
+        self.assertFalse(body["ok"])
+        self.assertIn("auth", body["message"])
+        source.refresh_from_db()
+        self.assertEqual(source.status, SourceStatus.ERROR)
+
+    def test_test_connexion_sans_url_echoue_avant_le_reseau(self):
+        self._creer()
+        source = DataSource.objects.get(slug="kaydan-shield")
+        self.client.force_authenticate(self.admin)
+        body = self.client.post(f"{BASE}/sources/{source.id}/test-connection/").json()
+        self.assertFalse(body["ok"])
+        self.assertIn("URL de base", body["message"])
+
+    def test_odoo_exige_une_base_de_donnees(self):
+        """Ne pas inventer l'API Odoo : sans `database`, la config est incomplète."""
+        self._creer(name="Odoo", slug="odoo-rh", source_type="odoo_hr")
+        source = DataSource.objects.get(slug="odoo-rh")
+        source.connector.base_url = "https://odoo.test"
+        source.connector.save()
+        self.client.force_authenticate(self.admin)
+        body = self.client.post(f"{BASE}/sources/{source.id}/test-connection/").json()
+        self.assertFalse(body["ok"])
+        self.assertIn("base de données Odoo", body["message"])
+
+    # ── Désactivation ────────────────────────────────────────────────────────
+    def test_desactivation_change_le_statut(self):
+        self._creer()
+        source = DataSource.objects.get(slug="kaydan-shield")
+        self.client.force_authenticate(self.admin)
+        body = self.client.post(f"{BASE}/sources/{source.id}/toggle-active/").json()
+        self.assertFalse(body["is_active"])
+        self.assertEqual(body["status"], SourceStatus.DISABLED)
+
+    # ── Santé consolidée ─────────────────────────────────────────────────────
+    def test_sante_globale_expose_partial_stale_et_latence(self):
+        self._creer()
+        self._creer(name="SAP FI", slug="sap-fi", source_type="sap")
+        connectee = DataSource.objects.get(slug="kaydan-shield")
+        connectee.status = SourceStatus.CONNECTED
+        connectee.save()
+        connectee.connector.last_tested_at = timezone.now()
+        connectee.connector.last_latency_ms = 120
+        connectee.connector.save()
+
+        self.client.force_authenticate(self.admin)
+        body = self.client.get(f"{BASE}/sources/health/").json()
+        self.assertEqual(body["total"], 2)
+        self.assertEqual(body["connected"], 1)
+        self.assertEqual(body["partial"], 1, "une source sur deux répond : le parc est partiel")
+        self.assertEqual(body["stale"], 0)
+        self.assertEqual(body["avg_latency_ms"], 120)
+
+    def test_source_connectee_mais_non_testee_depuis_longtemps_est_perimee(self):
+        self._creer()
+        source = DataSource.objects.get(slug="kaydan-shield")
+        source.status = SourceStatus.CONNECTED
+        source.save()
+        source.connector.last_tested_at = timezone.now() - timedelta(hours=48)
+        source.connector.save()
+        self.client.force_authenticate(self.admin)
+        body = self.client.get(f"{BASE}/sources/health/").json()
+        self.assertEqual(body["stale"], 1,
+                         "connectée mais testée il y a 48 h : à ne pas présenter comme fiable")
+
+    def test_liste_expose_les_champs_de_la_carte(self):
+        self._creer()
+        self.client.force_authenticate(self.admin)
+        row = self.client.get(f"{BASE}/sources/").json()[0]
+        for champ in ("environment", "environment_label", "base_url", "last_tested_at",
+                      "last_latency_ms", "last_sync_at", "recent_errors", "status_label"):
+            self.assertIn(champ, row, f"la carte source a besoin de `{champ}`")

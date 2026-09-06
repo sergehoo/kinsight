@@ -27,6 +27,8 @@ class SourceType(models.TextChoices):
     AIRBYTE = "airbyte", "Connecteur Airbyte"
     KAYDAN_SHIELD = "kaydan_shield", "Kaydan Shield (contrôle d'accès / RH)"
     ODOO_HR = "odoo_hr", "Odoo RH"
+    SAP = "sap", "SAP"
+    EDW = "edw", "Entrepôt de données (mart)"
 
 
 class TargetModule(models.TextChoices):
@@ -40,6 +42,15 @@ class TargetModule(models.TextChoices):
     RISQUES = "risques", "Risques & Conformité"
     GROUPE = "groupe", "Groupe / Transverse"
     AUTRE = "autre", "Autre"
+
+
+class Environment(models.TextChoices):
+    """Environnement visé par une source. Distinguer production et recette évite
+    qu'un connecteur de test alimente silencieusement un tableau de bord réel."""
+
+    PRODUCTION = "production", "Production"
+    STAGING = "staging", "Recette"
+    SANDBOX = "sandbox", "Bac à sable"
 
 
 class SourceStatus(models.TextChoices):
@@ -107,6 +118,7 @@ class DataSource(TimestampedUUID):
     source_type = models.CharField(max_length=16, choices=SourceType.choices)
     target_module = models.CharField(max_length=16, choices=TargetModule.choices, default=TargetModule.AUTRE)
     status = models.CharField(max_length=16, choices=SourceStatus.choices, default=SourceStatus.NOT_CONFIGURED)
+    environment = models.CharField(max_length=12, choices=Environment.choices, default=Environment.PRODUCTION)
     is_active = models.BooleanField(default=True)
     demo_mode = models.BooleanField(default=False, help_text="Mode dégradé : afficher des données de démonstration tant que non connectée.")
     sync_frequency = models.CharField(max_length=64, blank=True, default="manual", help_text="cron ou 'manual'")
@@ -136,6 +148,10 @@ class DataConnector(TimestampedUUID):
     last_tested_at = models.DateTimeField(null=True, blank=True)
     last_test_ok = models.BooleanField(null=True)
     last_test_message = models.CharField(max_length=300, blank=True)
+    # Latence du dernier test, en millisecondes. Une source qui répond en 4 s
+    # n'est pas dans le même état qu'une source qui répond en 80 ms, même si les
+    # deux sont « connectées ».
+    last_latency_ms = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"Connecteur {self.source.slug}"

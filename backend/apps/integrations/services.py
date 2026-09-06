@@ -7,12 +7,15 @@ ingérer (la donnée passera par Airbyte → EDW, jamais par Django directement,
 
 from __future__ import annotations
 
+import time
 import urllib.error
 import urllib.request
 
 from django.utils import timezone
 
-from .models import DataSource, LogLevel, SourceStatus, SyncJob, SyncLog, SyncStatus, SyncTrigger
+from .models import (
+    DataSource, LogLevel, SourceStatus, SourceType, SyncJob, SyncLog, SyncStatus, SyncTrigger,
+)
 
 
 def validate_config(source: DataSource) -> tuple[bool, str]:
@@ -38,6 +41,15 @@ def validate_config(source: DataSource) -> tuple[bool, str]:
     elif t == "gsheets":
         if not cfg.get("sheet_id"):
             missing.append("sheet_id")
+    elif t in ("kaydan_shield", "odoo_hr", "sap"):
+        # Ces connecteurs parlent HTTP : sans URL de base, il n'y a rien à joindre.
+        if not connector.base_url:
+            missing.append("URL de base")
+        if t == "odoo_hr" and not cfg.get("database"):
+            missing.append("base de données Odoo")
+    elif t == "edw":
+        # Le mart est lu par le gateway, pas par un connecteur HTTP : rien à exiger ici.
+        pass
     elif t == "airbyte":
         if not cfg.get("airbyte_connection_id"):
             missing.append("airbyte_connection_id")
@@ -59,19 +71,51 @@ def network_probe(url: str, timeout: int = 6) -> tuple[bool, str]:
         return False, f"Hôte injoignable depuis le serveur : {type(exc).__name__}"
 
 
-def run_test(source: DataSource, probe: bool = False) -> tuple[bool, str]:
+def _real_healthcheck(source: DataSource) -> tuple[bool, str] | None:
+    """Sonde métier RÉELLE quand un connecteur dédié existe.
+
+    Pour Kaydan Shield, on réutilise le client du connecteur : il interroge un
+    vrai endpoint avec le vrai jeton. Une sonde purement réseau répondrait « hôte
+    joignable » alors que le jeton est expiré — la distinction compte, c'est
+    exactement ce qui sépare « connecté » de « refusé ».
+    """
+    if source.source_type == SourceType.KAYDAN_SHIELD:
+        from .shield import build_client
+
+        return build_client(source).healthcheck()
+    return None
+
+
+def run_test(source: DataSource, probe: bool = True) -> tuple[bool, str]:
+    """Teste la connexion et mesure la latence.
+
+    `probe` par défaut à True : un test qui ne quitte pas le processus ne teste
+    rien. La validation de configuration reste le préalable — inutile d'appeler
+    une URL absente.
+    """
     ok, message = validate_config(source)
     connector = getattr(source, "connector", None)
-    # Sonde réseau réelle, opt-in, uniquement si la config est valide et l'hôte HTTP renseigné.
-    if ok and probe and source.source_type in ("rest", "graphql", "webhook") and connector and connector.base_url:
-        ok, message = network_probe(connector.base_url)
+    latency_ms = None
+
+    if ok and probe:
+        started = time.monotonic()
+        real = _real_healthcheck(source)
+        if real is not None:
+            ok, message = real
+        elif source.source_type in ("rest", "graphql", "webhook", "sap", "odoo_hr") and connector and connector.base_url:
+            ok, message = network_probe(connector.base_url)
+        latency_ms = int((time.monotonic() - started) * 1000)
+
     if connector is not None:
         connector.last_tested_at = timezone.now()
         connector.last_test_ok = ok
         connector.last_test_message = message[:300]
-        connector.save(update_fields=["last_tested_at", "last_test_ok", "last_test_message", "updated_at"])
+        connector.last_latency_ms = latency_ms
+        connector.save(update_fields=["last_tested_at", "last_test_ok", "last_test_message",
+                                      "last_latency_ms", "updated_at"])
     source.set_status(SourceStatus.CONNECTED if ok else SourceStatus.ERROR)
-    SyncLog.objects.create(source=source, level=LogLevel.INFO if ok else LogLevel.ERROR, message=f"Test de connexion : {message}")
+    SyncLog.objects.create(source=source, level=LogLevel.INFO if ok else LogLevel.ERROR,
+                           message=f"Test de connexion : {message}")
     return ok, message
 
 

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import ssl
 import threading
 import time
 import urllib.error
@@ -208,6 +209,15 @@ class ShieldClient:
                     reason = getattr(exc, "reason", exc)
                     if isinstance(reason, TimeoutError):
                         last = ShieldError("timeout", f"Délai dépassé sur {path}")
+                    elif isinstance(reason, ssl.SSLCertVerificationError):
+                        # Symptôme cryptique, cause banale : l'environnement n'a pas
+                        # de magasin de certificats. Le dire évite de faire chercher
+                        # une panne côté Shield alors que le défaut est chez nous.
+                        last = ShieldError(
+                            "network",
+                            "Certificat TLS de Shield non vérifiable : le magasin de "
+                            "certificats de l'environnement est absent ou incomplet.",
+                        )
                     else:
                         last = ShieldError("network", f"Shield injoignable sur {path} : {reason}")
                 except ShieldError as exc:
