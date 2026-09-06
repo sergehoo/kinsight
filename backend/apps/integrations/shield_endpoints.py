@@ -28,6 +28,11 @@ VISITOR_REQUESTS = "/api/v1/visitors/requests/"     # filtres : site, status, ca
 
 # Valeurs d'énumération confirmées par le Swagger.
 ALERT_SEVERITIES = ("critical", "warning", "info")
+# Vérifié sur le schéma LIVE : la valeur est « denied », pas « deny ».
+# Un filtre inconnu est ignoré silencieusement par DRF et aurait renvoyé
+# TOUS les événements d'accès en les présentant comme des refus.
+ACCESS_DECISIONS = ("granted", "denied", "review")
+VISITOR_STATUSES = ("pending", "approved", "checked_in", "completed", "rejected", "cancelled", "expired")
 ALERT_OPEN_STATUSES = ("open", "acknowledged", "escalated")
 DEVICE_STATUSES = ("active", "inactive", "maintenance", "lost")
 SITE_STATUSES = ("active", "inactive", "archived")

@@ -1,5 +1,7 @@
 """Tests du control-plane d'intégration et du connecteur Kaydan Shield."""
 
+import json
+import time
 import urllib.error
 from unittest.mock import patch
 
@@ -323,19 +325,6 @@ class ShieldConnectorTest(TestCase):
         self.assertEqual(kpis["taux_presence"]["level"], "computed")
         self.assertTrue(kpis["taux_presence"]["formula"])
 
-    def test_by_site_utilise_les_vraies_relations(self):
-        self._source()
-        with patch.object(ShieldClient, "get_json", side_effect=self._routes()):
-            by_site = shield.fetch_hr_kpis()["by_site"]
-        self.assertEqual(by_site["status"], "connected")
-        row = by_site["sites"][0]
-        self.assertEqual(row["site"]["code"], "KRE-01")
-        self.assertEqual(row["workers"], 12)      # /ouvriers/workers/?site=1
-        self.assertEqual(row["present"], 9)       # /attendance/days/?site=1&present=true
-        self.assertEqual(row["absent"], 3)
-        self.assertEqual(row["attendance_rate"], 75.0)
-        self.assertEqual(row["alerts"], 2)
-
     def test_effectif_employes_par_site_reste_unknown(self):
         """Shield n'expose aucun filtre `site` sur les employés : on ne l'invente pas."""
         self._source()
@@ -496,7 +485,7 @@ class ShieldRulesTest(TestCase):
 
 
 class ShieldAttendanceSeriesTest(TestCase):
-    """Série journalière : jours manquants, vrais zéros, ventilation documentée."""
+    """Série journalière : UNE collecte paginée par indicateur, agrégée localement."""
 
     def _source(self):
         source = DataSource.objects.create(
@@ -506,144 +495,266 @@ class ShieldAttendanceSeriesTest(TestCase):
                                      auth_method=AuthMethod.BEARER)
         return source
 
-    def _counts(self, present=40, absent=10, late=4):
+    def _records(self, days=7, present=4, absent=1, late=1, site=1):
+        """Enregistrements AttendanceDay, à la forme réelle du schéma Shield."""
+        today = timezone.localdate()
+        out = {"present": [], "absent": [], "late": []}
+        kinds = ("employee", "worker")
+        for offset in range(days):
+            date = (today - timedelta(days=offset)).isoformat()
+            for flag, n in (("present", present), ("absent", absent), ("late", late)):
+                for i in range(n):
+                    out[flag].append({"id": f"{flag}-{date}-{i}", "date": date, "site": site,
+                                      "site_name": "Riviera", "holder_kind": kinds[i % 2]})
+        return out
+
+    def _api(self, records, fail_flag=None):
+        """Fausse API paginée : count / next / results, comme le fait DRF."""
         def handler(path, params=None, **kw):
             params = params or {}
             if path != EP.ATTENDANCE_DAYS:
-                raise AssertionError(f"La série ne doit interroger que /attendance/days/, pas {path}")
-            if params.get("present"):
-                return {"count": present, "results": []}
-            if params.get("absent"):
-                return {"count": absent, "results": []}
-            if params.get("late"):
-                return {"count": late, "results": []}
-            return {"count": present + absent, "results": []}
+                raise AssertionError(f"La série ne doit lire que /attendance/days/, pas {path}")
+            flag = next((f for f in ("present", "absent", "late") if params.get(f)), None)
+            if flag is None:
+                raise AssertionError("Toute lecture de période doit porter un indicateur")
+            if flag == fail_flag:
+                raise ShieldError("timeout", "Délai dépassé")
+            rows = sorted(records[flag], key=lambda r: r["date"], reverse=True)
+            offset, limit = int(params.get("offset", 0)), int(params.get("limit", 200))
+            page = rows[offset:offset + limit]
+            return {"count": len(rows), "next": None if offset + limit >= len(rows) else "?",
+                    "results": page}
         return handler
 
-    def test_serie_7_jours(self):
+    def test_serie_7_jours_trois_lectures_seulement(self):
         self._source()
-        with patch.object(ShieldClient, "get_json", side_effect=self._counts()):
+        with patch.object(ShieldClient, "get_json",
+                          side_effect=self._api(self._records(days=7, present=4, absent=1))) as calls:
             data = shield.fetch_attendance_series(7)
         self.assertEqual(data["status"], "connected")
-        self.assertEqual(data["days"], 7)
         self.assertEqual(len(data["points"]), 7)
-        self.assertEqual(data["points"][0]["taux_presence"], 80.0)   # 40 / 50
-        self.assertTrue(all(p["status"] == "measured" for p in data["points"]))
+        self.assertEqual(data["points"][0]["present"], 4)
+        self.assertEqual(data["points"][0]["taux_presence"], 80.0)   # 4 / (4+1)
+        self.assertEqual(calls.call_count, 3,
+                         f"3 lectures paginées attendues, {calls.call_count} obtenues")
 
-    def test_serie_30_jours_par_defaut(self):
+    def test_serie_30_jours_ne_coute_pas_plus(self):
         self._source()
-        with patch.object(ShieldClient, "get_json", side_effect=self._counts()):
+        with patch.object(ShieldClient, "get_json",
+                          side_effect=self._api(self._records(days=30, present=4, absent=1))) as calls:
             data = shield.fetch_attendance_series(30)
         self.assertEqual(len(data["points"]), 30)
-        dates = [p["date"] for p in data["points"]]
-        self.assertEqual(dates, sorted(dates), "la série doit être chronologique")
+        self.assertEqual(calls.call_count, 3, "30 jours ne doivent pas coûter plus que 7")
+
+    def test_pagination_reelle_sur_gros_volume(self):
+        self._source()
+        with patch.object(ShieldClient, "get_json",
+                          side_effect=self._api(self._records(days=30, present=20, absent=3))) as calls:
+            data = shield.fetch_attendance_series(30)
+        self.assertEqual(data["status"], "connected")
+        self.assertEqual(data["points"][0]["present"], 20)
+        self.assertEqual(calls.call_count, 5, "600 présents = 3 pages, + 1 absent + 1 retard")
 
     def test_fenetre_non_supportee_repliee(self):
-        """90 jours coûterait 270 appels : la fenêtre est ramenée au maximum tenable."""
         self._source()
-        with patch.object(ShieldClient, "get_json", side_effect=self._counts()):
-            data = shield.fetch_attendance_series(90)
-        self.assertEqual(data["days"], R.MAX_JOURS)
+        with patch.object(ShieldClient, "get_json", side_effect=self._api(self._records(days=30))):
+            self.assertEqual(shield.fetch_attendance_series(90)["days"], R.MAX_JOURS)
 
-    def test_jour_manquant_reste_unknown(self):
-        """Un jour dont la mesure échoue vaut `unknown`, jamais 0."""
+    def test_indicateur_en_echec_rend_la_serie_inconnue(self):
+        """Sans les absents, aucun taux n'est calculable : on ne devine pas."""
         self._source()
-        cible = (timezone.localdate() - timedelta(days=3)).isoformat()
-        base = self._counts()
-        def handler(path, params=None, **kw):
-            if (params or {}).get("date") == cible:
-                raise ShieldError("timeout", "Délai dépassé")
-            return base(path, params, **kw)
-        with patch.object(ShieldClient, "get_json", side_effect=handler):
+        with patch.object(ShieldClient, "get_json",
+                          side_effect=self._api(self._records(days=7), fail_flag="absent")):
             data = shield.fetch_attendance_series(7)
-        trou = next(p for p in data["points"] if p["date"] == cible)
-        self.assertEqual(trou["status"], "unknown")
-        self.assertIsNone(trou["present"])
-        self.assertIsNone(trou["taux_presence"])
-        self.assertEqual(data["status"], "partial", "une série trouée ne peut pas être 'connected'")
-        self.assertEqual(data["measured_days"], 6)
+        self.assertEqual(data["status"], "error")
+        self.assertTrue(all(p["status"] == "unknown" for p in data["points"]))
+        self.assertIn("absent", data["detail"])
 
-    def test_zero_reel_conserve_dans_la_serie(self):
+    def test_jour_sans_enregistrement_vaut_zero(self):
+        """Journée couverte par la collecte mais sans ligne : 0 mesuré, pas unknown."""
         self._source()
-        with patch.object(ShieldClient, "get_json", side_effect=self._counts(present=0, absent=12, late=0)):
-            point = shield.fetch_attendance_series(7)["points"][0]
+        records = self._records(days=7)
+        cible = (timezone.localdate() - timedelta(days=3)).isoformat()
+        for flag in ("present", "absent", "late"):
+            records[flag] = [r for r in records[flag] if r["date"] != cible]
+        with patch.object(ShieldClient, "get_json", side_effect=self._api(records)):
+            data = shield.fetch_attendance_series(7)
+        point = next(p for p in data["points"] if p["date"] == cible)
         self.assertEqual(point["present"], 0)
-        self.assertEqual(point["taux_presence"], 0.0, "0 présent sur 12 attendus vaut 0 %, pas null")
         self.assertEqual(point["status"], "measured")
+        self.assertIsNone(point["taux_presence"], "0 présent et 0 absent : le taux n'existe pas")
+
+    def test_troncature_rend_les_jours_anciens_inconnus(self):
+        """Au-delà du plafond de collecte, on ignore — on ne compte pas 0."""
+        self._source()
+        records = self._records(days=30, present=300, absent=1, late=1)
+        def handler(path, params=None, **kw):
+            params = params or {}
+            flag = next(f for f in ("present", "absent", "late") if params.get(f))
+            rows = sorted(records[flag], key=lambda r: r["date"], reverse=True)
+            offset, limit = int(params.get("offset", 0)), int(params.get("limit", 200))
+            return {"count": len(rows), "next": "?", "results": rows[offset:offset + limit]}
+        with patch.object(ShieldClient, "get_json", side_effect=handler):
+            data = shield.fetch_attendance_series(30)
+        self.assertEqual(data["status"], "partial")
+        self.assertIn("plafond", data["detail"])
+        self.assertEqual(data["points"][0]["status"], "unknown", "les jours anciens sont inconnus")
+        self.assertEqual(data["points"][-1]["status"], "measured", "les jours récents restent fiables")
 
     def test_serie_totalement_indisponible(self):
         self._source()
         with patch.object(ShieldClient, "get_json", side_effect=ShieldError("network", "ko")):
             data = shield.fetch_attendance_series(7)
         self.assertEqual(data["status"], "error")
-        self.assertTrue(all(p["status"] == "unknown" for p in data["points"]))
         self.assertEqual(data["insights"], [])
 
     def test_serie_sans_source(self):
-        data = shield.fetch_attendance_series(7)
-        self.assertEqual(data["status"], "disconnected")
-        self.assertEqual(data["points"], [])
-
-    def test_ventilation_par_holder_kind(self):
-        """`holder_kind` est la seule ventilation documentée (employee | worker)."""
-        self._source()
-        def handler(path, params=None, **kw):
-            params = params or {}
-            if path == EP.ATTENDANCE_DAYS and params.get("holder_kind"):
-                return {"count": 30 if params["holder_kind"] == "employee" else 20, "results": []}
-            if path == EP.ATTENDANCE_DAYS:
-                return {"count": 5, "results": []}
-            if path == EP.EMPLOYEES:
-                return {"count": 120, "results": []}
-            if path == EP.WORKERS:
-                return {"count": 80, "results": []}
-            if path == EP.SITES:
-                return {"count": 0, "results": []}
-            if path == EP.ATTENDANCE_TODAY:
-                return {"present_count": 50, "absent_count": 10, "late_count": 2}
-            raise AssertionError(path)
-        with patch.object(ShieldClient, "get_json", side_effect=handler):
-            by_kind = shield.fetch_hr_kpis()["by_kind"]
-        self.assertEqual(by_kind["status"], "connected")
-        self.assertEqual(by_kind["employees"], 30)
-        self.assertEqual(by_kind["workers"], 20)
-        self.assertEqual(by_kind["total"], 50)
-        self.assertEqual(by_kind["employees_share"], 60.0)
-        self.assertEqual(by_kind["workers_share"], 40.0)
-
-    def test_by_site_porte_les_retards_et_un_drilldown(self):
-        self._source()
-        def handler(path, params=None, **kw):
-            params = params or {}
-            if path == EP.SITES:
-                return {"count": 1, "results": [{"id": 1, "code": "KRE", "name": "Riviera",
-                                                 "type": "site", "status": "active"}]}
-            if path == EP.ATTENDANCE_DAYS:
-                if params.get("late"):
-                    return {"count": 4, "results": []}
-                if params.get("present"):
-                    return {"count": 20, "results": []}
-                if params.get("absent"):
-                    return {"count": 5, "results": []}
-                return {"count": 25, "results": []}
-            if path in (EP.EMPLOYEES, EP.WORKERS):
-                return {"count": 10, "results": []}
-            if path == EP.ALERTS:
-                return {"count": 0, "results": []}
-            if path == EP.ATTENDANCE_TODAY:
-                return {"present_count": 20, "absent_count": 5, "late_count": 4}
-            raise AssertionError(path)
-        with patch.object(ShieldClient, "get_json", side_effect=handler):
-            row = shield.fetch_hr_kpis()["by_site"]["sites"][0]
-        self.assertEqual(row["late"], 4)
-        self.assertEqual(row["attendance_rate"], 80.0)
-        self.assertEqual(row["alerts"], 0, "0 alerte est une mesure, pas une absence de mesure")
-        self.assertEqual(row["drilldown_url"], "/dashboard/capital-humain/presence")
-        # L'effectif employés par site reste hors de portée de l'API Shield.
-        self.assertIsNone(row["employees"])
-        self.assertEqual(row["employees_status"], "unknown")
-        self.assertEqual(row["total_status"], "unknown")
+        self.assertEqual(shield.fetch_attendance_series(7)["status"], "disconnected")
 
     def test_endpoint_serie_exige_authentification(self):
-        client = APIClient()
-        self.assertEqual(client.get(f"{BASE}/shield/attendance-series/?days=7").status_code, 401)
+        self.assertEqual(APIClient().get(f"{BASE}/shield/attendance-series/?days=7").status_code, 401)
+
+
+class ShieldAggregationTest(TestCase):
+    """by_site et by_kind dérivés de la MÊME collecte : plus d'appels par site."""
+
+    SITES = [{"id": 1, "code": "KRE", "name": "Riviera", "type": "site", "status": "active"},
+             {"id": 2, "code": "SIEGE", "name": "Siege", "type": "office", "status": "active"}]
+
+    def _source(self):
+        source = DataSource.objects.create(
+            name="Kaydan Shield", slug="kaydan-shield",
+            source_type=SourceType.KAYDAN_SHIELD, status=SourceStatus.CONNECTED)
+        DataConnector.objects.create(source=source, base_url="https://shield.test",
+                                     auth_method=AuthMethod.BEARER)
+        return source
+
+    def _api(self):
+        today = timezone.localdate().isoformat()
+        def rec(site, kind, n, tag):
+            return [{"id": f"{tag}{site}{kind}{i}", "date": today, "site": site,
+                     "holder_kind": kind} for i in range(n)]
+        present = rec(1, "employee", 6, "p") + rec(1, "worker", 3, "p") + rec(2, "employee", 10, "p")
+        absent = rec(1, "worker", 3, "a") + rec(2, "employee", 2, "a")
+        late = rec(1, "worker", 2, "l")
+        def handler(path, params=None, **kw):
+            params = params or {}
+            if path == EP.ATTENDANCE_DAYS:
+                flag = next(f for f in ("present", "absent", "late") if params.get(f))
+                rows = {"present": present, "absent": absent, "late": late}[flag]
+                return {"count": len(rows), "next": None, "results": rows}
+            if path == EP.SITES:
+                return {"count": 2, "next": None, "results": self.SITES}
+            if path == EP.EMPLOYEES:
+                return {"count": 214, "next": None, "results": []}
+            if path == EP.WORKERS:
+                return {"count": 12 if params.get("site") else 96, "next": None, "results": []}
+            if path == EP.ALERTS:
+                return {"count": 1, "next": None, "results": []}
+            if path == EP.ATTENDANCE_TODAY:
+                return {"present_count": 19, "absent_count": 5, "late_count": 2}
+            raise AssertionError(path)
+        return handler
+
+    def test_by_site_derive_de_la_periode(self):
+        self._source()
+        with patch.object(ShieldClient, "get_json", side_effect=self._api()):
+            rows = {r["site"]["code"]: r for r in shield.fetch_hr_kpis()["by_site"]["sites"]}
+        self.assertEqual(rows["KRE"]["present"], 9)      # 6 employés + 3 ouvriers
+        self.assertEqual(rows["KRE"]["absent"], 3)
+        self.assertEqual(rows["KRE"]["late"], 2)
+        self.assertEqual(rows["KRE"]["attendance_rate"], 75.0)
+        self.assertEqual(rows["SIEGE"]["present"], 10)
+        self.assertEqual(rows["SIEGE"]["late"], 0, "aucun retard vaut 0, pas unknown")
+        self.assertIsNone(rows["KRE"]["employees"])
+        self.assertEqual(rows["KRE"]["employees_status"], "unknown")
+        self.assertEqual(rows["KRE"]["total_status"], "unknown")
+
+    def test_by_kind_derive_de_la_meme_collecte(self):
+        self._source()
+        with patch.object(ShieldClient, "get_json", side_effect=self._api()):
+            by_kind = shield.fetch_hr_kpis()["by_kind"]
+        self.assertEqual(by_kind["employees"], 16)   # 6 + 10
+        self.assertEqual(by_kind["workers"], 3)
+        self.assertEqual(by_kind["total"], 19)
+        self.assertEqual(by_kind["employees_share"], 84.2)
+
+    def test_cout_en_appels_borne(self):
+        """4 compteurs + 1 liste de sites + 3 lectures de période + 2 par site."""
+        self._source()
+        with patch.object(ShieldClient, "get_json", side_effect=self._api()) as calls:
+            shield.fetch_hr_kpis()
+        self.assertLessEqual(calls.call_count, 12,
+                             f"coût trop élevé : {calls.call_count} appels pour 2 sites")
+
+
+class ShieldObservabilityTest(TestCase):
+    """Compteurs d'usage : ce qu'on mesure, et ce qu'on ne journalise jamais."""
+
+    def _client(self):
+        return ShieldClient("https://shield.test", {"Authorization": "Bearer secret-xyz"}, timeout=1)
+
+    def test_compteurs_appels_et_cache(self):
+        client = self._client()
+        with patch.object(ShieldClient, "_fetch", return_value={"count": 3}) as fetch:
+            client.get_json("/api/v1/sites/sites/")
+            client.get_json("/api/v1/sites/sites/")     # servi par le cache
+        m = client.metrics.as_dict()
+        self.assertEqual(fetch.call_count, 1)
+        self.assertEqual(m["calls"], 1)
+        self.assertEqual(m["cache_hits"], 1)
+        self.assertEqual(m["cache_misses"], 1)
+        self.assertEqual(m["by_path"]["/api/v1/sites/sites/"], 1)
+        self.assertIsNotNone(m["last_sync"])
+
+    def test_compteurs_retries_et_erreurs(self):
+        client = self._client()
+        with patch.object(ShieldClient, "_fetch",
+                          side_effect=urllib.error.HTTPError("u", 503, "ko", {}, None)), patch("time.sleep"):
+            with self.assertRaises(ShieldError):
+                client.get_json("/api/v1/sites/sites/", use_cache=False)
+        m = client.metrics.as_dict()
+        self.assertEqual(m["retries"], 2, "3 tentatives = 2 reprises")
+        self.assertEqual(m["errors"], {"http": 1})
+        self.assertGreater(m["duration_ms"], 0)
+
+    def test_aucun_secret_dans_les_metriques(self):
+        client = self._client()
+        with patch.object(ShieldClient, "_fetch", return_value={"count": 1}):
+            client.get_json("/api/v1/employees/employees/", {"department": 7})
+        dump = json.dumps(client.metrics.as_dict())
+        self.assertNotIn("secret-xyz", dump)
+        self.assertNotIn("Bearer", dump)
+        # Le chemin est conservé, pas les filtres : un filtre peut porter un identifiant.
+        self.assertNotIn("department", dump)
+
+    def test_429_respecte_retry_after_et_est_qualifie(self):
+        client = self._client()
+        err = urllib.error.HTTPError("u", 429, "trop de requêtes", {"Retry-After": "2"}, None)
+        with patch.object(ShieldClient, "_fetch", side_effect=err), patch("time.sleep") as dodo:
+            with self.assertRaises(ShieldError) as ctx:
+                client.get_json("/api/v1/sites/sites/", use_cache=False)
+        self.assertEqual(ctx.exception.kind, "rate_limit")
+        self.assertEqual(ctx.exception.status, 429)
+        self.assertIn(2.0, [c.args[0] for c in dodo.call_args_list],
+                      "le délai demandé par la source doit être respecté")
+
+    def test_requetes_identiques_dedupliquees(self):
+        """Deux widgets demandant la même donnée ne doivent produire qu'un appel."""
+        import threading
+        client = self._client()
+        def lent(url):
+            time.sleep(0.25)
+            return {"count": 1}
+        resultats = []
+        with patch.object(ShieldClient, "_fetch", side_effect=lent) as fetch:
+            def lire():
+                resultats.append(client.get_json("/api/v1/sites/sites/"))
+            premier = threading.Thread(target=lire)
+            premier.start()
+            time.sleep(0.05)          # le second arrive pendant que le premier est en vol
+            second = threading.Thread(target=lire)
+            second.start()
+            premier.join(timeout=5); second.join(timeout=5)
+        self.assertEqual(len(resultats), 2, "les deux appelants doivent obtenir la donnée")
+        self.assertEqual(fetch.call_count, 1, "l'appel identique concurrent doit être mutualisé")

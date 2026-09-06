@@ -28,14 +28,24 @@ DEFAULT_TIMEOUT = 8
 MAX_ATTEMPTS = 3          # 1 essai + 2 reprises, bornées
 BACKOFF_SECONDS = (0.4, 1.2)
 CACHE_TTL_SECONDS = 45    # court : on veut du frais, pas une rafale d'appels
+MAX_RETRY_AFTER = 5       # on respecte `Retry-After`, sans bloquer une requête web
 MAX_PAGES = 10            # garde-fou : jamais de pagination sans fin
+
+
+def _retry_after(exc) -> float:
+    """Délai demandé par la source, en secondes. 1 s par défaut si l'en-tête manque."""
+    try:
+        return max(0.0, float(exc.headers.get("Retry-After", 1)))
+    except (TypeError, ValueError, AttributeError):
+        return 1.0
 
 
 class ShieldError(Exception):
     """Échec d'appel qualifié par sa CAUSE, pas seulement par son message.
 
     `kind` pilote directement l'état gouverné rendu à l'UI :
-      auth     → la source refuse (jeton absent/expiré/insuffisant) : `error`
+      auth       → la source refuse (jeton absent/expiré/insuffisant) : `error`
+      rate_limit → la source demande d'attendre (429) : `error` après reprises
       timeout  → la source n'a pas répondu à temps : `error`
       network  → hôte injoignable : `error`
       http     → réponse d'erreur explicite : `error`
@@ -80,6 +90,36 @@ class _TTLCache:
             self._data.clear()
 
 
+class ShieldMetrics:
+    """Compteurs d'usage d'un client. Aucun jeton, aucune donnée personnelle :
+    uniquement des chemins d'API, des durées et des types d'erreur."""
+
+    def __init__(self):
+        self.calls = 0            # appels réseau effectifs
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.retries = 0
+        self.duration_ms = 0.0
+        self.errors: dict[str, int] = {}
+        self.last_sync: str | None = None
+        self.by_path: dict[str, int] = {}
+
+    def record_error(self, kind: str) -> None:
+        self.errors[kind] = self.errors.get(kind, 0) + 1
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "calls": self.calls,
+            "cache_hits": self.cache_hits,
+            "cache_misses": self.cache_misses,
+            "retries": self.retries,
+            "duration_ms": round(self.duration_ms, 1),
+            "errors": dict(self.errors),
+            "last_sync": self.last_sync,
+            "by_path": dict(self.by_path),
+        }
+
+
 class ShieldClient:
     """Accès en lecture à l'API Shield. Ne connaît aucune règle métier."""
 
@@ -88,6 +128,11 @@ class ShieldClient:
         self.headers = headers
         self.timeout = timeout
         self._cache = _TTLCache()
+        self.metrics = ShieldMetrics()
+        # Déduplication : deux widgets demandant la même donnée en même temps ne
+        # doivent produire qu'UN appel réseau, pas deux.
+        self._inflight: dict[str, threading.Event] = {}
+        self._inflight_lock = threading.Lock()
 
     # ── Transport ────────────────────────────────────────────────────────────
     def _url(self, path: str, params: dict[str, Any] | None) -> str:
@@ -114,43 +159,91 @@ class ShieldClient:
         if use_cache:
             cached = self._cache.get(url)
             if cached is not None:
+                self.metrics.cache_hits += 1
                 return cached
+            # Une requête identique est-elle déjà en vol ? On l'attend plutôt que
+            # de la lancer une seconde fois : au rafraîchissement du tableau de
+            # bord, plusieurs widgets réclament exactement les mêmes compteurs.
+            waited = self._await_inflight(url)
+            if waited is not None:
+                self.metrics.cache_hits += 1
+                return waited
+        self.metrics.cache_misses += 1
 
         last: ShieldError | None = None
-        for attempt in range(MAX_ATTEMPTS):
-            try:
-                data = self._fetch(url)
-                if use_cache:
-                    self._cache.set(url, data)
-                return data
-            except urllib.error.HTTPError as exc:
-                # 401/403 : la source répond, elle refuse. Réessayer est inutile
-                # et masquerait un problème de configuration derrière un timeout.
-                if exc.code in (401, 403):
-                    raise ShieldError("auth", f"Accès refusé par Shield sur {path}", exc.code) from exc
-                if exc.code < 500:
-                    raise ShieldError("http", f"Shield a répondu {exc.code} sur {path}", exc.code) from exc
-                last = ShieldError("http", f"Shield a répondu {exc.code} sur {path}", exc.code)
-            except TimeoutError as exc:
-                last = ShieldError("timeout", f"Délai dépassé sur {path}")
-                last.__cause__ = exc
-            except urllib.error.URLError as exc:
-                reason = getattr(exc, "reason", exc)
-                if isinstance(reason, TimeoutError):
+        started = time.monotonic()
+        try:
+            for attempt in range(MAX_ATTEMPTS):
+                if attempt:
+                    self.metrics.retries += 1
+                try:
+                    self.metrics.calls += 1
+                    self.metrics.by_path[path] = self.metrics.by_path.get(path, 0) + 1
+                    data = self._fetch(url)
+                    if use_cache:
+                        self._cache.set(url, data)
+                    self.metrics.last_sync = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                    return data
+                except urllib.error.HTTPError as exc:
+                    # 429 : la source demande explicitement d'attendre. On respecte
+                    # `Retry-After` plutôt que d'appliquer notre propre cadence.
+                    if exc.code == 429:
+                        wait = _retry_after(exc)
+                        last = ShieldError("rate_limit", f"Shield limite le débit sur {path}", 429)
+                        if attempt < MAX_ATTEMPTS - 1:
+                            time.sleep(min(wait, MAX_RETRY_AFTER))
+                            continue
+                        break
+                    # 401/403 : la source répond, elle refuse. Réessayer est inutile
+                    # et masquerait un problème de configuration derrière un timeout.
+                    if exc.code in (401, 403):
+                        raise ShieldError("auth", f"Accès refusé par Shield sur {path}", exc.code) from exc
+                    if exc.code < 500:
+                        raise ShieldError("http", f"Shield a répondu {exc.code} sur {path}", exc.code) from exc
+                    last = ShieldError("http", f"Shield a répondu {exc.code} sur {path}", exc.code)
+                except TimeoutError as exc:
                     last = ShieldError("timeout", f"Délai dépassé sur {path}")
-                else:
-                    last = ShieldError("network", f"Shield injoignable sur {path} : {reason}")
-            except ShieldError as exc:
-                raise exc
-            except Exception as exc:  # noqa: BLE001 — filet : jamais de 500 qui remonte
-                last = ShieldError("payload", f"Échec inattendu sur {path} : {type(exc).__name__}")
+                    last.__cause__ = exc
+                except urllib.error.URLError as exc:
+                    reason = getattr(exc, "reason", exc)
+                    if isinstance(reason, TimeoutError):
+                        last = ShieldError("timeout", f"Délai dépassé sur {path}")
+                    else:
+                        last = ShieldError("network", f"Shield injoignable sur {path} : {reason}")
+                except ShieldError as exc:
+                    raise exc
+                except Exception as exc:  # noqa: BLE001 — filet : jamais de 500 qui remonte
+                    last = ShieldError("payload", f"Échec inattendu sur {path} : {type(exc).__name__}")
 
-            if attempt < MAX_ATTEMPTS - 1:
-                time.sleep(BACKOFF_SECONDS[min(attempt, len(BACKOFF_SECONDS) - 1)])
+                if attempt < MAX_ATTEMPTS - 1:
+                    time.sleep(BACKOFF_SECONDS[min(attempt, len(BACKOFF_SECONDS) - 1)])
+        finally:
+            self.metrics.duration_ms += (time.monotonic() - started) * 1000
+            self._release_inflight(url)
 
         assert last is not None
+        self.metrics.record_error(last.kind)
+        # Le chemin est journalisé, jamais l'URL complète : elle porterait les
+        # filtres, et un filtre peut contenir un identifiant de personne.
         logger.warning("Shield : %s", last)
         raise last
+
+    def _await_inflight(self, url: str):
+        """Si un appel identique est déjà en cours, attend son résultat."""
+        with self._inflight_lock:
+            event = self._inflight.get(url)
+            if event is None:
+                self._inflight[url] = threading.Event()
+                return None
+        # Un autre thread s'en occupe : on attend, puis on lit son résultat en cache.
+        event.wait(timeout=self.timeout + 2)
+        return self._cache.get(url)
+
+    def _release_inflight(self, url: str) -> None:
+        with self._inflight_lock:
+            event = self._inflight.pop(url, None)
+        if event is not None:
+            event.set()
 
     # ── Lectures usuelles ────────────────────────────────────────────────────
     def count(self, path: str, params: dict[str, Any] | None = None) -> int:

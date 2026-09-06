@@ -128,7 +128,7 @@ KPI_META = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in KPI_SPECS}
 SECURITY_SPECS: list[tuple[str, str, str, str, str, str]] = [
     ("alertes_critiques", "Alertes critiques ouvertes", "", MEASURED, "", "antifraud.alerts[severity=critical,status=open]"),
     ("alertes_ouvertes", "Alertes ouvertes", "", MEASURED, "", "antifraud.alerts[status=open]"),
-    ("acces_refuses", "Accès refusés (24 h)", "", MEASURED, "", "access.events[decision=deny]"),
+    ("acces_refuses", "Accès refusés (24 h)", "", MEASURED, "", "access.events[decision=denied]"),
     ("terminaux_hs", "Terminaux hors service", "", COMPUTED, "terminaux inactifs + en maintenance + perdus", ""),
     ("terminaux_total", "Terminaux déclarés", "", MEASURED, "", "devices.count"),
     ("visiteurs_attente", "Visiteurs en attente", "", MEASURED, "", "visitors.requests[status=pending]"),
@@ -196,39 +196,46 @@ def _safe(fn):
 MAX_SITES_DETAILED = 12   # borne le fan-out : ~4 appels par site
 
 
-def _site_row(client: ShieldClient, raw: dict[str, Any], date: str) -> dict[str, Any]:
-    """Une ligne de répartition par site, montée sur des relations RÉELLES.
+def _site_row(client: ShieldClient, raw: dict[str, Any], date: str,
+              tallies: dict[str, dict[Any, int]], period_failed: set) -> dict[str, Any]:
+    """Une ligne de répartition par site.
+
+    Présence, absences et retards viennent de la collecte de période DÉJÀ faite :
+    aucun appel supplémentaire. Seuls l'effectif ouvriers et les alertes exigent
+    d'autres endpoints, qui n'acceptent pas de regroupement par site.
 
     `employees` reste `unknown` : l'endpoint employés de Shield n'accepte aucun
     filtre `site`. Le répartir au prorata donnerait un chiffre crédible et faux.
     """
     site_id = raw.get("id")
     workers, w_err = _safe(lambda: client.count(EP.WORKERS, {"site": site_id}))
-    present, p_err = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {"site": site_id, "date": date, "present": "true"}))
-    absent, a_err = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {"site": site_id, "date": date, "absent": "true"}))
-    late, l_err = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {"site": site_id, "date": date, "late": "true"}))
     alerts, al_err = _safe(lambda: client.count(EP.ALERTS, {"site": site_id, "status": "open"}))
 
+    def from_period(flag):
+        return None if flag in period_failed else tallies[flag].get(site_id, 0)
+
+    present, absent, late = from_period("present"), from_period("absent"), from_period("late")
     rate = R.taux_presence(present, absent)
-    errs = [w_err, p_err, a_err, l_err, al_err]
+    errs = [w_err, al_err] + [ShieldError("http", "période") if period_failed else None]
+
     return {
-        "site": {"id": site_id, "code": raw.get("code") or "", "name": raw.get("name") or raw.get("code") or "Site",
+        "site": {"id": site_id, "code": raw.get("code") or "",
+                 "name": raw.get("name") or raw.get("code") or "Site",
                  "type": raw.get("type") or "", "status": raw.get("status") or "",
                  "company": raw.get("company_name") or ""},
         "employees": None,
         "employees_status": UNKNOWN,
         "employees_reason": "L'API employés de Shield n'expose pas de filtre par site.",
         "workers": workers,
-        "total": None,          # employés inconnus → total non calculable
+        "total": None,
         "total_status": UNKNOWN,
         "present": present,
         "absent": absent,
         "late": late,
         "attendance_rate": rate,
         "alerts": alerts,
-        # Route existante du sous-module Présence : pas de route inventée par site.
         "drilldown_url": "/dashboard/capital-humain/presence",
-        "status": _state_of(errs, [workers, present, absent, late, alerts]),
+        "status": _state_of(errs, [workers, alerts, present]),
         "updated_at": timezone.now().isoformat(),
     }
 
@@ -271,6 +278,12 @@ def fetch_hr_kpis() -> dict[str, Any]:
         _from_spec(KPI_META, "sites", sites_count, st(s_err)),
     ]
 
+    # UNE collecte de la journée, partagée par la répartition par site ET par
+    # la ventilation employés/ouvriers : trois lectures au lieu de 3 par site + 2.
+    today_period = collect_period(client, date, date)
+    period_failed = set(today_period["errors"])
+    tallies = {f: _tally(today_period["rows"][f], lambda r: r.get("site")) for f in FLAGS}
+
     # Répartition par site : bornée, et détaillée uniquement sur les sites actifs.
     site_rows, sr_err = _safe(lambda: client.results(EP.SITES, {"status": "active"}, limit=MAX_SITES_DETAILED))
     if sr_err or not site_rows:
@@ -278,7 +291,7 @@ def fetch_hr_kpis() -> dict[str, Any]:
                    "detail": str(sr_err) if sr_err else "Aucun site actif publié par Shield.",
                    "sites": []}
     else:
-        rows = [_site_row(client, r, date) for r in site_rows]
+        rows = [_site_row(client, r, date, tallies, period_failed) for r in site_rows]
         oks = [r for r in rows if r["status"] == "connected"]
         by_site = {
             "status": "connected" if len(oks) == len(rows) else ("partial" if oks else "error"),
@@ -288,40 +301,100 @@ def fetch_hr_kpis() -> dict[str, Any]:
             "sites": rows,
         }
 
-    by_kind = _presence_by_kind(client, date)
+    by_kind = _presence_by_kind_from(today_period, date)
 
     status = _state_of([e_err, o_err, s_err, sum_err], [employes, ouvriers, sites_count, summary])
     insights = (R.evaluer_presence_globale(present, absent, late, src, date)
                 + R.evaluer_sites(by_site.get("sites", []), src, date))
-    return _envelope(status, src, kpis, by_site=by_site, by_kind=by_kind, insights=insights)
+    return _envelope(status, src, kpis, by_site=by_site, by_kind=by_kind,
+                     insights=insights, api_calls=client.metrics.calls)
 
 
-# ── Série de présence ────────────────────────────────────────────────────────
-# `holder_kind` est la SEULE ventilation documentée (employee | worker).
-# `person_kind` existe comme filtre mais le Swagger n'en documente aucune valeur :
-# on ne s'en sert pas plutôt que de deviner.
+# ── Période de présence : UNE récupération, agrégée localement ────────────────
+# Le schéma live confirme que /attendance/days/ accepte `date_from`/`date_to`,
+# pagine (count/next/previous/results) et que chaque enregistrement porte `date`,
+# `site` et `holder_kind`. On récupère donc la période entière une fois par
+# indicateur (présent / absent / retard) et on agrège ici, au lieu d'interroger
+# chaque jour séparément : 3 lectures paginées remplacent 3 appels PAR JOUR.
 HOLDER_KINDS = ("employee", "worker")
+FLAGS = ("present", "absent", "late")
+PAGE_SIZE = 200
+MAX_PAGES_PERIOD = 12          # plafond dur : 2 400 enregistrements par indicateur
 
 
-def _day_counts(client: ShieldClient, date: str, extra: dict | None = None) -> tuple[dict, list]:
-    """Compteurs d'une journée, via les filtres DOCUMENTÉS de /attendance/days/.
+def _collect_flag(client: ShieldClient, date_from: str, date_to: str, flag: str):
+    """Tous les enregistrements de la période portant `flag`, du plus récent au plus ancien.
 
-    On interroge `present`, `absent` et `late` séparément plutôt que d'agréger les
-    enregistrements bruts : le champ `status` existe, mais le Swagger n'en publie
-    pas les valeurs — en déduire « présent » serait une supposition.
+    L'ordre décroissant est délibéré : si le plafond de pages est atteint, ce sont
+    les jours les PLUS ANCIENS qui manquent. On sait alors exactement à partir de
+    quelle date la série cesse d'être fiable, au lieu d'avoir des trous au hasard.
     """
-    base = {"date": date, **(extra or {})}
-    present, e1 = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {**base, "present": "true"}))
-    absent, e2 = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {**base, "absent": "true"}))
-    late, e3 = _safe(lambda: client.count(EP.ATTENDANCE_DAYS, {**base, "late": "true"}))
-    return {"present": present, "absent": absent, "late": late}, [e1, e2, e3]
+    params = {"date_from": date_from, "date_to": date_to, flag: "true", "ordering": "-date"}
+    rows: list[dict] = []
+    total = None
+    for page in range(MAX_PAGES_PERIOD):
+        data = client.get_json(EP.ATTENDANCE_DAYS, {**params, "limit": PAGE_SIZE, "offset": page * PAGE_SIZE})
+        if not isinstance(data, dict):
+            raise ShieldError("payload", "Réponse de période inattendue")
+        if total is None:
+            total = data.get("count")
+        batch = [r for r in (data.get("results") or []) if isinstance(r, dict)]
+        rows.extend(batch)
+        if len(batch) < PAGE_SIZE or not data.get("next"):
+            break
+    complete = total is None or len(rows) >= total
+    return rows, total, complete
+
+
+def _oldest_reliable(rows: list[dict], complete: bool) -> str | None:
+    """Date à partir de laquelle les comptages sont fiables.
+
+    Si la collecte a été tronquée, la journée la plus ancienne rapportée est
+    elle-même potentiellement incomplète : on la considère non fiable aussi.
+    """
+    if complete or not rows:
+        return None
+    dates = sorted({r.get("date") for r in rows if r.get("date")})
+    if not dates:
+        return None
+    return dates[1] if len(dates) > 1 else dates[0]
+
+
+def collect_period(client: ShieldClient, date_from: str, date_to: str) -> dict[str, Any]:
+    """Les trois jeux d'enregistrements de la période, avec leur fiabilité."""
+    out: dict[str, Any] = {"rows": {}, "errors": {}, "cutoff": None, "truncated": False}
+    cutoffs = []
+    for flag in FLAGS:
+        try:
+            rows, total, complete = _collect_flag(client, date_from, date_to, flag)
+            out["rows"][flag] = rows
+            if not complete:
+                out["truncated"] = True
+                cutoff = _oldest_reliable(rows, complete)
+                if cutoff:
+                    cutoffs.append(cutoff)
+        except ShieldError as exc:
+            out["rows"][flag] = []
+            out["errors"][flag] = exc
+    out["cutoff"] = max(cutoffs) if cutoffs else None
+    return out
+
+
+def _tally(rows: list[dict], key) -> dict[Any, int]:
+    counts: dict[Any, int] = {}
+    for r in rows:
+        k = key(r)
+        if k is None:
+            continue
+        counts[k] = counts.get(k, 0) + 1
+    return counts
 
 
 def fetch_attendance_series(days: int = 30) -> dict[str, Any]:
-    """Série journalière de présence sur une fenêtre glissante.
+    """Série journalière de présence, bâtie sur UNE lecture de période par indicateur.
 
-    Un jour sans mesure exploitable reste à `null` : le mettre à 0 le ferait
-    passer pour une journée sans personne, ce qui est un tout autre message.
+    Un jour sans mesure exploitable reste à `null` : le mettre à 0 le ferait passer
+    pour une journée sans personne, ce qui est un tout autre message.
     """
     window = days if days in R.FENETRES_JOURS else R.MAX_JOURS
     source, blocked = _guard("series")
@@ -331,50 +404,54 @@ def fetch_attendance_series(days: int = 30) -> dict[str, Any]:
     client = build_client(source)
     src = source.name or "Kaydan Shield"
     today = timezone.localdate()
-    points: list[dict[str, Any]] = []
-    failures = 0
+    start = today - timedelta(days=window - 1)
+    period = collect_period(client, start.isoformat(), today.isoformat())
 
+    per_day = {flag: _tally(period["rows"][flag], lambda r: r.get("date")) for flag in FLAGS}
+    failed_flags = set(period["errors"])
+    cutoff = period["cutoff"]
+
+    points = []
     for offset in range(window - 1, -1, -1):
         date = (today - timedelta(days=offset)).isoformat()
-        counts, errs = _day_counts(client, date)
-        failed = [e for e in errs if e is not None]
-        failures += len(failed)
+        # Au-delà du point de troncature, on ne SAIT pas : on ne compte pas 0.
+        unreliable = bool(failed_flags) or (cutoff is not None and date < cutoff)
+        present = None if unreliable else per_day["present"].get(date, 0)
+        absent = None if unreliable else per_day["absent"].get(date, 0)
+        late = None if unreliable else per_day["late"].get(date, 0)
         points.append({
-            "date": date,
-            "present": counts["present"],
-            "absent": counts["absent"],
-            "late": counts["late"],
-            "taux_presence": R.taux_presence(counts["present"], counts["absent"]),
-            # `unknown` distingue « aucune mesure ce jour-là » de « zéro personne ».
-            "status": "unknown" if failed else "measured",
+            "date": date, "present": present, "absent": absent, "late": late,
+            "taux_presence": R.taux_presence(present, absent),
+            "status": "unknown" if unreliable else "measured",
         })
 
     mesures = sum(1 for p in points if p["status"] == "measured")
     status = "connected" if mesures == len(points) else ("partial" if mesures else "error")
-    return _envelope(status, src, [], days=window, points=points,
-                     measured_days=mesures,
+    detail = None
+    if period["truncated"]:
+        detail = (f"Volume supérieur au plafond de collecte : les jours antérieurs au "
+                  f"{cutoff} ne sont pas comptabilisés.")
+    elif failed_flags:
+        detail = f"Indicateur(s) indisponible(s) : {', '.join(sorted(failed_flags))}."
+    return _envelope(status, src, [], days=window, points=points, measured_days=mesures,
+                     detail=detail, api_calls=client.metrics.calls,
                      insights=R.evaluer_tendance(points, src))
 
 
-def _presence_by_kind(client: ShieldClient, date: str) -> dict[str, Any]:
-    """Présents du jour ventilés employés / ouvriers, via `holder_kind`."""
-    out: dict[str, Any] = {}
-    errs: list[Any] = []
-    for kind in HOLDER_KINDS:
-        value, err = _safe(lambda k=kind: client.count(
-            EP.ATTENDANCE_DAYS, {"date": date, "present": "true", "holder_kind": k}))
-        out[kind] = value
-        errs.append(err)
-    ok = [v for v, e in zip(out.values(), errs) if e is None and v is not None]
-    total = sum(ok) if len(ok) == len(HOLDER_KINDS) else None
+def _presence_by_kind_from(period: dict, date: str) -> dict[str, Any]:
+    """Présents du jour par `holder_kind`, déduits de la période déjà collectée."""
+    if "present" in period["errors"]:
+        return {"status": "error", "date": date, "employees": None, "workers": None,
+                "total": None, "employees_share": None, "workers_share": None}
+    rows = [r for r in period["rows"]["present"] if r.get("date") == date]
+    counts = _tally(rows, lambda r: r.get("holder_kind"))
+    employees, workers = counts.get("employee", 0), counts.get("worker", 0)
+    total = employees + workers
     return {
-        "status": "connected" if len(ok) == len(HOLDER_KINDS) else ("partial" if ok else "error"),
-        "date": date,
-        "employees": out.get("employee"),
-        "workers": out.get("worker"),
-        "total": total,
-        "employees_share": R._pct(out.get("employee"), total) if total else None,
-        "workers_share": R._pct(out.get("worker"), total) if total else None,
+        "status": "connected", "date": date,
+        "employees": employees, "workers": workers, "total": total,
+        "employees_share": R._pct(employees, total) if total else None,
+        "workers_share": R._pct(workers, total) if total else None,
     }
 
 
@@ -389,7 +466,7 @@ def fetch_security_kpis() -> dict[str, Any]:
 
     crit, c_err = _safe(lambda: client.count(EP.ALERTS, {"severity": "critical", "status": "open"}))
     open_alerts, oa_err = _safe(lambda: client.count(EP.ALERTS, {"status": "open"}))
-    denied, d_err = _safe(lambda: client.count(EP.ACCESS_EVENTS, {"decision": "deny"}))
+    denied, d_err = _safe(lambda: client.count(EP.ACCESS_EVENTS, {"decision": "denied"}))
     devices_total, dt_err = _safe(lambda: client.count(EP.DEVICES))
     # « Hors service » = somme des états non opérationnels documentés.
     down_parts, down_err = [], None
@@ -504,11 +581,15 @@ def shield_health() -> dict[str, Any]:
     source, blocked = _guard("health")
     if blocked:
         return {**blocked, "reachable": False}
-    ok, message = build_client(source).healthcheck()
+    client = build_client(source)
+    ok, message = client.healthcheck()
     return {
         "status": "connected" if ok else "error",
         "source": source.name or "Kaydan Shield",
         "reachable": ok,
         "detail": message,
         "checked_at": timezone.now().isoformat(),
+        # Compteurs d'usage : chemins, durées, types d'erreur. Jamais de jeton,
+        # jamais de filtre (un filtre peut porter un identifiant de personne).
+        "metrics": client.metrics.as_dict(),
     }
