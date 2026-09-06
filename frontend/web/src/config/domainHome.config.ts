@@ -22,6 +22,10 @@ export interface DomainHeroSpec {
   image?: string;
   imageMode?: "contain" | "cover";
   illustrationSvg?: string;
+  /** Base des variantes optimisées dans /assets/opt (sans largeur ni extension). */
+  imageSlug?: string;
+  /** Description réelle du visuel ; vide si purement décoratif. */
+  imageAlt?: string;
 }
 
 /** Domaines disposant d'une vraie photo (assets existants). */
@@ -45,6 +49,8 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartUnit: "%",
     alertLabels: ["Chantier arrêté", "Dépassement budget", "Retard livraison", "Stock critique", "Nouvelle vente"],
     image: "/assets/%E2%80%94Pngtree%E2%80%94modern%20yellow%20construction%20crane%20for_20885637.png",
+    imageSlug: "immobilier-crane",
+    imageAlt: "Grue de chantier sur un programme immobilier en construction",
     imageMode: "contain",
   },
   "capital-humain": {
@@ -66,6 +72,8 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartUnit: "pers.",
     alertLabels: ["Turnover élevé", "Contrat à échéance", "Effectif critique", "Absentéisme", "Recrutement"],
     image: "/assets/businesswoman-holding-folder-smiling-camera.jpg",
+    imageSlug: "capital-humain-equipe",
+    imageAlt: "Collaboratrice en environnement professionnel, dossier à la main",
     imageMode: "cover",
   },
   finance: {
@@ -87,6 +95,8 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartUnit: "XOF",
     alertLabels: ["Cash négatif", "Dépassement budget", "Créance en retard", "Échéance fiscale", "Encaissement"],
     image: "/assets/tree-grows-coin-glass-jar-with-copy-space.jpg",
+    imageSlug: "finance-tresorerie",
+    imageAlt: "Épargne en croissance, symbole de trésorerie",
     imageMode: "cover",
   },
 };

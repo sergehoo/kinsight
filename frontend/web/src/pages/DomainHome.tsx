@@ -5,13 +5,14 @@ import { Link } from "react-router-dom";
 import { downloadGroupExport } from "@/api/governance";
 import { AppHeader } from "@/components/chrome/AppHeader";
 import { BrandFooter } from "@/components/chrome/BrandFooter";
+import { HeroImage } from "@/components/chrome/HeroImage";
 import { SideRail } from "@/components/chrome/SideRail";
 import { BLACK, FRAME_BG, ORANGE, glass } from "@/components/chrome/theme";
 import { DomainScoreCard } from "@/components/overview/DomainScoreCard";
 import { GroupGovernanceIndex } from "@/components/overview/GroupGovernanceIndex";
-import { ShieldHrKpis } from "@/components/overview/ShieldHrKpis";
+import { DomainPanel } from "@/components/overview/DomainPanel";
 import { ArrowUpRight, ChevronDown, Dots } from "@/components/overview/icons";
-import { EmptyChartState, IconButton, MetricCard, StateBadge, type DataState } from "@/components/ui/kit";
+import { EmptyChartState, IconButton, StateBadge, type DataState } from "@/components/ui/kit";
 import { Menu, MenuItem } from "@/components/ui/Menu";
 import { getDefaultItemHref, type DashboardModuleConfig } from "@/config/modules.config";
 import { getDomainAccent } from "@/config/domainTheme";
@@ -154,7 +155,6 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
   const exploreHref = getDefaultItemHref(module, permissions);
   // Décalage sidebar appliqué à partir de md seulement (rail masqué en mobile).
   const padLeft = sidebarExpanded ? "md:pl-[296px]" : "md:pl-[120px]";
-  const details = spec.kpis.slice(0, 3);
   const [showFeatured, setShowFeatured] = React.useState(true);
   // Aucune série temporelle n'est encore publiée par le mart, quel que soit le
   // domaine : on l'assume explicitement plutôt que d'afficher un graphe décoratif.
@@ -198,10 +198,12 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
               <div className="relative min-h-[200px] lg:min-h-[430px]">
                 <div className="absolute right-0 top-0 hidden h-full w-[64%] lg:block">
                   {spec.image ? (
-                    <img
-                      src={spec.image}
-                      alt=""
-                      className={spec.imageMode === "cover" ? "h-full w-full rounded-[28px] object-cover opacity-[0.94]" : "h-full w-full scale-[1.05] object-contain drop-shadow-[0_30px_44px_rgba(32,34,34,0.16)]"}
+                    <HeroImage
+                      slug={spec.imageSlug}
+                      fallback={spec.image}
+                      alt={spec.imageAlt ?? ""}
+                      fit={spec.imageMode === "cover" ? "cover" : "contain"}
+                      priority
                     />
                   ) : spec.illustrationSvg ? (
                     <div className="grid h-full w-full place-items-center opacity-[0.82]" dangerouslySetInnerHTML={{ __html: spec.illustrationSvg }} />
@@ -325,23 +327,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                 <PeriodMenu />
                 <ActionsMenu />
               </div>
-              {module.id === "capital-humain" ? (
-                <ShieldHrKpis />
-              ) : (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-1">
-                  {details.map((kpi, i) => (
-                    <MetricCard
-                      key={kpi.label}
-                      title={kpi.label}
-                      state="disconnected"
-                      source={chartSource}
-                      scope="Groupe consolidé"
-                      highlighted={i === 0}
-                      href={exploreHref}
-                    />
-                  ))}
-                </div>
-              )}
+              <DomainPanel domainId={module.id} />
               <SignalsCard spec={spec} />
             </aside>
           </motion.div>
