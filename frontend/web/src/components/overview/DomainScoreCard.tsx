@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 
 import { SCORE_DOMAINS, useDomainScore } from "@/api/governance";
 import { glass } from "@/components/chrome/theme";
-import { Gauge } from "@/components/overview/Gauge";
+import { Gauge, scoreZone } from "@/components/overview/Gauge";
 import { EASE_OUT } from "@/lib/motion";
+import { AnimatedNumber } from "@/components/overview/AnimatedNumber";
 import { useFilters } from "@/store/filters";
 import type { GovernanceScoreResponse } from "@/types/governance";
 
@@ -38,6 +39,7 @@ export function DomainScoreCard({ domainId, accent = "#416FF4" }: { domainId: st
   const trend = data?.trend ?? [];
   const { arrow, label } = trendInfo(trend);
   const heading = data?.label ?? "Score de Gouvernance";
+  const zone = scoreZone(score);
 
   return (
     <motion.section
@@ -61,12 +63,25 @@ export function DomainScoreCard({ domainId, accent = "#416FF4" }: { domainId: st
       <div className="mt-4 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
         {/* Jauge globale */}
         <div className="flex flex-col items-center justify-center rounded-[22px] bg-white/55 p-4">
-          <div className="relative h-[108px] w-[190px]">
-            <Gauge value={score} color={accent} />
-            <div className="absolute inset-x-0 bottom-1 text-center">
-              <div className="text-[30px] font-extrabold leading-none text-[#16191A]">{fmt(score)}<span className="text-[14px] font-bold text-[#9AA09D]"> /100</span></div>
+          <div className="relative h-[118px] w-full max-w-[210px]">
+            <Gauge value={score} color={accent} label={heading} />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 text-center">
+              <div className="text-[30px] font-extrabold leading-none text-[#16191A]">
+                {score == null ? fmt(score) : <AnimatedNumber value={String(Math.round(score))} duration={0.7} />}
+                <span className="text-[14px] font-bold text-[#9AA09D]"> /100</span>
+              </div>
             </div>
           </div>
+          {/* La zone n'est nommée que s'il y a un score : « Faible » sur du N/D
+              se lirait comme un jugement porté sur une mesure inexistante. */}
+          {zone ? (
+            <span
+              className="mt-1.5 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.06em]"
+              style={{ background: `${accent}1F`, color: accent }}
+            >
+              {zone.label}
+            </span>
+          ) : null}
           <div className="mt-1 flex items-center gap-2 text-[12px] font-semibold text-[#8A9291]">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-[#EEF0F0]">{arrow}</span>
             {available && label ? `Tendance ${arrow} ${label}` : "Tendance · à connecter"}
@@ -81,7 +96,7 @@ export function DomainScoreCard({ domainId, accent = "#416FF4" }: { domainId: st
               <span className="w-9 shrink-0 text-right text-[11px] font-bold text-[#9AA09D]">{d.weight}%</span>
               <span className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-[#ECEEF0]">
                 <span
-                  className="absolute inset-y-0 left-0 rounded-full"
+                  className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-700 ease-out motion-reduce:transition-none"
                   style={{ background: PALETTE[i % PALETTE.length], width: barWidth(d.score), opacity: d.score == null ? 0 : 0.9 }}
                 />
               </span>
@@ -100,7 +115,10 @@ export function DomainScoreCard({ domainId, accent = "#416FF4" }: { domainId: st
               <span className={`text-[15px] font-extrabold ${s.score == null ? "text-[#A0A6A3]" : "text-[#16191A]"}`}>{fmt(s.score)}</span>
             </div>
             <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#ECEEF0]">
-              <span className="block h-full rounded-full" style={{ background: accent, width: barWidth(s.score), opacity: s.score == null ? 0 : 0.9 }} />
+              <span
+                className="block h-full rounded-full transition-[width] duration-700 ease-out motion-reduce:transition-none"
+                style={{ background: accent, width: barWidth(s.score), opacity: s.score == null ? 0 : 0.9 }}
+              />
             </div>
           </div>
         ))}
