@@ -465,13 +465,13 @@
     "semantic_hash": ""
   },
   "infra/docker-compose.prod.yml": {
-    "mtime": 1782405344.1045225,
-    "ast_hash": "a375f868347ee347a106899888a34280",
+    "mtime": 1788731064.9443738,
+    "ast_hash": "4eee2ea5025c6f78345158a9c040b4fb",
     "semantic_hash": ""
   },
   "infra/docker-compose.yml": {
-    "mtime": 1782558712.1566744,
-    "ast_hash": "183031d48dae85ef997111d52a359cb4",
+    "mtime": 1788731064.9438832,
+    "ast_hash": "5087415fc94b852295ffe05715292d3a",
     "semantic_hash": ""
   },
   "knowledge/accounting/kpi.md": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "docker-compose.dokploy.yml": {
-    "mtime": 1782583679.7312207,
-    "ast_hash": "d4b9d98fa011acb4b0f9e8aac57f0529",
+    "mtime": 1788731064.9434714,
+    "ast_hash": "4025afa0391fa386e92efc0f93a656be",
     "semantic_hash": ""
   },
   "infra/airbyte/README.md": {
@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1782405874.3595107,
-    "ast_hash": "becfc1de21451dde577c5f4ddfabd7f0",
+    "mtime": 1788729921.452299,
+    "ast_hash": "7a662c1018ec4975ea75efecef141c7b",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {
@@ -820,18 +820,18 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/services.py": {
-    "mtime": 1788713325.287341,
-    "ast_hash": "8ccf47ece751664f61afe17e34e8b190",
+    "mtime": 1788730914.7511919,
+    "ast_hash": "ab924d2109544d57f5992e0d890c0573",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
-    "mtime": 1788711691.6710875,
-    "ast_hash": "e473e5698b2b51c37e72553f76c6d1fc",
+    "mtime": 1788730075.8763583,
+    "ast_hash": "7908ab1d62dc767980f79755725e75d7",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788715220.0537002,
-    "ast_hash": "05ea6f704de32d1938e661c16318abaa",
+    "mtime": 1788730961.2036898,
+    "ast_hash": "91d4ab33e2edddc5559dd1dcd378ce97",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/integrations/parts.tsx": {
-    "mtime": 1788715657.4473965,
-    "ast_hash": "5baddf00461d5266550d90bf6bad7000",
+    "mtime": 1788729709.2911546,
+    "ast_hash": "b05d3d527cba5d9ffa2320831a642831",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/AppShell.tsx": {
@@ -1100,8 +1100,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/integrations.ts": {
-    "mtime": 1788715657.4468002,
-    "ast_hash": "1a25ed2e1818a5b817e3fc591c2dd7eb",
+    "mtime": 1788730982.6060824,
+    "ast_hash": "44b63b32e78d31bb1256b39d96c4d975",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/kmetric.ts": {
@@ -1140,8 +1140,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationForm.tsx": {
-    "mtime": 1788715011.8448849,
-    "ast_hash": "b176f4f8f3424f55bf89d5c8a6d37654",
+    "mtime": 1788730982.605714,
+    "ast_hash": "4eebd2fe8db5b14001781c5e2cd99fa9",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationHealth.tsx": {
@@ -1820,8 +1820,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_client.py": {
-    "mtime": 1788713897.5870123,
-    "ast_hash": "5cff7e856186b02ab33d99f6bb3e114a",
+    "mtime": 1788730904.3941493,
+    "ast_hash": "2828577ccb85c983f12a66f22bf962fc",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_endpoints.py": {
@@ -1847,6 +1847,11 @@
   "backend/apps/integrations/management/commands/shield_smoke.py": {
     "mtime": 1788711691.68238,
     "ast_hash": "70c8634953155406b4f31d0f362c7d77",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/management/commands/integrations_doctor.py": {
+    "mtime": 1788729598.3151903,
+    "ast_hash": "025904c0ecc4daafd3fd3af93d670013",
     "semantic_hash": ""
   }
 }
