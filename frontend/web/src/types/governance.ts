@@ -16,6 +16,10 @@ export interface HrKpiSummary {
   scope: "GROUP" | string[];
   metrics: Record<HrMetricKey, MetricValue>;
   payroll_by_subsidiary: Record<string, number>;
+  /** false = aucune ligne réelle derrière ces agrégats (valeurs neutralisées à null). */
+  available?: boolean;
+  /** connected = le mart a répondu ; error = mart injoignable. */
+  source_state?: "connected" | "error";
 }
 
 export type DashboardKey = "realEstate" | "hr" | "finance";

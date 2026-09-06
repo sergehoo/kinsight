@@ -19,9 +19,18 @@ function headers(): Record<string, string> {
   return h;
 }
 
+/** Erreur d'API porteuse de son code HTTP : un 403 (« pas le droit de voir »)
+ *  ne doit pas être présenté comme un 500 (« la source est en panne »). */
+export class ApiError extends Error {
+  constructor(readonly status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 async function req<T>(method: string, path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${BASE}${path}`, { method, headers: headers(), body: body ? JSON.stringify(body) : undefined });
-  if (!res.ok) throw new Error(`API ${res.status} ${method} ${path}`);
+  if (!res.ok) throw new ApiError(res.status, `API ${res.status} ${method} ${path}`);
   return (res.status === 204 ? (undefined as T) : ((await res.json()) as T));
 }
 

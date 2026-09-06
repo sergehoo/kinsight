@@ -6,13 +6,20 @@
  */
 import { Link } from "react-router-dom";
 
-import { useHealth } from "@/lib/integrations";
+import { ApiError, useHealth } from "@/lib/integrations";
 import { STATE_META, useRelativeTime, type DataState } from "@/components/ui/kit";
 import { useOnlineStatus } from "@/pwa/useNetwork";
 
 export function SyncIndicator() {
-  const { data, isLoading, isError, dataUpdatedAt } = useHealth();
+  const { data, isLoading, isError, error, dataUpdatedAt } = useHealth();
   const online = useOnlineStatus();
+
+  // `/integrations/sources/health/` est réservé aux administrateurs d'intégration
+  // (IsIntegrationAdmin). Pour un DG, un DAF ou un RH, l'appel renvoie 403 : afficher
+  // « Indisponible » laisserait croire à une panne des sources alors qu'il s'agit
+  // d'une absence de droit. Dans ce cas l'indicateur se retire simplement.
+  const forbidden = error instanceof ApiError && (error.status === 403 || error.status === 401);
+  if (forbidden && online) return null;
   const relative = useRelativeTime(dataUpdatedAt ? new Date(dataUpdatedAt).toISOString() : undefined);
 
   let state: DataState = "disconnected";

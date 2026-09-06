@@ -15,6 +15,25 @@ export interface ShieldKpi {
   unit: string;
   /** connected | disconnected | error (le backend n'émet jamais `connecting`). */
   status: DataState;
+  /** Niveau qualifié par le backend : mesuré tel quel, ou calculé par K-Insight. */
+  level?: "measured" | "computed";
+  /** Formule documentée — renseignée uniquement pour les KPI calculés. */
+  formula?: string;
+  /** Champ d'origine côté Shield — renseigné uniquement pour les mesures. */
+  source_field?: string;
+}
+
+/** Un site réel de Shield. `present_count` reste null : Shield n'expose aucun
+ *  compteur de présence agrégé par site (le seul endpoint par site est nominatif). */
+export interface ShieldSite {
+  id: number | null;
+  code: string;
+  name: string;
+  type: string;
+  status: string;
+  company: string;
+  present_count: number | null;
+  presence_status: DataState;
 }
 
 export interface ShieldHrResponse {
@@ -24,6 +43,8 @@ export interface ShieldHrResponse {
   /** Horodatage ISO de la normalisation côté backend (fraîcheur affichée). */
   updated_at?: string;
   kpis: ShieldKpi[];
+  /** Répartition par site : sites réels, présence non exposée par la source. */
+  by_site?: { status: DataState; detail?: string; sites: ShieldSite[] };
 }
 
 /** La charge utile accompagnée de son origine : réseau ou cache hors ligne. */
