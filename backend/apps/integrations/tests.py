@@ -717,7 +717,11 @@ class ShieldObservabilityTest(TestCase):
         m = client.metrics.as_dict()
         self.assertEqual(m["retries"], 2, "3 tentatives = 2 reprises")
         self.assertEqual(m["errors"], {"http": 1})
-        self.assertGreater(m["duration_ms"], 0)
+        # Sur l'accumulateur brut, pas sur sa version arrondie au dixième : avec
+        # `time.sleep` neutralisé, trois tentatives peuvent tenir sous 0,05 ms et
+        # `round(..., 1)` rendait alors 0.0 — un échec dû à la machine, pas au code.
+        self.assertGreater(client.metrics.duration_ms, 0)
+        self.assertGreaterEqual(m["duration_ms"], 0)
 
     def test_aucun_secret_dans_les_metriques(self):
         client = self._client()
@@ -929,3 +933,176 @@ class IntegrationCentreTest(APITestCase):
         for champ in ("environment", "environment_label", "base_url", "last_tested_at",
                       "last_latency_ms", "last_sync_at", "recent_errors", "status_label"):
             self.assertIn(champ, row, f"la carte source a besoin de `{champ}`")
+
+
+class AssistantCreationTest(APITestCase):
+    """Création d'une source depuis l'assistant en trois étapes.
+
+    Le symptôme rapporté en production — « Échec de création (backend indisponible
+    ou droits insuffisants) » puis une source Shield enregistrée en « API REST /
+    Autre » — recouvrait deux causes distinctes : un refus de permission d'un côté,
+    une perte silencieuse de champ de l'autre. Les tests ci-dessous les séparent.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="wiz-admin", password="x",
+                                              email="w@k.co", role="ADMIN_INTEGRATION")
+        # Compte affiché « Super Admin » dans l'UI : superutilisateur Django,
+        # portant un rôle métier qui, seul, ne donnerait pas accès au centre.
+        self.super_admin = User.objects.create_superuser(username="wiz-super", password="x",
+                                                         email="s@k.co")
+        self.super_admin.role = "DG_GROUP"
+        self.super_admin.save(update_fields=["role"])
+        self.dg = User.objects.create_user(username="wiz-dg", password="x",
+                                           email="g@k.co", role="DG_GROUP")
+
+    def _post(self, user, **overrides):
+        self.client.force_authenticate(user)
+        payload = {"name": "Kaydan Shield", "slug": "kaydan-shield",
+                   "source_type": "kaydan_shield", "environment": "production",
+                   "target_module": "rh", **overrides}
+        return self.client.post(f"{BASE}/sources/", payload, format="json")
+
+    # ── Permissions : qui peut créer ─────────────────────────────────────────
+    def test_super_administrateur_peut_creer(self):
+        self.assertEqual(self._post(self.super_admin).status_code, 201)
+
+    def test_admin_integration_peut_creer(self):
+        self.assertEqual(self._post(self.admin).status_code, 201)
+
+    def test_role_metier_seul_refuse_avec_un_403_explicite(self):
+        """Un DG non superutilisateur est refusé — et on doit pouvoir le lire.
+
+        C'est le cas qui produisait « backend indisponible » : le refus était
+        présenté comme une panne, envoyant chercher un problème d'infrastructure
+        là où il manquait un rôle.
+        """
+        resp = self._post(self.dg)
+        self.assertEqual(resp.status_code, 403)
+        self.assertIn("administrateurs", resp.json()["detail"].lower())
+        self.assertFalse(DataSource.objects.filter(slug="kaydan-shield").exists())
+
+    # ── Le champ perdu ───────────────────────────────────────────────────────
+    def test_environnement_non_defaut_persiste_et_revient_dans_la_reponse(self):
+        """`environment` absent du sérialiseur était ignoré SANS erreur.
+
+        La requête répondait 201, l'utilisateur voyait « Recette » à l'écran, et
+        la source repartait en production. Un 201 ne prouve donc rien : il faut
+        vérifier la valeur relue.
+        """
+        resp = self._post(self.admin, environment="staging")
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(resp.json()["environment"], "staging")
+        self.assertEqual(DataSource.objects.get(slug="kaydan-shield").environment, "staging")
+
+    def test_type_et_module_choisis_ne_sont_pas_remplaces(self):
+        """La source Shield s'enregistrait en « API REST / Autre »."""
+        resp = self._post(self.admin, source_type="kaydan_shield", target_module="rh")
+        self.assertEqual(resp.status_code, 201)
+        source = DataSource.objects.get(slug="kaydan-shield")
+        self.assertEqual(source.source_type, SourceType.KAYDAN_SHIELD)
+        self.assertEqual(source.target_module, "rh")
+        self.assertEqual(resp.json()["source_type"], "kaydan_shield")
+        self.assertEqual(resp.json()["target_module"], "rh")
+
+    def test_creation_odoo_et_rest(self):
+        for slug, stype, module in (("odoo-hr", "odoo_hr", "rh"), ("crm-rest", "rest", "commercial")):
+            resp = self._post(self.admin, name=slug, slug=slug, source_type=stype, target_module=module)
+            self.assertEqual(resp.status_code, 201, f"{stype} refusé : {resp.content[:160]}")
+            source = DataSource.objects.get(slug=slug)
+            self.assertEqual(source.source_type, stype)
+            self.assertEqual(source.target_module, module)
+
+    # ── Erreurs de saisie : un 400 nommant le champ fautif ───────────────────
+    def test_slug_deja_pris_donne_400_en_nommant_le_champ(self):
+        self.assertEqual(self._post(self.admin).status_code, 201)
+        resp = self._post(self.admin)
+        self.assertEqual(resp.status_code, 400)
+        # L'UI recopie ces clés : sans elles, l'utilisateur ne sait pas quoi corriger.
+        self.assertIn("slug", resp.json())
+
+    def test_type_inconnu_donne_400_et_non_500(self):
+        resp = self._post(self.admin, source_type="nimporte_quoi")
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn("source_type", resp.json())
+
+    # ── Mode dégradé ─────────────────────────────────────────────────────────
+    def test_mode_demo_desactive_par_defaut(self):
+        """Sans demande explicite, aucune source ne part en mode simulé."""
+        self.assertEqual(self._post(self.admin).status_code, 201)
+        self.assertFalse(DataSource.objects.get(slug="kaydan-shield").demo_mode)
+
+    def test_source_non_connectee_reste_deconnectee_et_ne_synchronise_pas(self):
+        self._post(self.admin, slug="sans-url", name="Sans URL")
+        source = DataSource.objects.get(slug="sans-url")
+        self.client.force_authenticate(self.admin)
+
+        test = self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+        self.assertEqual(test.status_code, 200)
+        self.assertFalse(test.json()["ok"])
+        source.refresh_from_db()
+        self.assertEqual(source.status, SourceStatus.ERROR)
+
+        # Mode démo désactivé : la synchronisation refuse plutôt que d'inventer.
+        sync = self.client.post(f"{BASE}/sources/{source.id}/sync-now/")
+        self.assertEqual(sync.json()["status"], "error")
+        self.assertIn("non connectée", sync.json()["message"])
+
+    # ── Retour du test affiché par l'assistant ───────────────────────────────
+    def test_test_connexion_renvoie_la_latence_et_la_date(self):
+        """L'étape 3 annonce « connecté en N ms » : la mesure vient du serveur."""
+        self._post(self.admin)
+        source = DataSource.objects.get(slug="kaydan-shield")
+        source.connector.base_url = "https://api.kaydanshield.com/api/v1"
+        source.connector.save(update_fields=["base_url"])
+        self.client.force_authenticate(self.admin)
+
+        with patch.object(shield.ShieldClient, "healthcheck", return_value=(True, "Shield joignable")):
+            resp = self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+
+        body = resp.json()
+        self.assertTrue(body["ok"])
+        self.assertIsNotNone(body["tested_at"])
+        self.assertIsInstance(body["latency_ms"], int)
+
+    # ── Le parcours complet de l'assistant ───────────────────────────────────
+    def test_parcours_assistant_de_bout_en_bout(self):
+        """Rejoue les quatre appels que l'assistant enchaîne à l'étape 3.
+
+        Créer la source, configurer le connecteur, déposer le secret, tester.
+        Chaque appel est vérifié séparément ailleurs ; ce test garantit que la
+        chaîne tient ensemble et qu'aucun maillon ne perd ce que le précédent a posé.
+        """
+        creation = self._post(self.admin, environment="staging")
+        self.assertEqual(creation.status_code, 201)
+        connector_id = creation.json()["connector"]["id"]
+
+        patch_cnx = self.client.patch(
+            f"{BASE}/connectors/{connector_id}/",
+            {"base_url": "https://api.kaydanshield.com/api/v1", "auth_method": "bearer", "config": {}},
+            format="json",
+        )
+        self.assertEqual(patch_cnx.status_code, 200)
+
+        cred = self.client.post(f"{BASE}/credentials/", {
+            "connector": connector_id, "kind": "api_token",
+            "label": "Token API Shield (Bearer)", "secret": "jeton-assistant-999",
+        }, format="json")
+        self.assertEqual(cred.status_code, 201)
+        self.assertNotIn("jeton-assistant-999", cred.content.decode())
+
+        source = DataSource.objects.get(slug="kaydan-shield")
+        with patch.object(shield.ShieldClient, "healthcheck", return_value=(True, "Shield joignable")):
+            verdict = self.client.post(f"{BASE}/sources/{source.id}/test-connection/")
+        self.assertTrue(verdict.json()["ok"])
+
+        # Ce que la fiche source affichera juste après la redirection.
+        detail = self.client.get(f"{BASE}/sources/{source.id}/").json()
+        self.assertEqual(detail["status"], SourceStatus.CONNECTED)
+        self.assertEqual(detail["environment"], "staging")
+        self.assertEqual(detail["source_type"], "kaydan_shield")
+        self.assertFalse(detail["demo_mode"])
+        self.assertEqual(detail["connector"]["base_url"], "https://api.kaydanshield.com/api/v1")
+        self.assertIsNotNone(detail["connector"]["last_latency_ms"])
+        self.assertTrue(detail["connector"]["credentials"][0]["is_set"])
+        self.assertNotIn("jeton-assistant-999", json.dumps(detail))

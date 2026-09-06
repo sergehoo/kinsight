@@ -18,6 +18,7 @@ import {
   useSource,
   useSyncNow,
   useTestConnection,
+  useToggleActive,
   useUpdateConnector,
 } from "@/lib/integrations";
 
@@ -51,114 +52,441 @@ const TARGET_MODULES = [
 ];
 const AUTH_METHODS = [["none", "Aucune"], ["api_key", "Clé API"], ["bearer", "Bearer"], ["basic", "Basic"], ["oauth2", "OAuth2"], ["header", "Header"]];
 
+/** Ce qu'un type de source implique réellement.
+ *
+ *  Sans ces réglages, toute source créée repartait en « API REST / Autre » : le
+ *  formulaire ne savait rien du type choisi. Les valeurs ci-dessous reprennent
+ *  exactement les exigences de `validate_config` côté backend — les afficher ici
+ *  évite de découvrir un champ obligatoire seulement au moment du test.
+ */
+type TypePreset = {
+  slug: string;
+  module: string;
+  auth: string;
+  urlPlaceholder: string;
+  requiresUrl: boolean;
+  requiresDatabase: boolean;
+  credentialKind: string;
+  credentialLabel: string;
+  note: string;
+};
+
+const PRESET_PAR_DEFAUT: TypePreset = {
+  slug: "",
+  module: "autre",
+  auth: "none",
+  urlPlaceholder: "https://…",
+  requiresUrl: false,
+  requiresDatabase: false,
+  credentialKind: "api_token",
+  credentialLabel: "Token API",
+  note: "",
+};
+
+const TYPE_PRESETS: Record<string, Partial<TypePreset>> = {
+  kaydan_shield: {
+    slug: "kaydan-shield",
+    module: "rh",
+    auth: "bearer",
+    urlPlaceholder: "https://api.kaydanshield.com/api/v1",
+    requiresUrl: true,
+    credentialKind: "api_token",
+    credentialLabel: "Token API Shield (Bearer)",
+    note:
+      "Connecteur dédié — Shield alimente Capital Humain, Risques & Conformité et la vue Groupe. " +
+      "Le code doit rester « kaydan-shield » : c'est par lui que le connecteur retrouve la source.",
+  },
+  odoo_hr: {
+    slug: "odoo-hr",
+    module: "rh",
+    auth: "api_key",
+    urlPlaceholder: "https://odoo.kaydan.tech",
+    requiresUrl: true,
+    requiresDatabase: true,
+    credentialKind: "api_key",
+    credentialLabel: "Clé API Odoo",
+    note: "Odoo exige aussi le nom de la base de données : le test échouera sans lui.",
+  },
+  sap: {
+    module: "finance",
+    auth: "basic",
+    urlPlaceholder: "https://sap.kaydan.tech",
+    requiresUrl: true,
+    credentialKind: "password",
+    credentialLabel: "Mot de passe du compte de service",
+    note: "",
+  },
+  edw: {
+    module: "groupe",
+    auth: "none",
+    note:
+      "Le mart est lu directement par le gateway en lecture seule (ADR-0004) : " +
+      "ni URL ni secret à saisir ici.",
+  },
+  rest: { module: "autre", auth: "bearer", urlPlaceholder: "https://api.exemple.com", requiresUrl: true, note: "" },
+  graphql: { module: "autre", auth: "bearer", urlPlaceholder: "https://api.exemple.com/graphql", requiresUrl: true, note: "" },
+  webhook: { module: "autre", auth: "none", note: "La source pousse ses événements : aucune URL sortante à déclarer." },
+};
+
+function presetPour(type: string): TypePreset {
+  return { ...PRESET_PAR_DEFAUT, ...(TYPE_PRESETS[type] ?? {}) };
+}
+
 const field = "h-11 w-full rounded-xl border border-[#DDE2E0] bg-white/80 px-4 text-[14px] text-[#1A1F1F] outline-none focus:border-[#FF8735]";
 const labelCls = "mb-1.5 block text-[12px] font-bold uppercase tracking-[0.08em] text-[#8A9291]";
 const btnDark = "rounded-full bg-[#0B0B0C] px-5 py-2.5 text-[13px] font-bold text-white disabled:opacity-60";
 const btnGhost = "rounded-full border border-[#DDE2E0] bg-white/70 px-4 py-2 text-[12px] font-bold text-[#3A3E3E] hover:bg-white";
 
 function slugify(s: string) {
-  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
+
+const ETAPES = ["Source", "Connexion", "Validation"];
+
+function Stepper({ etape, onAller }: { etape: number; onAller: (n: number) => void }) {
+  return (
+    <ol className="flex flex-wrap items-center gap-2" aria-label="Étapes de création">
+      {ETAPES.map((titre, i) => {
+        const n = i + 1;
+        const actif = n === etape;
+        const passe = n < etape;
+        return (
+          <li key={titre} className="flex items-center gap-2">
+            <button
+              type="button"
+              // On ne peut revenir qu'en arrière : avancer sans valider l'étape
+              // courante produirait une source incomplète.
+              onClick={() => (passe ? onAller(n) : undefined)}
+              disabled={!passe}
+              aria-current={actif ? "step" : undefined}
+              className="flex items-center gap-2 rounded-full px-3.5 py-2 text-[13px] font-bold transition-colors disabled:cursor-default"
+              style={actif ? { background: "#0B0B0C", color: "#fff" } : { color: passe ? "#0F6E56" : "#9AA09D" }}
+            >
+              <span
+                className="grid h-5 w-5 place-items-center rounded-full text-[11px] font-bold"
+                style={actif ? { background: "#FF8735", color: "#fff" } : { background: passe ? "#E1F5EE" : "#EEF0F0", color: passe ? "#0F6E56" : "#9AA09D" }}
+              >
+                {passe ? "✓" : n}
+              </span>
+              {titre}
+            </button>
+            {n < ETAPES.length ? <span className="h-px w-6 bg-[#DDE2E0]" aria-hidden /> : null}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+type Verdict = { ok: boolean; message: string; status: string; latency_ms?: number | null };
 
 function CreateForm() {
   const navigate = useNavigate();
   const create = useCreateSource();
+  const updateConnector = useUpdateConnector();
+  const addCredential = useAddCredential();
+  const test = useTestConnection();
+
+  // Étape 1 — identité de la source.
   const [name, setName] = React.useState("");
-  // Le code est proposé depuis le nom, mais reste modifiable : `kaydan-shield`
-  // est attendu tel quel par le connecteur Shield.
-  const [code, setCode] = React.useState("");
-  const [environment, setEnvironment] = React.useState("production");
+  const [code, setCode] = React.useState("kaydan-shield");
+  const [codeTouche, setCodeTouche] = React.useState(false);
   const [sourceType, setSourceType] = React.useState("kaydan_shield");
-  const [target, setTarget] = React.useState("autre");
-  const [frequency, setFrequency] = React.useState("manual");
-  const [demo, setDemo] = React.useState(true);
+  const [environment, setEnvironment] = React.useState("production");
+  const [target, setTarget] = React.useState("rh");
   const [description, setDescription] = React.useState("");
 
-  const submit = (e: React.FormEvent) => {
+  // Étape 2 — connexion.
+  const [baseUrl, setBaseUrl] = React.useState("");
+  const [auth, setAuth] = React.useState("bearer");
+  const [secret, setSecret] = React.useState("");
+  const [database, setDatabase] = React.useState("");
+  const [frequency, setFrequency] = React.useState("manual");
+  // Le mode démo est un mode DÉGRADÉ : il laisse une source non connectée se
+  // comporter comme si elle l'était. Il doit rester une décision explicite,
+  // jamais un défaut — sinon un écran affiche des chiffres que personne n'a mesurés.
+  const [demo, setDemo] = React.useState(false);
+
+  // Étape 3 — création puis test réel.
+  const [etape, setEtape] = React.useState(1);
+  const [sourceCreee, setSourceCreee] = React.useState<{ id: string; connectorId?: string } | null>(null);
+  const [enCours, setEnCours] = React.useState(false);
+  const [echec, setEchec] = React.useState<unknown>(null);
+  const [verdict, setVerdict] = React.useState<Verdict | null>(null);
+
+  const preset = presetPour(sourceType);
+  const shield = sourceType === "kaydan_shield";
+
+  const changerType = (valeur: string) => {
+    const p = presetPour(valeur);
+    setSourceType(valeur);
+    setTarget(p.module);
+    setAuth(p.auth);
+    // Le code suit le type tant que l'utilisateur ne l'a pas écrit lui-même.
+    if (!codeTouche) setCode(p.slug || slugify(name));
+  };
+
+  const codeFinal = code.trim() || preset.slug || slugify(name);
+  const etape1Ok = name.trim().length > 0 && codeFinal.length > 0;
+  const etape2Ok = (!preset.requiresUrl || baseUrl.trim().length > 0) && (!preset.requiresDatabase || database.trim().length > 0);
+
+  /** Crée la source, configure le connecteur, dépose le secret, puis teste.
+   *
+   *  Si une étape échoue après la création, la source déjà créée est conservée
+   *  (`sourceCreee`) : réessayer ne doit pas produire un doublon ni buter sur un
+   *  code déjà pris.
+   */
+  const creerEtTester = async () => {
+    setEnCours(true);
+    setEchec(null);
+    setVerdict(null);
+    try {
+      let cible = sourceCreee;
+      if (!cible) {
+        const source = await create.mutateAsync({
+          name: name.trim(),
+          slug: codeFinal,
+          source_type: sourceType,
+          environment,
+          target_module: target,
+          sync_frequency: frequency.trim() || "manual",
+          demo_mode: demo,
+          description,
+        });
+        cible = { id: source.id, connectorId: source.connector?.id };
+        setSourceCreee(cible);
+      }
+
+      if (cible.connectorId) {
+        const config: Record<string, unknown> = {};
+        if (preset.requiresDatabase && database.trim()) config.database = database.trim();
+        await updateConnector.mutateAsync({
+          id: cible.connectorId,
+          patch: { base_url: baseUrl.trim(), auth_method: auth, config },
+        });
+        if (secret.trim()) {
+          await addCredential.mutateAsync({
+            connector: cible.connectorId,
+            kind: preset.credentialKind,
+            label: preset.credentialLabel,
+            secret: secret.trim(),
+          });
+          // Le secret ne survit pas à son envoi : ni state, ni storage, ni log.
+          setSecret("");
+        }
+      }
+
+      setVerdict(await test.mutateAsync(cible.id));
+    } catch (e) {
+      setEchec(e);
+    } finally {
+      setEnCours(false);
+    }
+  };
+
+  const suivant = (e: React.FormEvent) => {
     e.preventDefault();
-    create.mutate(
-      {
-        name,
-        slug: code.trim() || slugify(name),
-        source_type: sourceType,
-        environment,
-        target_module: target,
-        sync_frequency: frequency,
-        demo_mode: demo,
-        description,
-      },
-      { onSuccess: (s) => navigate(`/admin/integrations/${s.id}`) },
-    );
+    if (etape === 1 && etape1Ok) setEtape(2);
+    else if (etape === 2 && etape2Ok) setEtape(3);
   };
 
   return (
-    <form onSubmit={submit} className="grid max-w-[760px] gap-5 rounded-[24px] p-7" style={glass}>
-      <div>
-        <label className={labelCls}>Nom de la plateforme</label>
-        <input className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="K-Shield, K-Express, CRM…" required />
+    <div className="grid max-w-[820px] gap-5">
+      <div className="rounded-[20px] px-5 py-4" style={glass}>
+        <Stepper etape={etape} onAller={setEtape} />
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label className={labelCls}>Code</label>
-          <input
-            className={field}
-            value={code}
-            onChange={(e) => setCode(slugify(e.target.value))}
-            placeholder={name ? slugify(name) : "kaydan-shield"}
-          />
-          <p className="mt-1 text-[11px] text-[#9AA09D]">
-            {sourceType === "kaydan_shield"
-              ? "Le connecteur Shield attend exactement « kaydan-shield »."
-              : `Identifiant technique, non modifiable ensuite. Par défaut : ${slugify(name) || "—"}`}
-          </p>
+
+      <form onSubmit={suivant} className="grid gap-5 rounded-[24px] p-7" style={glass}>
+        {etape === 1 ? (
+          <>
+            <div>
+              <label className={labelCls} htmlFor="src-nom">Nom de la plateforme</label>
+              <input id="src-nom" className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="Kaydan Shield, Odoo RH, CRM…" required autoFocus />
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className={labelCls} htmlFor="src-type">Type de source</label>
+                <select id="src-type" className={field} value={sourceType} onChange={(e) => changerType(e.target.value)}>
+                  {SOURCE_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+                {preset.note ? <p className="mt-1.5 text-[11.5px] leading-relaxed text-[#6E7A78]">{preset.note}</p> : null}
+              </div>
+              <div>
+                <label className={labelCls} htmlFor="src-code">Code</label>
+                <input
+                  id="src-code"
+                  className={field}
+                  value={code}
+                  onChange={(e) => { setCodeTouche(true); setCode(slugify(e.target.value)); }}
+                  placeholder={preset.slug || slugify(name) || "ma-source"}
+                />
+                <p className="mt-1 text-[11px] text-[#9AA09D]">
+                  {shield ? "Le connecteur Shield attend exactement « kaydan-shield »." : "Identifiant technique, non modifiable ensuite."}
+                </p>
+              </div>
+              <div>
+                <label className={labelCls} htmlFor="src-env">Environnement</label>
+                <select id="src-env" className={field} value={environment} onChange={(e) => setEnvironment(e.target.value)}>
+                  {ENVIRONMENTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls} htmlFor="src-module">Module cible</label>
+                <select id="src-module" className={field} value={target} onChange={(e) => setTarget(e.target.value)}>
+                  {TARGET_MODULES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="src-desc">Description</label>
+              <textarea id="src-desc" className="min-h-[80px] w-full rounded-xl border border-[#DDE2E0] bg-white/80 px-4 py-3 text-[14px] outline-none focus:border-[#FF8735]" value={description} onChange={(e) => setDescription(e.target.value)} />
+            </div>
+          </>
+        ) : null}
+
+        {etape === 2 ? (
+          <>
+            {preset.requiresUrl ? (
+              <div>
+                <label className={labelCls} htmlFor="cnx-url">URL de base</label>
+                <input id="cnx-url" className={field} value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder={preset.urlPlaceholder} required />
+              </div>
+            ) : (
+              <p className="rounded-[16px] border border-[#DDE6E2] bg-white/60 px-4 py-3 text-[13px] text-[#52595A]">
+                Ce type de source n'appelle aucune URL sortante. {preset.note}
+              </p>
+            )}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className={labelCls} htmlFor="cnx-auth">Authentification</label>
+                <select id="cnx-auth" className={field} value={auth} onChange={(e) => setAuth(e.target.value)}>
+                  {AUTH_METHODS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls} htmlFor="cnx-secret">{preset.credentialLabel}</label>
+                <input
+                  id="cnx-secret"
+                  className={field}
+                  type="password"
+                  autoComplete="new-password"
+                  value={secret}
+                  onChange={(e) => setSecret(e.target.value)}
+                  placeholder={auth === "none" ? "Aucun secret requis" : "Collez le secret (chiffré en base)"}
+                  disabled={auth === "none"}
+                />
+              </div>
+              {preset.requiresDatabase ? (
+                <div>
+                  <label className={labelCls} htmlFor="cnx-db">Base de données</label>
+                  <input id="cnx-db" className={field} value={database} onChange={(e) => setDatabase(e.target.value)} placeholder="kaydan_prod" required />
+                </div>
+              ) : null}
+              <div>
+                <label className={labelCls} htmlFor="cnx-freq">Fréquence de synchronisation</label>
+                <input id="cnx-freq" className={field} value={frequency} onChange={(e) => setFrequency(e.target.value)} placeholder="manual ou cron (ex. 0 */6 * * *)" />
+              </div>
+            </div>
+            <p className="text-[11.5px] leading-relaxed text-[#6E7A78]">
+              Le secret part directement au backend, y est chiffré au repos et n'est jamais renvoyé en clair.
+              Il n'est stocké ni dans le navigateur, ni dans les journaux, ni dans le cache de l'application.
+            </p>
+            <label className="flex items-start gap-3 rounded-[16px] border border-[#EFE3CE] bg-[#FDF6EA] px-4 py-3 text-[13px] font-semibold text-[#6B4E1E]">
+              <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} className="mt-0.5 h-4 w-4" />
+              <span>
+                Activer le mode démo (dégradé)
+                <span className="mt-0.5 block font-medium text-[#8A6E36]">
+                  Désactivé par défaut. Tant qu'il est désactivé, une source non connectée reste « déconnectée »
+                  et n'affiche aucune donnée simulée.
+                </span>
+              </span>
+            </label>
+          </>
+        ) : null}
+
+        {etape === 3 ? (
+          <>
+            <dl className="grid gap-x-6 gap-y-3 rounded-[18px] border border-[#E2E6E2] bg-white/60 px-5 py-4 text-[13.5px] sm:grid-cols-2">
+              {[
+                ["Nom", name],
+                ["Code", codeFinal],
+                ["Type", SOURCE_TYPES.find(([v]) => v === sourceType)?.[1] ?? sourceType],
+                ["Environnement", ENVIRONMENTS.find(([v]) => v === environment)?.[1] ?? environment],
+                ["Module cible", TARGET_MODULES.find(([v]) => v === target)?.[1] ?? target],
+                ["URL de base", baseUrl || "—"],
+                ["Authentification", AUTH_METHODS.find(([v]) => v === auth)?.[1] ?? auth],
+                ["Secret fourni", secret.trim() ? "oui (masqué)" : "non"],
+                ["Mode démo", demo ? "activé" : "désactivé"],
+              ].map(([k, v]) => (
+                <div key={k} className="flex justify-between gap-4 border-b border-[#EDF0EE] pb-2 last:border-0">
+                  <dt className="text-[#8A9291]">{k}</dt>
+                  <dd className="text-right font-semibold text-[#16191A]">{v}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {verdict ? (
+              <div
+                className="rounded-[18px] border px-5 py-4"
+                style={verdict.ok
+                  ? { borderColor: "#BEE6D8", background: "#E1F5EE" }
+                  : { borderColor: "#F0D2D2", background: "#FCEBEB" }}
+              >
+                <p className="text-[14px] font-bold" style={{ color: verdict.ok ? "#0F6E56" : "#A32D2D" }}>
+                  {verdict.ok ? "Connexion établie" : "Connexion refusée"}
+                  {verdict.latency_ms != null ? ` · ${verdict.latency_ms} ms` : ""}
+                </p>
+                <p className="mt-1 text-[13px] font-medium leading-relaxed" style={{ color: verdict.ok ? "#2C6354" : "#8C4141" }}>
+                  {verdict.message}
+                </p>
+                {!verdict.ok ? (
+                  <p className="mt-1.5 text-[12.5px] font-semibold text-[#8C4141]">
+                    La source est enregistrée mais reste déconnectée : aucune donnée ne sera affichée tant que
+                    le test n'aboutit pas. Corrigez la connexion puis relancez le test depuis sa fiche.
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <p className="text-[13px] leading-relaxed text-[#52595A]">
+                La source va être créée, son connecteur configuré, puis la connexion réellement testée
+                depuis le serveur. Le verdict s'affiche ici avant l'ouverture de la fiche.
+              </p>
+            )}
+
+            {sourceCreee && !verdict ? (
+              <p className="text-[12.5px] font-semibold text-[#854F0B]">
+                La source a été créée ; l'étape suivante a échoué. Réessayer reprendra là où ça s'est arrêté,
+                sans créer de doublon.
+              </p>
+            ) : null}
+          </>
+        ) : null}
+
+        {echec ? <IntegrationsError error={echec} /> : null}
+
+        <div className="flex flex-wrap gap-3">
+          {etape > 1 ? (
+            <button type="button" onClick={() => setEtape(etape - 1)} className={btnGhost}>Retour</button>
+          ) : null}
+          {etape < 3 ? (
+            <button type="submit" disabled={etape === 1 ? !etape1Ok : !etape2Ok} className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-40">
+              Continuer
+            </button>
+          ) : verdict ? (
+            <button type="button" onClick={() => navigate(`/admin/integrations/${sourceCreee?.id}`)} className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white">
+              Ouvrir la fiche de la source
+            </button>
+          ) : (
+            <button type="button" onClick={creerEtTester} disabled={enCours} className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-60">
+              {enCours ? "Création et test…" : sourceCreee ? "Réessayer" : "Créer et tester la connexion"}
+            </button>
+          )}
+          <button type="button" onClick={() => navigate("/admin/integrations")} className="rounded-full border border-[#DDE2E0] bg-white/70 px-6 py-3 text-[14px] font-bold text-[#3A3E3E]">
+            {verdict ? "Fermer" : "Annuler"}
+          </button>
         </div>
-        <div>
-          <label className={labelCls}>Environnement</label>
-          <select className={field} value={environment} onChange={(e) => setEnvironment(e.target.value)}>
-            {ENVIRONMENTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-          </select>
-        </div>
-      </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label className={labelCls}>Type de source</label>
-          <select
-            className={field}
-            value={sourceType}
-            onChange={(e) => {
-              setSourceType(e.target.value);
-              // Le connecteur Shield résout la source par ce code exact.
-              if (e.target.value === "kaydan_shield" && !code) setCode("kaydan-shield");
-            }}
-          >
-            {SOURCE_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className={labelCls}>Module cible</label>
-          <select className={field} value={target} onChange={(e) => setTarget(e.target.value)}>
-            {TARGET_MODULES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className={labelCls}>Fréquence de synchronisation</label>
-          <input className={field} value={frequency} onChange={(e) => setFrequency(e.target.value)} placeholder="manual ou cron (ex. 0 */6 * * *)" />
-        </div>
-        <label className="flex items-center gap-3 self-end pb-1 text-[14px] font-semibold text-[#2C3132]">
-          <input type="checkbox" checked={demo} onChange={(e) => setDemo(e.target.checked)} className="h-4 w-4" />
-          Mode démo (dégradé) tant que non connectée
-        </label>
-      </div>
-      <div>
-        <label className={labelCls}>Description</label>
-        <textarea className="min-h-[80px] w-full rounded-xl border border-[#DDE2E0] bg-white/80 px-4 py-3 text-[14px] outline-none focus:border-[#FF8735]" value={description} onChange={(e) => setDescription(e.target.value)} />
-      </div>
-      {create.isError ? <IntegrationsError error={create.error} /> : null}
-      <div className="flex gap-3">
-        <button type="submit" disabled={create.isPending} className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-60">{create.isPending ? "Création…" : "Créer la source"}</button>
-        <button type="button" onClick={() => navigate("/admin/integrations")} className="rounded-full border border-[#DDE2E0] bg-white/70 px-6 py-3 text-[14px] font-bold text-[#3A3E3E]">Annuler</button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
 
@@ -385,19 +713,68 @@ function HistoryTab({ sourceId }: { sourceId: string }) {
 const TABS = [["api", "Configuration API"], ["endpoints", "Endpoints"], ["mapping", "Mapping des champs"], ["history", "Historique & logs"]];
 
 function ConfigureForm({ id }: { id: string }) {
-  const { data: source } = useSource(id);
+  const { data: source, isLoading, isError, error } = useSource(id);
+  const test = useTestConnection();
+  const toggle = useToggleActive();
   const [tab, setTab] = React.useState("api");
-  if (!source) return <p className="text-[14px] text-[#777C7D]">Chargement…</p>;
+
+  if (isError) return <IntegrationsError error={error} />;
+  if (isLoading || !source) return <p className="text-[14px] text-[#777C7D]">Chargement…</p>;
+
   const connectorId = source.connector?.id;
+  const connector = source.connector;
+  const creds = connector?.credentials ?? [];
+  const dernierTest = connector?.last_tested_at ? new Date(connector.last_tested_at).toLocaleString("fr-FR") : "jamais testée";
+  const latence = connector?.last_latency_ms;
 
   return (
     <div className="grid gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[22px] px-6 py-4" style={glass}>
-        <div>
-          <div className="text-[18px] font-bold text-[#16191A]">{source.name}</div>
-          <div className="text-[12px] text-[#9AA09D]">{source.source_type_label} · {source.target_module_label ?? source.target_module}</div>
+      <div className="grid gap-4 rounded-[22px] px-6 py-5" style={glass}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="text-[18px] font-bold text-[#16191A]">{source.name}</div>
+            <div className="text-[12px] text-[#9AA09D]">
+              {source.source_type_label} · {source.target_module_label ?? source.target_module}
+              {source.environment_label ? ` · ${source.environment_label}` : ""} · code « {source.slug} »
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <StatusBadge status={source.status} />
+            {/* Le mode démo se voit : une source dégradée ne doit pas passer pour une source connectée. */}
+            {source.demo_mode ? (
+              <span className="rounded-full bg-[#FDF6EA] px-3 py-1 text-[12px] font-bold text-[#854F0B]">Mode démo</span>
+            ) : null}
+          </div>
         </div>
-        <StatusBadge status={source.status} />
+
+        <dl className="grid gap-x-6 gap-y-2 text-[13px] sm:grid-cols-2 lg:grid-cols-4">
+          <div><dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">Dernière vérification</dt><dd className="font-semibold text-[#2C3132]">{dernierTest}</dd></div>
+          <div><dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">Latence</dt><dd className="font-semibold text-[#2C3132]">{latence != null ? `${latence} ms` : "—"}</dd></div>
+          <div><dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">URL de base</dt><dd className="truncate font-semibold text-[#2C3132]">{connector?.base_url || "—"}</dd></div>
+          <div>
+            <dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">Secrets</dt>
+            <dd className="font-semibold text-[#2C3132]">
+              {/* Seul le masque circule : le clair ne quitte jamais le backend. */}
+              {creds.length ? creds.map((c) => `${c.label || c.kind} · ${c.masked}`).join(", ") : "aucun"}
+            </dd>
+          </div>
+        </dl>
+
+        {connector?.last_test_message ? (
+          <p className="text-[12.5px] font-semibold" style={{ color: connector.last_test_ok ? "#0F6E56" : "#A32D2D" }}>
+            {connector.last_test_message}
+          </p>
+        ) : null}
+
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => test.mutate(source.id)} disabled={test.isPending} className={btnGhost}>
+            {test.isPending ? "Test en cours…" : "Tester la connexion"}
+          </button>
+          <button type="button" onClick={() => toggle.mutate(source.id)} disabled={toggle.isPending} className={btnGhost}>
+            {source.is_active ? "Désactiver" : "Activer"}
+          </button>
+        </div>
+        {test.isError ? <IntegrationsError error={test.error} /> : null}
       </div>
 
       <div className="flex flex-wrap gap-1.5 rounded-full p-1.5" style={glass}>

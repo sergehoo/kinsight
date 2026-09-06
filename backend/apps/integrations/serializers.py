@@ -65,9 +65,10 @@ class DataConnectorSerializer(serializers.ModelSerializer):
         model = DataConnector
         fields = [
             "id", "source", "base_url", "auth_method", "headers", "config",
-            "last_tested_at", "last_test_ok", "last_test_message", "endpoints", "credentials",
+            "last_tested_at", "last_test_ok", "last_test_message", "last_latency_ms",
+            "endpoints", "credentials",
         ]
-        read_only_fields = ["id", "last_tested_at", "last_test_ok", "last_test_message"]
+        read_only_fields = ["id", "last_tested_at", "last_test_ok", "last_test_message", "last_latency_ms"]
 
 
 class DataSourceSerializer(serializers.ModelSerializer):
@@ -75,6 +76,7 @@ class DataSourceSerializer(serializers.ModelSerializer):
     status_label = serializers.CharField(source="get_status_display", read_only=True)
     source_type_label = serializers.CharField(source="get_source_type_display", read_only=True)
     target_module_label = serializers.CharField(source="get_target_module_display", read_only=True)
+    environment_label = serializers.CharField(source="get_environment_display", read_only=True)
     jobs_count = serializers.SerializerMethodField()
     errors_count = serializers.SerializerMethodField()
 
@@ -82,7 +84,12 @@ class DataSourceSerializer(serializers.ModelSerializer):
         model = DataSource
         fields = [
             "id", "name", "slug", "source_type", "source_type_label", "target_module", "target_module_label",
-            "status", "status_label", "is_active", "demo_mode", "sync_frequency", "description",
+            "status", "status_label",
+            # `environment` manquait : DRF ignore SILENCIEUSEMENT un champ absent
+            # de cette liste. L'assistant l'envoyait, la valeur était perdue, et
+            # la source repartait en « production » quoi qu'ait choisi l'utilisateur.
+            "environment", "environment_label",
+            "is_active", "demo_mode", "sync_frequency", "description",
             "connector", "jobs_count", "errors_count", "created_at", "updated_at",
         ]
         read_only_fields = ["id", "status", "created_at", "updated_at"]

@@ -47,6 +47,7 @@ export interface DataConnector {
   last_tested_at: string | null;
   last_test_ok: boolean | null;
   last_test_message: string;
+  last_latency_ms?: number | null;
   endpoints?: unknown[];
   credentials?: { id: string; kind: string; label: string; is_set: boolean; masked: string }[];
 }

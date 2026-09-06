@@ -120,7 +120,11 @@ class DataSource(TimestampedUUID):
     status = models.CharField(max_length=16, choices=SourceStatus.choices, default=SourceStatus.NOT_CONFIGURED)
     environment = models.CharField(max_length=12, choices=Environment.choices, default=Environment.PRODUCTION)
     is_active = models.BooleanField(default=True)
-    demo_mode = models.BooleanField(default=False, help_text="Mode dégradé : afficher des données de démonstration tant que non connectée.")
+    demo_mode = models.BooleanField(
+        default=False,
+        help_text="Mode dégradé, désactivé par défaut : une source non connectée doit "
+                  "afficher son état, jamais des données simulées.",
+    )
     sync_frequency = models.CharField(max_length=64, blank=True, default="manual", help_text="cron ou 'manual'")
     description = models.TextField(blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")

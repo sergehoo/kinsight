@@ -22,7 +22,12 @@ function headers(): Record<string, string> {
 /** Erreur d'API porteuse de son code HTTP : un 403 (« pas le droit de voir »)
  *  ne doit pas être présenté comme un 500 (« la source est en panne »). */
 export class ApiError extends Error {
-  constructor(readonly status: number, message: string) {
+  constructor(
+    readonly status: number,
+    message: string,
+    /** Erreurs par champ renvoyées par DRF sur un 400. */
+    readonly details?: Record<string, string[] | string>,
+  ) {
     super(message);
     this.name = "ApiError";
   }
@@ -30,14 +35,37 @@ export class ApiError extends Error {
 
 async function req<T>(method: string, path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${BASE}${path}`, { method, headers: headers(), body: body ? JSON.stringify(body) : undefined });
-  if (!res.ok) throw new ApiError(res.status, `API ${res.status} ${method} ${path}`);
+  if (!res.ok) {
+    // Un 400 de DRF porte le détail par champ : le perdre obligerait l'utilisateur
+    // à deviner quel champ est refusé.
+    let details: Record<string, string[] | string> | undefined;
+    try {
+      const parsed = await res.json();
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) details = parsed;
+    } catch {
+      /* réponse non-JSON (page d'erreur du proxy, par exemple) */
+    }
+    throw new ApiError(res.status, `API ${res.status} ${method} ${path}`, details);
+  }
   return (res.status === 204 ? (undefined as T) : ((await res.json()) as T));
+}
+
+/** Un refus (401/403/404) ne devient pas un succès en réessayant.
+ *
+ *  Par défaut TanStack Query retente trois fois : l'écran restait dix secondes
+ *  sur « Chargement… » avant d'afficher « accès réservé ». Seules les erreurs
+ *  serveur ou réseau méritent une seconde chance.
+ */
+function retryHorsRefus(nbEchecs: number, error: unknown) {
+  if (error instanceof ApiError && error.status >= 400 && error.status < 500) return false;
+  return nbEchecs < 2;
 }
 
 export function useSources() {
   return useQuery<DataSource[]>({
     queryKey: ["integrations", "sources"],
     queryFn: () => req<DataSource[]>("GET", "/integrations/sources/"),
+    retry: retryHorsRefus,
   });
 }
 
@@ -46,6 +74,7 @@ export function useSource(id: string | undefined) {
     queryKey: ["integrations", "source", id],
     enabled: Boolean(id),
     queryFn: () => req<DataSource>("GET", `/integrations/sources/${id}/`),
+    retry: retryHorsRefus,
   });
 }
 
@@ -86,7 +115,11 @@ export function useUpdateConnector() {
 export function useTestConnection() {
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: (sourceId: string) => req<{ ok: boolean; message: string; status: string }>("POST", `/integrations/sources/${sourceId}/test-connection/?probe=1`),
+    mutationFn: (sourceId: string) =>
+      req<{ ok: boolean; message: string; status: string; latency_ms: number | null; tested_at: string | null }>(
+        "POST",
+        `/integrations/sources/${sourceId}/test-connection/?probe=1`,
+      ),
     onSuccess: invalidate,
   });
 }

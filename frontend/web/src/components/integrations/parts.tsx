@@ -79,36 +79,67 @@ export function PrimaryLink({ to, children }: { to: string; children: React.Reac
  */
 export function IntegrationsError({ error }: { error: unknown }) {
   const status = error instanceof ApiError ? error.status : undefined;
+  // `detail` est le message générique de DRF, déjà reformulé au-dessus ; le
+  // reproduire tel quel ajouterait une seconde phrase disant la même chose.
+  // Seules les erreurs PAR CHAMP (400) valent d'être listées.
+  const parChamp = Object.entries((error instanceof ApiError ? error.details : undefined) ?? {}).filter(([champ]) => champ !== "detail");
+  const details = parChamp.length ? parChamp : null;
 
   const cases: Record<number, { titre: string; explication: string; geste: string }> = {
-    403: {
-      titre: "Accès réservé aux administrateurs d'intégration",
-      explication:
-        "Votre compte est bien authentifié, mais le centre de connecteurs exige le rôle « Administrateur intégrations » ou « Administrateur / Conseil d'administration ».",
-      geste: "Demandez ce rôle à un administrateur, ou connectez-vous avec un compte qui le porte.",
+    400: {
+      titre: "Formulaire refusé par le serveur",
+      explication: "Un ou plusieurs champs ne satisfont pas les contraintes du modèle.",
+      geste: "Corrigez les champs signalés ci-dessous, puis réessayez.",
     },
     401: {
       titre: "Session expirée",
       explication: "Le serveur ne reconnaît plus votre session.",
       geste: "Reconnectez-vous pour continuer.",
     },
+    403: {
+      titre: "Accès réservé aux administrateurs d'intégration",
+      explication:
+        "Votre compte est authentifié, mais le centre de connecteurs exige d'être superutilisateur, " +
+        "ou de porter le rôle « Administrateur intégrations » ou « Administrateur / Conseil d'administration ». " +
+        "Le libellé « Super Admin » affiché dans l'en-tête ne correspond à aucun de ces rôles.",
+      geste: "Demandez l'un de ces rôles à un administrateur, ou connectez-vous avec un compte qui le porte.",
+    },
+    404: {
+      titre: "Endpoint introuvable",
+      explication: "Le serveur ne connaît pas cette route. L'URL d'API du build ou le routage du proxy est incorrect.",
+      geste: "Vérifiez VITE_API_BASE_URL au build et la règle de proxy sur /api/.",
+    },
   };
 
   const known = status !== undefined ? cases[status] : undefined;
-  const titre = known?.titre ?? "Control-plane injoignable";
+  const cinqCents = status !== undefined && status >= 500;
+  const titre = known?.titre ?? (cinqCents ? "Backend en erreur" : "API inaccessible");
   const explication =
     known?.explication ??
-    (status
-      ? `Le serveur a répondu ${status} sur la liste des sources.`
-      : "Aucune réponse du backend K-Insight sur /api/v1/integrations/.");
+    (cinqCents
+      ? `Le serveur a répondu ${status} : la requête est parvenue au backend, qui a échoué à la traiter.`
+      : "Aucune réponse du backend K-Insight. La requête n'a pas abouti (réseau, service arrêté ou proxy).");
   const geste =
     known?.geste ??
-    "Vérifiez que le service backend tourne et que le proxy route bien /api/ vers lui.";
+    (cinqCents
+      ? "Consultez les journaux du service backend : la cause est côté serveur."
+      : "Vérifiez que le service backend tourne et que le proxy route bien /api/ vers lui.");
 
   return (
     <div className="rounded-[20px] border border-[#F0D2D2] bg-[#FCEBEB] px-5 py-4">
       <p className="text-[14px] font-bold text-[#A32D2D]">{titre}</p>
       <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#8C4141]">{explication}</p>
+      {/* Sur un 400, DRF renvoie l'erreur PAR CHAMP : la recopier évite de faire
+          deviner lequel pose problème. */}
+      {details ? (
+        <ul className="mt-2 space-y-0.5">
+          {details.map(([champ, messages]) => (
+            <li key={champ} className="text-[12.5px] font-semibold text-[#8C4141]">
+              <span className="font-bold">{champ}</span> : {(Array.isArray(messages) ? messages : [String(messages)]).join(" ")}
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <p className="mt-1.5 text-[12.5px] font-semibold text-[#A32D2D]">{geste}</p>
     </div>
   );

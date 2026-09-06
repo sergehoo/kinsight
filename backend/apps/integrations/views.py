@@ -160,7 +160,18 @@ class DataSourceViewSet(viewsets.ModelViewSet):
         probe = request.query_params.get("probe") != "0"
         ok, message = run_test(source, probe=probe)
         _audit(request, "integration.source.test", source, {"ok": ok})
-        return Response({"ok": ok, "message": message, "status": source.status})
+        connector = getattr(source, "connector", None)
+        # La latence mesurée est renvoyée avec le verdict : l'assistant de création
+        # affiche « connecté en 240 ms » sans avoir à relire la source ensuite.
+        return Response(
+            {
+                "ok": ok,
+                "message": message,
+                "status": source.status,
+                "latency_ms": connector.last_latency_ms if connector else None,
+                "tested_at": connector.last_tested_at.isoformat() if connector and connector.last_tested_at else None,
+            }
+        )
 
     @action(detail=True, methods=["post"], url_path="sync-now")
     def sync_now(self, request, pk=None):
