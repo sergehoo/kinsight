@@ -19,7 +19,7 @@ def _forbidden(domain: str) -> Response:
     )
 
 from .gateway import fetch_or_unavailable, get_mart_gateway
-from .services import governance_overview, hr_kpi_summary, period_from_quarter
+from .services import blank_hr_summary, governance_overview, hr_kpi_summary, period_from_quarter
 
 
 class CatalogView(APIView):
@@ -76,8 +76,13 @@ class HrKpiView(APIView):
 
         period = period_from_quarter(year, quarter)
         scope = request.user.scope()
-        rows, _mart_ok = fetch_or_unavailable(lambda: get_mart_gateway().fetch_hr_kpi(), [])
+        rows, mart_ok = fetch_or_unavailable(lambda: get_mart_gateway().fetch_hr_kpi(), [])
         summary = hr_kpi_summary(rows, scope, period)
+        if not mart_ok or not rows:
+            summary = blank_hr_summary(summary, source_state="error" if not mart_ok else "connected")
+        else:
+            summary["available"] = True
+            summary["source_state"] = "connected"
 
         AccessLog.record(
             user=request.user,

@@ -54,6 +54,24 @@ def hr_kpi_summary(
     }
 
 
+def blank_hr_summary(summary: dict, *, source_state: str) -> dict:
+    """Neutralise une synthèse qui ne s'appuie sur AUCUNE ligne réelle.
+
+    Les agrégats somment sur une liste vide et rendent donc 0 : sans ce garde-fou,
+    un mart injoignable ou sans ligne sur la période s'afficherait comme
+    « masse salariale : 0 XOF », c'est-à-dire une absence de donnée présentée
+    comme une mesure (ADR-0007). Les valeurs repassent à None, et l'état dit
+    pourquoi : `error` si le mart est injoignable, `connected` s'il a simplement
+    répondu sans rien à publier.
+    """
+    out = dict(summary)
+    out["metrics"] = {key: {**value, "value": None} for key, value in summary["metrics"].items()}
+    out["payroll_by_subsidiary"] = {}
+    out["available"] = False
+    out["source_state"] = source_state
+    return out
+
+
 def _format_int(value: int | float) -> str:
     return f"{int(value):,}".replace(",", " ")
 

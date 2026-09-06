@@ -133,6 +133,7 @@ class ShieldHrKpiTest(APITestCase):
         self.client.force_authenticate(self.user)
         data = self.client.get(self.URL).json()
         self.assertEqual(data["status"], "disconnected")
+        self.assertEqual(data["by_site"], {"status": "disconnected", "sites": []})
         keys = {k["key"] for k in data["kpis"]}
         self.assertEqual(keys, self.KEYS)
         # Aucune valeur fabriquée tant que non connecté.
@@ -170,11 +171,16 @@ class ShieldConnectorUnitTest(APITestCase):
         ConnectorCredential.objects.create(connector=connector, kind="api_token")  # secret vide
         self.assertEqual(shield._pick_secret(connector), "")
 
+    SITES = [
+        {"id": 1, "code": "KRE-01", "name": "Chantier Riviera", "type": "site", "status": "active", "company_name": "K-Express"},
+        {"id": 2, "code": "SIEGE", "name": "Siège Abidjan", "type": "office", "status": "active", "company_name": "Groupe Kaydan"},
+    ]
+
     def _payloads(self):
         return {
             shield.EP_EMPLOYEES: {"count": 120, "results": []},
             shield.EP_WORKERS: {"count": 80, "results": []},
-            shield.EP_SITES: {"count": 6, "results": []},
+            shield.EP_SITES: {"count": 6, "results": self.SITES},
             shield.EP_ATTENDANCE_TODAY: {"date": "2026-09-05", "present_count": 150, "absent_count": 50, "late_count": 7, "total_workers": 200},
         }
 
@@ -194,6 +200,37 @@ class ShieldConnectorUnitTest(APITestCase):
         self.assertEqual(kpis["taux_presence"]["value"], 75.0)
         self.assertEqual(kpis["sites"]["value"], 6)
         self.assertTrue(all(k["status"] == "connected" for k in data["kpis"]))
+
+    def test_by_site_liste_les_sites_reels_sans_inventer_de_presence(self):
+        self._source()
+        payloads = self._payloads()
+        with patch.object(shield, "_get_json", side_effect=lambda base, path, headers, params=None: payloads[path]):
+            data = shield.fetch_hr_kpis()
+        by_site = data["by_site"]
+        # `partial` : les sites sont réels, la présence par site ne l'est pas.
+        self.assertEqual(by_site["status"], "partial")
+        self.assertEqual([s["code"] for s in by_site["sites"]], ["KRE-01", "SIEGE"])
+        self.assertEqual(by_site["sites"][0]["name"], "Chantier Riviera")
+        # Shield n'expose aucun compteur de présence par site : on n'en fabrique pas.
+        self.assertTrue(all(s["present_count"] is None for s in by_site["sites"]))
+        self.assertTrue(all(s["presence_status"] == "disconnected" for s in by_site["sites"]))
+
+    def test_niveaux_de_donnee_et_formules(self):
+        """Un chiffre calculé par K-Insight doit porter sa formule ; une mesure, sa source."""
+        self._source()
+        payloads = self._payloads()
+        with patch.object(shield, "_get_json", side_effect=lambda base, path, headers, params=None: payloads[path]):
+            data = shield.fetch_hr_kpis()
+        kpis = {k["key"]: k for k in data["kpis"]}
+        # Calculés : formule obligatoire, pas de champ source.
+        for key in ("effectif_total", "taux_presence"):
+            self.assertEqual(kpis[key]["level"], "computed")
+            self.assertTrue(kpis[key]["formula"], f"{key} sans formule documentée")
+        # Mesurés : champ source obligatoire, pas de formule.
+        for key in ("employes", "ouvriers", "presents", "absents", "retards", "sites"):
+            self.assertEqual(kpis[key]["level"], "measured")
+            self.assertEqual(kpis[key]["formula"], "")
+            self.assertTrue(kpis[key]["source_field"], f"{key} sans champ source")
 
     def test_partial_failure_never_fabricates(self):
         """Si l'appel présence échoue, ses KPIs passent en error SANS valeur inventée."""

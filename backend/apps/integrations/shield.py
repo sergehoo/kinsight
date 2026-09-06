@@ -117,23 +117,92 @@ def _count(base: str, path: str, headers: dict[str, str]) -> int:
     raise ValueError("Réponse inattendue (ni count ni liste).")
 
 
+def _results(base: str, path: str, headers: dict[str, str], limit: int = 200) -> list[dict[str, Any]]:
+    """Première page d'une liste DRF, normalisée en liste de dicts."""
+    data = _get_json(base, path, headers, {"limit": limit})
+    if isinstance(data, dict):
+        results = data.get("results")
+        if isinstance(results, list):
+            return [r for r in results if isinstance(r, dict)]
+    if isinstance(data, list):
+        return [r for r in data if isinstance(r, dict)]
+    raise ValueError("Réponse inattendue (ni results ni liste).")
+
+
+def _normalize_site(raw: dict[str, Any]) -> dict[str, Any]:
+    """Champs RÉELS du sérialiseur Site de Shield (id, uuid, name, code, type,
+    status, company_name, address_label). Rien d'autre n'est supposé.
+
+    `present_count` reste None : Shield ne documente AUCUN compteur de présence
+    agrégé par site. Le seul endpoint par site est nominatif et signalé par la
+    doc comme plus sensible que des compteurs — l'agréger nous-mêmes reviendrait
+    à inventer une mesure ET à manipuler des données personnelles sans motif.
+    """
+    return {
+        "id": raw.get("id"),
+        "code": raw.get("code") or "",
+        "name": raw.get("name") or raw.get("code") or "Site",
+        "type": raw.get("type") or "",
+        "status": raw.get("status") or "",
+        "company": raw.get("company_name") or "",
+        "present_count": None,
+        "presence_status": "disconnected",
+    }
+
+
 # ── Normalisation KPIs ───────────────────────────────────────────────────────
-def _kpi(key: str, title: str, value: Any, unit: str = "", status: str = "connected") -> dict[str, Any]:
-    return {"key": key, "title": title, "value": value, "unit": unit, "status": status}
+# Niveau de donnée : une mesure lue telle quelle dans la source n'a pas le même
+# statut épistémique qu'un chiffre que NOUS calculons. Le distinguer permet à
+# l'UI de le signaler et rend chaque calcul auditable par sa formule.
+MEASURED = "measured"
+COMPUTED = "computed"
+
+
+def _kpi(
+    key: str,
+    title: str,
+    value: Any,
+    unit: str = "",
+    status: str = "connected",
+    level: str = MEASURED,
+    formula: str = "",
+    source_field: str = "",
+) -> dict[str, Any]:
+    return {
+        "key": key,
+        "title": title,
+        "value": value,
+        "unit": unit,
+        "status": status,
+        "level": level,
+        # Vide pour une mesure ; obligatoire dès que K-Insight calcule le chiffre.
+        "formula": formula,
+        # Champ d'origine côté source, pour retrouver d'où vient la mesure.
+        "source_field": source_field,
+    }
+
+
+# (clé, libellé, unité, niveau, formule, champ source)
+KPI_SPECS: list[tuple[str, str, str, str, str, str]] = [
+    ("effectif_total", "Effectif total", "", COMPUTED, "employés + ouvriers", ""),
+    ("employes", "Employés", "", MEASURED, "", "employees.count"),
+    ("ouvriers", "Ouvriers", "", MEASURED, "", "ouvriers.count"),
+    ("presents", "Présents aujourd'hui", "", MEASURED, "", "attendance.present_count"),
+    ("absents", "Absents", "", MEASURED, "", "attendance.absent_count"),
+    ("retards", "Retards", "", MEASURED, "", "attendance.late_count"),
+    ("taux_presence", "Taux de présence", "%", COMPUTED, "présents ÷ (présents + absents) × 100", ""),
+    ("sites", "Sites", "", MEASURED, "", "sites.count"),
+]
+KPI_META = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in KPI_SPECS}
+
+
+def _kpi_from_spec(key: str, value: Any, status: str) -> dict[str, Any]:
+    title, unit, level, formula, source_field = KPI_META[key]
+    return _kpi(key, title, value, unit, status, level, formula, source_field)
 
 
 def _disconnected_kpis(source_label: str) -> list[dict[str, Any]]:
-    specs = [
-        ("effectif_total", "Effectif total", ""),
-        ("employes", "Employés", ""),
-        ("ouvriers", "Ouvriers", ""),
-        ("presents", "Présents aujourd'hui", ""),
-        ("absents", "Absents", ""),
-        ("retards", "Retards", ""),
-        ("taux_presence", "Taux de présence", "%"),
-        ("sites", "Sites", ""),
-    ]
-    return [_kpi(k, t, None, u, "disconnected") for k, t, u in specs]
+    return [_kpi_from_spec(k, None, "disconnected") for k, *_ in KPI_SPECS]
 
 
 def fetch_hr_kpis() -> dict[str, Any]:
@@ -141,7 +210,13 @@ def fetch_hr_kpis() -> dict[str, Any]:
     source = get_shield_source()
     label = "Kaydan Shield"
     if source is None:
-        return {"status": "disconnected", "source": label, "detail": "Source kaydan-shield non configurée.", "kpis": _disconnected_kpis(label)}
+        return {
+            "status": "disconnected",
+            "source": label,
+            "detail": "Source kaydan-shield non configurée.",
+            "kpis": _disconnected_kpis(label),
+            "by_site": {"status": "disconnected", "sites": []},
+        }
 
     base = _base_url(source)
     connected = source.status == SourceStatus.CONNECTED
@@ -151,6 +226,7 @@ def fetch_hr_kpis() -> dict[str, Any]:
             "source": source.name or label,
             "detail": "Source non connectée — configurez et testez la connexion.",
             "kpis": _disconnected_kpis(source.name or label),
+            "by_site": {"status": "disconnected", "sites": []},
         }
 
     headers = _auth_headers(source)
@@ -167,6 +243,7 @@ def fetch_hr_kpis() -> dict[str, Any]:
     ouvriers, o_err = safe(lambda: _count(base, EP_WORKERS, headers))
     sites, s_err = safe(lambda: _count(base, EP_SITES, headers))
     summary, sum_err = safe(lambda: _get_json(base, EP_ATTENDANCE_TODAY, headers))
+    site_rows, site_rows_err = safe(lambda: _results(base, EP_SITES, headers))
 
     def st(err):
         return "error" if err else "connected"
@@ -174,24 +251,24 @@ def fetch_hr_kpis() -> dict[str, Any]:
     effectif = None
     if employes is not None and ouvriers is not None:
         effectif = employes + ouvriers
-    kpis.append(_kpi("effectif_total", "Effectif total", effectif, "", st(e_err or o_err)))
-    kpis.append(_kpi("employes", "Employés", employes, "", st(e_err)))
-    kpis.append(_kpi("ouvriers", "Ouvriers", ouvriers, "", st(o_err)))
+    kpis.append(_kpi_from_spec("effectif_total", effectif, st(e_err or o_err)))
+    kpis.append(_kpi_from_spec("employes", employes, st(e_err)))
+    kpis.append(_kpi_from_spec("ouvriers", ouvriers, st(o_err)))
 
     present = absent = late = None
     if isinstance(summary, dict):
         present = summary.get("present_count")
         absent = summary.get("absent_count")
         late = summary.get("late_count")
-    kpis.append(_kpi("presents", "Présents aujourd'hui", present, "", st(sum_err)))
-    kpis.append(_kpi("absents", "Absents", absent, "", st(sum_err)))
-    kpis.append(_kpi("retards", "Retards", late, "", st(sum_err)))
+    kpis.append(_kpi_from_spec("presents", present, st(sum_err)))
+    kpis.append(_kpi_from_spec("absents", absent, st(sum_err)))
+    kpis.append(_kpi_from_spec("retards", late, st(sum_err)))
 
     taux = None
     if isinstance(present, int) and isinstance(absent, int) and (present + absent) > 0:
         taux = round(present * 100 / (present + absent), 1)
-    kpis.append(_kpi("taux_presence", "Taux de présence", taux, "%", st(sum_err)))
-    kpis.append(_kpi("sites", "Sites", sites, "", st(s_err)))
+    kpis.append(_kpi_from_spec("taux_presence", taux, st(sum_err)))
+    kpis.append(_kpi_from_spec("sites", sites, st(s_err)))
 
     # Statut global HONNÊTE : `partial` dès qu'une mesure manque, jamais « connected »
     # alors qu'une partie des appels a échoué.
@@ -202,4 +279,19 @@ def fetch_hr_kpis() -> dict[str, Any]:
         status = "partial"
     else:
         status = "error"
-    return {"status": status, "source": src, "updated_at": timezone.now().isoformat(), "kpis": kpis}
+    by_site = {
+        "status": "error" if site_rows_err else "partial" if site_rows else "disconnected",
+        # `partial` et non `connected` : la répartition liste les sites RÉELS mais
+        # aucun effectif présent par site (non exposé par Shield). Annoncer
+        # « connected » laisserait croire à une répartition complète.
+        "detail": "Sites réels ; présence par site non exposée par Kaydan Shield.",
+        "sites": [_normalize_site(r) for r in (site_rows or [])],
+    }
+
+    return {
+        "status": status,
+        "source": src,
+        "updated_at": timezone.now().isoformat(),
+        "kpis": kpis,
+        "by_site": by_site,
+    }

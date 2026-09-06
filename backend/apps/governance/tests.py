@@ -622,3 +622,46 @@ class MartUnavailableDegradationTest(TestCase):
         self.assertFalse(body["available"])
         self.assertEqual(body["source_state"], "error")
         self.assertIsNone(body["global"])
+
+
+class HrKpiZeroVsAbsentTest(TestCase):
+    """Un mart vide ne doit pas produire « 0 XOF » : 0 est une mesure, pas une absence."""
+
+    def setUp(self):
+        Subsidiary.objects.create(code="KRE", name="K-Express")
+        self.dg = User.objects.create_user("dg3", password="x", role="DG_GROUP", is_group_scope=True)
+        self.client = APIClient()
+        self.client.force_authenticate(self.dg)
+
+    def tearDown(self):
+        gateway.set_mart_gateway(None)
+
+    def test_mart_vide_ne_renvoie_pas_de_zero(self):
+        gateway.set_mart_gateway(InMemoryMartGateway([]))
+        body = self.client.get("/api/v1/governance/hr/kpi/?year=2026&quarter=1").json()
+        self.assertFalse(body["available"])
+        self.assertEqual(body["source_state"], "connected")  # le mart a répondu, sans lignes
+        for key, metric in body["metrics"].items():
+            self.assertIsNone(metric["value"], f"{key} vaut {metric['value']} au lieu de None")
+        self.assertEqual(body["payroll_by_subsidiary"], {})
+
+    def test_mart_injoignable_est_signale_en_erreur(self):
+        class Broken(InMemoryMartGateway):
+            def __init__(self):
+                super().__init__([])
+
+            def fetch_hr_kpi(self):
+                raise gateway.MartUnavailable("EDW injoignable")
+
+        gateway.set_mart_gateway(Broken())
+        body = self.client.get("/api/v1/governance/hr/kpi/?year=2026&quarter=1").json()
+        self.assertFalse(body["available"])
+        self.assertEqual(body["source_state"], "error")
+        self.assertTrue(all(m["value"] is None for m in body["metrics"].values()))
+
+    def test_vraies_lignes_restent_disponibles(self):
+        """Contre-épreuve : avec de vraies lignes, rien n'est neutralisé."""
+        gateway.set_mart_gateway(InMemoryMartGateway(build_hr_kpi_rows(EMP, PAY)))
+        body = self.client.get("/api/v1/governance/hr/kpi/?year=2026&quarter=1").json()
+        self.assertTrue(body["available"])
+        self.assertIsNotNone(body["metrics"]["hr.payroll_mass"]["value"])
