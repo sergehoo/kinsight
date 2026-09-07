@@ -79,6 +79,14 @@ préfixée.**
    python manage.py createsuperuser
    ```
 
+   Pour un compte qui EXISTE déjà mais que l'admin refuse : `role` gouverne
+   l'application, `is_staff` gouverne l'admin Django, et Django affiche le même
+   message dans les deux cas. La commande lève l'ambiguïté, et peut accorder l'accès.
+
+   ```bash
+   docker compose -f docker-compose.dokploy.yml exec backend python manage.py admin_access <identifiant> --accorder
+   ```
+
 ## Dépannage — le routage
 
 Un seul routeur, donc peu de cas possibles. Le corps de la réponse dit qui parle.

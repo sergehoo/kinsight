@@ -242,6 +242,9 @@ function CreateForm() {
   const [enCours, setEnCours] = React.useState(false);
   const [echec, setEchec] = React.useState<{ etape: Etape; erreur: unknown } | null>(null);
   const [creationAmbigue, setCreationAmbigue] = React.useState(false);
+  // Une source portant déjà ce code : on la propose à l'ouverture plutôt que de
+  // laisser l'utilisateur devant un « corrigez les champs » sans issue.
+  const [sourceHomonyme, setSourceHomonyme] = React.useState<{ id: string; name: string } | null>(null);
   const [verdict, setVerdict] = React.useState<Verdict | null>(null);
 
   const preset = presetPour(sourceType);
@@ -270,6 +273,7 @@ function CreateForm() {
     setEnCours(true);
     setEchec(null);
     setVerdict(null);
+    setSourceHomonyme(null);
     let etape: Etape = "creation";
     try {
       let cible = sourceCreee;
@@ -295,6 +299,15 @@ function CreateForm() {
             e instanceof ApiError && e.status === 400 && Boolean(e.details && "slug" in e.details);
           if (!(conflitDeCode && creationAmbigue)) {
             if (estAmbigu(e)) setCreationAmbigue(true);
+            // Code déjà pris sur un premier essai : ce n'est pas notre orpheline,
+            // c'est une source qui existe. La nommer et l'offrir à l'ouverture vaut
+            // mieux que « corrigez les champs signalés » — d'autant que le
+            // connecteur Shield résout SA source par ce code exact, donc la bonne
+            // action est presque toujours de modifier celle-là.
+            if (conflitDeCode) {
+              const existante = await fetchSourceBySlug(codeFinal).catch(() => undefined);
+              if (existante) setSourceHomonyme({ id: existante.id, name: existante.name });
+            }
             throw e;
           }
           const existante = await fetchSourceBySlug(codeFinal);
@@ -540,6 +553,25 @@ function CreateForm() {
               ) : null}
             </div>
             <IntegrationsError error={echec.erreur} />
+            {sourceHomonyme ? (
+              <div className="rounded-[18px] border border-[#DDE6E2] bg-white/70 px-5 py-3">
+                <p className="text-[13px] font-semibold text-[#2C3132]">
+                  Le code « {codeFinal} » est déjà porté par la source «&nbsp;{sourceHomonyme.name}&nbsp;».
+                </p>
+                <p className="mt-0.5 text-[12.5px] font-medium text-[#6E7A78]">
+                  {shield
+                    ? "Le connecteur Shield résout sa source par ce code : c'est cette fiche qu'il faut corriger, pas une seconde source."
+                    : "Modifiez cette source, ou choisissez un autre code."}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/admin/integrations/${sourceHomonyme.id}`)}
+                  className={btnGhost + " mt-2"}
+                >
+                  Ouvrir «&nbsp;{sourceHomonyme.name}&nbsp;»
+                </button>
+              </div>
+            ) : null}
             {sourceCreee ? (
               <button
                 type="button"
