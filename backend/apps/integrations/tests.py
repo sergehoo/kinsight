@@ -1463,3 +1463,42 @@ class SmokeEnumerationTest(TestCase):
     def test_latence_moyenne_rapportee(self):
         sortie = self._lancer({"total": 10, "denied": 2, "absurde": 0})
         self.assertIn("ms par appel", sortie)
+
+
+class SondeSansEndpointTest(APITestCase):
+    """Un 404 sur la racine d'une API n'est pas une mauvaise URL de base.
+
+    Cas vu en production : une source de type « API REST » pointée sur
+    `https://api.kaydanshield.com/api/v1` — une URL parfaitement valide — ressortait
+    « Aucun endpoint à cette adresse : vérifiez l'URL de base ». Le message envoyait
+    donc corriger ce qui était juste, alors qu'il manquait un endpoint à interroger.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="sans-ep", password="x",
+                                              email="e@k.co", role="ADMIN_INTEGRATION")
+        self.client.force_authenticate(self.admin)
+        self.client.post(f"{BASE}/sources/", {
+            "name": "API tierce", "slug": "api-tierce", "source_type": "rest",
+            "target_module": "autre",
+        }, format="json")
+        self.source = DataSource.objects.get(slug="api-tierce")
+        self.source.connector.base_url = "https://api.exemple.test/api/v1"
+        self.source.connector.save(update_fields=["base_url"])
+
+    def _tester(self):
+        erreur = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
+        with patch("apps.integrations.services.urllib.request.urlopen", side_effect=erreur):
+            return self.client.post(f"{BASE}/sources/{self.source.id}/test-connection/").json()
+
+    def test_sans_endpoint_le_message_indique_le_geste_a_faire(self):
+        message = self._tester()["message"]
+        self.assertIn("Aucun endpoint déclaré", message)
+        self.assertIn("onglet « Endpoints »", message)
+
+    def test_avec_un_endpoint_declare_le_message_reste_factuel(self):
+        """Là, le chemin EST en cause : pas de conseil hors sujet."""
+        self.source.connector.endpoints.create(name="Sites", path="/sites/sites/", is_active=True)
+        message = self._tester()["message"]
+        self.assertIn("404", message)
+        self.assertNotIn("Aucun endpoint déclaré", message)

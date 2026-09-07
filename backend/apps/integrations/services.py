@@ -188,8 +188,15 @@ def run_test(source: DataSource, probe: bool = True) -> tuple[bool, str]:
             ok, message = real
             preuve = True
         elif source.source_type in ("rest", "graphql", "webhook", "sap", "odoo_hr") and connector and connector.base_url:
-            ok, message = network_probe(probe_target(source))
+            cible = probe_target(source)
+            ok, message = network_probe(cible)
             preuve = True
+            # La racine d'une API ne renvoie presque jamais de ressource : un 404 y
+            # est le comportement NORMAL, pas le signe d'une mauvaise URL. Sans
+            # cette précision, le message envoie corriger une URL qui est juste.
+            if not ok and cible == connector.base_url.rstrip("/"):
+                message += (" Aucun endpoint déclaré : le test a interrogé la racine de l'API. "
+                            "Déclarez un endpoint dans l'onglet « Endpoints » pour tester une lecture réelle.")
         latency_ms = int((time.monotonic() - started) * 1000) if preuve else None
         if not preuve:
             message = (f"Configuration valide. Aucune sonde n'existe pour une source de type "
