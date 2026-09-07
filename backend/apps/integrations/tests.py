@@ -1411,3 +1411,55 @@ class SecretIllisibleTest(APITestCase):
         self.assertIn("Ré-enregistrez", body["message"])
         self.source.refresh_from_db()
         self.assertEqual(self.source.status, SourceStatus.ERROR)
+
+
+class SmokeEnumerationTest(TestCase):
+    """Le smoke test doit détecter une énumération ignorée par le serveur.
+
+    C'est le piège le plus coûteux de cette API : DRF renvoie 200 et l'ensemble
+    NON filtré quand on lui passe un filtre inconnu. Un indicateur « accès
+    refusés » bâti sur une valeur erronée compterait alors tous les événements,
+    sans que rien ne le signale. La comparaison doit donc porter dans le bon sens
+    — c'est exactement le genre de test qui s'inverse en silence.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="smoke-admin", password="x",
+                                              email="sm@k.co", role="ADMIN_INTEGRATION")
+        source = DataSource.objects.create(name="Shield", slug="kaydan-shield",
+                                           source_type=SourceType.KAYDAN_SHIELD, target_module="rh")
+        DataConnector.objects.create(source=source, base_url="https://api.kaydanshield.test")
+
+    def _lancer(self, counts):
+        """Exécute la commande avec des comptages contrôlés, et rend sa sortie."""
+        from io import StringIO
+        from django.core.management import call_command
+
+        def faux_count(self, path, params=None):
+            params = params or {}
+            if path == EP.ACCESS_EVENTS:
+                return counts["absurde"] if params.get("decision") == "zzz-inexistant" else (
+                    counts["denied"] if params.get("decision") else counts["total"])
+            return 1
+
+        sortie = StringIO()
+        with patch.object(ShieldClient, "count", faux_count), \
+             patch.object(ShieldClient, "get_json", return_value={"count": 1, "results": [{"id": "s1"}]}), \
+             patch.object(ShieldClient, "results", return_value=[{"id": "s1"}]):
+            call_command("shield_smoke", stdout=sortie)
+        return sortie.getvalue()
+
+    def test_enumeration_ignoree_est_signalee_comme_bloquante(self):
+        """Valeur absurde = même total que sans filtre → le serveur n'en tient pas compte."""
+        sortie = self._lancer({"total": 4213, "denied": 4213, "absurde": 4213})
+        self.assertIn("IGNORÉE par le serveur", sortie)
+        self.assertIn("ne pas alimenter le cockpit Risques", sortie)
+
+    def test_enumeration_honoree_est_confirmee(self):
+        sortie = self._lancer({"total": 4213, "denied": 87, "absurde": 0})
+        self.assertIn("honorée", sortie)
+        self.assertNotIn("IGNORÉE", sortie)
+
+    def test_latence_moyenne_rapportee(self):
+        sortie = self._lancer({"total": 10, "denied": 2, "absurde": 0})
+        self.assertIn("ms par appel", sortie)

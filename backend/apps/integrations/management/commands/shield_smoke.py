@@ -71,6 +71,19 @@ class Command(BaseCommand):
         # 6. La pagination expose-t-elle bien un total cohérent ?
         page = run("pagination (count vs results)",
                    lambda: client.get_json(EP.SITES, {"limit": 2}, use_cache=False))
+        # 7. Les énumérations sont-elles VRAIMENT honorées ?
+        #
+        # C'est le piège le plus coûteux de cette API : DRF ignore SILENCIEUSEMENT
+        # un filtre inconnu et renvoie l'ensemble non filtré, avec un 200. Un KPI
+        # « accès refusés » bâti sur une valeur d'énumération erronée compterait
+        # donc TOUS les événements — un chiffre faux, jamais signalé comme tel.
+        # Une valeur sentinelle absurde tranche : si elle renvoie le même total que
+        # l'absence de filtre, le serveur ignore ce qu'on lui demande.
+        acces_total = run("accès (sans filtre)", lambda: client.count(EP.ACCESS_EVENTS))
+        acces_refuses = run("accès decision=denied",
+                            lambda: client.count(EP.ACCESS_EVENTS, {"decision": "denied"}))
+        acces_sentinelle = run("accès decision=<valeur absurde>",
+                               lambda: client.count(EP.ACCESS_EVENTS, {"decision": "zzz-inexistant"}))
 
         self.stdout.write("")
         for label, ok, detail in checks:
@@ -101,8 +114,26 @@ class Command(BaseCommand):
             if isinstance(sites, int) and page.get("count") != sites:
                 self.stdout.write("      → le total varie entre deux lectures : à investiguer.")
 
+        if isinstance(acces_total, int) and isinstance(acces_sentinelle, int):
+            if acces_sentinelle == acces_total:
+                self.stdout.write(f"[{KO}] énumération `decision` IGNORÉE par le serveur "
+                                  f"(valeur absurde → {acces_sentinelle}, comme sans filtre)")
+                self.stdout.write("      → tout indicateur bâti sur `decision` serait FAUX : "
+                                  "ne pas alimenter le cockpit Risques.")
+            else:
+                lisible = acces_refuses if isinstance(acces_refuses, int) else "?"
+                self.stdout.write(f"[{OK}] énumération `decision` honorée "
+                                  f"(absurde {acces_sentinelle} ≠ total {acces_total}, "
+                                  f"denied {lisible})")
+                if isinstance(acces_refuses, int) and acces_refuses > acces_total:
+                    self.stdout.write(f"[{WARN}] refusés ({acces_refuses}) > total ({acces_total}) : incohérent.")
+        else:
+            self.stdout.write(f"[{WARN}] énumération `decision` non vérifiable (lecture en échec)")
+
         m = client.metrics.as_dict()
+        moyenne = (m["duration_ms"] / m["calls"]) if m["calls"] else 0
         self.stdout.write(f"\nCoût du smoke test : {m['calls']} appels, "
-                          f"{m['duration_ms']:.0f} ms, erreurs {m['errors'] or 'aucune'}")
+                          f"{m['duration_ms']:.0f} ms au total, {moyenne:.0f} ms par appel, "
+                          f"erreurs {m['errors'] or 'aucune'}")
         if any(not ok for _, ok, _ in checks):
             self.stdout.write("\nDes vérifications ont échoué : ne pas lancer les séries.")
