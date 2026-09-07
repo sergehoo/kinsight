@@ -18,8 +18,42 @@ backend (gunicorn) ─ postgres (app + EDW) · redis · minio
 celery-worker / celery-beat ─ orchestrent Airbyte + dbt
 ```
 
-Seul le **frontend** est exposé par Traefik ; tout le reste reste sur le réseau interne
-`kinsight` (pas de port publié).
+Traefik route **trois chemins** sur le même domaine : `/` vers le frontend, `/api` et `/admin`
+vers le backend. Aucun port n'est publié ; postgres, redis et minio restent sur le seul réseau
+interne `kinsight`.
+
+### Routage à déclarer dans l'onglet « Domains » de Dokploy
+
+| Service | Host | Path | Port | HTTPS |
+|---|---|---|---|---|
+| `frontend` | `insight.kaydan.tech` | `/` | 8080 | oui |
+| `backend` | `insight.kaydan.tech` | `/api` | 8000 | oui |
+| `backend` | `insight.kaydan.tech` | `/admin` | 8000 | oui |
+
+Traefik ordonne ses routeurs par longueur de règle : `/api` et `/admin`, plus spécifiques,
+passent avant `/`. Aucune priorité à régler à la main. `/static/` reste servi par le frontend,
+sous la règle `/` — c'est ce qui habille l'admin Django.
+
+Ne **jamais** ajouter de labels `traefik.*` dans le fichier compose : deux jeux de labels sur un
+même conteneur produisent l'erreur « cannot be linked automatically with multiple Services »,
+donc un 502.
+
+### Pourquoi les noms internes sont préfixés `kinsight-`
+
+`dokploy-network` est **partagé par tous les projets** de la plateforme. Le résolveur DNS de
+Docker répond avec les enregistrements de ce réseau partagé et **ne redescend pas** sur le réseau
+privé : tout conteneur attaché aux deux résout donc le service *homonyme d'un autre projet*.
+
+C'est l'origine exacte du 502 de septembre 2026 : le frontend écrivait vers deux « backend »
+étrangers, tous deux fermés sur le port 8000, pendant que le backend du projet écoutait
+parfaitement. Vérifié en laboratoire — depuis un conteneur bi-attaché, `postgres` résolvait vers
+le PostgreSQL d'un autre locataire.
+
+D'où les alias uniques `kinsight-backend`, `kinsight-postgres`, `kinsight-redis`,
+`kinsight-minio`, et les variables d'environnement qui les visent. Les alias courts sont
+conservés pour les conteneurs qui ne voient que le réseau privé (celery), où il n'y a pas
+d'ambiguïté. **Toute nouvelle variable pointant un service interne doit utiliser la forme
+préfixée.**
 
 ## Pré-requis
 
@@ -54,6 +88,11 @@ Ce n'est pas un dépassement de délai (qui donnerait un 504 après ~60 s) : c'e
 `proxy_pass` qui n'arrive pas à ouvrir la connexion vers `backend:8000`.
 
 Deux causes, à départager dans cet ordre :
+
+0. **Collision de noms sur le réseau partagé.** Avant toute autre piste, regarde l'adresse citée
+   dans le journal du frontend : si nginx écrit vers une IP qui n'appartient à aucun conteneur du
+   projet, c'est qu'il a résolu le service d'un autre locataire. Remède : viser un nom préfixé
+   `kinsight-` (voir plus haut).
 
 1. **nginx pointe vers une adresse périmée.** C'est le cas le plus fréquent après
    un redéploiement : le conteneur backend repart avec une nouvelle IP, et un nginx

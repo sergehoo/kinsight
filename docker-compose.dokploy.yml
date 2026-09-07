@@ -17,18 +17,18 @@ x-backend-env: &backend-env
   CSRF_TRUSTED_ORIGINS: https://${DOMAIN:?DOMAIN is required}
   SECURE_SSL_PROXY: "1"
   DJANGO_SECURE_COOKIES: "1"
-  APP_DB_HOST: postgres
+  APP_DB_HOST: kinsight-postgres
   APP_DB_PORT: "5432"
   APP_DB_NAME: ${APP_DB_NAME:-k_insight_app}
   APP_DB_USER: ${APP_DB_USER:-k_insight_app}
   APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD is required}
-  EDW_DB_HOST: postgres
+  EDW_DB_HOST: kinsight-postgres
   EDW_DB_PORT: "5432"
   EDW_DB_NAME: ${EDW_DB_NAME:-k_insight_edw}
   EDW_DB_USER: ${EDW_DB_USER:-k_insight_app}
   EDW_DB_PASSWORD: ${EDW_DB_PASSWORD:?EDW_DB_PASSWORD is required}
-  REDIS_URL: redis://redis:6379/0
-  CELERY_BROKER_URL: redis://redis:6379/1
+  REDIS_URL: redis://kinsight-redis:6379/0
+  CELERY_BROKER_URL: redis://kinsight-redis:6379/1
 
 networks:
   dokploy-network:
@@ -65,7 +65,7 @@ services:
       - ./infra/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     networks:
       kinsight:
-        aliases: [postgres]
+        aliases: [postgres, kinsight-postgres]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -80,7 +80,7 @@ services:
       - kinsight-redis-data:/data
     networks:
       kinsight:
-        aliases: [redis]
+        aliases: [redis, kinsight-redis]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -98,7 +98,7 @@ services:
       - kinsight-minio-data:/data
     networks:
       kinsight:
-        aliases: [minio]
+        aliases: [minio, kinsight-minio]
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 15s
@@ -115,7 +115,7 @@ services:
       CORS_ALLOWED_ORIGINS: https://${DOMAIN:?DOMAIN is required}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL_SYNTHESIS: ${AI_MODEL_SYNTHESIS:-claude-opus-4-8}
-      MINIO_ENDPOINT: minio:9000
+      MINIO_ENDPOINT: kinsight-minio:9000
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?MINIO_ACCESS_KEY is required}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required}
       MINIO_BUCKET: ${MINIO_BUCKET:-k-insight-exports}
@@ -138,7 +138,24 @@ services:
         condition: service_healthy
     networks:
       kinsight:
-        aliases: [backend]
+      # `kinsight-backend` : alias UNIQUE au projet.
+      #
+      # « backend » tout court est un nom que d'autres projets Dokploy portent aussi
+      # sur le réseau partagé. Or le résolveur de Docker répond avec les
+      # enregistrements du réseau PARTAGÉ et ne redescend pas sur le privé : tout
+      # conteneur attaché aux deux réseaux résolvait le service d'autrui. C'est
+      # l'origine exacte du 502 de production — nginx écrivait vers deux adresses
+      # étrangères, toutes deux fermées, pendant que notre backend écoutait.
+      #
+      # Même raison pour `kinsight-postgres`, `kinsight-redis` et `kinsight-minio` :
+      # ce service voit désormais le réseau partagé, il ne doit surtout pas y
+      # résoudre la base de données d'un autre locataire.
+        aliases: [backend, kinsight-backend]
+      # Traefik route directement vers ce service : il doit partager son réseau.
+      # Le routage se déclare dans l'onglet « Domains » de Dokploy — jamais en
+      # labels ici, deux jeux de labels sur un même conteneur produisent un 502.
+      dokploy-network:
+        aliases: [kinsight-backend]
     healthcheck:
       test:
         [

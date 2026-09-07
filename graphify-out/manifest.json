@@ -465,13 +465,13 @@
     "semantic_hash": ""
   },
   "infra/docker-compose.prod.yml": {
-    "mtime": 1788731064.9443738,
-    "ast_hash": "4eee2ea5025c6f78345158a9c040b4fb",
+    "mtime": 1788775415.1111093,
+    "ast_hash": "528f094320f691fd2588eee8c4df6623",
     "semantic_hash": ""
   },
   "infra/docker-compose.yml": {
-    "mtime": 1788731064.9438832,
-    "ast_hash": "5087415fc94b852295ffe05715292d3a",
+    "mtime": 1788775415.1107965,
+    "ast_hash": "709b6de2b9e704dd2cdc82186388d8af",
     "semantic_hash": ""
   },
   "knowledge/accounting/kpi.md": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "docker-compose.dokploy.yml": {
-    "mtime": 1788731064.9434714,
-    "ast_hash": "4025afa0391fa386e92efc0f93a656be",
+    "mtime": 1788775595.4918535,
+    "ast_hash": "24f92a05d9dd5d54e7ff640997361b05",
     "semantic_hash": ""
   },
   "infra/airbyte/README.md": {
@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1788729921.452299,
-    "ast_hash": "7a662c1018ec4975ea75efecef141c7b",
+    "mtime": 1788775649.436936,
+    "ast_hash": "d2bf5cc840296d378b6837e1eb946c8a",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {

@@ -138,7 +138,12 @@ services:
         condition: service_healthy
     networks:
       kinsight-network:
-        aliases: [backend]
+      # `kinsight-backend` : alias UNIQUE au projet. « backend » seul est un nom
+      # que d'autres projets Dokploy utilisent aussi sur le réseau partagé, et le
+      # frontend — attaché aux deux réseaux — résolvait alors leur service, pas le
+      # nôtre. L'ancien alias est conservé pour les conteneurs qui ne voient que
+      # ce réseau (celery), où il n'y a pas d'ambiguïté.
+        aliases: [backend, kinsight-backend]
     healthcheck:
       test:
         [
