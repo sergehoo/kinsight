@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/tests.py": {
-    "mtime": 1788658884.3009274,
-    "ast_hash": "c88ea866933046a892361a44d9480e2d",
+    "mtime": 1788808128.5118651,
+    "ast_hash": "ac64db4e8629496baec618bbfd4f1bec",
     "semantic_hash": ""
   },
   "backend/apps/governance/urls.py": {

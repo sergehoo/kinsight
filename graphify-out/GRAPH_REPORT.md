@@ -1,16 +1,16 @@
 # Graph Report - k-insight  (2026-09-07)
 
 ## Corpus Check
-- 350 files · ~2,985,539 words
+- 350 files · ~2,985,964 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3176 nodes · 6513 edges · 302 communities (218 shown, 84 thin omitted)
-- Extraction: 78% EXTRACTED · 22% INFERRED · 0% AMBIGUOUS · INFERRED: 1445 edges (avg confidence: 0.53)
+- 3193 nodes · 6541 edges · 298 communities (216 shown, 82 thin omitted)
+- Extraction: 78% EXTRACTED · 22% INFERRED · 0% AMBIGUOUS · INFERRED: 1450 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8733d15b`
+- Built from commit: `7efa46d3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -245,13 +245,11 @@
 - [[_COMMUNITY_Community 249|Community 249]]
 - [[_COMMUNITY_Community 250|Community 250]]
 - [[_COMMUNITY_Community 259|Community 259]]
-- [[_COMMUNITY_Community 260|Community 260]]
 - [[_COMMUNITY_Community 261|Community 261]]
 - [[_COMMUNITY_Community 262|Community 262]]
 - [[_COMMUNITY_Community 263|Community 263]]
 - [[_COMMUNITY_Community 264|Community 264]]
 - [[_COMMUNITY_Community 265|Community 265]]
-- [[_COMMUNITY_Community 266|Community 266]]
 - [[_COMMUNITY_Community 267|Community 267]]
 - [[_COMMUNITY_Community 268|Community 268]]
 - [[_COMMUNITY_Community 269|Community 269]]
@@ -273,9 +271,7 @@
 - [[_COMMUNITY_Community 291|Community 291]]
 - [[_COMMUNITY_Community 292|Community 292]]
 - [[_COMMUNITY_Community 293|Community 293]]
-- [[_COMMUNITY_Community 294|Community 294]]
 - [[_COMMUNITY_Community 295|Community 295]]
-- [[_COMMUNITY_Community 296|Community 296]]
 - [[_COMMUNITY_Community 297|Community 297]]
 - [[_COMMUNITY_Community 298|Community 298]]
 - [[_COMMUNITY_Community 299|Community 299]]
@@ -295,29 +291,29 @@
 10. `SyncError` - 48 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `_tool_generate_report()` --calls--> `can_access_domain()`  [INFERRED]
-  backend/apps/ai_copilot/tools.py → backend/apps/accounts/rbac.py
-- `_tool_group_score()` --calls--> `can_access_domain()`  [INFERRED]
-  backend/apps/ai_copilot/tools.py → backend/apps/accounts/rbac.py
 - `build_value_lookup()` --calls--> `can_access_domain()`  [INFERRED]
   backend/apps/ai_copilot/value_resolver.py → backend/apps/accounts/rbac.py
 - `TraceAdmin` --uses--> `AIActionRequest`  [INFERRED]
   backend/apps/ai_copilot/admin.py → backend/apps/ai_copilot/models.py
 - `FournisseurAdmin` --uses--> `AIActionRequest`  [INFERRED]
   backend/apps/ai_copilot/admin.py → backend/apps/ai_copilot/models.py
+- `OutilAdmin` --uses--> `AIActionRequest`  [INFERRED]
+  backend/apps/ai_copilot/admin.py → backend/apps/ai_copilot/models.py
+- `AutomatisationAdmin` --uses--> `AIActionRequest`  [INFERRED]
+  backend/apps/ai_copilot/admin.py → backend/apps/ai_copilot/models.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (302 total, 84 thin omitted)
+## Communities (298 total, 82 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.10
 Nodes (49): dashboardModules, FILTERS_COM, FILTERS_FIN, FILTERS_HR, FILTERS_OPS, FILTERS_RE, FILTERS_RISK, ModuleIcon (+41 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.05
-Nodes (53): useHrKpi(), GlobalFilters(), QUARTERS, YEARS, base(), IconArrowDownRight(), IconProps, IconShield() (+45 more)
+Cohesion: 0.06
+Nodes (48): base(), IconArrowDownRight(), IconProps, IconShield(), IconTrend(), IconUsers(), IconWallet(), KpiCard() (+40 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.12
@@ -328,8 +324,8 @@ Cohesion: 0.05
 Nodes (37): dependencies, class-variance-authority, clsx, echarts, echarts-for-react, framer-motion, react, react-dom (+29 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.15
-Nodes (10): Contrôle d'accès multi-filiales (domaine pur) — cf. ADR-0005.  Le filtrage par p, filter_by_scope(), Périmètre de visibilité multi-filiales (ADR-0005).  Un `Scope` exprime ce qu'un, Périmètre d'accès. `is_group=True` => accès à toutes les filiales.      Sinon, a, Vrai si la filiale `subsidiary_code` est visible dans ce périmètre., Ne conserve que les lignes dont la filiale (via `key`) est autorisée par `scope`, Scope, Périmètre de visibilité (domaine pur). (+2 more)
+Cohesion: 0.14
+Nodes (11): Contrôle d'accès multi-filiales (domaine pur) — cf. ADR-0005.  Le filtrage par p, filter_by_scope(), Périmètre de visibilité multi-filiales (ADR-0005).  Un `Scope` exprime ce qu'un, Périmètre d'accès. `is_group=True` => accès à toutes les filiales.      Sinon, a, Vrai si la filiale `subsidiary_code` est visible dans ce périmètre., Ne conserve que les lignes dont la filiale (via `key`) est autorisée par `scope`, Scope, Périmètre de visibilité (domaine pur). (+3 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.10
@@ -345,43 +341,47 @@ Nodes (13): Enum, Catalogue sémantique du domaine « commercial-clients » (GÉ
 
 ### Community 8 - "Community 8"
 Cohesion: 0.08
-Nodes (34): useAlerts(), useGroupScore(), mockCatalog, mockGovernanceOverview(), mockHrKpi(), QUARTER_BOUNDS, unavailableDashboard(), AlertsPanel() (+26 more)
+Nodes (32): useAlerts(), useGroupScore(), mockCatalog, mockGovernanceOverview(), mockHrKpi(), QUARTER_BOUNDS, unavailableDashboard(), AlertsPanel() (+24 more)
+
+### Community 9 - "Community 9"
+Cohesion: 0.09
+Nodes (5): AiQueryApiTest, FailingMartGateway, GovernanceApiTest, Tests d'API governance : catalogue + KPI RH avec RBAC par périmètre.  Exécution, IA ancrée : réponse sourcée sur le catalogue, refus hors catalogue, gouverné N/D
 
 ### Community 10 - "Community 10"
 Cohesion: 0.30
-Nodes (40): BasePermission, FieldMapping, Correspondance champ source → champ cible (vers le mart)., SyncError, SyncJob, SyncTrigger, IsIntegrationAdmin, Accès réservé aux SUPER_ADMIN (superuser) et ADMIN_INTÉGRATION. (+32 more)
+Nodes (40): BasePermission, FieldMapping, Correspondance champ source → champ cible (vers le mart)., SyncError, SyncLog, SyncTrigger, IsIntegrationAdmin, Accès réservé aux SUPER_ADMIN (superuser) et ADMIN_INTÉGRATION. (+32 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.08
-Nodes (14): KpiError, pct_change(), Erreur de cohérence dans un calcul de KPI (entrée invalide)., Variation relative (current - previous) / |previous|. 0.0 si previous == 0., absenteeism_rate(), Taux d'absentéisme = jours d'absence / jours théoriques travaillés.      Fonctio, AbsenteeismTest, CoreHelpersTest (+6 more)
+Cohesion: 0.07
+Nodes (20): K, aggregate_by(), KpiError, pct_change(), Types et helpers transverses du moteur de KPI.  Conventions (cohérentes avec AUG, Erreur de cohérence dans un calcul de KPI (entrée invalide)., Somme `value_fn` par clé `key_fn`. Base de toute ventilation (par filiale, etc.), Ratio robuste : retourne 0.0 si le dénominateur est nul (évite la division par z (+12 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.17
-Nodes (17): build_value_lookup(), Résolution métrique → valeur réelle du mart (binding, Phase 6).  Fournit le `val, hr_kpi_summary(), Synthèse RH filtrée par périmètre, sur la période demandée.      NB : le turnove, Period, Période d'analyse, bornes demi-ouvertes [start, end[.      `start` est inclus, `, Vrai si `d` appartient à [start, end[., Dernier instant *inclus* dans la période (end exclu => end n'en fait pas partie) (+9 more)
+Cohesion: 0.20
+Nodes (13): Period, Période d'analyse, bornes demi-ouvertes [start, end[.      `start` est inclus, `, Vrai si `d` appartient à [start, end[., Dernier instant *inclus* dans la période (end exclu => end n'en fait pas partie), HrKpiRow, _in_period(), payroll_by_subsidiary(), Grain du mart RH + agrégations servies à l'API (domaine pur).  `HrKpiRow` reprod (+5 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.15
-Nodes (13): K, aggregate_by(), Somme `value_fn` par clé `key_fn`. Base de toute ventilation (par filiale, etc.), payroll_mass(), payroll_mass_by_department(), payroll_mass_by_subsidiary(), Payslip, Masse salariale brute (XOF) sur la période. Entier — pas de float sur l'argent. (+5 more)
+Cohesion: 0.19
+Nodes (10): payroll_mass(), payroll_mass_by_department(), payroll_mass_by_subsidiary(), payroll_mass_result(), Payslip, Masse salariale brute (XOF) sur la période. Entier — pas de float sur l'argent., Masse salariale brute ventilée par filiale (XOF entiers)., Masse salariale brute ventilée par département (XOF entiers). (+2 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.12
-Nodes (25): date, MetricResult, Types et helpers transverses du moteur de KPI.  Conventions (cohérentes avec AUG, Résultat d'un KPI : valeur + unité + contexte (période, dimensions).      `value, Ratio robuste : retourne 0.0 si le dénominateur est nul (évite la division par z, safe_ratio(), average_headcount(), Employee (+17 more)
+Cohesion: 0.14
+Nodes (21): date, MetricResult, Résultat d'un KPI : valeur + unité + contexte (période, dimensions).      `value, average_headcount(), Employee, entries(), exits(), headcount() (+13 more)
 
 ### Community 15 - "Community 15"
 Cohesion: 0.15
 Nodes (7): AccountsConfig, AiCopilotConfig, AppConfig, AuditConfig, GovernanceConfig, IntegrationsConfig, OrganizationsConfig
 
 ### Community 16 - "Community 16"
-Cohesion: 0.08
-Nodes (45): PageShell(), PageShellProps, glass, getDomainHero(), DashboardModuleConfig, getDefaultItemHref(), getItemHref(), getModuleByBaseSlug() (+37 more)
+Cohesion: 0.09
+Nodes (41): PageShell(), PageShellProps, getDomainHero(), DashboardModuleConfig, getDefaultItemHref(), getItemHref(), getModuleByBaseSlug(), getModuleById() (+33 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.22
 Nodes (8): Commercialisation & Encaissements, Construction, Finance, Gouvernance Immobilière, Immobilier, KPI Groupe K-Insight, RH, Stock
 
 ### Community 18 - "Community 18"
-Cohesion: 0.11
-Nodes (17): decrypt(), encrypt(), _key(), _keystream(), mask(), Chiffrement at-rest des secrets de connecteurs (tokens, mots de passe…).  `crypt, Clé dérivée UNE FOIS par processus.      120 000 itérations PBKDF2, c'est le pri, Représentation masquée pour l'affichage (jamais le secret en clair). (+9 more)
+Cohesion: 0.10
+Nodes (18): decrypt(), encrypt(), _key(), _keystream(), Chiffrement at-rest des secrets de connecteurs (tokens, mots de passe…).  `crypt, Clé dérivée UNE FOIS par processus.      120 000 itérations PBKDF2, c'est le pri, DataSource, Environment (+10 more)
 
 ### Community 19 - "Community 19"
 Cohesion: 0.06
@@ -412,8 +412,8 @@ Cohesion: 0.05
 Nodes (14): InMemoryMartGateway, Passerelle de test : sert des lignes fournies en mémoire., AlertsApiTest, GroupScoreApiTest, HrKpiZeroVsAbsentTest, HrScoreApiTest, Human Capital Score : pondération renormalisée, périmètre, période, gouverné N/D, Indice de Gouvernance Groupe : agrégation pondérée des scores de domaine. (+6 more)
 
 ### Community 41 - "Community 41"
-Cohesion: 0.20
-Nodes (5): permissions_for(), RBAC autoritative : rôle utilisateur → permissions de domaines + page d'atterris, MeView, API comptes : profil de l'utilisateur connecté (rôle, périmètre, permissions, at, GET /api/v1/auth/me/ — identité + droits de l'utilisateur authentifié (source de
+Cohesion: 0.14
+Nodes (10): can_access_domain(), permissions_for(), RBAC autoritative : rôle utilisateur → permissions de domaines + page d'atterris, Frontière de sécurité : l'utilisateur a-t-il le droit d'accéder aux données de c, MeView, API comptes : profil de l'utilisateur connecté (rôle, périmètre, permissions, at, GET /api/v1/auth/me/ — identité + droits de l'utilisateur authentifié (source de, Génère la synthèse de gouvernance Groupe + indique les exports disponibles (lect (+2 more)
 
 ### Community 61 - "Community 61"
 Cohesion: 0.11
@@ -424,24 +424,24 @@ Cohesion: 0.05
 Nodes (38): 6.11.1, 6.12.1, 6.14.1, 6.14.2, 6.22.0, 6.22.1, 6.24.1, 6.25.1 (+30 more)
 
 ### Community 63 - "Community 63"
-Cohesion: 0.12
-Nodes (31): AIActionRequest, Demande d'action SENSIBLE en attente d'approbation (rien n'est exécuté avant)., ActionApprovalService, can_use(), PermissionAwareToolExecutor, Outils contrôlés du Copilot : registre déclaratif + exécuteur conscient des perm, Lance une synchronisation d'un connecteur (écriture sensible — passe par approba, Outil inconnu ou désactivé. (+23 more)
+Cohesion: 0.20
+Nodes (17): AIActionRequest, Demande d'action SENSIBLE en attente d'approbation (rien n'est exécuté avant)., ActionApprovalService, PermissionAwareToolExecutor, ActionApproveView, ActionListView, ActionRejectView, ChatView (+9 more)
 
 ### Community 64 - "Community 64"
 Cohesion: 0.12
-Nodes (24): APIView, hr_binding(), Registre des liaisons module ↔ mart (gabarit de branchement des données réelles), AiQueryView, AlertsView, DomainScoreView, ExportGroupScoreView, GroupScoreView (+16 more)
+Nodes (20): hr_binding(), Registre des liaisons module ↔ mart (gabarit de branchement des données réelles), AiQueryView, AlertsView, _dims_avg(), _domain_rows(), DomainScoreView, ExportGroupScoreView (+12 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.19
-Nodes (12): build_context(), Construction du contexte dynamique transmis au Copilot à chaque message.  Le con, detect_tool_intent(), _first_int(), _norm(), Routage d'intention → outil (déterministe, hors-ligne).  Permet au Copilot d'AGI, (tool_name, args) si une intention d'action claire est détectée, sinon None., chat() (+4 more)
+Cohesion: 0.16
+Nodes (14): build_context(), Construction du contexte dynamique transmis au Copilot à chaque message.  Le con, detect_tool_intent(), _first_int(), _norm(), Routage d'intention → outil (déterministe, hors-ligne).  Permet au Copilot d'AGI, (tool_name, args) si une intention d'action claire est détectée, sinon None., chat() (+6 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
 Nodes (8): AssistantCreationTest, La source Shield s'enregistrait en « API REST / Autre »., Sans demande explicite, aucune source ne part en mode simulé., L'étape 3 annonce « connecté en N ms » : la mesure vient du serveur., Rejoue les quatre appels que l'assistant enchaîne à l'étape 3.          Créer la, Création d'une source depuis l'assistant en trois étapes.      Le symptôme rappo, Un DG non superutilisateur est refusé — et on doit pouvoir le lire.          C'e, `environment` absent du sérialiseur était ignoré SANS erreur.          La requêt
 
 ### Community 67 - "Community 67"
-Cohesion: 0.08
-Nodes (20): useAiQuery(), useModuleData(), getModule(), ModuleChart, ModuleDef, ModuleKpi, ModuleRow, ModuleSection (+12 more)
+Cohesion: 0.09
+Nodes (19): useAiQuery(), useModuleData(), getModule(), ModuleChart, ModuleDef, ModuleKpi, ModuleRow, ModuleSection (+11 more)
 
 ### Community 68 - "Community 68"
 Cohesion: 0.06
@@ -449,27 +449,27 @@ Nodes (29): Performance, Progressive Enhancement, Resilience and Accessibility, 
 
 ### Community 69 - "Community 69"
 Cohesion: 0.08
-Nodes (42): ConnecteurAdmin, ConnecteurInline, EndpointAdmin, EndpointInline, ErreurAdmin, IdentifiantAdmin, IdentifiantInline, IdentiteExterneAdmin (+34 more)
+Nodes (40): ConnecteurAdmin, ConnecteurInline, EndpointAdmin, EndpointInline, ErreurAdmin, IdentifiantAdmin, IdentifiantInline, IdentiteExterneAdmin (+32 more)
 
 ### Community 70 - "Community 70"
 Cohesion: 0.06
 Nodes (30): 1. Enable the middleware flag, 1. TypeScript: augment `Future` for loader/action `context`, 2. Create a context, 2. Create a context, 3. Add `middleware` to route objects, 3. Export middleware from your routes, 4. Add a `getContext` function (optional), 4. Update your `getLoadContext` function (if applicable) (+22 more)
 
 ### Community 71 - "Community 71"
-Cohesion: 0.07
-Nodes (8): AiQueryApiTest, BrokenGateway, MartUnavailableDegradationTest, Tests d'API governance : catalogue + KPI RH avec RBAC par périmètre.  Exécution, Frontière de sécurité : la RBAC par domaine est appliquée CÔTÉ BACKEND (pas que, IA ancrée : réponse sourcée sur le catalogue, refus hors catalogue, gouverné N/D, Une panne du mart doit dégrader en état gouverné, JAMAIS en HTTP 500.      Avant, RbacDomainEnforcementTest
+Cohesion: 0.18
+Nodes (3): BrokenGateway, MartUnavailableDegradationTest, Une panne du mart doit dégrader en état gouverné, JAMAIS en HTTP 500.      Avant
 
 ### Community 72 - "Community 72"
 Cohesion: 0.07
 Nodes (27): Basic Override Pattern, Build Output, Bundler Configuration, Client Properties, Configuring Routes, Copying Default Entries, Custom Entry Files, `entry.browser.tsx` (+19 more)
 
 ### Community 73 - "Community 73"
-Cohesion: 0.11
-Nodes (34): CredentialKind, _auth_headers(), _base_url(), build_client(), _disconnected(), _envelope(), fetch_attendance_series(), fetch_hr_kpis() (+26 more)
+Cohesion: 0.12
+Nodes (32): CredentialKind, _base_url(), build_client(), _disconnected(), _envelope(), fetch_attendance_series(), fetch_hr_kpis(), fetch_overview_kpis() (+24 more)
 
 ### Community 74 - "Community 74"
-Cohesion: 0.10
-Nodes (24): SyncIndicator(), IntegrationHealth(), SourceRow(), useHealth(), useShieldHrKpis(), PLACEHOLDERS, ShieldHrKpis(), useOnlineStatus() (+16 more)
+Cohesion: 0.11
+Nodes (21): SyncIndicator(), IntegrationHealth(), SourceRow(), useHealth(), useOnlineStatus(), EmptyChartState(), formatRelative(), IB_VARIANT (+13 more)
 
 ### Community 75 - "Community 75"
 Cohesion: 0.08
@@ -484,8 +484,8 @@ Cohesion: 0.09
 Nodes (21): Conclusion, Concurrent Submissions and Revalidation, Example, Form Submission, Link Navigation, Natural Alignment with Browser Behavior, Network Concurrency Management, Potential for Stale Data (+13 more)
 
 ### Community 78 - "Community 78"
-Cohesion: 0.19
-Nodes (16): hrMartMetrics(), payrollBreakdown(), assertGoverned(), DataLevel, deltaOf(), deltaPercentOf(), effectiveStatus(), hasValue() (+8 more)
+Cohesion: 0.14
+Nodes (22): assertGoverned(), DataLevel, deltaOf(), deltaPercentOf(), effectiveStatus(), hasValue(), KMetric, KSeriesPoint (+14 more)
 
 ### Community 79 - "Community 79"
 Cohesion: 0.10
@@ -493,11 +493,11 @@ Nodes (26): AIProviderRouter, ClaudeClient, DeepSeekClient, default_providers(),
 
 ### Community 80 - "Community 80"
 Cohesion: 0.11
-Nodes (18): BrandFooter(), DEFAULT_WIDTHS, HeroImage(), HeroImageProps, generatedHeroes, domainHeroes, DomainHeroSpec, HeroKpi (+10 more)
+Nodes (17): BrandFooter(), DEFAULT_WIDTHS, HeroImage(), HeroImageProps, generatedHeroes, domainHeroes, DomainHeroSpec, HeroKpi (+9 more)
 
 ### Community 81 - "Community 81"
-Cohesion: 0.11
-Nodes (16): ABC, get_mart_gateway(), _mart_errors(), MartGateway, MartUnavailable, PostgresMartGateway, Passerelle d'accès au Data Warehouse (mart) — ADR-0004.  Le backend lit le mart, Traduit toute erreur psycopg (connexion, auth, schéma) en `MartUnavailable`. (+8 more)
+Cohesion: 0.18
+Nodes (8): _mart_errors(), MartUnavailable, PostgresMartGateway, Traduit toute erreur psycopg (connexion, auth, schéma) en `MartUnavailable`., Le mart (EDW) est injoignable.      Levée par la passerelle Postgres au lieu de, Passerelle de prod : lecture seule sur `mart.hr_kpi` via psycopg (EDW_DSN)., Si un jour une exception non prévue s'échappe, mieux vaut une erreur         fra, RuntimeError
 
 ### Community 82 - "Community 82"
 Cohesion: 0.10
@@ -516,8 +516,8 @@ Cohesion: 0.20
 Nodes (9): Alert, AlertRule, most_severe(), Moteur d'alertes de gouvernance (domaine pur, testé).  Une *règle* compare la va, La règle se déclenche-t-elle ? `None` (donnée absente) → jamais (gouverné)., Alerte la PLUS sévère déclenchée par `value` parmi `rules`, sinon None.      Évi, triggers(), AlertEngineTest (+1 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.27
-Nodes (13): AXIS_LABEL, BASE_GRID, BASE_TOOLTIP, ChartFrame(), SPLIT_LINE, toEchartsValues(), useAccent(), BreakdownChart() (+5 more)
+Cohesion: 0.17
+Nodes (20): AXIS_LABEL, BASE_GRID, BASE_TOOLTIP, ChartFrame(), ChartFrameProps, SPLIT_LINE, toEchartsValues(), useAccent() (+12 more)
 
 ### Community 87 - "Community 87"
 Cohesion: 0.12
@@ -525,7 +525,7 @@ Nodes (15): Concurrency, Configuration, Data Loading and Pre-rendering, Invalid 
 
 ### Community 88 - "Community 88"
 Cohesion: 0.15
-Nodes (15): build(), CAPITAL_HUMAIN, COMMERCIAL, declaredMetricsFor(), DOMAIN_METRICS, FINANCE, IMMOBILIER, mergeMetrics() (+7 more)
+Nodes (14): build(), CAPITAL_HUMAIN, COMMERCIAL, declaredMetricsFor(), DOMAIN_METRICS, FINANCE, IMMOBILIER, MetricSpec (+6 more)
 
 ### Community 89 - "Community 89"
 Cohesion: 0.12
@@ -536,12 +536,12 @@ Cohesion: 0.13
 Nodes (14): 0. Décisions / accès (bloquants), 10. Rapports, 11. Observabilité & CI/CD, 1. Socle (infra persistante), 2. Ingestion — Airbyte (EL), 3. Transformation — dbt, 4. Couche sémantique (domaine pur + catalogue), 5. API backend governance (+6 more)
 
 ### Community 91 - "Community 91"
-Cohesion: 0.10
-Nodes (14): PostgreSQL, fichiers, Airbyte, mart : aucune sonde n'existe. L'état doit, Interroger la racine d'une API renvoie 404 le plus souvent : si un         endpo, Normalisation métier : états gouvernés, by_site réel, insights déterministes., Fausse API Shield : répond selon le chemin ET les filtres reçus., Shield n'expose aucun filtre `site` sur les employés : on ne l'invente pas., Ne rien avoir à dire est une information ; en inventer une ne l'est pas., Série journalière : UNE collecte paginée par indicateur, agrégée localement., Enregistrements AttendanceDay, à la forme réelle du schéma Shield. (+6 more)
+Cohesion: 0.09
+Nodes (16): Échec d'appel qualifié par sa CAUSE, pas seulement par son message.      `kind`, ShieldError, PostgreSQL, fichiers, Airbyte, mart : aucune sonde n'existe. L'état doit, Interroger la racine d'une API renvoie 404 le plus souvent : si un         endpo, Normalisation métier : états gouvernés, by_site réel, insights déterministes., Fausse API Shield : répond selon le chemin ET les filtres reçus., Shield n'expose aucun filtre `site` sur les employés : on ne l'invente pas., Ne rien avoir à dire est une information ; en inventer une ne l'est pas. (+8 more)
 
 ### Community 92 - "Community 92"
-Cohesion: 0.20
-Nodes (14): can_access_domain(), Frontière de sécurité : l'utilisateur a-t-il le droit d'accéder aux données de c, audit_source(), Ce qu'il faut inscrire dans la piste d'audit sur l'origine d'une requête.      S, `via_proxy=False` signale un appel qui n'est PAS passé par le proxy.          Su, L'adresse retenue est celle du conteneur appelant, et l'anomalie est         lis, fetch_or_unavailable(), Exécute une lecture du mart. Retourne `(résultat, disponible)`.      Aucune exce (+6 more)
+Cohesion: 0.11
+Nodes (21): ABC, audit_source(), Ce qu'il faut inscrire dans la piste d'audit sur l'origine d'une requête.      S, `via_proxy=False` signale un appel qui n'est PAS passé par le proxy.          Su, L'adresse retenue est celle du conteneur appelant, et l'anomalie est         lis, fetch_or_unavailable(), get_mart_gateway(), MartGateway (+13 more)
 
 ### Community 93 - "Community 93"
 Cohesion: 0.10
@@ -573,7 +573,7 @@ Nodes (6): AdminAccessTest, MeApiTest, Droits d'un compte : côté application, 
 
 ### Community 100 - "Community 100"
 Cohesion: 0.12
-Nodes (24): shieldAttendanceRateBreakdown(), shieldBreakdownStatus(), shieldInsights(), shieldKpisToMetrics(), shieldPayloadToMetrics(), shieldPresenceBreakdown(), shieldPresenceByKind(), shieldSeriesInsights() (+16 more)
+Nodes (28): hrMartMetrics(), payrollBreakdown(), shieldAttendanceRateBreakdown(), shieldBreakdownStatus(), shieldInsights(), shieldKpisToMetrics(), shieldPayloadToMetrics(), shieldPresenceBreakdown() (+20 more)
 
 ### Community 102 - "Community 102"
 Cohesion: 0.17
@@ -616,8 +616,8 @@ Cohesion: 0.14
 Nodes (9): OrigineDeRequeteTest, `ip_address` refuserait la valeur : l'audit ne doit pas planter pour autant., Le défaut strict : une piste d'audit peu informative vaut mieux qu'une         p, La résolution est simulée en échec plutôt que confiée à un vrai nom         inex, Sur Dokploy, le conteneur Traefik change d'adresse à chaque déploiement :, Passe une requête dans le middleware et rend (requête, est_securisee)., Sinon `request.is_secure()` — donc CSRF et les cookies — dépendrait de lui., Les ignorer ne suffirait pas : la suite de la pile les relirait. (+1 more)
 
 ### Community 112 - "Community 112"
-Cohesion: 0.18
-Nodes (11): Génère la synthèse de gouvernance Groupe + indique les exports disponibles (lect, _tool_generate_report(), _tool_group_score(), aggregate_score(), build_group_report(), _dims_avg(), _domain_rows(), Indice de Gouvernance Groupe consolidé (réutilisé par l'API et l'export).      A (+3 more)
+Cohesion: 0.14
+Nodes (8): FuiteInterFilialeTest, Un paramètre de requête ne doit JAMAIS élargir le périmètre.      La RBAC par do, Le cœur de la règle : même requête, deux périmètres, deux réponses., La fuite ne doit pas non plus passer par l'absence de filtre., « all » est la valeur qui désactive le filtre : elle ne doit pas         désacti, Piège classique : un filtre inconnu qui, ignoré, rend tout le jeu., Exporter est un autre chemin de sortie : il doit obéir à la même règle., Sans trace, une exfiltration ne laisse rien derrière elle.
 
 ### Community 113 - "Community 113"
 Cohesion: 0.20
@@ -684,12 +684,8 @@ Cohesion: 0.25
 Nodes (7): Defining a Resource Route, Error Boundaries, Error Handling, Handling different request methods, Linking to Resource Routes, Resource Routes, Return Types
 
 ### Community 129 - "Community 129"
-Cohesion: 0.39
-Nodes (4): PwaLayer(), BeforeInstallPromptEvent, useInstallPrompt(), useResyncOnReconnect()
-
-### Community 130 - "Community 130"
-Cohesion: 0.31
-Nodes (4): Le smoke test doit détecter une énumération ignorée par le serveur.      C'est l, Exécute la commande avec des comptages contrôlés, et rend sa sortie., Valeur absurde = même total que sans filtre → le serveur n'en tient pas compte., SmokeEnumerationTest
+Cohesion: 0.20
+Nodes (8): useShieldHrKpis(), PLACEHOLDERS, ShieldHrKpis(), PwaLayer(), BeforeInstallPromptEvent, useInstallPrompt(), useResyncOnReconnect(), StateBadge()
 
 ### Community 131 - "Community 131"
 Cohesion: 0.22
@@ -940,28 +936,24 @@ Cohesion: 0.14
 Nodes (11): La doc Shield donne « …/api/v1 » comme URL de base, et c'est ce que         l'ut, Sans budget de temps, une source lente retenait la requête au-delà des         6, Étiqueter « payload » une liaison coupée envoie chercher un problème de, Transport : ce qui distingue « refus », « panne » et « lenteur »., Un refus est définitif : réessayer masquerait une erreur de configuration., 0 mesuré est une information : il ne doit jamais devenir None., 4 compteurs + 1 liste de sites + 3 lectures de période + 2 par site., Compteurs d'usage : ce qu'on mesure, et ce qu'on ne journalise jamais. (+3 more)
 
 ### Community 221 - "Community 221"
-Cohesion: 0.16
-Nodes (22): UserMenu(), API_BASE, apiDownload(), apiGet(), apiGetMeta(), apiPost(), ApiResult, authHeaders() (+14 more)
+Cohesion: 0.08
+Nodes (36): ChatBody, useApproveAction(), useCopilotChat(), useRejectAction(), downloadGroupExport(), UserMenu(), ActionCard(), AICopilotPanel() (+28 more)
 
 ### Community 235 - "Community 235"
 Cohesion: 0.20
 Nodes (5): AdminSecretTest, Aucun secret ne doit apparaître dans une page d'administration., `masked` déchiffre, donc dérive la clé. Une colonne de liste le ferait une, Clé de chiffrement changée : la page doit le DIRE, pas planter.          On vise, Un formulaire écrirait la saisie TELLE QUELLE dans le champ chiffré.
 
 ### Community 236 - "Community 236"
-Cohesion: 0.06
-Nodes (33): APITestCase, AuthMethod, ConnectorCredential, Secret chiffré at-rest. Jamais exposé en clair par l'API., SourceStatus, SourceType, Dépose un secret, en REMPLAÇANT celui du même type s'il existe.          Un conn, EchecsShieldQualifiesTest (+25 more)
+Cohesion: 0.05
+Nodes (39): APITestCase, mask(), Représentation masquée pour l'affichage (jamais le secret en clair)., AuthMethod, ConnectorCredential, Secret chiffré at-rest. Jamais exposé en clair par l'API., SourceStatus, SourceType (+31 more)
 
 ### Community 242 - "Community 242"
-Cohesion: 0.23
-Nodes (13): _availability_dashboard(), blank_hr_summary(), _clamp_gauge(), _compact_xof(), _format_compact(), _format_int(), governance_overview(), _hr_dashboard() (+5 more)
+Cohesion: 0.12
+Nodes (25): _availability_dashboard(), blank_hr_summary(), _clamp_gauge(), _compact_xof(), _format_compact(), _format_int(), governance_overview(), _hr_dashboard() (+17 more)
 
 ### Community 259 - "Community 259"
 Cohesion: 0.22
 Nodes (7): _domain_score_fn(), Fonction de score global d'un domaine (pondérations propres au domaine)., domain_score(), DomainDimension, DomainScoreFramework, Catalogue des Scores de Gouvernance par domaine (domaine pur, GÉNÉRÉ).  Source d, Score global 0–100 d'un domaine ; None si domaine inconnu ou aucune dimension di
-
-### Community 260 - "Community 260"
-Cohesion: 0.15
-Nodes (16): ChartFrameProps, CommonProps, SERIES_WINDOWS, SeriesWindow, ShieldHrQuery, ShieldHrResponse, ShieldInsight, ShieldKpi (+8 more)
 
 ### Community 261 - "Community 261"
 Cohesion: 0.25
@@ -980,60 +972,56 @@ Cohesion: 0.19
 Nodes (14): _adresse(), _client_derriere_le_proxy(), client_ip(), _est_de_confiance(), À qui fait-on confiance pour dire d'où vient une requête ?  Le backend est joign, Analyse une adresse, en tolérant la forme `ip:port` et les crochets IPv6., Remonte la chaîne `X-Forwarded-For` jusqu'au premier maillon non fiable.      La, L'adresse du client, telle que le middleware l'a établie.      Retombe sur le pa (+6 more)
 
 ### Community 265 - "Community 265"
-Cohesion: 0.12
-Nodes (15): Any, Accès en lecture à l'API Shield. Ne connaît aucune règle métier., Si un appel identique est déjà en cours, attend son résultat., Total d'une collection paginée DRF, sans rapatrier les lignes.          `limit=1, Première page d'une collection, normalisée en liste de dicts., Parcourt les pages via offset, borné par `max_pages` ET par le temps.          D, Sonde légère : la source répond-elle, et nous laisse-t-elle lire ?, Délai demandé par la source, en secondes. 1 s par défaut si l'en-tête manque. (+7 more)
-
-### Community 266 - "Community 266"
-Cohesion: 0.13
-Nodes (18): ChatBody, useApproveAction(), useCopilotChat(), useRejectAction(), downloadGroupExport(), ActionCard(), AICopilotPanel(), SUGGESTIONS (+10 more)
+Cohesion: 0.14
+Nodes (11): Any, Accès en lecture à l'API Shield. Ne connaît aucune règle métier., Si un appel identique est déjà en cours, attend son résultat., Total d'une collection paginée DRF, sans rapatrier les lignes.          `limit=1, Première page d'une collection, normalisée en liste de dicts., Parcourt les pages via offset, borné par `max_pages` ET par le temps.          D, Sonde légère : la source répond-elle, et nous laisse-t-elle lire ?, Délai demandé par la source, en secondes. 1 s par défaut si l'en-tête manque. (+3 more)
 
 ### Community 267 - "Community 267"
-Cohesion: 0.15
+Cohesion: 0.17
 Nodes (4): Une source n'est « connectée » qu'après une réponse VALIDE.      Avant, `network, Un 401 prouve qu'une API répond et refuse le jeton — ce n'est pas la         mêm, « Injoignable » ne dit pas s'il faut corriger un certificat ou un DNS., SondeConnexionTest
 
+### Community 268 - "Community 268"
+Cohesion: 0.29
+Nodes (3): AdminUtilisateurTest, L'admin Django se charge-t-il vraiment ?  `manage.py check` valide les noms de c, Le mot de passe doit être HACHÉ, et le rôle attribuable sans passer par un shell
+
 ### Community 269 - "Community 269"
-Cohesion: 0.20
-Nodes (7): Tâches Celery du Copilot (Phase 5) — automatisations planifiées.  Gouvernance :, Exécute une automatisation (appelable directement — testable hors Beat)., Tâche périodique (Beat) : exécute les automatisations dues., run_automation(), run_due_automations(), AutomationTest, Phase 5 : automatisation lit en auto, mais une action sensible passe par approba
+Cohesion: 0.09
+Nodes (25): Tâches Celery du Copilot (Phase 5) — automatisations planifiées.  Gouvernance :, Exécute une automatisation (appelable directement — testable hors Beat)., Tâche périodique (Beat) : exécute les automatisations dues., run_automation(), run_due_automations(), AutomationTest, Phase 5 : automatisation lit en auto, mais une action sensible passe par approba, build_default_registry() (+17 more)
 
 ### Community 271 - "Community 271"
-Cohesion: 0.14
-Nodes (4): ChatApiTest, build_default_registry(), Tool, ToolRegistry
+Cohesion: 0.13
+Nodes (3): ActionableChatTest, ChatApiTest, Le Copilot AGIT : lecture exécutée, écriture → approbation, droits respectés.
 
 ### Community 275 - "Community 275"
 Cohesion: 0.20
 Nodes (8): AbstractUser, Administration des comptes et de leur périmètre.  On étend `UserAdmin` de Django, Ce que l'utilisateur voit réellement, en une colonne.          Afficher la liste, UtilisateurAdmin, Utilisateurs, rôles et périmètres (RBAC multi-filiales, ADR-0005).  Le périmètre, Role, User, UserAdmin
 
 ### Community 277 - "Community 277"
-Cohesion: 0.11
-Nodes (14): useGovernanceOverview(), SideRail(), ROLE_LABELS, ChevronDown(), DASHBOARD_IMAGES, DASHBOARD_KEYS, DETAIL_MODULE, DetailMetric (+6 more)
+Cohesion: 0.08
+Nodes (24): useGovernanceOverview(), AppHeader(), Avatar(), Brand(), CircleButton(), CircleButtonProps, HeaderActions(), SideRail() (+16 more)
 
 ### Community 279 - "Community 279"
 Cohesion: 0.15
 Nodes (5): IntegrationCentreTest, Centre d'intégrations : création, test réel, secrets, santé consolidée., Le centre est réservé : la cause doit être un refus explicite., Un jeton refusé ne doit pas passer pour « hôte joignable »., Ne pas inventer l'API Odoo : sans `database`, la config est incomplète.
 
 ### Community 281 - "Community 281"
-Cohesion: 0.29
-Nodes (4): DerivationCleTest, L'admin Django se charge-t-il vraiment ?  `manage.py check` valide les noms de c, La clé de chiffrement ne doit être dérivée qu'une fois par processus.      120 0, Sinon un `override_settings` sur la clé déchiffrerait avec l'ancienne.
+Cohesion: 0.40
+Nodes (3): DerivationCleTest, La clé de chiffrement ne doit être dérivée qu'une fois par processus.      120 0, Sinon un `override_settings` sur la clé déchiffrerait avec l'ancienne.
 
 ### Community 290 - "Community 290"
-Cohesion: 0.15
-Nodes (16): DataSource, fetch_hr_reference(), get_odoo_source(), Squelette connecteur Odoo RH (ADR-0003/0004) — AUCUN appel réel à ce stade.  Vol, État gouverné du référentiel RH Odoo. Ne renvoie jamais de données.      `not_co, network_probe(), probe_target(), _qualifier_exception() (+8 more)
+Cohesion: 0.12
+Nodes (19): DataSource, fetch_hr_reference(), get_odoo_source(), État gouverné du référentiel RH Odoo. Ne renvoie jamais de données.      `not_co, network_probe(), probe_target(), _qualifier_exception(), Sonde réseau réelle. « Connectée » exige une réponse VALIDE, pas une réponse. (+11 more)
 
 ### Community 291 - "Community 291"
 Cohesion: 0.20
 Nodes (15): evaluer_presence_globale(), evaluer_sites(), evaluer_tendance(), _insight(), part_absents(), part_retards(), _pct(), Seuils et règles de décision RH — un seul endroit, explicite et testable.  Deux (+7 more)
 
 ### Community 292 - "Community 292"
-Cohesion: 0.19
-Nodes (12): useHrScore(), childrenAt(), DIM_COLORS, DRILL_LEVELS, FALLBACK_DIMENSIONS, FILIALE_TO_CODE, fmtScore(), HumanCapitalScore() (+4 more)
+Cohesion: 0.10
+Nodes (25): useHrScore(), GlobalFilters(), QUARTERS, YEARS, FilterTrigger(), GenericFilter(), PeriodFilter(), SubsidiaryFilter() (+17 more)
 
 ### Community 293 - "Community 293"
 Cohesion: 0.15
 Nodes (5): Client HTTP Kaydan Shield : transport, erreurs, pagination, cache.  Séparé de la, Compteurs d'usage d'un client. Aucun jeton, aucune donnée personnelle :     uniq, Cache mémoire court, protégé par un verrou (Django sert en multi-thread)., ShieldMetrics, _TTLCache
-
-### Community 294 - "Community 294"
-Cohesion: 0.23
-Nodes (7): AppHeader(), Avatar(), Brand(), CircleButton(), CircleButtonProps, HeaderActions(), TopNav()
 
 ### Community 297 - "Community 297"
 Cohesion: 0.33
@@ -1042,17 +1030,17 @@ Nodes (6): _collect_flag(), collect_period(), _oldest_reliable(), Tous les enreg
 ## Knowledge Gaps
 - **847 isolated node(s):** `ProviderKind`, `Meta`, `Role`, `Mode`, `Status` (+842 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **84 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **82 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ShieldError` connect `Community 265` to `Community 2`, `Community 66`, `Community 130`, `Community 293`, `Community 295`, `Community 73`, `Community 297`, `Community 138`, `Community 236`, `Community 267`, `Community 213`, `Community 279`, `Community 91`, `Community 63`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
-- **Why does `ConnectorCredential` connect `Community 236` to `Community 96`, `Community 66`, `Community 130`, `Community 69`, `Community 295`, `Community 10`, `Community 235`, `Community 138`, `Community 267`, `Community 18`, `Community 83`, `Community 213`, `Community 279`, `Community 91`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **Why does `AssistantCreationTest` connect `Community 66` to `Community 265`, `Community 10`, `Community 236`, `Community 69`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `ShieldError` connect `Community 91` to `Community 2`, `Community 66`, `Community 293`, `Community 295`, `Community 73`, `Community 265`, `Community 297`, `Community 236`, `Community 269`, `Community 138`, `Community 267`, `Community 213`, `Community 279`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
+- **Why does `ConnectorCredential` connect `Community 236` to `Community 96`, `Community 66`, `Community 69`, `Community 295`, `Community 10`, `Community 235`, `Community 138`, `Community 267`, `Community 18`, `Community 83`, `Community 213`, `Community 279`, `Community 91`?**
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+- **Why does `ShieldConnectorTest` connect `Community 91` to `Community 69`, `Community 265`, `Community 10`, `Community 236`, `Community 79`, `Community 18`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Are the 66 inferred relationships involving `ConnectorCredential` (e.g. with `ConnecteurAdmin` and `ConnecteurInline`) actually correct?**
   _`ConnectorCredential` has 66 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 64 inferred relationships involving `DataSource` (e.g. with `ConnecteurAdmin` and `ConnecteurInline`) actually correct?**
