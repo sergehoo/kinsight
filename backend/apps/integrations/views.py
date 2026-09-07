@@ -27,6 +27,7 @@ from .models import (
     SyncTrigger,
     WebhookEvent,
 )
+from . import shield_auth
 from .permissions import IsIntegrationAdmin
 from .serializers import (
     ConnectorCredentialSerializer,
@@ -253,6 +254,40 @@ class DataSourceViewSet(viewsets.ModelViewSet):
                 "tested_at": connector.last_tested_at.isoformat() if connector and connector.last_tested_at else None,
             }
         )
+
+    @action(detail=True, methods=["post"], url_path="reauthenticate")
+    def reauthenticate(self, request, pk=None):
+        """Relance la session Shield : dépôt d'un couple neuf, ou renouvellement forcé.
+
+        N'a de sens que si le renouvellement automatique a échoué — un refresh
+        expiré ou révoqué ne se ressuscite pas. Le couple fourni est chiffré au
+        dépôt et ne ressort jamais ; sans couple fourni, on tente le refresh en
+        place, ce qui suffit dès que celui-ci est encore valide.
+        """
+        source = self.get_object()
+        connector = getattr(source, "connector", None)
+        if connector is None:
+            return Response({"detail": "Connecteur absent."}, status=http_status.HTTP_400_BAD_REQUEST)
+
+        acces = (request.data.get("access") or "").strip()
+        refresh = (request.data.get("refresh") or "").strip()
+        if acces or refresh:
+            if not (acces and refresh):
+                return Response(
+                    {"detail": "Fournissez les DEUX jetons : sans refresh, la session "
+                               "redeviendrait manuelle à la première expiration."},
+                    status=http_status.HTTP_400_BAD_REQUEST,
+                )
+            shield_auth.deposer_couple(connector, acces=acces, refresh=refresh)
+            _audit(request, "integration.shield.reauth", source, {"depot": True})
+            return Response({"ok": True, "message": "Session déposée.",
+                             "auth": shield_auth.etat_auth(connector)})
+
+        ok, message = shield_auth.renouveler(connector, force=True)
+        _audit(request, "integration.shield.reauth", source, {"depot": False, "ok": ok})
+        return Response({"ok": ok, "message": message,
+                         "auth": shield_auth.etat_auth(connector)},
+                        status=http_status.HTTP_200_OK if ok else http_status.HTTP_409_CONFLICT)
 
     @action(detail=True, methods=["post"], url_path="sync-now")
     def sync_now(self, request, pk=None):

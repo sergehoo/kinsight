@@ -34,6 +34,7 @@ from apps.audit.models import AccessLog
 from apps.organizations.models import Subsidiary
 
 from .shield_client import ShieldClient, ShieldError
+from .tests_auth import jwt_factice
 
 User = get_user_model()
 BASE = "/api/v1/integrations"
@@ -441,10 +442,38 @@ class ShieldConnectorTest(TestCase):
         self._source()
         with patch.object(ShieldClient, "get_json", return_value={"count": 1}):
             self.assertTrue(shield.shield_health()["reachable"])
+
+    def test_un_defaut_dauthentification_nest_plus_confondu_avec_une_panne(self):
+        """Deux causes, deux gestes : réauthentifier n'est pas attendre.
+
+        Sans jeton de renouvellement, un refus d'authentification est un état
+        `auth_required` — pas `error`, qui laisserait croire à une source tombée et
+        ferait chercher du côté du réseau.
+        """
+        self._source()
         with patch.object(ShieldClient, "get_json", side_effect=ShieldError("auth", "refus", 403)):
-            health = shield.shield_health()
-        self.assertFalse(health["reachable"])
-        self.assertEqual(health["status"], "error")
+            sante = shield.shield_health()
+        self.assertFalse(sante["reachable"])
+        self.assertEqual(sante["status"], "auth_required")
+        self.assertEqual(sante["auth"]["etat"], "auth_required")
+
+    def test_une_panne_reseau_reste_une_erreur(self):
+        """La distinction ne doit pas tout réétiqueter : un hôte injoignable est
+        bien une panne, et son geste est de regarder la liaison."""
+        source = self._source()
+        acces = jwt_factice(dans=timedelta(hours=2))
+        cred = ConnectorCredential(connector=source.connector, kind="api_token")
+        cred.set_secret(acces)
+        cred.save()
+        refresh = ConnectorCredential(connector=source.connector, kind="oauth_refresh")
+        refresh.set_secret("r")
+        refresh.save()
+        source.connector.refresh_from_db()
+
+        with patch.object(ShieldClient, "get_json",
+                          side_effect=ShieldError("network", "hôte injoignable")):
+            sante = shield.shield_health()
+        self.assertEqual(sante["status"], "error")
 
 
 class ShieldApiEndpointsTest(APITestCase):
@@ -1558,22 +1587,41 @@ class SecretUniqueTest(APITestCase):
         cred = self.connecteur.credentials.get(kind="api_token")
         self.assertEqual(cred.secret, "jeton-courant")
 
-    def test_le_connecteur_envoie_le_jeton_le_plus_recent(self):
-        """Le cœur du 401 : c'était le premier jeton jamais enregistré qui partait."""
-        ancien = ConnectorCredential(connector=self.connecteur, kind="api_token", label="ancien")
-        ancien.set_secret("jeton-tres-ancien")
-        ancien.save()
-        # On force une date antérieure : `created_at` est auto_now_add.
-        ConnectorCredential.objects.filter(pk=ancien.pk).update(
-            created_at=timezone.now() - timedelta(days=30))
-        recent = ConnectorCredential(connector=self.connecteur, kind="api_key", label="récent")
-        recent.set_secret("jeton-tout-neuf")
-        recent.save()
+    def test_sous_session_jwt_le_jeton_denvoi_est_le_jeton_dacces(self):
+        """Sous `bearer`, l'en-tête porte le jeton d'ACCÈS, pas n'importe quel secret.
+
+        Une clé d'API est un identifiant d'une autre nature, qui se présente
+        autrement : la mêler au choix du jeton de session enverrait le mauvais
+        secret. C'est `api_token` qui fait foi, et `_pick_secret` — qui privilégie le
+        plus récent — ne sert plus qu'aux méthodes à secret statique.
+        """
+        self.connecteur.credentials.all().delete()
+        acces = ConnectorCredential(connector=self.connecteur, kind="api_token", label="accès")
+        acces.set_secret("jeton-de-session")
+        acces.save()
+        cle = ConnectorCredential(connector=self.connecteur, kind="api_key", label="clé")
+        cle.set_secret("cle-dun-autre-usage")
+        cle.save()
 
         self.source.refresh_from_db()
         entetes = shield._auth_headers(self.source)
-        self.assertIn("jeton-tout-neuf", entetes.get("Authorization", ""),
-                      "le connecteur envoie encore un jeton périmé")
+        self.assertEqual(entetes.get("Authorization"), "Bearer jeton-de-session")
+        self.assertNotIn("cle-dun-autre-usage", str(entetes))
+
+    def test_pick_secret_privilegie_toujours_le_plus_recent(self):
+        """Le tri descendant reste la règle pour les secrets statiques : c'était
+        l'envoi du PLUS ANCIEN qui produisait des 401 après chaque rotation."""
+        self.connecteur.credentials.all().delete()
+        ancien = ConnectorCredential(connector=self.connecteur, kind="api_key", label="ancien")
+        ancien.set_secret("cle-perimee")
+        ancien.save()
+        ConnectorCredential.objects.filter(pk=ancien.pk).update(
+            created_at=timezone.now() - timedelta(days=30))
+        recent = ConnectorCredential(connector=self.connecteur, kind="api_token", label="récent")
+        recent.set_secret("cle-courante")
+        recent.save()
+
+        self.assertEqual(shield._pick_secret(self.connecteur), "cle-courante")
 
     def test_des_types_differents_coexistent(self):
         """La contrainte porte sur (connecteur, type) : un client_id et un secret

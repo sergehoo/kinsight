@@ -106,6 +106,7 @@ class ShieldMetrics:
         self.cache_misses = 0
         self.retries = 0
         self.duration_ms = 0.0
+        self.reauth = 0
         self.errors: dict[str, int] = {}
         self.last_sync: str | None = None
         self.by_path: dict[str, int] = {}
@@ -120,6 +121,7 @@ class ShieldMetrics:
             "cache_misses": self.cache_misses,
             "retries": self.retries,
             "duration_ms": round(self.duration_ms, 1),
+            "reauth": self.reauth,
             "errors": dict(self.errors),
             "last_sync": self.last_sync,
             "by_path": dict(self.by_path),
@@ -130,7 +132,8 @@ class ShieldClient:
     """Accès en lecture à l'API Shield. Ne connaît aucune règle métier."""
 
     def __init__(self, base_url: str, headers: dict[str, str], timeout: int = DEFAULT_TIMEOUT,
-                 max_attempts: int = MAX_ATTEMPTS, budget_seconds: int = BUDGET_TOTAL_SECONDS):
+                 max_attempts: int = MAX_ATTEMPTS, budget_seconds: int = BUDGET_TOTAL_SECONDS,
+                 on_auth_failure=None):
         self.base_url = (base_url or "").rstrip("/")
         self.headers = headers
         self.timeout = timeout
@@ -141,6 +144,10 @@ class ShieldClient:
         # temps. Pour ce cas, un seul essai, et c'est l'utilisateur qui recommence.
         self.max_attempts = max(1, max_attempts)
         self.budget_seconds = budget_seconds
+        # Rappel fourni par l'appelant : renouvelle la session et rend les nouveaux
+        # en-têtes, ou None s'il n'y a rien à tenter. Invoqué AU PLUS UNE FOIS par
+        # requête, sur un 401 seulement — jamais en boucle.
+        self.on_auth_failure = on_auth_failure
         self._cache = _TTLCache()
         self.metrics = ShieldMetrics()
         # Déduplication : deux widgets demandant la même donnée en même temps ne
@@ -195,6 +202,7 @@ class ShieldClient:
         self.metrics.cache_misses += 1
 
         last: ShieldError | None = None
+        deja_reauthentifie = False
         started = time.monotonic()
         try:
             for attempt in range(self.max_attempts):
@@ -218,8 +226,30 @@ class ShieldClient:
                             time.sleep(min(wait, MAX_RETRY_AFTER))
                             continue
                         break
-                    # 401/403 : la source répond, elle refuse. Réessayer est inutile
-                    # et masquerait un problème de configuration derrière un timeout.
+                    # 401 : le jeton est refusé. Un renouvellement peut y remédier —
+                    # une seule fois, et hors du budget de reprises : avec
+                    # `max_attempts=1` (test interactif) il n'en resterait aucune.
+                    if exc.code == 401 and self.on_auth_failure and not deja_reauthentifie:
+                        deja_reauthentifie = True
+                        entetes = self.on_auth_failure()
+                        if entetes:
+                            self.headers = entetes
+                            self.metrics.reauth += 1
+                            try:
+                                data = self._fetch(self._url(path, params))
+                                if use_cache:
+                                    self._cache.set(url, data)
+                                self.metrics.last_sync = time.strftime(
+                                    "%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                                return data
+                            except urllib.error.HTTPError as rejeu:
+                                raise ShieldError(
+                                    "auth",
+                                    f"Accès refusé par Shield sur {path} même après renouvellement",
+                                    rejeu.code,
+                                ) from rejeu
+                    # 401 sans recours, ou 403 : la source répond, elle refuse.
+                    # Réessayer serait inutile et masquerait le refus derrière un timeout.
                     if exc.code in (401, 403):
                         raise ShieldError("auth", f"Accès refusé par Shield sur {path}", exc.code) from exc
                     if exc.code < 500:

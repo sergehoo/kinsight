@@ -6,6 +6,7 @@ from .models import (
     DataConnector,
     DataSource,
     FieldMapping,
+    SourceType,
     SyncError,
     SyncJob,
     SyncLog,
@@ -83,15 +84,30 @@ class ConnectorEndpointSerializer(serializers.ModelSerializer):
 class DataConnectorSerializer(serializers.ModelSerializer):
     endpoints = ConnectorEndpointSerializer(many=True, read_only=True)
     credentials = ConnectorCredentialSerializer(many=True, read_only=True)
+    session_auth = serializers.SerializerMethodField()
 
     class Meta:
         model = DataConnector
         fields = [
             "id", "source", "base_url", "auth_method", "headers", "config",
             "last_tested_at", "last_test_ok", "last_test_message", "last_latency_ms",
-            "endpoints", "credentials",
+            "endpoints", "credentials", "session_auth",
         ]
         read_only_fields = ["id", "last_tested_at", "last_test_ok", "last_test_message", "last_latency_ms"]
+
+
+    def get_session_auth(self, obj):
+        """État de la session Shield : des dates et des états, jamais un jeton.
+
+        Permet à la fiche d'annoncer « session valide jusqu'à… » et
+        « renouvellement automatique activé » au lieu de réclamer un collage
+        manuel de jeton à chaque expiration.
+        """
+        if obj.source.source_type != SourceType.KAYDAN_SHIELD:
+            return None
+        from .shield_auth import etat_auth
+
+        return etat_auth(obj)
 
 
 class DataSourceSerializer(serializers.ModelSerializer):

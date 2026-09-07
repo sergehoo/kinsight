@@ -21,6 +21,7 @@ from django.utils import timezone
 from . import shield_endpoints as EP
 from .models import AuthMethod, CredentialKind, DataSource, SourceStatus, SourceType
 from . import shield_rules as R
+from . import shield_auth
 from .shield_client import MAX_ATTEMPTS, ShieldClient, ShieldError
 
 SHIELD_SOURCE_SLUG = "kaydan-shield"
@@ -82,11 +83,19 @@ def _auth_headers(source: DataSource) -> dict[str, str]:
             headers["Authorization"] = f"Bearer {token}"
         return headers
     headers.update({k: str(v) for k, v in (connector.headers or {}).items()})
+    if connector.auth_method in (AuthMethod.BEARER, AuthMethod.OAUTH2):
+        # Session JWT : on passe par le magasin de jetons, qui renouvelle AVANT
+        # l'expiration plutôt que d'attendre le 401. Un jeton absent ou une session
+        # morte rendent une chaîne vide : pas d'en-tête, et Shield répondra 401,
+        # qualifié en `auth_required` par la santé du connecteur.
+        jeton, _message = shield_auth.jeton_pour_appel(connector)
+        if jeton:
+            headers["Authorization"] = f"Bearer {jeton}"
+        return headers
+
     secret = _pick_secret(connector) or (getattr(settings, "SHIELD_API_TOKEN", "") or "")
     if not secret:
         return headers
-    if connector.auth_method in (AuthMethod.BEARER, AuthMethod.OAUTH2):
-        headers["Authorization"] = f"Bearer {secret}"
     elif connector.auth_method == AuthMethod.API_KEY:
         name = (connector.config or {}).get("api_key_header", "X-API-Key")
         headers[name] = secret
@@ -98,7 +107,25 @@ def _auth_headers(source: DataSource) -> dict[str, str]:
 
 # ── Client ───────────────────────────────────────────────────────────────────
 def build_client(source: DataSource, max_attempts: int = MAX_ATTEMPTS) -> ShieldClient:
-    return ShieldClient(_base_url(source), _auth_headers(source), max_attempts=max_attempts)
+    """Client Shield, capable de rattraper UN 401 par renouvellement de session.
+
+    Le rappel force le renouvellement : on n'arrive ici que parce que Shield vient
+    de refuser le jeton, donc l'échéance lue localement était optimiste — la
+    contrôler une seconde fois ne servirait qu'à ne rien faire.
+    """
+    connector = getattr(source, "connector", None)
+
+    def reauthentifier():
+        if connector is None or connector.auth_method not in (AuthMethod.BEARER, AuthMethod.OAUTH2):
+            return None
+        ok, _message = shield_auth.renouveler(connector, force=True)
+        return _auth_headers(source) if ok else None
+
+    return ShieldClient(
+        _base_url(source), _auth_headers(source),
+        max_attempts=max_attempts,
+        on_auth_failure=reauthentifier if connector is not None else None,
+    )
 
 
 def _today() -> str:
@@ -587,13 +614,29 @@ def shield_health() -> dict[str, Any]:
     source, blocked = _guard("health")
     if blocked:
         return {**blocked, "reachable": False}
+    connector = getattr(source, "connector", None)
     client = build_client(source)
     ok, message = client.healthcheck()
+
+    # Un jeton d'accès expiré alors qu'un renouvellement est possible N'EST PAS une
+    # panne : `build_client` vient justement de renouveler avant l'appel. Ce qui est
+    # une panne, c'est un refresh mort — et cela mérite son propre état, parce que le
+    # geste attendu n'est pas le même : réauthentifier, et non attendre que la source
+    # revienne.
+    auth = shield_auth.etat_auth(connector) if connector is not None else {}
+    if ok:
+        statut = "connected"
+    elif auth.get("etat") == "auth_required":
+        statut = "auth_required"
+    else:
+        statut = "error"
+
     return {
-        "status": "connected" if ok else "error",
+        "status": statut,
         "source": source.name or "Kaydan Shield",
         "reachable": ok,
         "detail": message,
+        "auth": auth,
         "checked_at": timezone.now().isoformat(),
         # Compteurs d'usage : chemins, durées, types d'erreur. Jamais de jeton,
         # jamais de filtre (un filtre peut porter un identifiant de personne).
