@@ -12,14 +12,15 @@ Internet ──TLS──▶ Traefik (Dokploy, dokploy-network)
                  frontend (nginx :8080)
                      ├─ /            → SPA React
                      ├─ /api/        → proxy ▶ backend:8000   (réseau interne kinsight)
-                     ├─ /admin/      → proxy ▶ backend:8000
+                     ├─ /manage/app/back/ → proxy ▶ backend:8000  (admin Django)
                      └─ /static/     → fichiers collectés (volume django-static)
 backend (gunicorn) ─ postgres (app + EDW) · redis · minio
 celery-worker / celery-beat ─ orchestrent Airbyte + dbt
 ```
 
-Traefik route **trois chemins** sur le même domaine : `/` vers le frontend, `/api` et `/admin`
-vers le backend. Aucun port n'est publié ; postgres, redis et minio restent sur le seul réseau
+Traefik route **trois chemins** sur le même domaine : `/` vers le frontend, `/api` et
+`/manage/app/back` (l'admin Django) vers le backend. `/admin/…` appartient au SPA, pas à
+Django — les deux se disputaient ce préfixe. Aucun port n'est publié ; postgres, redis et minio restent sur le seul réseau
 interne `kinsight`.
 
 ### Routage à déclarer dans l'onglet « Domains » de Dokploy
@@ -28,10 +29,10 @@ interne `kinsight`.
 |---|---|---|---|---|
 | `frontend` | `insight.kaydan.tech` | `/` | 8080 | oui |
 | `backend` | `insight.kaydan.tech` | `/api` | 8000 | oui |
-| `backend` | `insight.kaydan.tech` | `/admin` | 8000 | oui |
+| `backend` | `insight.kaydan.tech` | `/manage/app/back` | 8000 | oui |
 
-Traefik ordonne ses routeurs par longueur de règle : `/api` et `/admin`, plus spécifiques,
-passent avant `/`. Aucune priorité à régler à la main. `/static/` reste servi par le frontend,
+Traefik ordonne ses routeurs par longueur de règle : `/api` et `/manage/app/back`, plus
+spécifiques, passent avant `/`. Aucune priorité à régler à la main. `/static/` reste servi par le frontend,
 sous la règle `/` — c'est ce qui habille l'admin Django.
 
 Ne **jamais** ajouter de labels `traefik.*` dans le fichier compose : deux jeux de labels sur un
@@ -81,7 +82,7 @@ préfixée.**
 ## Dépannage — « 502 Bad Gateway » sur /api/ alors que le site s'affiche
 
 Symptôme : `https://DOMAIN/` et `/healthz` répondent 200, `/static/` aussi, mais **tout**
-ce qui passe par `/api/` et `/admin/` renvoie 502 — et vite (moins d'une seconde),
+ce qui passe par `/api/` et `/manage/app/back/` renvoie 502 — et vite (moins d'une seconde),
 pas après un délai. Le corps de la réponse est celui de nginx, pas de Traefik.
 
 Ce n'est pas un dépassement de délai (qui donnerait un 504 après ~60 s) : c'est

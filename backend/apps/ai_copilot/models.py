@@ -36,6 +36,8 @@ class AIProvider(models.Model):
 
     class Meta:
         ordering = ["priority"]
+        verbose_name = "Moteur LLM"
+        verbose_name_plural = "Moteurs LLM"
 
     def __str__(self) -> str:
         return f"{self.name} ({self.kind}, p{self.priority})"
@@ -53,6 +55,8 @@ class AIConversation(models.Model):
 
     class Meta:
         ordering = ["-updated_at"]
+        verbose_name = "Conversation Copilot"
+        verbose_name_plural = "Conversations Copilot"
 
 
 class AIMessage(models.Model):
@@ -73,6 +77,8 @@ class AIMessage(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+        verbose_name = "Message Copilot"
+        verbose_name_plural = "Messages Copilot"
 
 
 class AITool(models.Model):
@@ -88,6 +94,10 @@ class AITool(models.Model):
     sensitive = models.BooleanField(default=False, help_text="Exige une approbation explicite avant exécution.")
     required_role = models.CharField(max_length=32, blank=True)
     enabled = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Outil exposé à l'IA"
+        verbose_name_plural = "Outils exposés à l'IA"
 
     def __str__(self) -> str:
         return f"{self.name} ({self.mode}{'/sensible' if self.sensitive else ''})"
@@ -109,6 +119,8 @@ class AIToolExecution(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Exécution d'outil"
+        verbose_name_plural = "Exécutions d'outils"
 
 
 class AIActionRequest(models.Model):
@@ -136,6 +148,8 @@ class AIActionRequest(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Demande d'action sensible"
+        verbose_name_plural = "Demandes d'action sensible"
 
 
 class AIActionApproval(models.Model):
@@ -155,6 +169,8 @@ class AIActionApproval(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["request", "approver"], name="uniq_approval_per_user")
         ]
+        verbose_name = "Approbation d'action"
+        verbose_name_plural = "Approbations d'action"
 
 
 class AIAutomation(models.Model):
@@ -177,6 +193,8 @@ class AIAutomation(models.Model):
 
     class Meta:
         ordering = ["name"]
+        verbose_name = "Automatisation du Copilot"
+        verbose_name_plural = "Automatisations du Copilot"
 
     def is_due(self, now) -> bool:
         if not self.enabled:
@@ -200,6 +218,8 @@ class AIAuditLog(models.Model):
 
     class Meta:
         ordering = ["-occurred_at"]
+        verbose_name = "Journal d'audit IA"
+        verbose_name_plural = "Journaux d'audit IA"
 
     @classmethod
     def record(cls, *, user, action, provider="", latency_ms=None, success=True, detail=None, ip=None):

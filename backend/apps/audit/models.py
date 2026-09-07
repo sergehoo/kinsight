@@ -24,6 +24,8 @@ class AccessLog(models.Model):
     class Meta:
         ordering = ["-occurred_at"]
         indexes = [models.Index(fields=["action", "occurred_at"])]
+        verbose_name = "Journal d'accès"
+        verbose_name_plural = "Journaux d'accès"
 
     @classmethod
     def record(cls, *, user, action, metric_key="", scope_codes=None, payload=None, ip=None):

@@ -15,16 +15,37 @@ import hashlib
 import hmac
 import secrets
 
+from functools import lru_cache
+
 from django.conf import settings
+from django.core.signals import setting_changed
+from django.dispatch import receiver
 
 _SALT = b"k-insight-integrations-v1"
 _NONCE = 16
 _TAG = 32
 
 
+@lru_cache(maxsize=1)
 def _key() -> bytes:
+    """Clé dérivée UNE FOIS par processus.
+
+    120 000 itérations PBKDF2, c'est le prix voulu contre une attaque par force
+    brute sur la clé — mais ce prix se paie à la dérivation, pas à chaque usage.
+    Sans mémoïsation, il était acquitté à chaque `encrypt`/`decrypt` : donc à chaque
+    appel Shield, qui déchiffre le jeton pour construire son en-tête
+    d'authentification, et une fois PAR LIGNE dès qu'une liste d'administration
+    affichait des identifiants masqués. Le secret dérivé ne change pas en cours
+    d'exécution : le cache est vidé si un réglage change (tests, `override_settings`).
+    """
     secret = getattr(settings, "INTEGRATIONS_SECRET_KEY", None) or settings.SECRET_KEY
     return hashlib.pbkdf2_hmac("sha256", secret.encode("utf-8"), _SALT, 120_000, dklen=32)
+
+
+@receiver(setting_changed)
+def _oublier_la_cle(sender, setting, **kwargs):
+    if setting in {"INTEGRATIONS_SECRET_KEY", "SECRET_KEY"}:
+        _key.cache_clear()
 
 
 def _keystream(key: bytes, nonce: bytes, length: int) -> bytes:

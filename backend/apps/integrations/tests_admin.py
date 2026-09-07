@@ -191,14 +191,27 @@ class AdminSecretTest(TestCase):
                 self.assertNotIn(SECRET, corps, "le secret en clair fuit")
                 self.assertNotIn(self.cred.secret_ciphertext, corps, "le chiffré est exposé")
 
-    def test_le_masque_est_bien_affiche(self):
-        corps = self.client.get(reverse("admin:integrations_connectorcredential_changelist")).content.decode()
-        self.assertIn(self.cred.masked, corps)
+    def test_le_masque_est_sur_la_fiche_et_pas_dans_la_liste(self):
+        """`masked` déchiffre, donc dérive la clé. Une colonne de liste le ferait une
+        fois par ligne — une centaine de dérivations PBKDF2 par page, rechargeables
+        à volonté. La liste se contente du booléen « défini »."""
+        liste = self.client.get(reverse("admin:integrations_connectorcredential_changelist")).content.decode()
+        self.assertNotIn(self.cred.masked, liste)
+        fiche = self.client.get(
+            reverse("admin:integrations_dataconnector_change", args=[self.connecteur.pk])
+        ).content.decode()
+        self.assertIn(self.cred.masked, fiche)
 
     def test_un_secret_indechiffrable_naffiche_pas_une_erreur_500(self):
-        """Clé de chiffrement changée : la page doit le DIRE, pas planter."""
+        """Clé de chiffrement changée : la page doit le DIRE, pas planter.
+
+        On vise la fiche, seul endroit où le masque est rendu : la liste ne
+        déchiffre plus, précisément pour ne pas dériver la clé à chaque ligne.
+        """
         ConnectorCredential.objects.filter(pk=self.cred.pk).update(secret_ciphertext="pas-du-chiffre")
-        reponse = self.client.get(reverse("admin:integrations_connectorcredential_changelist"))
+        reponse = self.client.get(
+            reverse("admin:integrations_connectorcredential_change", args=[self.cred.pk])
+        )
         self.assertEqual(reponse.status_code, 200)
         self.assertIn("clé de chiffrement ne correspond plus", reponse.content.decode())
 
@@ -283,3 +296,107 @@ class AdminUtilisateurTest(TestCase):
         self.staff.subsidiaries.add(filiale)
         corps = self.client.get(reverse("admin:accounts_user_changelist")).content.decode()
         self.assertIn("KRE", corps)
+
+
+@SANS_MANIFESTE
+class AdminSourceGardeFousTest(TestCase):
+    """Ce que l'admin doit refuser sur une source, et pourquoi."""
+
+    def setUp(self):
+        self.staff = User.objects.create_superuser(username="admin-src", password="x",
+                                                   email="src@k.co")
+        self.client.force_login(self.staff)
+        self.vierge = DataSource.objects.create(name="Créée par erreur", slug="erreur",
+                                                source_type=SourceType.REST)
+        self.exploitee = DataSource.objects.create(name="En service", slug="en-service",
+                                                   source_type=SourceType.REST)
+        SyncJob.objects.create(source=self.exploitee, status="success")
+
+    def _admin(self):
+        return admin.site._registry[DataSource]
+
+    def test_une_source_sans_trace_reste_supprimable(self):
+        """Retirer une source créée par erreur doit rester possible."""
+        self.assertTrue(self._admin().has_delete_permission(self._requete(), self.vierge))
+
+    def test_une_source_qui_a_produit_des_traces_nest_pas_supprimable(self):
+        """La supprimer emporterait en CASCADE jobs, journaux, erreurs et webhooks —
+        exactement l'historique que cet admin protège partout ailleurs."""
+        self.assertFalse(self._admin().has_delete_permission(self._requete(), self.exploitee))
+
+    def test_la_suppression_en_masse_est_retiree(self):
+        """L'action de masse ne consulte pas le contrôle par objet : elle effacerait
+        l'historique sans le moindre avertissement."""
+        self.assertNotIn("delete_selected", self._admin().get_actions(self._requete()))
+
+    def test_le_code_nest_pas_regenere_a_la_modification(self):
+        """`prepopulated_fields` s'applique aussi au formulaire de modification :
+        renommer une source réécrirait son code, qui sert de clé de corrélation aux
+        traces d'audit et par lequel le connecteur Shield retrouve sa source."""
+        options = self._admin()
+        self.assertEqual(options.get_prepopulated_fields(self._requete(), self.vierge), {})
+        self.assertEqual(options.get_prepopulated_fields(self._requete(), None),
+                         {"slug": ("name",)})
+
+    def test_lauteur_est_renseigne_et_non_saisi(self):
+        reponse = self.client.post(reverse("admin:integrations_datasource_add"), {
+            "name": "Nouvelle", "slug": "nouvelle", "source_type": "rest",
+            "target_module": "autre", "environment": "production", "is_active": "on",
+            "sync_frequency": "manual", "description": "",
+            "connector-TOTAL_FORMS": "0", "connector-INITIAL_FORMS": "0",
+            "connector-MIN_NUM_FORMS": "0", "connector-MAX_NUM_FORMS": "1",
+        }, follow=True)
+        self.assertEqual(reponse.status_code, 200)
+        creee = DataSource.objects.get(slug="nouvelle")
+        self.assertEqual(creee.created_by, self.staff, "l'auteur doit être posé, pas saisi")
+        self.assertIn("created_by", self._admin().readonly_fields)
+
+    def test_le_connecteur_nest_pas_supprimable(self):
+        """Le supprimer laisserait une source impossible à configurer."""
+        connecteur = DataConnector.objects.create(source=self.vierge)
+        self.assertFalse(
+            admin.site._registry[DataConnector].has_delete_permission(self._requete(), connecteur)
+        )
+
+    def _requete(self):
+        from django.test import RequestFactory
+
+        requete = RequestFactory().get("/")
+        requete.user = self.staff
+        return requete
+
+
+class DerivationCleTest(TestCase):
+    """La clé de chiffrement ne doit être dérivée qu'une fois par processus.
+
+    120 000 itérations PBKDF2 sont le prix voulu contre la force brute — mais à la
+    dérivation, pas à chaque usage. Sans mémoïsation, ce prix était acquitté à
+    chaque déchiffrement : donc à chaque appel Shield, qui déchiffre le jeton pour
+    construire son en-tête d'authentification.
+    """
+
+    def test_la_cle_nest_derivee_quune_seule_fois(self):
+        from unittest.mock import patch as _patch
+
+        from apps.integrations import encryption
+
+        encryption._key.cache_clear()
+        vraie = encryption.hashlib.pbkdf2_hmac
+        with _patch.object(encryption.hashlib, "pbkdf2_hmac", side_effect=vraie) as derivation:
+            chiffre = encryption.encrypt("valeur")
+            for _ in range(20):
+                self.assertEqual(encryption.decrypt(chiffre), "valeur")
+        self.assertEqual(derivation.call_count, 1,
+                         f"{derivation.call_count} dérivations pour 21 opérations")
+
+    def test_un_changement_de_reglage_invalide_le_cache(self):
+        """Sinon un `override_settings` sur la clé déchiffrerait avec l'ancienne."""
+        from django.test import override_settings as _override
+
+        from apps.integrations import encryption
+
+        encryption._key.cache_clear()
+        premiere = encryption._key()
+        with _override(INTEGRATIONS_SECRET_KEY="une-tout-autre-cle-de-test"):
+            self.assertNotEqual(encryption._key(), premiere)
+        self.assertEqual(encryption._key(), premiere)

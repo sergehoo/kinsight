@@ -132,6 +132,7 @@ class DataSource(TimestampedUUID):
     class Meta:
         ordering = ["name"]
         verbose_name = "Source de données"
+        verbose_name_plural = "Sources de données"
 
     def __str__(self) -> str:
         return f"{self.name} ({self.get_source_type_display()})"
@@ -157,6 +158,10 @@ class DataConnector(TimestampedUUID):
     # deux sont « connectées ».
     last_latency_ms = models.PositiveIntegerField(null=True, blank=True)
 
+    class Meta:
+        verbose_name = "Connecteur"
+        verbose_name_plural = "Connecteurs"
+
     def __str__(self) -> str:
         return f"Connecteur {self.source.slug}"
 
@@ -175,6 +180,8 @@ class ConnectorEndpoint(TimestampedUUID):
 
     class Meta:
         ordering = ["name"]
+        verbose_name = "Endpoint"
+        verbose_name_plural = "Endpoints"
 
     def __str__(self) -> str:
         return self.name
@@ -190,6 +197,7 @@ class ConnectorCredential(TimestampedUUID):
 
     class Meta:
         verbose_name = "Identifiant chiffré"
+        verbose_name_plural = "Identifiants chiffrés"
 
     def set_secret(self, value: str) -> None:
         self.secret_ciphertext = encrypt(value)
@@ -222,6 +230,8 @@ class FieldMapping(TimestampedUUID):
 
     class Meta:
         ordering = ["source_field"]
+        verbose_name = "Correspondance de champs"
+        verbose_name_plural = "Correspondances de champs"
 
 
 class SyncJob(TimestampedUUID):
@@ -237,6 +247,8 @@ class SyncJob(TimestampedUUID):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Synchronisation"
+        verbose_name_plural = "Synchronisations"
 
 
 class SyncLog(TimestampedUUID):
@@ -248,6 +260,8 @@ class SyncLog(TimestampedUUID):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Journal de synchronisation"
+        verbose_name_plural = "Journaux de synchronisation"
 
 
 class SyncError(TimestampedUUID):
@@ -260,6 +274,8 @@ class SyncError(TimestampedUUID):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Erreur de synchronisation"
+        verbose_name_plural = "Erreurs de synchronisation"
 
 
 class Person(TimestampedUUID):
@@ -282,6 +298,7 @@ class Person(TimestampedUUID):
     class Meta:
         ordering = ["display_name"]
         verbose_name = "Personne"
+        verbose_name_plural = "Personnes"
 
     def __str__(self) -> str:
         return self.display_name or f"Person {self.pk}"
@@ -303,6 +320,7 @@ class ExternalIdentity(TimestampedUUID):
         ordering = ["source", "external_id"]
         constraints = [models.UniqueConstraint(fields=["source", "external_id"], name="uniq_source_external_id")]
         verbose_name = "Identité externe"
+        verbose_name_plural = "Identités externes"
 
     def __str__(self) -> str:
         return f"{self.source}:{self.external_id}"
@@ -318,3 +336,5 @@ class WebhookEvent(TimestampedUUID):
 
     class Meta:
         ordering = ["-received_at"]
+        verbose_name = "Événement webhook"
+        verbose_name_plural = "Événements webhook"

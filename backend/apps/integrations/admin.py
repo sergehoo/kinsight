@@ -88,8 +88,48 @@ class SourceAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     autocomplete_fields = ("created_by",)
     # Le statut est posé par `set_status()` au fil des tests et des synchronisations.
-    readonly_fields = ("status", *HORODATAGES)
+    readonly_fields = ("status", "created_by", *HORODATAGES)
     inlines = (ConnecteurInline,)
+
+    def get_actions(self, request):
+        """Retire la suppression en masse : elle ne consulte pas le contrôle par
+        objet ci-dessous et emporterait l'historique sans le moindre avertissement."""
+        actions = super().get_actions(request)
+        actions.pop("delete_selected", None)
+        return actions
+
+    def has_delete_permission(self, request, obj=None):
+        """Une source ne se supprime que si elle n'a produit aucune trace.
+
+        `on_delete=CASCADE` relie à cette table les jobs, journaux, erreurs et
+        événements webhook : supprimer une source effacerait donc précisément
+        l'historique que cet admin protège ligne à ligne. Retirer une source
+        d'exploitation se fait en la DÉSACTIVANT (`is_active`), ce qui conserve
+        la trace de ce qu'elle a fait. La suppression reste ouverte pour une
+        source créée par erreur, qui n'a rien produit.
+        """
+        if obj is None:
+            return True
+        return not (obj.jobs.exists() or obj.logs.exists()
+                    or obj.errors.exists() or obj.webhook_events.exists())
+
+    def get_prepopulated_fields(self, request, obj=None):
+        """Le code n'est proposé qu'à la CRÉATION.
+
+        `prepopulated_fields` s'applique aussi au formulaire de modification :
+        renommer une source régénérerait son code en silence. Or ce code est la
+        clé de corrélation des traces d'audit (`metric_key=source.slug`) et c'est
+        par lui que le connecteur Shield retrouve sa source — le réécrire couperait
+        l'historique en deux et débrancherait le connecteur.
+        """
+        return {} if obj else {"slug": ("name",)}
+
+    def save_model(self, request, obj, form, change):
+        # `created_by` est une donnée observée : on la renseigne, on ne la saisit pas.
+        if not change and obj.created_by_id is None:
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
+
     fieldsets = (
         ("Identité", {"fields": ("name", "slug", "source_type", "target_module", "environment")}),
         ("Exploitation", {"fields": ("status", "is_active", "sync_frequency", "demo_mode"),
@@ -120,6 +160,19 @@ class IdentifiantInline(admin.TabularInline):
     verbose_name = "Identifiant chiffré"
     verbose_name_plural = "Identifiants chiffrés"
 
+    # Les surcharges de permission du ModelAdmin parent ne descendent PAS sur ses
+    # inlines : sans ces trois méthodes, la fermeture posée sur ConnectorCredential
+    # serait contournable depuis la fiche du connecteur. Noter la signature d'un
+    # inline : `has_add_permission(self, request, obj)`, avec `obj`.
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     @admin.display(description="Secret")
     def secret_masque(self, obj):
         return _masque(obj)
@@ -137,6 +190,12 @@ class ConnecteurAdmin(admin.ModelAdmin):
     readonly_fields = ("last_tested_at", "last_test_ok", "last_test_message",
                        "last_latency_ms", *HORODATAGES)
     inlines = (EndpointInline, IdentifiantInline)
+
+    def has_delete_permission(self, request, obj=None):
+        """Le connecteur est créé d'office avec sa source et l'interface le suppose
+        présent. Le supprimer laisserait une source impossible à configurer, et
+        emporterait au passage ses endpoints, ses mappings et ses secrets."""
+        return False
 
 
 class MappingInline(admin.TabularInline):
@@ -192,7 +251,11 @@ class IdentifiantAdmin(admin.ModelAdmin):
     synchronisation, eux, restent intacts.
     """
 
-    list_display = ("connector", "kind", "label", "secret_defini", "secret_masque", "created_at")
+    # `secret_masque` est délibérément ABSENT de la liste : `masked` déchiffre, et
+    # une colonne le ferait une fois par ligne — soit une centaine de dérivations de
+    # clé par page, rechargeables à volonté. `secret_defini` lit un booléen sans
+    # déchiffrer ; le masque reste sur la fiche, où il n'y a qu'une ligne.
+    list_display = ("connector", "kind", "label", "secret_defini", "created_at")
     list_filter = ("kind",)
     search_fields = ("label", "connector__source__name", "connector__source__slug")
     ordering = ("connector__source__name", "kind")

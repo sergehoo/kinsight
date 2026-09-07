@@ -3,7 +3,7 @@
 #
 # À utiliser comme « Compose Path » dans Dokploy : ./docker-compose.dokploy.yml
 # - Ingress géré par Traefik (réseau externe `dokploy-network`) ; seul le frontend
-#   est exposé, il proxifie /api et /admin vers le backend (réseau interne).
+#   est exposé, il proxifie /api et /manage/app/back (admin Django) vers le backend.
 # - Pas de ports publiés, pas de `container_name`/`name:` figés : Dokploy gère le
 #   nommage du projet et l'orchestration.
 # - Renseigner les variables (DOMAIN, secrets…) dans l'onglet Environment de Dokploy
