@@ -1,7 +1,9 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { glass } from "@/components/chrome/theme";
+import type { SessionAuth } from "@/types/integrations";
 import { IntegrationsError, IntegrationsShell, StatusBadge } from "@/components/integrations/parts";
 import {
   ApiError,
@@ -19,6 +21,7 @@ import {
   useMappings,
   useSource,
   useSyncNow,
+  useReauthenticate,
   useTestConnection,
   useToggleActive,
   useUpdateConnector,
@@ -832,11 +835,228 @@ function HistoryTab({ sourceId }: { sourceId: string }) {
 
 const TABS = [["api", "Configuration API"], ["endpoints", "Endpoints"], ["mapping", "Mapping des champs"], ["history", "Historique & logs"]];
 
+
+/** Ce que la fiche dit de la session Shield.
+ *
+ *  Le point de la mission : ne JAMAIS réclamer un collage manuel de jeton quand le
+ *  renouvellement automatique suffit. Un access expiré avec un refresh vivant est
+ *  annoncé « connecté », parce que le prochain appel le renouvellera de lui-même ;
+ *  « réauthentification requise » est réservé au cas où le refresh ne peut plus rien.
+ */
+function badgeDeSession(auth: SessionAuth | null | undefined, statutSource: string) {
+  if (!auth) return null;
+  if (auth.etat === "auth_required") {
+    return { texte: "Réauthentification requise", fond: "#FCEBEB", couleur: "#A32D2D" };
+  }
+  if (statutSource === "error") {
+    return { texte: "Erreur réseau", fond: "#FAEEDA", couleur: "#854F0B" };
+  }
+  return { texte: "Connecté", fond: "#E1F5EE", couleur: "#0F6E56" };
+}
+
+function dateCourte(valeur: string | null | undefined) {
+  return valeur ? new Date(valeur).toLocaleString("fr-FR") : "—";
+}
+
+/** Les causes techniques du backend, dites en français.
+ *
+ *  Afficher `refresh_refuse` tel quel à un DRH ne lui apprend rien et ne lui dit
+ *  pas quoi faire. La cause brute reste utile côté journaux ; l'écran, lui, doit
+ *  nommer le geste.
+ */
+const CAUSES: Record<string, string> = {
+  refresh_refuse: "le jeton de renouvellement a été refusé par Shield (expiré ou révoqué)",
+  refresh_absent: "aucun jeton de renouvellement n'était enregistré",
+  quota_refresh: "Shield a limité le débit des renouvellements",
+  base_absente: "l'URL de base du connecteur est vide",
+  certificats_invalides: "le certificat TLS de Shield n'a pas pu être vérifié depuis le serveur",
+  access_absent_de_la_reponse: "Shield a répondu sans jeton d'accès",
+  reponse_illisible: "la réponse de Shield était illisible",
+};
+
+function causeLisible(cause: string) {
+  if (CAUSES[cause]) return CAUSES[cause];
+  if (cause.startsWith("reseau_")) return "Shield était injoignable depuis le serveur";
+  if (cause.startsWith("http_")) return `Shield a répondu ${cause.slice(5)}`;
+  return cause;
+}
+
+/** Pourquoi le renouvellement automatique ne joue pas — et ce n'est pas la même
+ *  chose de n'avoir aucun jeton de renouvellement et d'en avoir un que Shield
+ *  refuse : le premier n'a jamais été déposé, le second doit être remplacé. */
+function raisonSansRenouvellement(auth: SessionAuth) {
+  if (!auth.refresh_present) {
+    return "Renouvellement automatique inactif : sans jeton de renouvellement, la session expirera sans recours.";
+  }
+  if (auth.cause_dernier_echec === "refresh_refuse") {
+    return "Renouvellement automatique interrompu : le jeton de renouvellement enregistré est refusé par Shield. Il faut recoller un couple neuf.";
+  }
+  return "Renouvellement automatique indisponible pour le moment — voir la cause ci-dessous.";
+}
+
+function SessionShield({ auth, statutSource }: { auth: SessionAuth; statutSource: string }) {
+  const badge = badgeDeSession(auth, statutSource);
+  // « Valide jusqu'au 22:57 » à 23:05 se lit comme une session vivante alors
+  // qu'elle est morte : la même date doit changer de phrase quand elle passe.
+  const depasse = Boolean(auth.expire_le) && new Date(auth.expire_le as string) <= new Date();
+  const expire = !auth.expiration_connue
+    ? "Échéance de session inconnue — la source tranchera au prochain appel"
+    : depasse
+      ? `Session expirée depuis le ${dateCourte(auth.expire_le)}`
+      : `Session valide jusqu'au ${dateCourte(auth.expire_le)}`;
+
+  return (
+    <div className="grid gap-2 rounded-[18px] border border-[#DDE6E2] bg-white/60 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">
+          Session Kaydan Shield
+        </p>
+        {badge ? (
+          <span className="rounded-full px-3 py-1 text-[12px] font-bold"
+                style={{ background: badge.fond, color: badge.couleur }}>
+            {badge.texte}
+          </span>
+        ) : null}
+      </div>
+
+      <p className="text-[13.5px] font-semibold text-[#2C3132]">{expire}</p>
+
+      <p className="text-[12.5px] font-medium" style={{ color: auth.renouvellement_automatique ? "#0F6E56" : "#854F0B" }}>
+        {auth.renouvellement_automatique
+          ? "Renouvellement automatique actif — aucun jeton à recoller à l'expiration."
+          : raisonSansRenouvellement(auth)}
+      </p>
+
+      <dl className="grid gap-x-6 gap-y-1 text-[12.5px] sm:grid-cols-2">
+        <div className="flex justify-between gap-3">
+          <dt className="text-[#8A9291]">Dernière authentification</dt>
+          <dd className="font-semibold text-[#2C3132]">{dateCourte(auth.derniere_authentification)}</dd>
+        </div>
+        <div className="flex justify-between gap-3">
+          <dt className="text-[#8A9291]">Jeton de renouvellement</dt>
+          <dd className="font-semibold text-[#2C3132]">{auth.refresh_present ? "enregistré" : "absent"}</dd>
+        </div>
+      </dl>
+
+      {auth.cause_dernier_echec ? (
+        <p className="text-[12.5px] font-semibold text-[#A32D2D]">
+          Dernier échec d'authentification ({dateCourte(auth.dernier_echec)}) : {causeLisible(auth.cause_dernier_echec)}.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** Dépôt d'un couple de jetons.
+ *
+ *  Les deux champs sont de type `password` et jamais préremplis ; leur valeur ne
+ *  vit que dans l'état de ce composant, et disparaît à la fermeture. Rien n'est
+ *  écrit en `localStorage`, `sessionStorage` ni dans le cache de l'application —
+ *  un jeton copié dans le navigateur y survivrait à toutes les rotations.
+ */
+function ModaleReauth({ sourceId, onFerme, onSucces }: {
+  sourceId: string;
+  onFerme: () => void;
+  onSucces: (message: string) => void;
+}) {
+  const reauth = useReauthenticate();
+  const [acces, setAcces] = React.useState("");
+  const [refresh, setRefresh] = React.useState("");
+
+  const oublier = () => {
+    setAcces("");
+    setRefresh("");
+  };
+
+  const fermer = () => {
+    oublier();
+    onFerme();
+  };
+
+  const complet = acces.trim().length > 0 && refresh.trim().length > 0;
+
+  const envoyer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!complet) return;
+    reauth.mutate(
+      { sourceId, access: acces.trim(), refresh: refresh.trim() },
+      {
+        onSuccess: (r) => {
+          // Le secret quitte la mémoire dès que le backend l'a chiffré.
+          oublier();
+          onSucces(r.message || "Session déposée.");
+          onFerme();
+        },
+      },
+    );
+  };
+
+  // La fiche source porte `backdrop-filter: blur(18px)` : ce filtre fait d'elle un
+  // bloc conteneur, si bien qu'un `position: fixed` posé à l'intérieur se cale sur
+  // la carte au lieu de la fenêtre. La boîte de dialogue s'ouvrait alors dans le
+  // flux de la carte, hors de l'écran, et paraissait ne pas s'ouvrir du tout. Le
+  // portail la sort de cette hiérarchie : le voile couvre à nouveau la page.
+  return createPortal(
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4"
+         role="dialog" aria-modal="true" aria-label="Réauthentifier Kaydan Shield">
+      <form onSubmit={envoyer} className="grid w-full max-w-[560px] gap-4 rounded-[24px] bg-[#F7F9F6] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.3)]">
+        <div>
+          <h2 className="text-[19px] font-bold text-[#16191A]">Réauthentifier Kaydan Shield</h2>
+          <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#6E7A78]">
+            Collez le couple obtenu auprès de Shield. Les deux jetons sont nécessaires :
+            un jeton d'accès seul redonnerait une session qui expire sans recours — exactement
+            ce que le renouvellement automatique évite.
+          </p>
+        </div>
+
+        <div>
+          <label className={labelCls} htmlFor="reauth-access">Jeton d'accès (access)</label>
+          <input id="reauth-access" className={field} type="password" autoComplete="off"
+                 value={acces} onChange={(e) => setAcces(e.target.value)} required autoFocus
+                 placeholder="Collez le jeton d'accès" />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor="reauth-refresh">Jeton de renouvellement (refresh)</label>
+          <input id="reauth-refresh" className={field} type="password" autoComplete="off"
+                 value={refresh} onChange={(e) => setRefresh(e.target.value)} required
+                 placeholder="Collez le jeton de renouvellement" />
+        </div>
+
+        <p className="text-[11.5px] leading-relaxed text-[#6E7A78]">
+          Les jetons partent directement au backend, y sont chiffrés au repos et ne sont jamais
+          réaffichés. Ils ne sont écrits ni dans le navigateur, ni dans les journaux, ni dans le
+          cache de l'application.
+        </p>
+
+        {reauth.isError ? <IntegrationsError error={reauth.error} /> : null}
+        {reauth.data && !reauth.data.ok ? (
+          <p className="text-[12.5px] font-semibold text-[#A32D2D]">{reauth.data.message}</p>
+        ) : null}
+
+        <div className="flex flex-wrap gap-3">
+          <button type="submit" disabled={!complet || reauth.isPending}
+                  className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-40">
+            {reauth.isPending ? "Dépôt en cours…" : "Déposer la session"}
+          </button>
+          <button type="button" onClick={fermer}
+                  className="rounded-full border border-[#DDE2E0] bg-white/70 px-6 py-3 text-[14px] font-bold text-[#3A3E3E]">
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>,
+    document.body,
+  );
+}
+
 function ConfigureForm({ id }: { id: string }) {
   const { data: source, isLoading, isError, error } = useSource(id);
   const test = useTestConnection();
   const toggle = useToggleActive();
+  const reauthAuto = useReauthenticate();
   const [tab, setTab] = React.useState("api");
+  const [modaleOuverte, setModaleOuverte] = React.useState(false);
+  const [avis, setAvis] = React.useState<string | null>(null);
 
   if (isError) return <IntegrationsError error={error} />;
   if (isLoading || !source) return <p className="text-[14px] text-[#777C7D]">Chargement…</p>;
@@ -846,6 +1066,10 @@ function ConfigureForm({ id }: { id: string }) {
   const creds = connector?.credentials ?? [];
   const dernierTest = connector?.last_tested_at ? new Date(connector.last_tested_at).toLocaleString("fr-FR") : "jamais testée";
   const latence = connector?.last_latency_ms;
+  const auth = connector?.session_auth ?? null;
+  // `auth_required` est le SEUL cas où l'on réclame une intervention : partout
+  // ailleurs le renouvellement automatique s'en charge.
+  const reauthNecessaire = auth?.etat === "auth_required";
 
   return (
     <div className="grid gap-5">
@@ -886,15 +1110,61 @@ function ConfigureForm({ id }: { id: string }) {
           </p>
         ) : null}
 
-        <div className="flex flex-wrap gap-2">
+        {auth ? <SessionShield auth={auth} statutSource={source.status} /> : null}
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Quand la session est morte, réauthentifier passe en action principale :
+              tester la connexion ne ferait que reconfirmer le refus. */}
+          {reauthNecessaire ? (
+            <button type="button" onClick={() => { setAvis(null); setModaleOuverte(true); }}
+                    className="rounded-full bg-[#0B0B0C] px-5 py-2.5 text-[13px] font-bold text-white">
+              Réauthentifier
+            </button>
+          ) : null}
           <button type="button" onClick={() => test.mutate(source.id)} disabled={test.isPending} className={btnGhost}>
             {test.isPending ? "Test en cours…" : "Tester la connexion"}
           </button>
+          {/* Offert quand le renouvellement peut encore aboutir — pas seulement
+              quand un refresh existe. Un refresh que Shield a déjà refusé ne
+              reviendra pas : proposer de le rejouer ferait consommer le quota de
+              renouvellement pour reconfirmer un refus. */}
+          {auth?.renouvellement_automatique ? (
+            <button type="button" onClick={() => {
+              // L'avis de la tentative précédente ne doit pas survivre à la
+              // suivante : « Session rétablie » affiché au-dessus d'un refus
+              // laisserait croire aux deux à la fois.
+              setAvis(null);
+              reauthAuto.mutate({ sourceId: source.id }, { onSuccess: (r) => setAvis(r.message) });
+            }} disabled={reauthAuto.isPending} className={btnGhost}>
+              {reauthAuto.isPending ? "Renouvellement…" : "Renouveler la session"}
+            </button>
+          ) : null}
+          {auth && !reauthNecessaire ? (
+            <button type="button" onClick={() => { setAvis(null); setModaleOuverte(true); }} className={btnGhost}>
+              Réauthentifier
+            </button>
+          ) : null}
           <button type="button" onClick={() => toggle.mutate(source.id)} disabled={toggle.isPending} className={btnGhost}>
             {source.is_active ? "Désactiver" : "Activer"}
           </button>
         </div>
+
+        {avis ? (
+          <p className="text-[12.5px] font-semibold text-[#0F6E56]">{avis}</p>
+        ) : null}
+        {reauthAuto.data && !reauthAuto.data.ok ? (
+          <p className="text-[12.5px] font-semibold text-[#A32D2D]">{reauthAuto.data.message}</p>
+        ) : null}
+        {reauthAuto.isError ? <IntegrationsError error={reauthAuto.error} /> : null}
         {test.isError ? <IntegrationsError error={test.error} /> : null}
+
+        {modaleOuverte ? (
+          <ModaleReauth
+            sourceId={source.id}
+            onFerme={() => setModaleOuverte(false)}
+            onSucces={(message) => setAvis(message)}
+          />
+        ) : null}
       </div>
 
       <div className="flex flex-wrap gap-1.5 rounded-full p-1.5" style={glass}>

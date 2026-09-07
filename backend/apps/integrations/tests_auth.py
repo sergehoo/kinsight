@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import base64
 import json
+import ssl
 import threading
 import urllib.error
 from datetime import timedelta
@@ -456,3 +457,332 @@ class EnTetesDeSessionTest(SocleShield):
         self._recharger()
         client = shield.build_client(self.source)
         self.assertIsNotNone(client.on_auth_failure)
+
+
+class EndpointReauthTest(TestCase):
+    """L'action que la fiche appelle : dépôt d'un couple, ou renouvellement forcé.
+
+    Le dépôt est ÉPROUVÉ auprès de Shield avant d'être écrit. La version
+    précédente écrivait d'abord : un couple erroné s'enregistrait, la fiche
+    annonçait « Connecté », et le refus n'apparaissait qu'au premier appel
+    métier. Ces tests fixent le contrat inverse — rien n'est écrit que Shield
+    n'ait accepté, et un refus laisse la session en place intacte.
+    """
+
+    URL = "/api/v1/integrations/sources/{}/reauthenticate/"
+
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        from rest_framework.test import APIClient
+
+        User = get_user_model()
+        self.admin = User.objects.create_user(username="reauth-admin", password="x",
+                                              email="ra@k.co", role="ADMIN_INTEGRATION")
+        self.simple = User.objects.create_user(username="reauth-simple", password="x",
+                                               email="rs@k.co", role="DRH")
+        self.source = DataSource.objects.create(
+            name="Shield", slug="kaydan-shield",
+            source_type=SourceType.KAYDAN_SHIELD, target_module="rh")
+        self.connecteur = DataConnector.objects.create(
+            source=self.source, base_url=BASE_SHIELD, auth_method="bearer")
+        self.client = APIClient()
+        self.client.force_authenticate(self.admin)
+
+    def _url(self):
+        return self.URL.format(self.source.id)
+
+    # ── Outils ───────────────────────────────────────────────────────────────
+    #
+    # Tous les chemins qui parlent à Shield sont bouchonnés : un test qui joint
+    # réellement api.kaydanshield.com dépendrait du réseau du poste et déposerait
+    # de vrais jetons dans une base de test.
+
+    def _shield_accepte(self, *, access: str, refresh: str = "r-rotation"):
+        class _Flux:
+            def read(_s):
+                return json.dumps({"access": access, "refresh": refresh}).encode()
+
+            def __enter__(_s):
+                return _s
+
+            def __exit__(_s, *a):
+                return False
+
+        return patch("apps.integrations.shield_auth.urllib.request.urlopen", return_value=_Flux())
+
+    def _shield_repond(self, code: int):
+        erreur = urllib.error.HTTPError("u", code, "refus", {}, None)
+        return patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=erreur)
+
+    def _shield_injoignable(self):
+        return patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                     side_effect=urllib.error.URLError("nom introuvable"))
+
+    def _secret_stocke(self, kind: str) -> str:
+        cred = ConnectorCredential.objects.filter(connector=self.connecteur, kind=kind).first()
+        return cred.secret if cred else ""
+
+    def _deposer_refresh(self, valeur: str):
+        cred, _ = ConnectorCredential.objects.get_or_create(
+            connector=self.connecteur, kind=CredentialKind.OAUTH_REFRESH)
+        cred.set_secret(valeur)
+        cred.save()
+
+    # ── Dépôt d'un couple ────────────────────────────────────────────────────
+
+    def test_un_couple_accepte_par_shield_est_depose_et_letat_revient_valide(self):
+        emis = jwt_factice(dans=timedelta(hours=4))
+        with self._shield_accepte(access=emis):
+            reponse = self.client.post(
+                self._url(),
+                {"access": jwt_factice(dans=timedelta(hours=1)), "refresh": "r-neuf"},
+                format="json")
+        self.assertEqual(reponse.status_code, 200)
+        corps = reponse.json()
+        self.assertTrue(corps["ok"])
+        self.assertEqual(corps["auth"]["etat"], "valide")
+        self.assertTrue(corps["auth"]["renouvellement_automatique"])
+        self.assertIsNotNone(corps["auth"]["expire_le"])
+
+    def test_le_jeton_enregistre_est_celui_que_shield_vient_demettre(self):
+        """Celui-là est vivant par construction, et son échéance est exacte.
+
+        Conserver l'access collé afficherait l'échéance d'un jeton peut-être
+        déjà périmé — une date juste sur un jeton faux.
+        """
+        colle = jwt_factice(dans=timedelta(minutes=3))
+        emis = jwt_factice(dans=timedelta(hours=5))
+        with self._shield_accepte(access=emis, refresh="r-apres-rotation"):
+            self.client.post(self._url(), {"access": colle, "refresh": "r-colle"}, format="json")
+        self.assertEqual(self._secret_stocke(CredentialKind.API_TOKEN), emis)
+        # Rotation active côté Shield : garder le refresh collé le rendrait
+        # inutilisable au cycle suivant.
+        self.assertEqual(self._secret_stocke(CredentialKind.OAUTH_REFRESH), "r-apres-rotation")
+
+    def test_un_couple_refuse_par_shield_rend_401_et_nest_pas_ecrit(self):
+        with self._shield_repond(401):
+            reponse = self.client.post(
+                self._url(), {"access": jwt_factice(dans=timedelta(hours=1)), "refresh": "r-mort"},
+                format="json")
+        self.assertEqual(reponse.status_code, 401)
+        corps = reponse.json()
+        self.assertFalse(corps["ok"])
+        self.assertIn("refuse", corps["message"].lower())
+        self.assertEqual(self._secret_stocke(CredentialKind.OAUTH_REFRESH), "")
+        self.assertEqual(self._secret_stocke(CredentialKind.API_TOKEN), "")
+
+    def test_un_couple_refuse_ne_condamne_pas_la_session_en_place(self):
+        """Une frappe malheureuse ne doit pas détruire une session qui fonctionne."""
+        en_place = jwt_factice(dans=timedelta(hours=3))
+        self._deposer_refresh("r-en-place")
+        cred, _ = ConnectorCredential.objects.get_or_create(
+            connector=self.connecteur, kind=CredentialKind.API_TOKEN)
+        cred.set_secret(en_place)
+        cred.save()
+
+        with self._shield_repond(401):
+            reponse = self.client.post(
+                self._url(), {"access": "colle-douteux", "refresh": "r-douteux"}, format="json")
+
+        self.assertEqual(reponse.status_code, 401)
+        self.assertEqual(self._secret_stocke(CredentialKind.API_TOKEN), en_place)
+        self.assertEqual(self._secret_stocke(CredentialKind.OAUTH_REFRESH), "r-en-place")
+        # Et l'état reste celui d'une session saine : le refus portait sur le
+        # couple soumis, pas sur celui qui est enregistré.
+        self.assertEqual(reponse.json()["auth"]["etat"], "valide")
+        self.assertTrue(reponse.json()["auth"]["renouvellement_automatique"])
+
+    def test_shield_injoignable_pendant_un_depot_rend_503_et_necrit_rien(self):
+        """Ni refus, ni faute de saisie : renvoyer 401 enverrait chercher un jeton."""
+        with self._shield_injoignable():
+            reponse = self.client.post(
+                self._url(), {"access": jwt_factice(dans=timedelta(hours=1)), "refresh": "r"},
+                format="json")
+        self.assertEqual(reponse.status_code, 503)
+        self.assertIn("injoignable", reponse.json()["message"].lower())
+        self.assertEqual(self._secret_stocke(CredentialKind.OAUTH_REFRESH), "")
+
+    def test_un_certificat_non_verifiable_est_nomme_pour_ce_quil_est(self):
+        """Symptôme cryptique, cause banale : le magasin de certificats du conteneur.
+
+        Le fondre dans « Shield injoignable » ferait ouvrir un ticket chez Shield
+        pour un défaut qui est chez nous — c'est ce qui se passe sur ce poste,
+        où la liaison TLS ne se vérifie pas alors que Shield répond en 0,6 s.
+        """
+        echec = urllib.error.URLError(ssl.SSLCertVerificationError("unable to get local issuer"))
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=echec):
+            reponse = self.client.post(
+                self._url(), {"access": jwt_factice(dans=timedelta(hours=1)), "refresh": "r"},
+                format="json")
+        self.assertEqual(reponse.status_code, 503)
+        self.assertIn("certificat", reponse.json()["message"].lower())
+        self.assertEqual(self._secret_stocke(CredentialKind.OAUTH_REFRESH), "")
+
+    def test_une_panne_shield_pendant_un_depot_rend_502(self):
+        with self._shield_repond(500):
+            reponse = self.client.post(
+                self._url(), {"access": jwt_factice(dans=timedelta(hours=1)), "refresh": "r"},
+                format="json")
+        self.assertEqual(reponse.status_code, 502)
+
+    def test_un_quota_shield_pendant_un_depot_rend_429(self):
+        with self._shield_repond(429):
+            reponse = self.client.post(
+                self._url(), {"access": jwt_factice(dans=timedelta(hours=1)), "refresh": "r"},
+                format="json")
+        self.assertEqual(reponse.status_code, 429)
+        self.assertIn("débit", reponse.json()["message"].lower())
+
+    def test_la_reponse_ne_renvoie_jamais_les_jetons(self):
+        """Un jeton renvoyé à l'écran finirait dans un cache ou une capture."""
+        colle = jwt_factice(dans=timedelta(hours=1))
+        emis = jwt_factice(dans=timedelta(hours=6))
+        with self._shield_accepte(access=emis, refresh="refresh-issu-de-shield"):
+            rendu = self.client.post(self._url(),
+                                     {"access": colle, "refresh": "refresh-tres-secret"},
+                                     format="json").content.decode()
+        self.assertNotIn(colle, rendu)
+        self.assertNotIn(emis, rendu)
+        self.assertNotIn("refresh-tres-secret", rendu)
+        self.assertNotIn("refresh-issu-de-shield", rendu)
+
+    def test_un_access_sans_refresh_est_refuse_en_400(self):
+        """C'est exactement le problème qu'on supprime : une session sans recours."""
+        reponse = self.client.post(self._url(),
+                                   {"access": jwt_factice(dans=timedelta(hours=1))},
+                                   format="json")
+        self.assertEqual(reponse.status_code, 400)
+        self.assertIn("DEUX", reponse.json()["detail"])
+
+    def test_un_refresh_sans_access_est_refuse_de_meme(self):
+        reponse = self.client.post(self._url(), {"refresh": "r"}, format="json")
+        self.assertEqual(reponse.status_code, 400)
+
+    def test_un_champ_manquant_natteint_jamais_shield(self):
+        """Un 400 de saisie ne doit pas consommer le quota de renouvellement."""
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen") as appel:
+            self.client.post(self._url(), {"refresh": "r"}, format="json")
+        appel.assert_not_called()
+
+    # ── Renouvellement forcé (aucun jeton fourni) ────────────────────────────
+
+    def test_sans_jeton_fourni_le_renouvellement_est_force(self):
+        self._deposer_refresh("r-en-place")
+        with self._shield_accepte(access=jwt_factice(dans=timedelta(hours=2)), refresh="r2"):
+            reponse = self.client.post(self._url(), {}, format="json")
+        self.assertEqual(reponse.status_code, 200)
+        self.assertTrue(reponse.json()["ok"])
+
+    def test_un_refresh_refuse_rend_401_avec_sa_cause(self):
+        """401 et non 500 : le serveur a bien travaillé, c'est Shield qui refuse."""
+        self._deposer_refresh("r-mort")
+        with self._shield_repond(401):
+            reponse = self.client.post(self._url(), {}, format="json")
+        self.assertEqual(reponse.status_code, 401)
+        corps = reponse.json()
+        self.assertFalse(corps["ok"])
+        self.assertIn("réauthentification", corps["message"].lower())
+        self.assertEqual(corps["auth"]["etat"], "auth_required")
+
+    def test_un_quota_shield_est_rendu_comme_tel(self):
+        self._deposer_refresh("r")
+        with self._shield_repond(429):
+            reponse = self.client.post(self._url(), {}, format="json")
+        self.assertEqual(reponse.status_code, 429)
+        self.assertIn("débit", reponse.json()["message"].lower())
+
+    def test_sans_aucun_refresh_enregistre_le_renouvellement_rend_409(self):
+        """Rien à renouveler : c'est l'état de la source, pas un refus de Shield.
+
+        Le distinguer du 401 est ce qui permet à l'écran de proposer le bon
+        geste — déposer un premier couple, plutôt qu'en chercher un neuf.
+        """
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen") as appel:
+            reponse = self.client.post(self._url(), {}, format="json")
+        appel.assert_not_called()
+        self.assertEqual(reponse.status_code, 409)
+        self.assertEqual(reponse.json()["auth"]["etat"], "auth_required")
+
+    # ── Droits et traçabilité ────────────────────────────────────────────────
+
+    def test_un_role_sans_droit_dintegration_recoit_403(self):
+        """Le masquage côté écran ne fermerait pas cette porte."""
+        self.client.force_authenticate(self.simple)
+        self.assertEqual(self.client.post(self._url(), {}, format="json").status_code, 403)
+
+    def test_la_reauthentification_est_tracee_sans_secret(self):
+        AccessLog.objects.all().delete()
+        with self._shield_accepte(access=jwt_factice(dans=timedelta(hours=1)),
+                                  refresh="refresh-issu-de-shield"):
+            self.client.post(self._url(),
+                             {"access": jwt_factice(dans=timedelta(hours=1)),
+                              "refresh": "refresh-tres-secret"}, format="json")
+        traces = list(AccessLog.objects.all())
+        self.assertTrue(traces, "aucune trace de réauthentification")
+        depose = json.dumps([t.payload for t in traces])
+        self.assertNotIn("refresh-tres-secret", depose)
+        self.assertNotIn("refresh-issu-de-shield", depose)
+
+    def test_un_depot_refuse_est_trace_avec_sa_cause(self):
+        AccessLog.objects.all().delete()
+        with self._shield_repond(401):
+            self.client.post(self._url(),
+                             {"access": "a", "refresh": "refresh-tres-secret"}, format="json")
+        depose = json.dumps([t.payload for t in AccessLog.objects.all()])
+        self.assertIn("refresh_refuse", depose)
+        self.assertNotIn("refresh-tres-secret", depose)
+
+
+class EtatSansAccessTest(SocleShield):
+    """Deux cas que la première version de `etat_auth` jugeait à tort « valide »."""
+
+    def test_un_refresh_seul_donne_renouvelable_et_non_valide(self):
+        """Aucun jeton d'accès n'a encore été obtenu : il n'y a pas de session, mais
+        il y a un recours. Annoncer « valide » aurait laissé croire à une session
+        prête, et le premier appel métier aurait démenti l'écran."""
+        self._deposer(CredentialKind.OAUTH_REFRESH, "r")
+        self.assertEqual(shield_auth.etat_auth(self.connecteur)["etat"], "renouvelable")
+
+    def test_un_refresh_refuse_condamne_le_renouvellement_automatique(self):
+        """Le jeton reste en base, mais Shield l'a rejeté : le présenter comme actif
+        serait une fausse promesse, et ferait attendre un renouvellement qui ne
+        viendra jamais."""
+        self._deposer(CredentialKind.API_TOKEN, jwt_factice(dans=timedelta(hours=2)))
+        self._deposer(CredentialKind.OAUTH_REFRESH, "r-mort")
+        erreur = urllib.error.HTTPError("u", 401, "refus", {}, None)
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=erreur):
+            shield_auth.renouveler(self.connecteur, force=True)
+
+        self.connecteur.refresh_from_db()
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertFalse(etat["renouvellement_automatique"])
+        # L'access est encore valide : la session tient jusqu'à son échéance.
+        self.assertEqual(etat["etat"], "valide")
+
+    def test_un_refresh_refuse_avec_access_expire_exige_une_reauthentification(self):
+        self._deposer(CredentialKind.API_TOKEN, jwt_factice(dans=timedelta(minutes=-5)))
+        self._deposer(CredentialKind.OAUTH_REFRESH, "r-mort")
+        erreur = urllib.error.HTTPError("u", 401, "refus", {}, None)
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=erreur):
+            shield_auth.renouveler(self.connecteur, force=True)
+
+        self.connecteur.refresh_from_db()
+        self.assertEqual(shield_auth.etat_auth(self.connecteur)["etat"], "auth_required")
+
+    def test_un_depot_neuf_efface_la_condamnation(self):
+        """Sinon la fiche resterait bloquée sur « réauthentification requise » après
+        un dépôt réussi."""
+        self._deposer(CredentialKind.OAUTH_REFRESH, "r-mort")
+        erreur = urllib.error.HTTPError("u", 401, "refus", {}, None)
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=erreur):
+            shield_auth.renouveler(self.connecteur, force=True)
+        self.connecteur.refresh_from_db()
+        self.assertEqual(shield_auth.etat_auth(self.connecteur)["etat"], "auth_required")
+
+        shield_auth.deposer_couple(self.connecteur,
+                                   acces=jwt_factice(dans=timedelta(hours=3)),
+                                   refresh="r-neuf")
+        self.connecteur.refresh_from_db()
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertEqual(etat["etat"], "valide")
+        self.assertTrue(etat["renouvellement_automatique"])

@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1788819284.234015,
-    "ast_hash": "ea11e00adb21c950dda927eaf62a3af5",
+    "mtime": 1788821352.8511286,
+    "ast_hash": "22ec399276b9c55dcef9f3e44c61c1df",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/integrations/parts.tsx": {
-    "mtime": 1788729709.2911546,
-    "ast_hash": "b05d3d527cba5d9ffa2320831a642831",
+    "mtime": 1788821402.4709077,
+    "ast_hash": "7ab50d2e343059281a6a77c0e0a18692",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/AppShell.tsx": {
@@ -1100,8 +1100,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/integrations.ts": {
-    "mtime": 1788730982.6060824,
-    "ast_hash": "44b63b32e78d31bb1256b39d96c4d975",
+    "mtime": 1788821782.862844,
+    "ast_hash": "65f73437f5d34a9b6f5396cc3956b87c",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/kmetric.ts": {
@@ -1140,8 +1140,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationForm.tsx": {
-    "mtime": 1788805974.4379466,
-    "ast_hash": "fdbdabe330daf84cef86295086f109f5",
+    "mtime": 1788821917.9870818,
+    "ast_hash": "bd1d44ee88b305709d8dae2f2adc8b22",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationHealth.tsx": {
@@ -1185,8 +1185,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/integrations.ts": {
-    "mtime": 1788715011.8445802,
-    "ast_hash": "7640a3adc317b24d8c4cc43be5fe89db",
+    "mtime": 1788820493.4927022,
+    "ast_hash": "6388a4994fa89f41f701098b8fa21722",
     "semantic_hash": ""
   },
   "infra/postgres/docker-entrypoint-initdb.d/00-init-k-insight.sh": {
@@ -1925,13 +1925,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_auth.py": {
-    "mtime": 1788819284.2343857,
-    "ast_hash": "2c6a282b057a9bf5ca8d82309f1c6ce6",
+    "mtime": 1788821661.9541109,
+    "ast_hash": "87b1bca67369f62052abef3c9ab597a8",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests_auth.py": {
-    "mtime": 1788819226.3220487,
-    "ast_hash": "f32c530dccfe8ba089c6351ec898c5a7",
+    "mtime": 1788821676.6170006,
+    "ast_hash": "1a184cbd95dab11f4f06543144ce7cc8",
     "semantic_hash": ""
   }
 }

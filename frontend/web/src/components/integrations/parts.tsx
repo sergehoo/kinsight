@@ -79,10 +79,20 @@ export function PrimaryLink({ to, children }: { to: string; children: React.Reac
  */
 export function IntegrationsError({ error }: { error: unknown }) {
   const status = error instanceof ApiError ? error.status : undefined;
+  const corps = (error instanceof ApiError ? error.details : undefined) ?? {};
+  // Nos endpoints d'authentification Shield répondent {ok, message, auth} :
+  // `message` porte la cause exacte donnée par Shield, et la présence d'`auth`
+  // signe une réponse d'authentification Shield. Sans ce marqueur, un 401 « jeton
+  // Shield refusé » s'afficherait comme « votre session a expiré, reconnectez-vous »
+  // — on renverrait l'opérateur se reconnecter alors que sa session est intacte.
+  const messageServeur = typeof corps.message === "string" ? corps.message : null;
+  const refusShield = "auth" in corps;
   // `detail` est le message générique de DRF, déjà reformulé au-dessus ; le
   // reproduire tel quel ajouterait une seconde phrase disant la même chose.
   // Seules les erreurs PAR CHAMP (400) valent d'être listées.
-  const parChamp = Object.entries((error instanceof ApiError ? error.details : undefined) ?? {}).filter(([champ]) => champ !== "detail");
+  const parChamp = Object.entries(corps).filter(
+    ([champ]) => !["detail", "message", "ok", "auth"].includes(champ),
+  );
   const details = parChamp.length ? parChamp : null;
 
   const cases: Record<number, { titre: string; explication: string; geste: string }> = {
@@ -108,6 +118,20 @@ export function IntegrationsError({ error }: { error: unknown }) {
       titre: "Endpoint introuvable",
       explication: "Le serveur ne connaît pas cette route. L'URL d'API du build ou le routage du proxy est incorrect.",
       geste: "Vérifiez VITE_API_BASE_URL au build et la règle de proxy sur /api/.",
+    },
+    409: {
+      titre: "Session Shield non renouvelable",
+      explication:
+        "Le serveur a bien traité la demande, mais Shield a refusé le renouvellement — " +
+        "jeton de renouvellement expiré ou révoqué. Le message ci-dessus en donne la cause.",
+      geste: "Déposez un couple access + refresh neuf via « Réauthentifier ».",
+    },
+    429: {
+      titre: "Trop de tentatives",
+      explication:
+        "Shield limite le débit des renouvellements et vient d'être sollicité. " +
+        "Insister aggrave la limite au lieu de la lever.",
+      geste: "Patientez une minute avant de réessayer.",
     },
     // Un 502 n'est PAS une erreur applicative : il est émis par le proxy, qui n'a
     // pas réussi à joindre le service. Le présenter comme « le backend a échoué à
@@ -135,7 +159,14 @@ export function IntegrationsError({ error }: { error: unknown }) {
     },
   };
 
-  const known = status !== undefined ? cases[status] : undefined;
+  const refusDeJeton = {
+    titre: "Jeton Shield refusé",
+    explication:
+      "Kaydan Shield a rejeté le couple présenté. Votre session K-Insight, elle, est intacte : " +
+      "il n'y a pas à vous reconnecter.",
+    geste: "Obtenez un couple access + refresh neuf dans Shield, puis recollez-le.",
+  };
+  const known = refusShield && status === 401 ? refusDeJeton : status !== undefined ? cases[status] : undefined;
   const cinqCents = status !== undefined && status >= 500;
   const titre = known?.titre ?? (cinqCents ? "Erreur applicative du backend" : "API inaccessible");
   const explication =
@@ -153,6 +184,10 @@ export function IntegrationsError({ error }: { error: unknown }) {
     <div className="rounded-[20px] border border-[#F0D2D2] bg-[#FCEBEB] px-5 py-4">
       <p className="text-[14px] font-bold text-[#A32D2D]">{titre}</p>
       <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#8C4141]">{explication}</p>
+      {/* La phrase du serveur passe avant nos généralités : elle nomme la cause. */}
+      {messageServeur ? (
+        <p className="mt-1.5 text-[13px] font-semibold leading-relaxed text-[#8C4141]">{messageServeur}</p>
+      ) : null}
       {/* Sur un 400, DRF renvoie l'erreur PAR CHAMP : la recopier évite de faire
           deviner lequel pose problème. */}
       {details ? (

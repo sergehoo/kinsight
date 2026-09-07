@@ -9,7 +9,6 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from apps.audit.middleware import audit_source
 from apps.accounts.rbac import can_access_domain
 from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
@@ -278,16 +277,25 @@ class DataSourceViewSet(viewsets.ModelViewSet):
                                "redeviendrait manuelle à la première expiration."},
                     status=http_status.HTTP_400_BAD_REQUEST,
                 )
-            shield_auth.deposer_couple(connector, acces=acces, refresh=refresh)
-            _audit(request, "integration.shield.reauth", source, {"depot": True})
-            return Response({"ok": True, "message": "Session déposée.",
-                             "auth": shield_auth.etat_auth(connector)})
+            # Éprouvé auprès de Shield avant écriture : voir `verifier_et_deposer`.
+            ok, cause, message = shield_auth.verifier_et_deposer(
+                connector, acces=acces, refresh=refresh
+            )
+            _audit(request, "integration.shield.reauth", source,
+                   {"depot": True, "ok": ok, **({"cause": cause} if cause else {})})
+            return Response({"ok": ok, "message": message,
+                             "auth": shield_auth.etat_auth(connector)},
+                            status=shield_auth.statut_http(cause, ok=ok))
 
         ok, message = shield_auth.renouveler(connector, force=True)
-        _audit(request, "integration.shield.reauth", source, {"depot": False, "ok": ok})
+        cause = "" if ok else ((connector.config or {}).get("shield_auth") or {}).get(
+            "cause_dernier_echec", ""
+        )
+        _audit(request, "integration.shield.reauth", source,
+               {"depot": False, "ok": ok, **({"cause": cause} if cause else {})})
         return Response({"ok": ok, "message": message,
                          "auth": shield_auth.etat_auth(connector)},
-                        status=http_status.HTTP_200_OK if ok else http_status.HTTP_409_CONFLICT)
+                        status=shield_auth.statut_http(cause, ok=ok))
 
     @action(detail=True, methods=["post"], url_path="sync-now")
     def sync_now(self, request, pk=None):

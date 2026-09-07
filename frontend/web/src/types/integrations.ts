@@ -38,6 +38,21 @@ export interface DataSource {
   recent_errors?: Array<{ code: string; message: string; at: string }>;
 }
 
+/** Ce que le backend dit de la session Shield. Aucun jeton n'y figure, par
+ *  construction : uniquement des états, des dates et des drapeaux. */
+export interface SessionAuth {
+  /** `valide` · `renouvelable` (access expiré mais refresh utilisable) · `auth_required` */
+  etat: "valide" | "renouvelable" | "auth_required";
+  access_present: boolean;
+  expire_le: string | null;
+  expiration_connue: boolean;
+  renouvellement_automatique: boolean;
+  refresh_present: boolean;
+  derniere_authentification: string | null;
+  dernier_echec: string | null;
+  cause_dernier_echec: string | null;
+}
+
 export interface DataConnector {
   id: string;
   base_url: string;
@@ -48,6 +63,8 @@ export interface DataConnector {
   last_test_ok: boolean | null;
   last_test_message: string;
   last_latency_ms?: number | null;
+  /** Renseigné uniquement pour une source Kaydan Shield. */
+  session_auth?: SessionAuth | null;
   endpoints?: unknown[];
   credentials?: { id: string; kind: string; label: string; is_set: boolean; masked: string }[];
 }

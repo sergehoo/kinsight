@@ -7,6 +7,7 @@ import type {
   HealthResponse,
   SyncErrorItem,
   SyncJob,
+  SessionAuth,
   SyncLogItem,
 } from "@/types/integrations";
 
@@ -142,6 +143,33 @@ export function useTestConnection() {
         `/integrations/sources/${sourceId}/test-connection/?probe=1`,
       ),
     onSuccess: invalidate,
+  });
+}
+
+/** Relance la session Shield.
+ *
+ *  Sans jetons : force un renouvellement — suffisant tant que le refresh vit.
+ *  Avec jetons : dépose un couple neuf. Les deux sont exigés par le backend, un
+ *  access seul redonnant une session qui expire sans recours.
+ *
+ *  Les jetons ne transitent que dans ce corps de requête : ils ne sont jamais
+ *  écrits en storage, ni journalisés, ni renvoyés par la réponse.
+ */
+export function useReauthenticate() {
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ sourceId, access, refresh }: { sourceId: string; access?: string; refresh?: string }) =>
+      req<{ ok: boolean; message: string; auth: SessionAuth }>(
+        "POST",
+        `/integrations/sources/${sourceId}/reauthenticate/`,
+        access || refresh ? { access, refresh } : {},
+      ),
+    // `onSettled` et non `onSuccess` : un échec change l'état de la session tout
+    // autant qu'une réussite. Quand Shield refuse le renouvellement, le backend
+    // retient la cause et le renouvellement automatique cesse d'être promis — sans
+    // relire la fiche, l'écran continuait d'afficher « aucun jeton à recoller à
+    // l'expiration » juste au-dessus du refus.
+    onSettled: invalidate,
   });
 }
 
