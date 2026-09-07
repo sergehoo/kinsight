@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "backend/apps/audit/models.py": {
-    "mtime": 1788796182.9316876,
-    "ast_hash": "70ea6d2e3119f1336ddc6fce9e718b27",
+    "mtime": 1788797416.5609267,
+    "ast_hash": "eb47093444891d096ae2194aadb4e7ac",
     "semantic_hash": ""
   },
   "backend/apps/governance/__init__.py": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/views.py": {
-    "mtime": 1788658884.294729,
-    "ast_hash": "1e362074bb22e66c4dab9318a996e107",
+    "mtime": 1788797416.562709,
+    "ast_hash": "a196faf611c732bc98d7f84667013292",
     "semantic_hash": ""
   },
   "backend/apps/organizations/__init__.py": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "backend/config/settings.py": {
-    "mtime": 1788655031.7244911,
-    "ast_hash": "b0bc743cf536f02e750929ca29d5bdbf",
+    "mtime": 1788797394.9592361,
+    "ast_hash": "b410e5618a9e60b3fbfc6cc03e11d3d4",
     "semantic_hash": ""
   },
   "backend/config/urls.py": {
@@ -465,13 +465,13 @@
     "semantic_hash": ""
   },
   "infra/docker-compose.prod.yml": {
-    "mtime": 1788775415.1111093,
-    "ast_hash": "528f094320f691fd2588eee8c4df6623",
+    "mtime": 1788797675.3637292,
+    "ast_hash": "f62182eb989af377de11e8ce5ec51402",
     "semantic_hash": ""
   },
   "infra/docker-compose.yml": {
-    "mtime": 1788775415.1107965,
-    "ast_hash": "709b6de2b9e704dd2cdc82186388d8af",
+    "mtime": 1788797675.3639379,
+    "ast_hash": "051af38421040c134288a8176ef323ce",
     "semantic_hash": ""
   },
   "knowledge/accounting/kpi.md": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "docker-compose.dokploy.yml": {
-    "mtime": 1788796078.223151,
-    "ast_hash": "fc4ca30ff3bc22c32df21f15974025fe",
+    "mtime": 1788797616.4009151,
+    "ast_hash": "5fcc9bba62368137e942b63b10167ca6",
     "semantic_hash": ""
   },
   "infra/airbyte/README.md": {
@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1788796086.2747982,
-    "ast_hash": "1542dd8aa1290507137467324663fbd7",
+    "mtime": 1788797644.4736187,
+    "ast_hash": "e1e8f99120703c072b76cec3c9a36401",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "backend/apps/ai_copilot/views.py": {
-    "mtime": 1782559124.8093817,
-    "ast_hash": "3a81d5899a474ec96a185e58b963b43b",
+    "mtime": 1788797432.9178863,
+    "ast_hash": "2f0769ba5b82f9f609c734019c70163b",
     "semantic_hash": ""
   },
   "backend/apps/governance/bindings.py": {
@@ -780,8 +780,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/module_views.py": {
-    "mtime": 1788654573.3202329,
-    "ast_hash": "d0f7b70b0351f816b0a2902bdaf32015",
+    "mtime": 1788797416.563634,
+    "ast_hash": "9f9471e39666aa55a1c768732d4ec49d",
     "semantic_hash": ""
   },
   "backend/apps/integrations/__init__.py": {
@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1788714898.027268,
-    "ast_hash": "da4e5b760ffb287ed46ad7f6b9eee936",
+    "mtime": 1788797416.5620046,
+    "ast_hash": "56c0dcb78704ee3bb9df51d950ba3d11",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -1882,6 +1882,16 @@
   "backend/apps/organizations/admin.py": {
     "mtime": 1788777537.6758184,
     "ast_hash": "8467a3d687a699f0b94917981dd8fe49",
+    "semantic_hash": ""
+  },
+  "backend/apps/audit/middleware.py": {
+    "mtime": 1788797432.9181256,
+    "ast_hash": "9da2a267f18437ac4df7db461b1a854f",
+    "semantic_hash": ""
+  },
+  "backend/apps/audit/tests.py": {
+    "mtime": 1788797586.8609927,
+    "ast_hash": "ea7f2fd2adfefcab6617820e53369724",
     "semantic_hash": ""
   }
 }
