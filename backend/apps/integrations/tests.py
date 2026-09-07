@@ -1727,3 +1727,67 @@ class ShieldRbacTest(APITestCase):
         self.assertIsNotNone(trace, "aucune trace pour une lecture Shield")
         self.assertEqual(trace.action, "shield.hr_kpi")
         self.assertEqual(trace.subsidiary_scope, ["*"])
+
+    def test_un_perimetre_restreint_ne_recoit_pas_les_alertes_nominatives_de_site(self):
+        """La porte fermée sur `by_site` restait ouverte sur `insights`.
+
+        `evaluer_sites` produit des constats qui NOMMENT le site et redonnent ses
+        effectifs — « Sous-effectif sur Chantier A : 4 présents pour 36 absents,
+        soit 10 % ». Ils voyageaient dans la MÊME réponse que la répartition qu'on
+        venait de vider : un DRH de filiale recevait donc, par cet autre champ,
+        exactement ce que la restriction prétendait lui retirer.
+
+        On passe par `evaluer_sites` réel plutôt qu'un insight écrit à la main :
+        c'est la règle de production qu'il faut voir tomber, pas une imitation.
+        """
+        from .shield_rules import evaluer_sites
+
+        filiale = Subsidiary.objects.create(code="KSH2", name="K-Shield 2")
+        drh_filiale = User.objects.create_user(username="drh-ksh2", password="x",
+                                               email="k2@k.co", role="DRH",
+                                               is_group_scope=False)
+        drh_filiale.subsidiaries.add(filiale)
+
+        sites = [{"site": {"name": "Chantier A", "code": "S1", "id": 1},
+                  "present": 4, "absent": 36, "attendance_rate": 10.0}]
+        insights = evaluer_sites(sites, "Kaydan Shield", "2026-09-07")
+        self.assertTrue(insights, "la règle de site ne produit rien : le test ne prouverait rien")
+
+        faux = {"status": "connected", "kpis": [], "insights": insights,
+                "by_site": {"status": "connected", "sites": sites}}
+        with patch("apps.integrations.views.fetch_hr_kpis", return_value=faux):
+            groupe = self._get(self.drh, "/api/v1/integrations/shield/hr-kpi/").json()
+            restreint = self._get(drh_filiale, "/api/v1/integrations/shield/hr-kpi/").json()
+
+        # Contre-épreuve : sans elle, un filtre qui vide TOUT passerait pour un succès.
+        self.assertEqual(len(groupe["insights"]), len(insights),
+                         "le périmètre Groupe doit conserver ses alertes de site")
+        self.assertEqual(restreint["insights"], [])
+
+        # Et la preuve directe : le nom du site n'apparaît nulle part dans la réponse.
+        self.assertNotIn("Chantier A", json.dumps(restreint, ensure_ascii=False))
+
+    def test_les_constats_de_portee_groupe_survivent_a_la_restriction(self):
+        """Retirer les alertes de site ne doit pas rendre l'écran muet.
+
+        Un taux de présence global sous le seuil ne nomme personne : le supprimer
+        remplacerait une fuite par un silence, et le DRH de filiale n'aurait plus
+        aucun signal là où il en a le droit.
+        """
+        from .shield_rules import evaluer_presence_globale
+
+        filiale = Subsidiary.objects.create(code="KSH3", name="K-Shield 3")
+        drh_filiale = User.objects.create_user(username="drh-ksh3", password="x",
+                                               email="k3@k.co", role="DRH",
+                                               is_group_scope=False)
+        drh_filiale.subsidiaries.add(filiale)
+
+        globaux = evaluer_presence_globale(10, 90, 5, "Kaydan Shield", "2026-09-07")
+        self.assertTrue(globaux, "aucun constat global : le test ne prouverait rien")
+
+        faux = {"status": "connected", "kpis": [], "insights": globaux,
+                "by_site": {"status": "connected", "sites": []}}
+        with patch("apps.integrations.views.fetch_hr_kpis", return_value=faux):
+            restreint = self._get(drh_filiale, "/api/v1/integrations/shield/hr-kpi/").json()
+
+        self.assertEqual(len(restreint["insights"]), len(globaux))

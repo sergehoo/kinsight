@@ -830,8 +830,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788819457.6154594,
-    "ast_hash": "a7dcfe4497fe5f33f2d8fb794a42d49f",
+    "mtime": 1788824656.0946808,
+    "ast_hash": "c1cfcb9f3e9a191e904b4ffa5fb6e4fd",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1788821352.8511286,
-    "ast_hash": "22ec399276b9c55dcef9f3e44c61c1df",
+    "mtime": 1788824700.6548007,
+    "ast_hash": "6f6511fed34134eeffa29f6259cafd9f",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -1830,8 +1830,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_rules.py": {
-    "mtime": 1788688693.374463,
-    "ast_hash": "cfda26d083635d9225304b01b7a99ddd",
+    "mtime": 1788824626.3565547,
+    "ast_hash": "6f8f9e5b12621e782075f32ead956cee",
     "semantic_hash": ""
   },
   "backend/apps/integrations/management/__init__.py": {

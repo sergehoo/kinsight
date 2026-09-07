@@ -67,7 +67,7 @@ def _codes_du_perimetre(user) -> list[str]:
 
 
 def _restreindre_la_repartition(charge: dict, user) -> dict:
-    """Retire la répartition par site aux utilisateurs à périmètre restreint.
+    """Retire aux périmètres restreints TOUT ce qui nomme un site.
 
     `by_site` nomme jusqu'à douze sites — code, entreprise, effectif ouvrier,
     présents, absents, retards, alertes. Or la réponse de Shield ne porte AUCUNE
@@ -76,24 +76,40 @@ def _restreindre_la_repartition(charge: dict, user) -> dict:
     rattachement. Entre montrer tous les sites à quelqu'un qui n'a droit qu'à sa
     filiale et n'en montrer aucun, on retire — et on dit pourquoi, plutôt que de
     laisser croire à une source muette.
+
+    LES INSIGHTS COMPTENT AUSSI. Vider `by_site` ne suffisait pas : les insights de
+    site rechiffrent exactement ce qu'on venait de retirer — « Sous-effectif sur
+    <nom du site> : N présents pour M absents, soit X % » (`shield_rules.evaluer_sites`).
+    La porte fermée d'un côté restait donc ouverte de l'autre, sur la même réponse.
+    On filtre sur la portée que le producteur DÉCLARE (`portee == "site"`) et non sur
+    un préfixe d'identifiant : une règle de site ajoutée demain sera couverte sans
+    qu'on y pense.
     """
     scope = user.scope()
     if scope.is_group:
         return charge
+
+    restreint = dict(charge)
+
+    insights = charge.get("insights")
+    if isinstance(insights, list):
+        restreint["insights"] = [
+            i for i in insights
+            if not (isinstance(i, dict) and i.get("portee") == "site")
+        ]
+
     repartition = charge.get("by_site")
-    if not isinstance(repartition, dict):
-        return charge
-    return {
-        **charge,
-        "by_site": {
+    if isinstance(repartition, dict):
+        restreint["by_site"] = {
             **repartition,
             "sites": [],
             "restriction": (
                 "Répartition par site réservée au périmètre Groupe : la source ne "
-                "rattache pas ses sites aux filiales, le filtrage serait une invention."
+                "rattache pas ses sites aux filiales, le filtrage serait une invention. "
+                "Les alertes nominatives par site sont retirées pour la même raison."
             ),
-        },
-    }
+        }
+    return restreint
 
 
 class ShieldHrKpiView(APIView):

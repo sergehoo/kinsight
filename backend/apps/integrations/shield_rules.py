@@ -71,11 +71,21 @@ FORMULES = {
 }
 
 
-def _insight(rid, severity, title, finding, impact, formula, source, period, action=None, level="computed"):
+def _insight(rid, severity, title, finding, impact, formula, source, period, action=None,
+             level="computed", portee="groupe"):
+    """Un constat, et la portée de ce qu'il révèle.
+
+    `portee` n'est pas décoratif : c'est ce sur quoi la porte RBAC s'appuie pour
+    savoir si un constat peut être servi à un périmètre restreint. Un insight qui
+    nomme un site et rechiffre sa présence porte la même donnée que la répartition
+    par site — il doit tomber avec elle. La règle qui produit le constat est seule à
+    savoir ce qu'elle expose : c'est donc elle qui le déclare, ici, plutôt qu'un
+    filtre qui devinerait plus tard à partir de l'identifiant.
+    """
     return {
         "id": rid, "severity": severity, "title": title, "finding": finding,
         "impact": impact, "level": level, "formula": formula,
-        "source": source, "period": period, "confidence": 1.0,
+        "source": source, "period": period, "confidence": 1.0, "portee": portee,
         "action": action or {"label": "Voir la présence", "to": "/dashboard/capital-humain/presence"},
     }
 
@@ -131,7 +141,10 @@ def evaluer_sites(sites: list[dict], source: str, period: str, limite: int = 3) 
             f"(seuil : {PRESENCE_SITE_CRITIQUE} %).",
             "Site potentiellement en incapacité d'assurer ses opérations du jour.",
             FORMULES["taux_presence"], source, period,
-            action={"label": f"Ouvrir {nom}", "to": "/dashboard/capital-humain/presence"}))
+            action={"label": f"Ouvrir {nom}", "to": "/dashboard/capital-humain/presence"},
+            # Ce constat nomme le site et redonne ses effectifs : il ne sort pas du
+            # périmètre Groupe, exactement comme la répartition dont il est tiré.
+            portee="site"))
     return out
 
 
