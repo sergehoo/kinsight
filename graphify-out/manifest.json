@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "backend/apps/audit/models.py": {
-    "mtime": 1782254284.7313886,
-    "ast_hash": "083d394ade46fcd1e8f28d8357322fc3",
+    "mtime": 1788796182.9316876,
+    "ast_hash": "70ea6d2e3119f1336ddc6fce9e718b27",
     "semantic_hash": ""
   },
   "backend/apps/governance/__init__.py": {
@@ -125,7 +125,7 @@
     "semantic_hash": ""
   },
   "backend/config/urls.py": {
-    "mtime": 1788778538.0431473,
+    "mtime": 1788779549.090861,
     "ast_hash": "9c29638bc8954be9f65c78e860ea8eae",
     "semantic_hash": ""
   },
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "docker-compose.dokploy.yml": {
-    "mtime": 1788775595.4918535,
-    "ast_hash": "24f92a05d9dd5d54e7ff640997361b05",
+    "mtime": 1788796078.223151,
+    "ast_hash": "fc4ca30ff3bc22c32df21f15974025fe",
     "semantic_hash": ""
   },
   "infra/airbyte/README.md": {
@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1788775649.436936,
-    "ast_hash": "d2bf5cc840296d378b6837e1eb946c8a",
+    "mtime": 1788796086.2747982,
+    "ast_hash": "1542dd8aa1290507137467324663fbd7",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {
@@ -725,8 +725,8 @@
     "semantic_hash": ""
   },
   "backend/apps/ai_copilot/models.py": {
-    "mtime": 1782560742.1403146,
-    "ast_hash": "1d6be51c1e77d3a12b86f8719d2f239e",
+    "mtime": 1788796202.7048602,
+    "ast_hash": "ae8bb237b4e485055ca0b9f06c04fc4c",
     "semantic_hash": ""
   },
   "backend/apps/ai_copilot/providers.py": {
@@ -795,13 +795,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/encryption.py": {
-    "mtime": 1782505050.0334313,
-    "ast_hash": "a2491133cdf0155bd8782d84c9f43a1d",
+    "mtime": 1788796033.8230734,
+    "ast_hash": "571d7f5ce33cc292f7df7fb383d8c29b",
     "semantic_hash": ""
   },
   "backend/apps/integrations/models.py": {
-    "mtime": 1788714656.013471,
-    "ast_hash": "49df0a0bc9f955aad4194bc04caed57d",
+    "mtime": 1788796202.7045758,
+    "ast_hash": "b3c0e309e6bd8ea91aa70e1ab54124fc",
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo.py": {
@@ -1870,13 +1870,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/admin.py": {
-    "mtime": 1788777611.2277489,
-    "ast_hash": "3ef61a8ee351a502b350eecf29270cf8",
+    "mtime": 1788796060.343608,
+    "ast_hash": "20dcb33d1fb52b46bcd66bd95872e419",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests_admin.py": {
-    "mtime": 1788777749.60518,
-    "ast_hash": "f75bba8958b4563e3657c5963eb8569e",
+    "mtime": 1788796149.3771784,
+    "ast_hash": "43497c4e80676d01dca333c23128fac5",
     "semantic_hash": ""
   },
   "backend/apps/organizations/admin.py": {

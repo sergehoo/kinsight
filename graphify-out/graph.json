@@ -967,7 +967,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L40",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "ai_copilot_models_aiprovider_str",
       "community": 61,
@@ -977,7 +977,7 @@
       "label": "AIConversation",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L44",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "ai_copilot_models_aiconversation",
       "community": 61,
@@ -987,7 +987,7 @@
       "label": "AIMessage",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L58",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_models_aimessage",
       "community": 61,
@@ -997,7 +997,7 @@
       "label": "Role",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L59",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "ai_copilot_models_role",
       "community": 61,
@@ -1007,7 +1007,7 @@
       "label": "AITool",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L78",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "ai_copilot_models_aitool",
       "community": 61,
@@ -1017,7 +1017,7 @@
       "label": "Mode",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L81",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "ai_copilot_models_mode",
       "community": 61,
@@ -1027,7 +1027,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L92",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "ai_copilot_models_aitool_str",
       "community": 61,
@@ -1037,7 +1037,7 @@
       "label": "AIToolExecution",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L96",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "ai_copilot_models_aitoolexecution",
       "community": 61,
@@ -1047,7 +1047,7 @@
       "label": "Status",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L97",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "ai_copilot_models_status",
       "community": 61,
@@ -1057,7 +1057,7 @@
       "label": "AIActionRequest",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L114",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "ai_copilot_models_aiactionrequest",
       "community": 63,
@@ -1067,7 +1067,7 @@
       "label": "AIActionApproval",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L141",
+      "source_location": "L155",
       "_origin": "ast",
       "id": "ai_copilot_models_aiactionapproval",
       "community": 61,
@@ -1077,7 +1077,7 @@
       "label": "Decision",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L142",
+      "source_location": "L156",
       "_origin": "ast",
       "id": "ai_copilot_models_decision",
       "community": 61,
@@ -1087,7 +1087,7 @@
       "label": "AIAutomation",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L160",
+      "source_location": "L176",
       "_origin": "ast",
       "id": "ai_copilot_models_aiautomation",
       "community": 61,
@@ -1097,7 +1097,7 @@
       "label": ".is_due()",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L181",
+      "source_location": "L199",
       "_origin": "ast",
       "id": "ai_copilot_models_aiautomation_is_due",
       "community": 61,
@@ -1107,7 +1107,7 @@
       "label": "AIAuditLog",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L189",
+      "source_location": "L207",
       "_origin": "ast",
       "id": "ai_copilot_models_aiauditlog",
       "community": 61,
@@ -1117,7 +1117,7 @@
       "label": ".record()",
       "file_type": "code",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L205",
+      "source_location": "L225",
       "_origin": "ast",
       "id": "ai_copilot_models_aiauditlog_record",
       "community": 63,
@@ -1147,9 +1147,9 @@
       "label": "D\u00e9claration persist\u00e9e d'un outil expos\u00e9 \u00e0 l'IA (miroir de ToolRegistry).",
       "file_type": "rationale",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L79",
+      "source_location": "L85",
       "_origin": "ast",
-      "id": "ai_copilot_models_rationale_79",
+      "id": "ai_copilot_models_rationale_85",
       "community": 61,
       "norm_label": "declaration persistee d'un outil expose a l'ia (miroir de toolregistry)."
     },
@@ -1157,9 +1157,9 @@
       "label": "Demande d'action SENSIBLE en attente d'approbation (rien n'est ex\u00e9cut\u00e9 avant).",
       "file_type": "rationale",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L115",
+      "source_location": "L127",
       "_origin": "ast",
-      "id": "ai_copilot_models_rationale_115",
+      "id": "ai_copilot_models_rationale_127",
       "community": 63,
       "norm_label": "demande d'action sensible en attente d'approbation (rien n'est execute avant)."
     },
@@ -1167,9 +1167,9 @@
       "label": "T\u00e2che planifi\u00e9e du Copilot (Phase 5). Ex\u00e9cut\u00e9e par Celery Beat.      Gouvern\u00e9 :",
       "file_type": "rationale",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L161",
+      "source_location": "L177",
       "_origin": "ast",
-      "id": "ai_copilot_models_rationale_161",
+      "id": "ai_copilot_models_rationale_177",
       "community": 61,
       "norm_label": "tache planifiee du copilot (phase 5). executee par celery beat.      gouverne :"
     },
@@ -1177,9 +1177,9 @@
       "label": "Trace compl\u00e8te des interactions IA (provider, latence, erreurs, actions).",
       "file_type": "rationale",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L190",
+      "source_location": "L208",
       "_origin": "ast",
-      "id": "ai_copilot_models_rationale_190",
+      "id": "ai_copilot_models_rationale_208",
       "community": 61,
       "norm_label": "trace complete des interactions ia (provider, latence, erreurs, actions)."
     },
@@ -1220,7 +1220,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "ai_copilot_providers_groundedfacts",
-      "community": 79,
+      "community": 65,
       "norm_label": "groundedfacts"
     },
     {
@@ -1290,7 +1290,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "ai_copilot_providers_offlinegroundedprovider_complete",
-      "community": 79,
+      "community": 65,
       "norm_label": ".complete()"
     },
     {
@@ -1450,7 +1450,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_28",
-      "community": 79,
+      "community": 65,
       "norm_label": "faits ancres (sortie de semantic.grounding.answer) servant de base factuelle."
     },
     {
@@ -1720,7 +1720,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_tests_toolrbacapprovaltest_setup",
-      "community": 271,
+      "community": 63,
       "norm_label": ".setup()"
     },
     {
@@ -1880,7 +1880,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest",
-      "community": 271,
+      "community": 264,
       "norm_label": "chatapitest"
     },
     {
@@ -1890,7 +1890,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_setup",
-      "community": 271,
+      "community": 264,
       "norm_label": ".setup()"
     },
     {
@@ -1900,7 +1900,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_chat_ancre_offline",
-      "community": 271,
+      "community": 264,
       "norm_label": ".test_chat_ancre_offline()"
     },
     {
@@ -1910,7 +1910,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_chat_refuse_hors_catalogue",
-      "community": 271,
+      "community": 264,
       "norm_label": ".test_chat_refuse_hors_catalogue()"
     },
     {
@@ -1920,7 +1920,7 @@
       "source_location": "L236",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_chat_message_vide_400",
-      "community": 271,
+      "community": 264,
       "norm_label": ".test_chat_message_vide_400()"
     },
     {
@@ -1930,7 +1930,7 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_conversation_listee_et_supprimable",
-      "community": 271,
+      "community": 264,
       "norm_label": ".test_conversation_listee_et_supprimable()"
     },
     {
@@ -1940,7 +1940,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "ai_copilot_tests_chatapitest_test_authentification_requise",
-      "community": 271,
+      "community": 264,
       "norm_label": ".test_authentification_requise()"
     },
     {
@@ -2030,7 +2030,7 @@
       "source_location": "L314",
       "_origin": "ast",
       "id": "ai_copilot_tests_actionablechattest",
-      "community": 264,
+      "community": 271,
       "norm_label": "actionablechattest"
     },
     {
@@ -2050,7 +2050,7 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "ai_copilot_tests_actionablechattest_teardown",
-      "community": 264,
+      "community": 271,
       "norm_label": ".teardown()"
     },
     {
@@ -2060,7 +2060,7 @@
       "source_location": "L330",
       "_origin": "ast",
       "id": "ai_copilot_tests_actionablechattest_test_chat_genere_rapport_lecture",
-      "community": 264,
+      "community": 271,
       "norm_label": ".test_chat_genere_rapport_lecture()"
     },
     {
@@ -2070,7 +2070,7 @@
       "source_location": "L338",
       "_origin": "ast",
       "id": "ai_copilot_tests_actionablechattest_test_chat_sync_demande_approbation_admin",
-      "community": 264,
+      "community": 271,
       "norm_label": ".test_chat_sync_demande_approbation_admin()"
     },
     {
@@ -2080,7 +2080,7 @@
       "source_location": "L343",
       "_origin": "ast",
       "id": "ai_copilot_tests_actionablechattest_test_chat_sync_refuse_pour_lecteur",
-      "community": 264,
+      "community": 271,
       "norm_label": ".test_chat_sync_refuse_pour_lecteur()"
     },
     {
@@ -2090,7 +2090,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "ai_copilot_tests_actionablechattest_test_chat_question_reste_qa",
-      "community": 264,
+      "community": 271,
       "norm_label": ".test_chat_question_reste_qa()"
     },
     {
@@ -2190,7 +2190,7 @@
       "source_location": "L315",
       "_origin": "ast",
       "id": "ai_copilot_tests_rationale_315",
-      "community": 264,
+      "community": 271,
       "norm_label": "le copilot agit : lecture executee, ecriture \u2192 approbation, droits respectes."
     },
     {
@@ -2200,7 +2200,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_tools",
-      "community": 63,
+      "community": 277,
       "norm_label": "tools.py"
     },
     {
@@ -2260,7 +2260,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai_copilot_tools_can_use",
-      "community": 63,
+      "community": 271,
       "norm_label": "can_use()"
     },
     {
@@ -2410,7 +2410,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_explain_kpi",
-      "community": 63,
+      "community": 277,
       "norm_label": "_tool_explain_kpi()"
     },
     {
@@ -2420,7 +2420,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_group_score",
-      "community": 92,
+      "community": 277,
       "norm_label": "_tool_group_score()"
     },
     {
@@ -2430,7 +2430,7 @@
       "source_location": "L236",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_run_connector_sync",
-      "community": 63,
+      "community": 277,
       "norm_label": "_tool_run_connector_sync()"
     },
     {
@@ -2440,7 +2440,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_generate_report",
-      "community": 92,
+      "community": 277,
       "norm_label": "_tool_generate_report()"
     },
     {
@@ -2450,7 +2450,7 @@
       "source_location": "L266",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_delete_connector",
-      "community": 63,
+      "community": 277,
       "norm_label": "_tool_delete_connector()"
     },
     {
@@ -2460,7 +2460,7 @@
       "source_location": "L278",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_send_report_email",
-      "community": 63,
+      "community": 277,
       "norm_label": "_tool_send_report_email()"
     },
     {
@@ -2480,7 +2480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_1",
-      "community": 63,
+      "community": 277,
       "norm_label": "outils controles du copilot : registre declaratif + executeur conscient des perm"
     },
     {
@@ -2510,7 +2510,7 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_237",
-      "community": 63,
+      "community": 277,
       "norm_label": "lance une synchronisation d'un connecteur (ecriture sensible \u2014 passe par approba"
     },
     {
@@ -2520,7 +2520,7 @@
       "source_location": "L248",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_248",
-      "community": 92,
+      "community": 277,
       "norm_label": "genere la synthese de gouvernance groupe + indique les exports disponibles (lect"
     },
     {
@@ -2530,7 +2530,7 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_267",
-      "community": 63,
+      "community": 277,
       "norm_label": "supprime un connecteur (destructif \u2014 double validation)."
     },
     {
@@ -2540,7 +2540,7 @@
       "source_location": "L279",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_279",
-      "community": 63,
+      "community": 277,
       "norm_label": "envoie un rapport par email (destructif/sortant \u2014 double validation).      phase"
     },
     {
@@ -2560,7 +2560,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_value_resolver",
-      "community": 12,
+      "community": 277,
       "norm_label": "value_resolver.py"
     },
     {
@@ -2570,7 +2570,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "ai_copilot_value_resolver_build_value_lookup",
-      "community": 12,
+      "community": 277,
       "norm_label": "build_value_lookup()"
     },
     {
@@ -2580,7 +2580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_value_resolver_rationale_1",
-      "community": 12,
+      "community": 277,
       "norm_label": "resolution metrique \u2192 valeur reelle du mart (binding, phase 6).  fournit le `val"
     },
     {
@@ -2927,7 +2927,7 @@
       "label": ".record()",
       "file_type": "code",
       "source_file": "backend/apps/audit/models.py",
-      "source_location": "L29",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "audit_models_accesslog_record",
       "community": 92,
@@ -2937,7 +2937,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/audit/models.py",
-      "source_location": "L40",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "audit_models_accesslog_str",
       "community": 131,
@@ -3150,7 +3150,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "runtimeerror",
-      "community": 268,
+      "community": 81,
       "norm_label": "runtimeerror"
     },
     {
@@ -3160,7 +3160,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "governance_gateway_fetch_or_unavailable",
-      "community": 81,
+      "community": 92,
       "norm_label": "fetch_or_unavailable()"
     },
     {
@@ -3310,7 +3310,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "governance_gateway_get_mart_gateway",
-      "community": 81,
+      "community": 92,
       "norm_label": "get_mart_gateway()"
     },
     {
@@ -3360,7 +3360,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "governance_gateway_rationale_43",
-      "community": 81,
+      "community": 92,
       "norm_label": "execute une lecture du mart. retourne `(resultat, disponible)`.      aucune exce"
     },
     {
@@ -3860,7 +3860,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "any",
-      "community": 104,
+      "community": 282,
       "norm_label": "any"
     },
     {
@@ -3980,7 +3980,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "governance_tests_failingmartgateway_fetch_hr_kpi",
-      "community": 268,
+      "community": 81,
       "norm_label": ".fetch_hr_kpi()"
     },
     {
@@ -4000,7 +4000,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "governance_tests_governanceapitest_setup",
-      "community": 9,
+      "community": 30,
       "norm_label": ".setup()"
     },
     {
@@ -4240,7 +4240,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "governance_tests_domainscoreapitest_setup",
-      "community": 30,
+      "community": 203,
       "norm_label": ".setup()"
     },
     {
@@ -4510,7 +4510,7 @@
       "source_location": "L502",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest",
-      "community": 71,
+      "community": 260,
       "norm_label": "rbacdomainenforcementtest"
     },
     {
@@ -4520,7 +4520,7 @@
       "source_location": "L505",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_setup",
-      "community": 71,
+      "community": 260,
       "norm_label": ".setup()"
     },
     {
@@ -4530,7 +4530,7 @@
       "source_location": "L515",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_teardown",
-      "community": 71,
+      "community": 260,
       "norm_label": ".teardown()"
     },
     {
@@ -4540,7 +4540,7 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_refuse_domaine_finance",
-      "community": 71,
+      "community": 260,
       "norm_label": ".test_drh_refuse_domaine_finance()"
     },
     {
@@ -4550,7 +4550,7 @@
       "source_location": "L522",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_autorise_son_domaine_hr",
-      "community": 71,
+      "community": 260,
       "norm_label": ".test_drh_autorise_son_domaine_hr()"
     },
     {
@@ -4560,7 +4560,7 @@
       "source_location": "L526",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_refuse_groupe_consolide",
-      "community": 71,
+      "community": 260,
       "norm_label": ".test_drh_refuse_groupe_consolide()"
     },
     {
@@ -4570,7 +4570,7 @@
       "source_location": "L531",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_reader_refuse_hr_kpi",
-      "community": 71,
+      "community": 260,
       "norm_label": ".test_reader_refuse_hr_kpi()"
     },
     {
@@ -4580,7 +4580,7 @@
       "source_location": "L536",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_reader_autorise_groupe",
-      "community": 71,
+      "community": 260,
       "norm_label": ".test_reader_autorise_groupe()"
     },
     {
@@ -4860,7 +4860,7 @@
       "source_location": "L503",
       "_origin": "ast",
       "id": "governance_tests_rationale_503",
-      "community": 71,
+      "community": 260,
       "norm_label": "frontiere de securite : la rbac par domaine est appliquee cote backend (pas que"
     },
     {
@@ -4920,7 +4920,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views",
-      "community": 81,
+      "community": 242,
       "norm_label": "views.py"
     },
     {
@@ -4950,7 +4950,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "governance_views_catalogview_get",
-      "community": 64,
+      "community": 92,
       "norm_label": ".get()"
     },
     {
@@ -5000,7 +5000,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views_rationale_1",
-      "community": 81,
+      "community": 242,
       "norm_label": "api governance (drf). lecture seule, filtree par perimetre, journalisee."
     },
     {
@@ -5114,10 +5114,50 @@
       "norm_label": "sourceadmin"
     },
     {
-      "label": "EndpointInline",
+      "label": ".get_actions()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "integrations_admin_sourceadmin_get_actions",
+      "community": 69,
+      "norm_label": ".get_actions()"
+    },
+    {
+      "label": ".has_delete_permission()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
       "source_location": "L101",
+      "_origin": "ast",
+      "id": "integrations_admin_sourceadmin_has_delete_permission",
+      "community": 69,
+      "norm_label": ".has_delete_permission()"
+    },
+    {
+      "label": ".get_prepopulated_fields()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L116",
+      "_origin": "ast",
+      "id": "integrations_admin_sourceadmin_get_prepopulated_fields",
+      "community": 69,
+      "norm_label": ".get_prepopulated_fields()"
+    },
+    {
+      "label": ".save_model()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L127",
+      "_origin": "ast",
+      "id": "integrations_admin_sourceadmin_save_model",
+      "community": 69,
+      "norm_label": ".save_model()"
+    },
+    {
+      "label": "EndpointInline",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L141",
       "_origin": "ast",
       "id": "integrations_admin_endpointinline",
       "community": 69,
@@ -5127,17 +5167,47 @@
       "label": "IdentifiantInline",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L107",
+      "source_location": "L147",
       "_origin": "ast",
       "id": "integrations_admin_identifiantinline",
       "community": 69,
       "norm_label": "identifiantinline"
     },
     {
+      "label": ".has_add_permission()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L167",
+      "_origin": "ast",
+      "id": "integrations_admin_identifiantinline_has_add_permission",
+      "community": 69,
+      "norm_label": ".has_add_permission()"
+    },
+    {
+      "label": ".has_change_permission()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L170",
+      "_origin": "ast",
+      "id": "integrations_admin_identifiantinline_has_change_permission",
+      "community": 69,
+      "norm_label": ".has_change_permission()"
+    },
+    {
+      "label": ".has_delete_permission()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L173",
+      "_origin": "ast",
+      "id": "integrations_admin_identifiantinline_has_delete_permission",
+      "community": 69,
+      "norm_label": ".has_delete_permission()"
+    },
+    {
       "label": ".secret_masque()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L124",
+      "source_location": "L177",
       "_origin": "ast",
       "id": "integrations_admin_identifiantinline_secret_masque",
       "community": 69,
@@ -5147,17 +5217,27 @@
       "label": "ConnecteurAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L129",
+      "source_location": "L182",
       "_origin": "ast",
       "id": "integrations_admin_connecteuradmin",
       "community": 69,
       "norm_label": "connecteuradmin"
     },
     {
+      "label": ".has_delete_permission()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L194",
+      "_origin": "ast",
+      "id": "integrations_admin_connecteuradmin_has_delete_permission",
+      "community": 69,
+      "norm_label": ".has_delete_permission()"
+    },
+    {
       "label": "MappingInline",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L142",
+      "source_location": "L201",
       "_origin": "ast",
       "id": "integrations_admin_mappinginline",
       "community": 69,
@@ -5167,7 +5247,7 @@
       "label": "EndpointAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L149",
+      "source_location": "L208",
       "_origin": "ast",
       "id": "integrations_admin_endpointadmin",
       "community": 69,
@@ -5177,7 +5257,7 @@
       "label": "MappingAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L161",
+      "source_location": "L220",
       "_origin": "ast",
       "id": "integrations_admin_mappingadmin",
       "community": 69,
@@ -5187,7 +5267,7 @@
       "label": "_masque()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L171",
+      "source_location": "L230",
       "_origin": "ast",
       "id": "integrations_admin_masque",
       "community": 69,
@@ -5197,7 +5277,7 @@
       "label": "IdentifiantAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L187",
+      "source_location": "L246",
       "_origin": "ast",
       "id": "integrations_admin_identifiantadmin",
       "community": 69,
@@ -5207,7 +5287,7 @@
       "label": ".has_add_permission()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L206",
+      "source_location": "L269",
       "_origin": "ast",
       "id": "integrations_admin_identifiantadmin_has_add_permission",
       "community": 69,
@@ -5217,7 +5297,7 @@
       "label": ".has_change_permission()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L209",
+      "source_location": "L272",
       "_origin": "ast",
       "id": "integrations_admin_identifiantadmin_has_change_permission",
       "community": 69,
@@ -5227,7 +5307,7 @@
       "label": ".secret_defini()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L213",
+      "source_location": "L276",
       "_origin": "ast",
       "id": "integrations_admin_identifiantadmin_secret_defini",
       "community": 69,
@@ -5237,7 +5317,7 @@
       "label": ".secret_masque()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L217",
+      "source_location": "L280",
       "_origin": "ast",
       "id": "integrations_admin_identifiantadmin_secret_masque",
       "community": 69,
@@ -5247,7 +5327,7 @@
       "label": "PersonneAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L222",
+      "source_location": "L285",
       "_origin": "ast",
       "id": "integrations_admin_personneadmin",
       "community": 69,
@@ -5257,7 +5337,7 @@
       "label": ".get_queryset()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L229",
+      "source_location": "L292",
       "_origin": "ast",
       "id": "integrations_admin_personneadmin_get_queryset",
       "community": 104,
@@ -5267,7 +5347,7 @@
       "label": ".nombre_identites()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L235",
+      "source_location": "L298",
       "_origin": "ast",
       "id": "integrations_admin_personneadmin_nombre_identites",
       "community": 69,
@@ -5277,7 +5357,7 @@
       "label": "IdentiteExterneAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L240",
+      "source_location": "L303",
       "_origin": "ast",
       "id": "integrations_admin_identiteexterneadmin",
       "community": 69,
@@ -5287,7 +5367,7 @@
       "label": ".instantane_present()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L252",
+      "source_location": "L315",
       "_origin": "ast",
       "id": "integrations_admin_identiteexterneadmin_instantane_present",
       "community": 69,
@@ -5297,7 +5377,7 @@
       "label": "JobAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L260",
+      "source_location": "L323",
       "_origin": "ast",
       "id": "integrations_admin_jobadmin",
       "community": 69,
@@ -5307,7 +5387,7 @@
       "label": "LogAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L273",
+      "source_location": "L336",
       "_origin": "ast",
       "id": "integrations_admin_logadmin",
       "community": 69,
@@ -5317,7 +5397,7 @@
       "label": ".extrait()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L283",
+      "source_location": "L346",
       "_origin": "ast",
       "id": "integrations_admin_logadmin_extrait",
       "community": 69,
@@ -5327,7 +5407,7 @@
       "label": "ErreurAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L291",
+      "source_location": "L354",
       "_origin": "ast",
       "id": "integrations_admin_erreuradmin",
       "community": 69,
@@ -5337,7 +5417,7 @@
       "label": ".has_change_permission()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L310",
+      "source_location": "L373",
       "_origin": "ast",
       "id": "integrations_admin_erreuradmin_has_change_permission",
       "community": 69,
@@ -5347,7 +5427,7 @@
       "label": ".extrait()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L314",
+      "source_location": "L377",
       "_origin": "ast",
       "id": "integrations_admin_erreuradmin_extrait",
       "community": 69,
@@ -5357,7 +5437,7 @@
       "label": ".marquer_traitees()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L319",
+      "source_location": "L382",
       "_origin": "ast",
       "id": "integrations_admin_erreuradmin_marquer_traitees",
       "community": 69,
@@ -5367,7 +5447,7 @@
       "label": ".marquer_non_traitees()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L324",
+      "source_location": "L387",
       "_origin": "ast",
       "id": "integrations_admin_erreuradmin_marquer_non_traitees",
       "community": 69,
@@ -5377,7 +5457,7 @@
       "label": "WebhookAdmin",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L330",
+      "source_location": "L393",
       "_origin": "ast",
       "id": "integrations_admin_webhookadmin",
       "community": 69,
@@ -5387,7 +5467,7 @@
       "label": ".charge_presente()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L344",
+      "source_location": "L407",
       "_origin": "ast",
       "id": "integrations_admin_webhookadmin_charge_presente",
       "community": 69,
@@ -5414,22 +5494,62 @@
       "norm_label": "socle des tables produites par le systeme : consultation seule.      `created_at"
     },
     {
+      "label": "Retire la suppression en masse : elle ne consulte pas le contr\u00f4le par         ob",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "integrations_admin_rationale_95",
+      "community": 69,
+      "norm_label": "retire la suppression en masse : elle ne consulte pas le controle par         ob"
+    },
+    {
+      "label": "Une source ne se supprime que si elle n'a produit aucune trace.          `on_del",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "integrations_admin_rationale_102",
+      "community": 69,
+      "norm_label": "une source ne se supprime que si elle n'a produit aucune trace.          `on_del"
+    },
+    {
+      "label": "Le code n'est propos\u00e9 qu'\u00e0 la CR\u00c9ATION.          `prepopulated_fields` s'appliqu",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L117",
+      "_origin": "ast",
+      "id": "integrations_admin_rationale_117",
+      "community": 69,
+      "norm_label": "le code n'est propose qu'a la creation.          `prepopulated_fields` s'appliqu"
+    },
+    {
       "label": "Identifiants du connecteur, en consultation masqu\u00e9e uniquement.      Ni ajout ni",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L108",
+      "source_location": "L148",
       "_origin": "ast",
-      "id": "integrations_admin_rationale_108",
+      "id": "integrations_admin_rationale_148",
       "community": 69,
       "norm_label": "identifiants du connecteur, en consultation masquee uniquement.      ni ajout ni"
+    },
+    {
+      "label": "Le connecteur est cr\u00e9\u00e9 d'office avec sa source et l'interface le suppose",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L195",
+      "_origin": "ast",
+      "id": "integrations_admin_rationale_195",
+      "community": 69,
+      "norm_label": "le connecteur est cree d'office avec sa source et l'interface le suppose"
     },
     {
       "label": "Masque du secret, ou la raison de son absence.      `masked` d\u00e9chiffre pour ne m",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L172",
+      "source_location": "L231",
       "_origin": "ast",
-      "id": "integrations_admin_rationale_172",
+      "id": "integrations_admin_rationale_231",
       "community": 69,
       "norm_label": "masque du secret, ou la raison de son absence.      `masked` dechiffre pour ne m"
     },
@@ -5437,9 +5557,9 @@
       "label": "Consultation et r\u00e9vocation. Le d\u00e9p\u00f4t d'un secret passe par l'API, qui chiffre.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L188",
+      "source_location": "L247",
       "_origin": "ast",
-      "id": "integrations_admin_rationale_188",
+      "id": "integrations_admin_rationale_247",
       "community": 69,
       "norm_label": "consultation et revocation. le depot d'un secret passe par l'api, qui chiffre."
     },
@@ -5447,9 +5567,9 @@
       "label": "Un message de log peut faire plusieurs lignes : la liste n'en montre que",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L284",
+      "source_location": "L347",
       "_origin": "ast",
-      "id": "integrations_admin_rationale_284",
+      "id": "integrations_admin_rationale_347",
       "community": 69,
       "norm_label": "un message de log peut faire plusieurs lignes : la liste n'en montre que"
     },
@@ -5457,9 +5577,9 @@
       "label": "Lecture seule, \u00e0 une exception pr\u00e8s : `resolved`.      Marquer une erreur comme",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L292",
+      "source_location": "L355",
       "_origin": "ast",
-      "id": "integrations_admin_rationale_292",
+      "id": "integrations_admin_rationale_355",
       "community": 69,
       "norm_label": "lecture seule, a une exception pres : `resolved`.      marquer une erreur comme"
     },
@@ -5497,17 +5617,27 @@
       "label": "_key()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L25",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "integrations_encryption_key",
       "community": 18,
       "norm_label": "_key()"
     },
     {
+      "label": "_oublier_la_cle()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/encryption.py",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "integrations_encryption_oublier_la_cle",
+      "community": 18,
+      "norm_label": "_oublier_la_cle()"
+    },
+    {
       "label": "_keystream()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L30",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "integrations_encryption_keystream",
       "community": 18,
@@ -5517,7 +5647,7 @@
       "label": "encrypt()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L39",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "integrations_encryption_encrypt",
       "community": 18,
@@ -5527,7 +5657,7 @@
       "label": "decrypt()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L50",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "integrations_encryption_decrypt",
       "community": 18,
@@ -5537,7 +5667,7 @@
       "label": "mask()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L63",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "integrations_encryption_mask",
       "community": 18,
@@ -5554,12 +5684,22 @@
       "norm_label": "chiffrement at-rest des secrets de connecteurs (tokens, mots de passe...).  `crypt"
     },
     {
+      "label": "Cl\u00e9 d\u00e9riv\u00e9e UNE FOIS par processus.      120 000 it\u00e9rations PBKDF2, c'est le pri",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/encryption.py",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "integrations_encryption_rationale_31",
+      "community": 18,
+      "norm_label": "cle derivee une fois par processus.      120 000 iterations pbkdf2, c'est le pri"
+    },
+    {
       "label": "Repr\u00e9sentation masqu\u00e9e pour l'affichage (jamais le secret en clair).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L64",
+      "source_location": "L85",
       "_origin": "ast",
-      "id": "integrations_encryption_rationale_64",
+      "id": "integrations_encryption_rationale_85",
       "community": 18,
       "norm_label": "representation masquee pour l'affichage (jamais le secret en clair)."
     },
@@ -5590,7 +5730,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_integrations_doctor",
-      "community": 260,
+      "community": 91,
       "norm_label": "integrations_doctor.py"
     },
     {
@@ -5600,7 +5740,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command",
-      "community": 260,
+      "community": 91,
       "norm_label": "command"
     },
     {
@@ -5610,7 +5750,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "basecommand",
-      "community": 260,
+      "community": 91,
       "norm_label": "basecommand"
     },
     {
@@ -5620,7 +5760,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_add_arguments",
-      "community": 260,
+      "community": 91,
       "norm_label": ".add_arguments()"
     },
     {
@@ -5630,7 +5770,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_ligne",
-      "community": 260,
+      "community": 91,
       "norm_label": "._ligne()"
     },
     {
@@ -5640,7 +5780,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_dns",
-      "community": 260,
+      "community": 91,
       "norm_label": "._dns()"
     },
     {
@@ -5650,7 +5790,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_tls",
-      "community": 260,
+      "community": 91,
       "norm_label": "._tls()"
     },
     {
@@ -5660,7 +5800,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_endpoint_sans_jeton",
-      "community": 260,
+      "community": 91,
       "norm_label": "._endpoint_sans_jeton()"
     },
     {
@@ -5670,7 +5810,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_essai_authentifie",
-      "community": 260,
+      "community": 91,
       "norm_label": "._essai_authentifie()"
     },
     {
@@ -5680,7 +5820,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_boucle_locale",
-      "community": 260,
+      "community": 91,
       "norm_label": "._boucle_locale()"
     },
     {
@@ -5690,7 +5830,7 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_handle",
-      "community": 260,
+      "community": 91,
       "norm_label": ".handle()"
     },
     {
@@ -5700,7 +5840,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_1",
-      "community": 260,
+      "community": 91,
       "norm_label": "diagnostic reseau a lancer depuis le conteneur backend.      docker compose exec"
     },
     {
@@ -5710,7 +5850,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_96",
-      "community": 260,
+      "community": 91,
       "norm_label": "un 401 est le resultat attendu : il prouve que l'endpoint existe et         qu'i"
     },
     {
@@ -5720,7 +5860,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_117",
-      "community": 260,
+      "community": 91,
       "norm_label": "derniere couche : le vrai client du connecteur, avec le vrai jeton."
     },
     {
@@ -5730,7 +5870,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_153",
-      "community": 260,
+      "community": 91,
       "norm_label": "le backend se voit-il lui-meme ? separe \u00ab backend mort \u00bb de \u00ab proxy mal cable \u00bb."
     },
     {
@@ -5740,7 +5880,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_shield_smoke",
-      "community": 260,
+      "community": 91,
       "norm_label": "shield_smoke.py"
     },
     {
@@ -5750,7 +5890,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "commands_shield_smoke_command",
-      "community": 260,
+      "community": 91,
       "norm_label": "command"
     },
     {
@@ -5760,7 +5900,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "commands_shield_smoke_command_handle",
-      "community": 260,
+      "community": 91,
       "norm_label": ".handle()"
     },
     {
@@ -5770,7 +5910,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_shield_smoke_rationale_1",
-      "community": 260,
+      "community": 91,
       "norm_label": "smoke test kaydan shield \u2014 peu d'appels, avant toute serie lourde.      python m"
     },
     {
@@ -5907,7 +6047,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L136",
+      "source_location": "L137",
       "_origin": "ast",
       "id": "integrations_models_datasource_str",
       "community": 69,
@@ -5917,7 +6057,7 @@
       "label": ".set_status()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L139",
+      "source_location": "L140",
       "_origin": "ast",
       "id": "integrations_models_datasource_set_status",
       "community": 69,
@@ -5927,7 +6067,7 @@
       "label": "DataConnector",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L144",
+      "source_location": "L145",
       "_origin": "ast",
       "id": "integrations_models_dataconnector",
       "community": 69,
@@ -5937,7 +6077,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L160",
+      "source_location": "L165",
       "_origin": "ast",
       "id": "integrations_models_dataconnector_str",
       "community": 69,
@@ -5947,7 +6087,7 @@
       "label": "ConnectorEndpoint",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L164",
+      "source_location": "L169",
       "_origin": "ast",
       "id": "integrations_models_connectorendpoint",
       "community": 10,
@@ -5957,7 +6097,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L179",
+      "source_location": "L186",
       "_origin": "ast",
       "id": "integrations_models_connectorendpoint_str",
       "community": 10,
@@ -5967,17 +6107,17 @@
       "label": "ConnectorCredential",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L183",
+      "source_location": "L190",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential",
-      "community": 236,
+      "community": 18,
       "norm_label": "connectorcredential"
     },
     {
       "label": ".set_secret()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L194",
+      "source_location": "L202",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_set_secret",
       "community": 18,
@@ -5987,7 +6127,7 @@
       "label": ".secret()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L198",
+      "source_location": "L206",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_secret",
       "community": 18,
@@ -5997,17 +6137,17 @@
       "label": ".is_set()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L202",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_is_set",
-      "community": 236,
+      "community": 18,
       "norm_label": ".is_set()"
     },
     {
       "label": ".masked()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L206",
+      "source_location": "L214",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_masked",
       "community": 18,
@@ -6017,17 +6157,17 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L209",
+      "source_location": "L217",
       "_origin": "ast",
       "id": "integrations_models_connectorcredential_str",
-      "community": 236,
+      "community": 18,
       "norm_label": ".__str__()"
     },
     {
       "label": "FieldMapping",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L213",
+      "source_location": "L221",
       "_origin": "ast",
       "id": "integrations_models_fieldmapping",
       "community": 10,
@@ -6037,7 +6177,7 @@
       "label": "SyncJob",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L227",
+      "source_location": "L237",
       "_origin": "ast",
       "id": "integrations_models_syncjob",
       "community": 69,
@@ -6047,7 +6187,7 @@
       "label": "SyncLog",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L242",
+      "source_location": "L254",
       "_origin": "ast",
       "id": "integrations_models_synclog",
       "community": 69,
@@ -6057,7 +6197,7 @@
       "label": "SyncError",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L253",
+      "source_location": "L267",
       "_origin": "ast",
       "id": "integrations_models_syncerror",
       "community": 10,
@@ -6067,7 +6207,7 @@
       "label": "Person",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L265",
+      "source_location": "L281",
       "_origin": "ast",
       "id": "integrations_models_person",
       "community": 69,
@@ -6077,7 +6217,7 @@
       "label": "Kind",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L273",
+      "source_location": "L289",
       "_origin": "ast",
       "id": "integrations_models_kind",
       "community": 18,
@@ -6087,7 +6227,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L286",
+      "source_location": "L303",
       "_origin": "ast",
       "id": "integrations_models_person_str",
       "community": 69,
@@ -6097,7 +6237,7 @@
       "label": "ExternalIdentity",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L290",
+      "source_location": "L307",
       "_origin": "ast",
       "id": "integrations_models_externalidentity",
       "community": 69,
@@ -6107,7 +6247,7 @@
       "label": ".__str__()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L307",
+      "source_location": "L325",
       "_origin": "ast",
       "id": "integrations_models_externalidentity_str",
       "community": 69,
@@ -6117,10 +6257,10 @@
       "label": "WebhookEvent",
       "file_type": "code",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L311",
+      "source_location": "L329",
       "_origin": "ast",
       "id": "integrations_models_webhookevent",
-      "community": 69,
+      "community": 236,
       "norm_label": "webhookevent"
     },
     {
@@ -6157,9 +6297,9 @@
       "label": "Configuration de connexion d'une source (1-1).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L145",
+      "source_location": "L146",
       "_origin": "ast",
-      "id": "integrations_models_rationale_145",
+      "id": "integrations_models_rationale_146",
       "community": 69,
       "norm_label": "configuration de connexion d'une source (1-1)."
     },
@@ -6167,9 +6307,9 @@
       "label": "Un point d'acc\u00e8s (endpoint REST, requ\u00eate GraphQL, table, fichier\u2026).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L165",
+      "source_location": "L170",
       "_origin": "ast",
-      "id": "integrations_models_rationale_165",
+      "id": "integrations_models_rationale_170",
       "community": 10,
       "norm_label": "un point d'acces (endpoint rest, requete graphql, table, fichier...)."
     },
@@ -6177,19 +6317,19 @@
       "label": "Secret chiffr\u00e9 at-rest. Jamais expos\u00e9 en clair par l'API.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L184",
+      "source_location": "L191",
       "_origin": "ast",
-      "id": "integrations_models_rationale_184",
-      "community": 236,
+      "id": "integrations_models_rationale_191",
+      "community": 18,
       "norm_label": "secret chiffre at-rest. jamais expose en clair par l'api."
     },
     {
       "label": "Correspondance champ source \u2192 champ cible (vers le mart).",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L214",
+      "source_location": "L222",
       "_origin": "ast",
-      "id": "integrations_models_rationale_214",
+      "id": "integrations_models_rationale_222",
       "community": 10,
       "norm_label": "correspondance champ source \u2192 champ cible (vers le mart)."
     },
@@ -6197,9 +6337,9 @@
       "label": "Personne r\u00e9elle (r\u00e9f\u00e9rentiel identit\u00e9 transverse).      Squelette volontairement",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L266",
+      "source_location": "L282",
       "_origin": "ast",
-      "id": "integrations_models_rationale_266",
+      "id": "integrations_models_rationale_282",
       "community": 69,
       "norm_label": "personne reelle (referentiel identite transverse).      squelette volontairement"
     },
@@ -6207,9 +6347,9 @@
       "label": "Lien 1 personne \u2194 1 identifiant dans une source externe.      `source` = code de",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L291",
+      "source_location": "L308",
       "_origin": "ast",
-      "id": "integrations_models_rationale_291",
+      "id": "integrations_models_rationale_308",
       "community": 69,
       "norm_label": "lien 1 personne \u2194 1 identifiant dans une source externe.      `source` = code de"
     },
@@ -6220,7 +6360,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_odoo",
-      "community": 236,
+      "community": 280,
       "norm_label": "odoo.py"
     },
     {
@@ -6230,7 +6370,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "integrations_odoo_get_odoo_source",
-      "community": 262,
+      "community": 280,
       "norm_label": "get_odoo_source()"
     },
     {
@@ -6250,7 +6390,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "integrations_odoo_fetch_hr_reference",
-      "community": 262,
+      "community": 280,
       "norm_label": "fetch_hr_reference()"
     },
     {
@@ -6260,7 +6400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_odoo_rationale_1",
-      "community": 236,
+      "community": 280,
       "norm_label": "squelette connecteur odoo rh (adr-0003/0004) \u2014 aucun appel reel a ce stade.  vol"
     },
     {
@@ -6270,7 +6410,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "integrations_odoo_rationale_46",
-      "community": 262,
+      "community": 280,
       "norm_label": "etat gouverne du referentiel rh odoo. ne renvoie jamais de donnees.      `not_co"
     },
     {
@@ -6360,7 +6500,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "integrations_serializers_connectorcredentialserializer_create",
-      "community": 236,
+      "community": 18,
       "norm_label": ".create()"
     },
     {
@@ -6710,7 +6850,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "integrations_shield_base_url",
-      "community": 73,
+      "community": 262,
       "norm_label": "_base_url()"
     },
     {
@@ -6740,7 +6880,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "integrations_shield_build_client",
-      "community": 73,
+      "community": 262,
       "norm_label": "build_client()"
     },
     {
@@ -6880,7 +7020,7 @@
       "source_location": "L383",
       "_origin": "ast",
       "id": "integrations_shield_tally",
-      "community": 73,
+      "community": 282,
       "norm_label": "_tally()"
     },
     {
@@ -6890,7 +7030,7 @@
       "source_location": "L393",
       "_origin": "ast",
       "id": "integrations_shield_fetch_attendance_series",
-      "community": 73,
+      "community": 282,
       "norm_label": "fetch_attendance_series()"
     },
     {
@@ -6900,7 +7040,7 @@
       "source_location": "L441",
       "_origin": "ast",
       "id": "integrations_shield_presence_by_kind_from",
-      "community": 73,
+      "community": 282,
       "norm_label": "_presence_by_kind_from()"
     },
     {
@@ -6950,7 +7090,7 @@
       "source_location": "L579",
       "_origin": "ast",
       "id": "integrations_shield_shield_health",
-      "community": 73,
+      "community": 262,
       "norm_label": "shield_health()"
     },
     {
@@ -7070,7 +7210,7 @@
       "source_location": "L394",
       "_origin": "ast",
       "id": "integrations_shield_rationale_394",
-      "community": 73,
+      "community": 282,
       "norm_label": "serie journaliere de presence, batie sur une lecture de periode par indicateur."
     },
     {
@@ -7080,7 +7220,7 @@
       "source_location": "L442",
       "_origin": "ast",
       "id": "integrations_shield_rationale_442",
-      "community": 73,
+      "community": 282,
       "norm_label": "presents du jour par `holder_kind`, deduits de la periode deja collectee."
     },
     {
@@ -7100,7 +7240,7 @@
       "source_location": "L580",
       "_origin": "ast",
       "id": "integrations_shield_rationale_580",
-      "community": 73,
+      "community": 262,
       "norm_label": "sante du connecteur, pour sourcehealth et l'ecran d'administration."
     },
     {
@@ -7110,7 +7250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_client",
-      "community": 274,
+      "community": 104,
       "norm_label": "shield_client.py"
     },
     {
@@ -7370,7 +7510,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_1",
-      "community": 274,
+      "community": 104,
       "norm_label": "client http kaydan shield : transport, erreurs, pagination, cache.  separe de la"
     },
     {
@@ -7480,7 +7620,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints",
-      "community": 286,
+      "community": 73,
       "norm_label": "shield_endpoints.py"
     },
     {
@@ -7490,7 +7630,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints_rationale_1",
-      "community": 286,
+      "community": 73,
       "norm_label": "chemins kaydan shield reellement documentes (swagger `/api/docs/`).  un seul end"
     },
     {
@@ -9020,7 +9160,7 @@
       "source_location": "L1258",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_setup",
-      "community": 236,
+      "community": 18,
       "norm_label": ".setup()"
     },
     {
@@ -9060,7 +9200,7 @@
       "source_location": "L1302",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_test_une_exception_inattendue_ne_passe_pas_pour_un_succes",
-      "community": 268,
+      "community": 81,
       "norm_label": ".test_une_exception_inattendue_ne_passe_pas_pour_un_succes()"
     },
     {
@@ -9190,7 +9330,7 @@
       "source_location": "L1416",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest",
-      "community": 265,
+      "community": 236,
       "norm_label": "smokeenumerationtest"
     },
     {
@@ -9200,7 +9340,7 @@
       "source_location": "L1426",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_setup",
-      "community": 265,
+      "community": 236,
       "norm_label": ".setup()"
     },
     {
@@ -9210,7 +9350,7 @@
       "source_location": "L1433",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_lancer",
-      "community": 265,
+      "community": 236,
       "norm_label": "._lancer()"
     },
     {
@@ -9220,7 +9360,7 @@
       "source_location": "L1452",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_test_enumeration_ignoree_est_signalee_comme_bloquante",
-      "community": 265,
+      "community": 236,
       "norm_label": ".test_enumeration_ignoree_est_signalee_comme_bloquante()"
     },
     {
@@ -9230,7 +9370,7 @@
       "source_location": "L1458",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_test_enumeration_honoree_est_confirmee",
-      "community": 265,
+      "community": 236,
       "norm_label": ".test_enumeration_honoree_est_confirmee()"
     },
     {
@@ -9240,7 +9380,7 @@
       "source_location": "L1463",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_test_latence_moyenne_rapportee",
-      "community": 265,
+      "community": 236,
       "norm_label": ".test_latence_moyenne_rapportee()"
     },
     {
@@ -9700,7 +9840,7 @@
       "source_location": "L1303",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1303",
-      "community": 268,
+      "community": 81,
       "norm_label": "si un jour une exception non prevue s'echappe, mieux vaut une erreur         fra"
     },
     {
@@ -9780,7 +9920,7 @@
       "source_location": "L1417",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1417",
-      "community": 265,
+      "community": 236,
       "norm_label": "le smoke test doit detecter une enumeration ignoree par le serveur.      c'est l"
     },
     {
@@ -9790,7 +9930,7 @@
       "source_location": "L1434",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1434",
-      "community": 265,
+      "community": 236,
       "norm_label": "execute la commande avec des comptages controles, et rend sa sortie."
     },
     {
@@ -9800,7 +9940,7 @@
       "source_location": "L1453",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1453",
-      "community": 265,
+      "community": 236,
       "norm_label": "valeur absurde = meme total que sans filtre \u2192 le serveur n'en tient pas compte."
     },
     {
@@ -9830,7 +9970,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_tests_admin",
-      "community": 83,
+      "community": 268,
       "norm_label": "tests_admin.py"
     },
     {
@@ -9920,7 +10060,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest",
-      "community": 83,
+      "community": 235,
       "norm_label": "adminsecrettest"
     },
     {
@@ -9930,7 +10070,7 @@
       "source_location": "L165",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest_setuptestdata",
-      "community": 83,
+      "community": 235,
       "norm_label": ".setuptestdata()"
     },
     {
@@ -9940,7 +10080,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest_setup",
-      "community": 83,
+      "community": 235,
       "norm_label": ".setup()"
     },
     {
@@ -9950,7 +10090,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest_pages",
-      "community": 83,
+      "community": 235,
       "norm_label": "._pages()"
     },
     {
@@ -9960,138 +10100,268 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest_test_ni_le_clair_ni_le_chiffre_napparaissent",
-      "community": 83,
+      "community": 235,
       "norm_label": ".test_ni_le_clair_ni_le_chiffre_napparaissent()"
     },
     {
-      "label": ".test_le_masque_est_bien_affiche()",
+      "label": ".test_le_masque_est_sur_la_fiche_et_pas_dans_la_liste()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
       "source_location": "L194",
       "_origin": "ast",
-      "id": "integrations_tests_admin_adminsecrettest_test_le_masque_est_bien_affiche",
-      "community": 83,
-      "norm_label": ".test_le_masque_est_bien_affiche()"
+      "id": "integrations_tests_admin_adminsecrettest_test_le_masque_est_sur_la_fiche_et_pas_dans_la_liste",
+      "community": 235,
+      "norm_label": ".test_le_masque_est_sur_la_fiche_et_pas_dans_la_liste()"
     },
     {
       "label": ".test_un_secret_indechiffrable_naffiche_pas_une_erreur_500()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L198",
+      "source_location": "L205",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest_test_un_secret_indechiffrable_naffiche_pas_une_erreur_500",
-      "community": 83,
+      "community": 235,
       "norm_label": ".test_un_secret_indechiffrable_naffiche_pas_une_erreur_500()"
     },
     {
       "label": ".test_le_depot_dun_secret_est_impossible_depuis_ladmin()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L205",
+      "source_location": "L218",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminsecrettest_test_le_depot_dun_secret_est_impossible_depuis_ladmin",
-      "community": 83,
+      "community": 235,
       "norm_label": ".test_le_depot_dun_secret_est_impossible_depuis_ladmin()"
     },
     {
       "label": "AdminPisteAuditTest",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L211",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminpisteaudittest",
-      "community": 83,
+      "community": 261,
       "norm_label": "adminpisteaudittest"
     },
     {
       "label": ".setUpTestData()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L215",
+      "source_location": "L228",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminpisteaudittest_setuptestdata",
-      "community": 83,
+      "community": 261,
       "norm_label": ".setuptestdata()"
     },
     {
       "label": ".setUp()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L223",
+      "source_location": "L236",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminpisteaudittest_setup",
-      "community": 83,
+      "community": 261,
       "norm_label": ".setup()"
     },
     {
       "label": ".test_le_journal_dacces_refuse_lajout_et_la_modification()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L226",
+      "source_location": "L239",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminpisteaudittest_test_le_journal_dacces_refuse_lajout_et_la_modification",
-      "community": 83,
+      "community": 261,
       "norm_label": ".test_le_journal_dacces_refuse_lajout_et_la_modification()"
     },
     {
       "label": ".test_les_jobs_de_synchronisation_sont_en_lecture_seule()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L235",
+      "source_location": "L248",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminpisteaudittest_test_les_jobs_de_synchronisation_sont_en_lecture_seule",
-      "community": 83,
+      "community": 261,
       "norm_label": ".test_les_jobs_de_synchronisation_sont_en_lecture_seule()"
     },
     {
       "label": ".test_marquer_une_erreur_traitee_reste_possible()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L243",
+      "source_location": "L256",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminpisteaudittest_test_marquer_une_erreur_traitee_reste_possible",
-      "community": 83,
+      "community": 261,
       "norm_label": ".test_marquer_une_erreur_traitee_reste_possible()"
     },
     {
       "label": "AdminUtilisateurTest",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L260",
+      "source_location": "L273",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminutilisateurtest",
-      "community": 83,
+      "community": 268,
       "norm_label": "adminutilisateurtest"
     },
     {
       "label": ".setUp()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L263",
+      "source_location": "L276",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminutilisateurtest_setup",
-      "community": 83,
+      "community": 268,
       "norm_label": ".setup()"
     },
     {
       "label": ".test_creation_dun_compte_hache_le_mot_de_passe()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L268",
+      "source_location": "L281",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminutilisateurtest_test_creation_dun_compte_hache_le_mot_de_passe",
-      "community": 83,
+      "community": 268,
       "norm_label": ".test_creation_dun_compte_hache_le_mot_de_passe()"
     },
     {
       "label": ".test_le_perimetre_est_lisible_en_liste()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L279",
+      "source_location": "L292",
       "_origin": "ast",
       "id": "integrations_tests_admin_adminutilisateurtest_test_le_perimetre_est_lisible_en_liste",
-      "community": 83,
+      "community": 268,
       "norm_label": ".test_le_perimetre_est_lisible_en_liste()"
+    },
+    {
+      "label": "AdminSourceGardeFousTest",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L302",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest",
+      "community": 23,
+      "norm_label": "adminsourcegardefoustest"
+    },
+    {
+      "label": ".setUp()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L305",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_setup",
+      "community": 23,
+      "norm_label": ".setup()"
+    },
+    {
+      "label": "._admin()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L315",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "community": 23,
+      "norm_label": "._admin()"
+    },
+    {
+      "label": ".test_une_source_sans_trace_reste_supprimable()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L318",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_sans_trace_reste_supprimable",
+      "community": 23,
+      "norm_label": ".test_une_source_sans_trace_reste_supprimable()"
+    },
+    {
+      "label": ".test_une_source_qui_a_produit_des_traces_nest_pas_supprimable()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L322",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_qui_a_produit_des_traces_nest_pas_supprimable",
+      "community": 23,
+      "norm_label": ".test_une_source_qui_a_produit_des_traces_nest_pas_supprimable()"
+    },
+    {
+      "label": ".test_la_suppression_en_masse_est_retiree()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L327",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_test_la_suppression_en_masse_est_retiree",
+      "community": 23,
+      "norm_label": ".test_la_suppression_en_masse_est_retiree()"
+    },
+    {
+      "label": ".test_le_code_nest_pas_regenere_a_la_modification()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L332",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_test_le_code_nest_pas_regenere_a_la_modification",
+      "community": 23,
+      "norm_label": ".test_le_code_nest_pas_regenere_a_la_modification()"
+    },
+    {
+      "label": ".test_lauteur_est_renseigne_et_non_saisi()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L341",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_test_lauteur_est_renseigne_et_non_saisi",
+      "community": 23,
+      "norm_label": ".test_lauteur_est_renseigne_et_non_saisi()"
+    },
+    {
+      "label": ".test_le_connecteur_nest_pas_supprimable()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L354",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_test_le_connecteur_nest_pas_supprimable",
+      "community": 23,
+      "norm_label": ".test_le_connecteur_nest_pas_supprimable()"
+    },
+    {
+      "label": "._requete()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L361",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "community": 23,
+      "norm_label": "._requete()"
+    },
+    {
+      "label": "DerivationCleTest",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L369",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_derivationcletest",
+      "community": 281,
+      "norm_label": "derivationcletest"
+    },
+    {
+      "label": ".test_la_cle_nest_derivee_quune_seule_fois()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L378",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_derivationcletest_test_la_cle_nest_derivee_quune_seule_fois",
+      "community": 281,
+      "norm_label": ".test_la_cle_nest_derivee_quune_seule_fois()"
+    },
+    {
+      "label": ".test_un_changement_de_reglage_invalide_le_cache()",
+      "file_type": "code",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L392",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_derivationcletest_test_un_changement_de_reglage_invalide_le_cache",
+      "community": 281,
+      "norm_label": ".test_un_changement_de_reglage_invalide_le_cache()"
     },
     {
       "label": "L'admin Django se charge-t-il vraiment ?  `manage.py check` valide les noms de c",
@@ -10100,7 +10370,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_tests_admin_rationale_1",
-      "community": 83,
+      "community": 268,
       "norm_label": "l'admin django se charge-t-il vraiment ?  `manage.py check` valide les noms de c"
     },
     {
@@ -10160,58 +10430,148 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "integrations_tests_admin_rationale_162",
-      "community": 83,
+      "community": 235,
       "norm_label": "aucun secret ne doit apparaitre dans une page d'administration."
     },
     {
-      "label": "Cl\u00e9 de chiffrement chang\u00e9e : la page doit le DIRE, pas planter.",
+      "label": "`masked` d\u00e9chiffre, donc d\u00e9rive la cl\u00e9. Une colonne de liste le ferait une",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L199",
+      "source_location": "L195",
       "_origin": "ast",
-      "id": "integrations_tests_admin_rationale_199",
-      "community": 83,
-      "norm_label": "cle de chiffrement changee : la page doit le dire, pas planter."
+      "id": "integrations_tests_admin_rationale_195",
+      "community": 235,
+      "norm_label": "`masked` dechiffre, donc derive la cle. une colonne de liste le ferait une"
     },
     {
-      "label": "Un formulaire \u00e9crirait la saisie TELLE QUELLE dans le champ chiffr\u00e9.",
+      "label": "Cl\u00e9 de chiffrement chang\u00e9e : la page doit le DIRE, pas planter.          On vise",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests_admin.py",
       "source_location": "L206",
       "_origin": "ast",
       "id": "integrations_tests_admin_rationale_206",
-      "community": 83,
+      "community": 235,
+      "norm_label": "cle de chiffrement changee : la page doit le dire, pas planter.          on vise"
+    },
+    {
+      "label": "Un formulaire \u00e9crirait la saisie TELLE QUELLE dans le champ chiffr\u00e9.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L219",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_219",
+      "community": 235,
       "norm_label": "un formulaire ecrirait la saisie telle quelle dans le champ chiffre."
     },
     {
       "label": "Une trace produite par le syst\u00e8me ne se r\u00e9\u00e9crit pas depuis l'admin.",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L212",
+      "source_location": "L225",
       "_origin": "ast",
-      "id": "integrations_tests_admin_rationale_212",
-      "community": 83,
+      "id": "integrations_tests_admin_rationale_225",
+      "community": 261,
       "norm_label": "une trace produite par le systeme ne se reecrit pas depuis l'admin."
     },
     {
       "label": "La seule \u00e9criture admise sur une trace : clore un constat.          Marquer une",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L244",
+      "source_location": "L257",
       "_origin": "ast",
-      "id": "integrations_tests_admin_rationale_244",
-      "community": 83,
+      "id": "integrations_tests_admin_rationale_257",
+      "community": 261,
       "norm_label": "la seule ecriture admise sur une trace : clore un constat.          marquer une"
     },
     {
       "label": "Le mot de passe doit \u00eatre HACH\u00c9, et le r\u00f4le attribuable sans passer par un shell",
       "file_type": "rationale",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L261",
+      "source_location": "L274",
       "_origin": "ast",
-      "id": "integrations_tests_admin_rationale_261",
-      "community": 83,
+      "id": "integrations_tests_admin_rationale_274",
+      "community": 268,
       "norm_label": "le mot de passe doit etre hache, et le role attribuable sans passer par un shell"
+    },
+    {
+      "label": "Ce que l'admin doit refuser sur une source, et pourquoi.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L303",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_303",
+      "community": 23,
+      "norm_label": "ce que l'admin doit refuser sur une source, et pourquoi."
+    },
+    {
+      "label": "Retirer une source cr\u00e9\u00e9e par erreur doit rester possible.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L319",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_319",
+      "community": 23,
+      "norm_label": "retirer une source creee par erreur doit rester possible."
+    },
+    {
+      "label": "La supprimer emporterait en CASCADE jobs, journaux, erreurs et webhooks \u2014",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L323",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_323",
+      "community": 23,
+      "norm_label": "la supprimer emporterait en cascade jobs, journaux, erreurs et webhooks \u2014"
+    },
+    {
+      "label": "L'action de masse ne consulte pas le contr\u00f4le par objet : elle effacerait",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L328",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_328",
+      "community": 23,
+      "norm_label": "l'action de masse ne consulte pas le controle par objet : elle effacerait"
+    },
+    {
+      "label": "`prepopulated_fields` s'applique aussi au formulaire de modification :         r",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L333",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_333",
+      "community": 23,
+      "norm_label": "`prepopulated_fields` s'applique aussi au formulaire de modification :         r"
+    },
+    {
+      "label": "Le supprimer laisserait une source impossible \u00e0 configurer.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L355",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_355",
+      "community": 23,
+      "norm_label": "le supprimer laisserait une source impossible a configurer."
+    },
+    {
+      "label": "La cl\u00e9 de chiffrement ne doit \u00eatre d\u00e9riv\u00e9e qu'une fois par processus.      120 0",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L370",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_370",
+      "community": 281,
+      "norm_label": "la cle de chiffrement ne doit etre derivee qu'une fois par processus.      120 0"
+    },
+    {
+      "label": "Sinon un `override_settings` sur la cl\u00e9 d\u00e9chiffrerait avec l'ancienne.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L393",
+      "_origin": "ast",
+      "id": "integrations_tests_admin_rationale_393",
+      "community": 281,
+      "norm_label": "sinon un `override_settings` sur la cle dechiffrerait avec l'ancienne."
     },
     {
       "label": "urls.py",
@@ -11141,7 +11501,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "kpi_alerts_alertrule_post_init",
-      "community": 277,
+      "community": 85,
       "norm_label": ".__post_init__()"
     },
     {
@@ -11241,7 +11601,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "kpi_core_period",
-      "community": 12,
+      "community": 14,
       "norm_label": "period"
     },
     {
@@ -11261,7 +11621,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "kpi_core_period_contains",
-      "community": 12,
+      "community": 14,
       "norm_label": ".contains()"
     },
     {
@@ -11281,7 +11641,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "kpi_core_period_last_instant",
-      "community": 12,
+      "community": 14,
       "norm_label": ".last_instant()"
     },
     {
@@ -11361,7 +11721,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "kpi_core_rationale_27",
-      "community": 12,
+      "community": 14,
       "norm_label": "periode d'analyse, bornes demi-ouvertes [start, end[.      `start` est inclus, `"
     },
     {
@@ -11371,7 +11731,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "kpi_core_rationale_41",
-      "community": 12,
+      "community": 14,
       "norm_label": "vrai si `d` appartient a [start, end[."
     },
     {
@@ -11381,7 +11741,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "kpi_core_rationale_46",
-      "community": 12,
+      "community": 14,
       "norm_label": "dernier instant *inclus* dans la periode (end exclu => end n'en fait pas partie)"
     },
     {
@@ -11861,7 +12221,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "kpi_hr_mart_month_start",
-      "community": 30,
+      "community": 14,
       "norm_label": "_month_start()"
     },
     {
@@ -12071,7 +12431,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "semantic_init",
-      "community": 235,
+      "community": 7,
       "norm_label": "__init__.py"
     },
     {
@@ -12081,7 +12441,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "semantic_init_rationale_1",
-      "community": 235,
+      "community": 7,
       "norm_label": "couche semantique : catalogue declaratif des metriques de gouvernance.  ce catal"
     },
     {
@@ -12131,7 +12491,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "semantic_grounding",
-      "community": 212,
+      "community": 7,
       "norm_label": "grounding.py"
     },
     {
@@ -12141,7 +12501,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "semantic_grounding_norm",
-      "community": 212,
+      "community": 7,
       "norm_label": "_norm()"
     },
     {
@@ -12151,7 +12511,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "semantic_grounding_tokens",
-      "community": 212,
+      "community": 7,
       "norm_label": "_tokens()"
     },
     {
@@ -12161,7 +12521,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "semantic_grounding_resolve_metric",
-      "community": 212,
+      "community": 7,
       "norm_label": "resolve_metric()"
     },
     {
@@ -12171,7 +12531,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "semantic_grounding_answer",
-      "community": 212,
+      "community": 7,
       "norm_label": "answer()"
     },
     {
@@ -12181,7 +12541,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "semantic_grounding_rationale_1",
-      "community": 212,
+      "community": 7,
       "norm_label": "ancrage ia : resolution question \u2192 metrique du catalogue (domaine pur, teste)."
     },
     {
@@ -12191,7 +12551,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "semantic_grounding_rationale_40",
-      "community": 212,
+      "community": 7,
       "norm_label": "metrique du catalogue la plus proche de `query`, ou none si rien de pertinent."
     },
     {
@@ -12201,7 +12561,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "semantic_grounding_rationale_74",
-      "community": 212,
+      "community": 7,
       "norm_label": "reponse ancree a une question, ou refus motive. jamais d'invention."
     },
     {
@@ -12321,7 +12681,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog",
-      "community": 235,
+      "community": 7,
       "norm_label": "metriccatalog"
     },
     {
@@ -12331,7 +12691,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog_init",
-      "community": 277,
+      "community": 7,
       "norm_label": ".__init__()"
     },
     {
@@ -12341,7 +12701,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog_get",
-      "community": 235,
+      "community": 7,
       "norm_label": ".get()"
     },
     {
@@ -12351,7 +12711,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog_has",
-      "community": 235,
+      "community": 7,
       "norm_label": ".has()"
     },
     {
@@ -12361,7 +12721,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog_by_domain",
-      "community": 235,
+      "community": 7,
       "norm_label": ".by_domain()"
     },
     {
@@ -12371,7 +12731,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog_all",
-      "community": 235,
+      "community": 7,
       "norm_label": ".all()"
     },
     {
@@ -12381,7 +12741,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "semantic_registry_metriccatalog_keys",
-      "community": 235,
+      "community": 7,
       "norm_label": ".keys()"
     },
     {
@@ -12421,7 +12781,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "semantic_registry_rationale_40",
-      "community": 235,
+      "community": 7,
       "norm_label": "catalogue indexe des metriques. immuable apres construction."
     },
     {
@@ -12611,7 +12971,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_grounding",
-      "community": 212,
+      "community": 7,
       "norm_label": "test_grounding.py"
     },
     {
@@ -12621,7 +12981,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "tests_test_grounding_groundingtest",
-      "community": 212,
+      "community": 7,
       "norm_label": "groundingtest"
     },
     {
@@ -12631,7 +12991,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "tests_test_grounding_groundingtest_test_resolution_par_cle_explicite",
-      "community": 212,
+      "community": 7,
       "norm_label": ".test_resolution_par_cle_explicite()"
     },
     {
@@ -12641,7 +13001,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "tests_test_grounding_groundingtest_test_resolution_par_mots_cles",
-      "community": 212,
+      "community": 7,
       "norm_label": ".test_resolution_par_mots_cles()"
     },
     {
@@ -12651,7 +13011,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "tests_test_grounding_groundingtest_test_refus_si_hors_catalogue",
-      "community": 212,
+      "community": 7,
       "norm_label": ".test_refus_si_hors_catalogue()"
     },
     {
@@ -12661,7 +13021,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "tests_test_grounding_groundingtest_test_valeur_gouvernee_nd",
-      "community": 212,
+      "community": 7,
       "norm_label": ".test_valeur_gouvernee_nd()"
     },
     {
@@ -12671,7 +13031,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "tests_test_grounding_groundingtest_test_valeur_reelle_citee_avec_source",
-      "community": 212,
+      "community": 7,
       "norm_label": ".test_valeur_reelle_citee_avec_source()"
     },
     {
@@ -12681,7 +13041,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_grounding_rationale_1",
-      "community": 212,
+      "community": 7,
       "norm_label": "tests du domaine pur \u2014 ancrage ia (resolution catalogue + refus)."
     },
     {
@@ -12871,7 +13231,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_turnovertest",
-      "community": 11,
+      "community": 14,
       "norm_label": "turnovertest"
     },
     {
@@ -12881,7 +13241,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_turnovertest_test_turnover_rate",
-      "community": 11,
+      "community": 14,
       "norm_label": ".test_turnover_rate()"
     },
     {
@@ -12891,7 +13251,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_turnovertest_test_turnover_effectif_nul",
-      "community": 11,
+      "community": 14,
       "norm_label": ".test_turnover_effectif_nul()"
     },
     {
@@ -13001,7 +13361,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_corehelperstest_test_safe_ratio",
-      "community": 11,
+      "community": 14,
       "norm_label": ".test_safe_ratio()"
     },
     {
@@ -13801,7 +14161,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "api_governance_usealerts",
-      "community": 67,
+      "community": 8,
       "norm_label": "usealerts()"
     },
     {
@@ -13811,7 +14171,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "api_governance_useaiquery",
-      "community": 5,
+      "community": 80,
       "norm_label": "useaiquery()"
     },
     {
@@ -13871,7 +14231,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "api_governance_usehrscore",
-      "community": 8,
+      "community": 212,
       "norm_label": "usehrscore()"
     },
     {
@@ -13911,7 +14271,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_globalfilters",
-      "community": 67,
+      "community": 1,
       "norm_label": "globalfilters.tsx"
     },
     {
@@ -13921,7 +14281,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_globalfilters_years",
-      "community": 67,
+      "community": 1,
       "norm_label": "years"
     },
     {
@@ -13931,7 +14291,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_globalfilters_quarters",
-      "community": 67,
+      "community": 1,
       "norm_label": "quarters"
     },
     {
@@ -13941,7 +14301,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_globalfilters_select",
-      "community": 67,
+      "community": 1,
       "norm_label": "select()"
     },
     {
@@ -13951,7 +14311,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "components_globalfilters_globalfilters",
-      "community": 67,
+      "community": 1,
       "norm_label": "globalfilters()"
     },
     {
@@ -14191,7 +14551,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_appheader",
-      "community": 80,
+      "community": 111,
       "norm_label": "appheader.tsx"
     },
     {
@@ -14201,7 +14561,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "chrome_appheader_appheader",
-      "community": 80,
+      "community": 111,
       "norm_label": "appheader()"
     },
     {
@@ -14231,7 +14591,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_brand",
-      "community": 80,
+      "community": 111,
       "norm_label": "brand.tsx"
     },
     {
@@ -14241,7 +14601,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_brand_brand",
-      "community": 80,
+      "community": 111,
       "norm_label": "brand()"
     },
     {
@@ -14371,7 +14731,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_pageshell",
-      "community": 80,
+      "community": 16,
       "norm_label": "pageshell.tsx"
     },
     {
@@ -14381,7 +14741,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "chrome_pageshell_pageshellprops",
-      "community": 80,
+      "community": 16,
       "norm_label": "pageshellprops"
     },
     {
@@ -14391,7 +14751,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "chrome_pageshell_pageshell",
-      "community": 80,
+      "community": 16,
       "norm_label": "pageshell()"
     },
     {
@@ -14411,7 +14771,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_siderail_siderail",
-      "community": 80,
+      "community": 2,
       "norm_label": "siderail()"
     },
     {
@@ -14441,7 +14801,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_topnav",
-      "community": 80,
+      "community": 111,
       "norm_label": "topnav.tsx"
     },
     {
@@ -14451,7 +14811,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_topnav_topnav",
-      "community": 80,
+      "community": 111,
       "norm_label": "topnav()"
     },
     {
@@ -14461,7 +14821,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_usermenu",
-      "community": 2,
+      "community": 80,
       "norm_label": "usermenu.tsx"
     },
     {
@@ -14471,7 +14831,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "chrome_usermenu_role_labels",
-      "community": 2,
+      "community": 80,
       "norm_label": "role_labels"
     },
     {
@@ -14481,7 +14841,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "chrome_usermenu_usermenu",
-      "community": 281,
+      "community": 221,
       "norm_label": "usermenu()"
     },
     {
@@ -14491,7 +14851,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_theme",
-      "community": 23,
+      "community": 80,
       "norm_label": "theme.ts"
     },
     {
@@ -14501,7 +14861,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "chrome_theme_glass",
-      "community": 23,
+      "community": 80,
       "norm_label": "glass"
     },
     {
@@ -14651,7 +15011,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_parts",
-      "community": 23,
+      "community": 19,
       "norm_label": "parts.tsx"
     },
     {
@@ -14661,7 +15021,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "integrations_parts_status_style",
-      "community": 23,
+      "community": 19,
       "norm_label": "status_style"
     },
     {
@@ -14671,7 +15031,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "integrations_parts_statusbadge",
-      "community": 23,
+      "community": 19,
       "norm_label": "statusbadge()"
     },
     {
@@ -14681,7 +15041,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "integrations_parts_integrationsshell",
-      "community": 23,
+      "community": 19,
       "norm_label": "integrationsshell()"
     },
     {
@@ -14691,7 +15051,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "integrations_parts_integrationsnav",
-      "community": 23,
+      "community": 19,
       "norm_label": "integrationsnav"
     },
     {
@@ -14701,7 +15061,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "integrations_parts_primarylink",
-      "community": 23,
+      "community": 19,
       "norm_label": "primarylink()"
     },
     {
@@ -14711,7 +15071,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "integrations_parts_integrationserror",
-      "community": 23,
+      "community": 19,
       "norm_label": "integrationserror()"
     },
     {
@@ -14721,7 +15081,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_appshell",
-      "community": 263,
+      "community": 1,
       "norm_label": "appshell.tsx"
     },
     {
@@ -14731,7 +15091,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "navigation_appshell_appshellprops",
-      "community": 263,
+      "community": 1,
       "norm_label": "appshellprops"
     },
     {
@@ -14741,7 +15101,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "navigation_appshell_appshell",
-      "community": 263,
+      "community": 1,
       "norm_label": "appshell()"
     },
     {
@@ -14931,7 +15291,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_requireauth",
-      "community": 281,
+      "community": 221,
       "norm_label": "requireauth.tsx"
     },
     {
@@ -14941,7 +15301,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "navigation_requireauth_requireauth",
-      "community": 281,
+      "community": 221,
       "norm_label": "requireauth()"
     },
     {
@@ -14951,7 +15311,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "navigation_requireauth_rootredirect",
-      "community": 281,
+      "community": 221,
       "norm_label": "rootredirect()"
     },
     {
@@ -15001,7 +15361,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_aiquerybox",
-      "community": 5,
+      "community": 80,
       "norm_label": "aiquerybox.tsx"
     },
     {
@@ -15011,7 +15371,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "overview_aiquerybox_samples",
-      "community": 5,
+      "community": 80,
       "norm_label": "samples"
     },
     {
@@ -15021,7 +15381,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_aiquerybox_aiquerybox",
-      "community": 5,
+      "community": 80,
       "norm_label": "aiquerybox()"
     },
     {
@@ -15031,7 +15391,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_alertspanel",
-      "community": 67,
+      "community": 8,
       "norm_label": "alertspanel.tsx"
     },
     {
@@ -15041,7 +15401,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "overview_alertspanel_sev",
-      "community": 67,
+      "community": 8,
       "norm_label": "sev"
     },
     {
@@ -15051,7 +15411,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_alertspanel_severitychip",
-      "community": 67,
+      "community": 8,
       "norm_label": "severitychip()"
     },
     {
@@ -15061,7 +15421,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_alertspanel_alertrow",
-      "community": 67,
+      "community": 8,
       "norm_label": "alertrow()"
     },
     {
@@ -15071,7 +15431,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "overview_alertspanel_alertspanel",
-      "community": 67,
+      "community": 8,
       "norm_label": "alertspanel()"
     },
     {
@@ -15491,7 +15851,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_humancapitalscore",
-      "community": 8,
+      "community": 212,
       "norm_label": "humancapitalscore.tsx"
     },
     {
@@ -15501,7 +15861,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "overview_humancapitalscore_dim_colors",
-      "community": 8,
+      "community": 212,
       "norm_label": "dim_colors"
     },
     {
@@ -15511,7 +15871,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_humancapitalscore_fallback_dimensions",
-      "community": 8,
+      "community": 212,
       "norm_label": "fallback_dimensions"
     },
     {
@@ -15521,7 +15881,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "overview_humancapitalscore_filiale_to_code",
-      "community": 8,
+      "community": 212,
       "norm_label": "filiale_to_code"
     },
     {
@@ -15531,7 +15891,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "overview_humancapitalscore_month_labels",
-      "community": 8,
+      "community": 212,
       "norm_label": "month_labels"
     },
     {
@@ -15541,7 +15901,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "overview_humancapitalscore_fmtscore",
-      "community": 8,
+      "community": 212,
       "norm_label": "fmtscore()"
     },
     {
@@ -15551,7 +15911,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "overview_humancapitalscore_barwidth",
-      "community": 8,
+      "community": 212,
       "norm_label": "barwidth()"
     },
     {
@@ -15561,7 +15921,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "overview_humancapitalscore_trenddelta",
-      "community": 8,
+      "community": 212,
       "norm_label": "trenddelta()"
     },
     {
@@ -15571,7 +15931,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "overview_humancapitalscore_drill_levels",
-      "community": 8,
+      "community": 212,
       "norm_label": "drill_levels"
     },
     {
@@ -15581,7 +15941,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "overview_humancapitalscore_childrenat",
-      "community": 8,
+      "community": 212,
       "norm_label": "childrenat()"
     },
     {
@@ -15591,7 +15951,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "overview_humancapitalscore_scoredrilldown",
-      "community": 8,
+      "community": 212,
       "norm_label": "scoredrilldown()"
     },
     {
@@ -15601,7 +15961,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "overview_humancapitalscore_humancapitalscore",
-      "community": 8,
+      "community": 212,
       "norm_label": "humancapitalscore()"
     },
     {
@@ -15851,7 +16211,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "overview_icons_chevrondown",
-      "community": 2,
+      "community": 80,
       "norm_label": "chevrondown()"
     },
     {
@@ -16091,7 +16451,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_menu",
-      "community": 2,
+      "community": 80,
       "norm_label": "menu.tsx"
     },
     {
@@ -16101,7 +16461,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "ui_menu_menuprops",
-      "community": 2,
+      "community": 80,
       "norm_label": "menuprops"
     },
     {
@@ -16111,7 +16471,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "ui_menu_menu",
-      "community": 2,
+      "community": 80,
       "norm_label": "menu()"
     },
     {
@@ -16121,7 +16481,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "ui_menu_menuitem",
-      "community": 2,
+      "community": 80,
       "norm_label": "menuitem()"
     },
     {
@@ -16521,7 +16881,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_domainheroes_generated",
-      "community": 80,
+      "community": 265,
       "norm_label": "domainheroes.generated.ts"
     },
     {
@@ -16531,7 +16891,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "config_domainheroes_generated_generatedheroes",
-      "community": 80,
+      "community": 265,
       "norm_label": "generatedheroes"
     },
     {
@@ -16541,7 +16901,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_domainhome_config",
-      "community": 80,
+      "community": 265,
       "norm_label": "domainhome.config.ts"
     },
     {
@@ -16551,7 +16911,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "config_domainhome_config_herokpi",
-      "community": 80,
+      "community": 265,
       "norm_label": "herokpi"
     },
     {
@@ -16561,7 +16921,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "config_domainhome_config_domainherospec",
-      "community": 80,
+      "community": 265,
       "norm_label": "domainherospec"
     },
     {
@@ -16571,7 +16931,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "config_domainhome_config_photoheroes",
-      "community": 80,
+      "community": 265,
       "norm_label": "photoheroes"
     },
     {
@@ -16581,7 +16941,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "config_domainhome_config_domainheroes",
-      "community": 80,
+      "community": 265,
       "norm_label": "domainheroes"
     },
     {
@@ -17371,7 +17731,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_auth_isauthenticated",
-      "community": 281,
+      "community": 221,
       "norm_label": "isauthenticated()"
     },
     {
@@ -17381,7 +17741,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_auth_getstoreduser",
-      "community": 281,
+      "community": 221,
       "norm_label": "getstoreduser()"
     },
     {
@@ -17491,7 +17851,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_integrations",
-      "community": 261,
+      "community": 19,
       "norm_label": "integrations.ts"
     },
     {
@@ -17501,7 +17861,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_integrations_headers",
-      "community": 261,
+      "community": 19,
       "norm_label": "headers()"
     },
     {
@@ -17511,7 +17871,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_integrations_apierror",
-      "community": 261,
+      "community": 19,
       "norm_label": "apierror"
     },
     {
@@ -17521,7 +17881,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "lib_integrations_apierror_constructor",
-      "community": 261,
+      "community": 19,
       "norm_label": ".constructor()"
     },
     {
@@ -17531,7 +17891,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "lib_integrations_req",
-      "community": 261,
+      "community": 19,
       "norm_label": "req()"
     },
     {
@@ -17541,7 +17901,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "lib_integrations_retryhorsrefus",
-      "community": 261,
+      "community": 19,
       "norm_label": "retryhorsrefus()"
     },
     {
@@ -17551,7 +17911,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "lib_integrations_usesources",
-      "community": 23,
+      "community": 19,
       "norm_label": "usesources()"
     },
     {
@@ -17591,7 +17951,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "lib_integrations_fetchsourcebyslug",
-      "community": 261,
+      "community": 19,
       "norm_label": "fetchsourcebyslug()"
     },
     {
@@ -17631,7 +17991,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "lib_integrations_usesyncnow",
-      "community": 23,
+      "community": 19,
       "norm_label": "usesyncnow()"
     },
     {
@@ -17741,7 +18101,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "lib_integrations_usetoggleactive",
-      "community": 23,
+      "community": 19,
       "norm_label": "usetoggleactive()"
     },
     {
@@ -18181,7 +18541,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_motion",
-      "community": 5,
+      "community": 80,
       "norm_label": "motion.ts"
     },
     {
@@ -18191,7 +18551,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_motion_ease_out",
-      "community": 5,
+      "community": 80,
       "norm_label": "ease_out"
     },
     {
@@ -18681,7 +19041,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "pages_domainhome_periodmenu",
-      "community": 67,
+      "community": 263,
       "norm_label": "periodmenu()"
     },
     {
@@ -18691,7 +19051,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "pages_domainhome_actionsmenu",
-      "community": 67,
+      "community": 263,
       "norm_label": "actionsmenu()"
     },
     {
@@ -18851,7 +19211,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "pages_governanceoverview_periodmenu",
-      "community": 67,
+      "community": 263,
       "norm_label": "periodmenu()"
     },
     {
@@ -18931,7 +19291,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_loginpage",
-      "community": 23,
+      "community": 80,
       "norm_label": "loginpage.tsx"
     },
     {
@@ -18941,7 +19301,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "pages_loginpage_loginpage",
-      "community": 23,
+      "community": 80,
       "norm_label": "loginpage()"
     },
     {
@@ -19431,7 +19791,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_integrationhealth",
-      "community": 23,
+      "community": 19,
       "norm_label": "integrationhealth.tsx"
     },
     {
@@ -19441,7 +19801,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "integrations_integrationhealth_stat",
-      "community": 23,
+      "community": 19,
       "norm_label": "stat()"
     },
     {
@@ -19461,7 +19821,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_integrationslist",
-      "community": 23,
+      "community": 19,
       "norm_label": "integrationslist.tsx"
     },
     {
@@ -19471,7 +19831,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "integrations_integrationslist_integrationslist",
-      "community": 23,
+      "community": 19,
       "norm_label": "integrationslist()"
     },
     {
@@ -19631,7 +19991,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "store_filters",
-      "community": 67,
+      "community": 263,
       "norm_label": "filters.ts"
     },
     {
@@ -19641,7 +20001,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "store_filters_filtersstate",
-      "community": 67,
+      "community": 263,
       "norm_label": "filtersstate"
     },
     {
@@ -19651,7 +20011,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "store_filters_subsidiaries",
-      "community": 67,
+      "community": 263,
       "norm_label": "subsidiaries"
     },
     {
@@ -19661,7 +20021,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "store_filters_usefilters",
-      "community": 67,
+      "community": 263,
       "norm_label": "usefilters"
     },
     {
@@ -19871,7 +20231,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "types_governance_hrscoreresponse",
-      "community": 8,
+      "community": 212,
       "norm_label": "hrscoreresponse"
     },
     {
@@ -19911,7 +20271,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "types_governance_governancealert",
-      "community": 67,
+      "community": 8,
       "norm_label": "governancealert"
     },
     {
@@ -19971,7 +20331,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "types_integrations",
-      "community": 261,
+      "community": 19,
       "norm_label": "integrations.ts"
     },
     {
@@ -19981,7 +20341,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "types_integrations_sourcestatus",
-      "community": 23,
+      "community": 19,
       "norm_label": "sourcestatus"
     },
     {
@@ -19991,7 +20351,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "types_integrations_datasource",
-      "community": 261,
+      "community": 19,
       "norm_label": "datasource"
     },
     {
@@ -20001,7 +20361,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "types_integrations_dataconnector",
-      "community": 261,
+      "community": 19,
       "norm_label": "dataconnector"
     },
     {
@@ -20011,7 +20371,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "types_integrations_healthresponse",
-      "community": 261,
+      "community": 19,
       "norm_label": "healthresponse"
     },
     {
@@ -20021,7 +20381,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "types_integrations_syncjob",
-      "community": 261,
+      "community": 19,
       "norm_label": "syncjob"
     },
     {
@@ -20031,7 +20391,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "types_integrations_connectorendpoint",
-      "community": 261,
+      "community": 19,
       "norm_label": "connectorendpoint"
     },
     {
@@ -20041,7 +20401,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "types_integrations_fieldmapping",
-      "community": 261,
+      "community": 19,
       "norm_label": "fieldmapping"
     },
     {
@@ -20051,7 +20411,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "types_integrations_synclogitem",
-      "community": 261,
+      "community": 19,
       "norm_label": "synclogitem"
     },
     {
@@ -20061,7 +20421,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "types_integrations_syncerroritem",
-      "community": 261,
+      "community": 19,
       "norm_label": "syncerroritem"
     },
     {
@@ -21499,7 +21859,7 @@
       "source_location": "L739",
       "_origin": "ast",
       "id": "docs_changelog_7_9_2",
-      "community": 62,
+      "community": 286,
       "norm_label": "7.9.2"
     },
     {
@@ -21509,7 +21869,7 @@
       "source_location": "L741",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_741",
-      "community": 62,
+      "community": 286,
       "norm_label": "patch changes"
     },
     {
@@ -22359,7 +22719,7 @@
       "source_location": "L2026",
       "_origin": "ast",
       "id": "docs_changelog_6_23_1",
-      "community": 280,
+      "community": 62,
       "norm_label": "6.23.1"
     },
     {
@@ -22369,7 +22729,7 @@
       "source_location": "L2028",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2028",
-      "community": 280,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -22409,7 +22769,7 @@
       "source_location": "L2047",
       "_origin": "ast",
       "id": "docs_changelog_6_22_3",
-      "community": 62,
+      "community": 283,
       "norm_label": "6.22.3"
     },
     {
@@ -22419,7 +22779,7 @@
       "source_location": "L2049",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2049",
-      "community": 62,
+      "community": 283,
       "norm_label": "patch changes"
     },
     {
@@ -22899,7 +23259,7 @@
       "source_location": "L2400",
       "_origin": "ast",
       "id": "docs_changelog_6_11_2",
-      "community": 283,
+      "community": 62,
       "norm_label": "6.11.2"
     },
     {
@@ -22909,7 +23269,7 @@
       "source_location": "L2402",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2402",
-      "community": 283,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -29776,7 +30136,7 @@
       "label": "Routage \u00e0 d\u00e9clarer dans l'onglet \u00ab Domains \u00bb de Dokploy",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "dokploy_readme_routage_\u00e0_d\u00e9clarer_dans_l_onglet_domains_de_dokploy",
       "community": 93,
@@ -29786,7 +30146,7 @@
       "label": "Pourquoi les noms internes sont pr\u00e9fix\u00e9s `kinsight-`",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L41",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "dokploy_readme_pourquoi_les_noms_internes_sont_pr\u00e9fix\u00e9s_kinsight",
       "community": 93,
@@ -29796,7 +30156,7 @@
       "label": "Pr\u00e9-requis",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L58",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "dokploy_readme_pr\u00e9_requis",
       "community": 93,
@@ -29806,7 +30166,7 @@
       "label": "\u00c9tapes",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L64",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "dokploy_readme_\u00e9tapes",
       "community": 93,
@@ -29816,7 +30176,7 @@
       "label": "D\u00e9pannage \u2014 \u00ab 502 Bad Gateway \u00bb sur /api/ alors que le site s'affiche",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L81",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "dokploy_readme_d\u00e9pannage_502_bad_gateway_sur_api_alors_que_le_site_s_affiche",
       "community": 93,
@@ -29826,7 +30186,7 @@
       "label": "Transformations dbt",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L132",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "dokploy_readme_transformations_dbt",
       "community": 93,
@@ -29836,7 +30196,7 @@
       "label": "Airbyte (EL)",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L142",
+      "source_location": "L143",
       "_origin": "ast",
       "id": "dokploy_readme_airbyte_el",
       "community": 93,
@@ -29846,7 +30206,7 @@
       "label": "Points production d\u00e9j\u00e0 c\u00e2bl\u00e9s",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L147",
+      "source_location": "L148",
       "_origin": "ast",
       "id": "dokploy_readme_points_production_d\u00e9j\u00e0_c\u00e2bl\u00e9s",
       "community": 93,
@@ -29856,7 +30216,7 @@
       "label": "Mises \u00e0 jour",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L157",
+      "source_location": "L158",
       "_origin": "ast",
       "id": "dokploy_readme_mises_\u00e0_jour",
       "community": 93,
@@ -29866,7 +30226,7 @@
       "label": "Notes / extensions",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L162",
+      "source_location": "L163",
       "_origin": "ast",
       "id": "dokploy_readme_notes_extensions",
       "community": 93,
@@ -31070,11 +31430,31 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "testcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
       "source_location": "L260",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "integrations_tests_admin_adminutilisateurtest",
       "target": "testcase"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L369",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_derivationcletest",
+      "target": "testcase",
+      "confidence_score": 1.0
     },
     {
       "relation": "inherits",
@@ -33935,11 +34315,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L79",
+      "source_location": "L85",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ai_copilot_models_rationale_79",
-      "target": "ai_copilot_models_aitool"
+      "source": "ai_copilot_models_rationale_85",
+      "target": "ai_copilot_models_aitool",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -34127,11 +34507,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L115",
+      "source_location": "L127",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ai_copilot_models_rationale_115",
-      "target": "ai_copilot_models_aiactionrequest"
+      "source": "ai_copilot_models_rationale_127",
+      "target": "ai_copilot_models_aiactionrequest",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -34513,11 +34893,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L161",
+      "source_location": "L177",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ai_copilot_models_rationale_161",
-      "target": "ai_copilot_models_aiautomation"
+      "source": "ai_copilot_models_rationale_177",
+      "target": "ai_copilot_models_aiautomation",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -34655,11 +35035,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/ai_copilot/models.py",
-      "source_location": "L190",
+      "source_location": "L208",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ai_copilot_models_rationale_190",
-      "target": "ai_copilot_models_aiauditlog"
+      "source": "ai_copilot_models_rationale_208",
+      "target": "ai_copilot_models_aiauditlog",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -45048,6 +45428,46 @@
       "target": "integrations_models_webhookevent"
     },
     {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "integrations_admin_sourceadmin",
+      "target": "integrations_admin_sourceadmin_get_actions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "integrations_admin_sourceadmin",
+      "target": "integrations_admin_sourceadmin_get_prepopulated_fields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "integrations_admin_sourceadmin",
+      "target": "integrations_admin_sourceadmin_has_delete_permission",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "integrations_admin_sourceadmin",
+      "target": "integrations_admin_sourceadmin_save_model",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/admin.py",
@@ -45158,6 +45578,36 @@
       "target": "integrations_models_webhookevent"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "integrations_admin_rationale_95",
+      "target": "integrations_admin_sourceadmin_get_actions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "integrations_admin_rationale_102",
+      "target": "integrations_admin_sourceadmin_has_delete_permission",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "integrations_admin_rationale_117",
+      "target": "integrations_admin_sourceadmin_get_prepopulated_fields",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/apps/integrations/admin.py",
@@ -45266,6 +45716,36 @@
       "confidence_score": 0.5,
       "source": "integrations_admin_endpointinline",
       "target": "integrations_models_webhookevent"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L167",
+      "weight": 1.0,
+      "source": "integrations_admin_identifiantinline",
+      "target": "integrations_admin_identifiantinline_has_add_permission",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "integrations_admin_identifiantinline",
+      "target": "integrations_admin_identifiantinline_has_change_permission",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L173",
+      "weight": 1.0,
+      "source": "integrations_admin_identifiantinline",
+      "target": "integrations_admin_identifiantinline_has_delete_permission",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -45391,11 +45871,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L108",
+      "source_location": "L148",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_admin_rationale_108",
-      "target": "integrations_admin_identifiantinline"
+      "source": "integrations_admin_rationale_148",
+      "target": "integrations_admin_identifiantinline",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -45407,6 +45887,16 @@
       "confidence_score": 1.0,
       "source": "integrations_admin_identifiantinline_secret_masque",
       "target": "integrations_admin_masque"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "integrations_admin_connecteuradmin",
+      "target": "integrations_admin_connecteuradmin_has_delete_permission",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -45517,6 +46007,16 @@
       "confidence_score": 0.5,
       "source": "integrations_admin_connecteuradmin",
       "target": "integrations_models_webhookevent"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/admin.py",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "integrations_admin_rationale_195",
+      "target": "integrations_admin_connecteuradmin_has_delete_permission",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -45863,11 +46363,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L172",
+      "source_location": "L231",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_admin_rationale_172",
-      "target": "integrations_admin_masque"
+      "source": "integrations_admin_rationale_231",
+      "target": "integrations_admin_masque",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -46023,11 +46523,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L188",
+      "source_location": "L247",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_admin_rationale_188",
-      "target": "integrations_admin_identifiantadmin"
+      "source": "integrations_admin_rationale_247",
+      "target": "integrations_admin_identifiantadmin",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -46524,11 +47024,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L284",
+      "source_location": "L347",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_admin_rationale_284",
-      "target": "integrations_admin_logadmin_extrait"
+      "source": "integrations_admin_rationale_347",
+      "target": "integrations_admin_logadmin_extrait",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -46684,11 +47184,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/admin.py",
-      "source_location": "L292",
+      "source_location": "L355",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_admin_rationale_292",
-      "target": "integrations_admin_erreuradmin"
+      "source": "integrations_admin_rationale_355",
+      "target": "integrations_admin_erreuradmin",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -46871,6 +47371,16 @@
       "target": "integrations_encryption_mask"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/encryption.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "integrations_encryption",
+      "target": "integrations_encryption_oublier_la_cle",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/encryption.py",
@@ -46923,6 +47433,16 @@
       "confidence_score": 1.0,
       "source": "integrations_encryption_encrypt",
       "target": "integrations_encryption_key"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/encryption.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "integrations_encryption_rationale_31",
+      "target": "integrations_encryption_key",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -47071,11 +47591,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/encryption.py",
-      "source_location": "L64",
+      "source_location": "L85",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_encryption_rationale_64",
-      "target": "integrations_encryption_mask"
+      "source": "integrations_encryption_rationale_85",
+      "target": "integrations_encryption_mask",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -47978,9 +48498,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_sourcetype",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcetype"
     },
     {
       "relation": "uses",
@@ -48221,9 +48741,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_sourcestatus",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcestatus"
     },
     {
       "relation": "uses",
@@ -48614,9 +49134,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_authmethod",
-      "confidence_score": 0.5
+      "target": "integrations_models_authmethod"
     },
     {
       "relation": "uses",
@@ -49334,9 +49854,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_datasource",
-      "confidence_score": 0.5
+      "target": "integrations_models_datasource"
     },
     {
       "relation": "uses",
@@ -49533,11 +50053,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L145",
+      "source_location": "L146",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_models_rationale_145",
-      "target": "integrations_models_dataconnector"
+      "source": "integrations_models_rationale_146",
+      "target": "integrations_models_dataconnector",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -49857,9 +50377,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_dataconnector",
-      "confidence_score": 0.5
+      "target": "integrations_models_dataconnector"
     },
     {
       "relation": "uses",
@@ -50056,11 +50576,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L165",
+      "source_location": "L170",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_models_rationale_165",
-      "target": "integrations_models_connectorendpoint"
+      "source": "integrations_models_rationale_170",
+      "target": "integrations_models_connectorendpoint",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -50408,11 +50928,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L184",
+      "source_location": "L191",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_models_rationale_184",
-      "target": "integrations_models_connectorcredential"
+      "source": "integrations_models_rationale_191",
+      "target": "integrations_models_connectorcredential",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -50776,9 +51296,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_connectorcredential",
-      "confidence_score": 0.5
+      "target": "integrations_models_connectorcredential"
     },
     {
       "relation": "uses",
@@ -50965,11 +51485,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L214",
+      "source_location": "L222",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_models_rationale_214",
-      "target": "integrations_models_fieldmapping"
+      "source": "integrations_models_rationale_222",
+      "target": "integrations_models_fieldmapping",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -51592,9 +52112,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_syncjob",
-      "confidence_score": 0.5
+      "target": "integrations_models_syncjob"
     },
     {
       "relation": "uses",
@@ -52106,9 +52626,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_synclog",
-      "confidence_score": 0.5
+      "target": "integrations_models_synclog"
     },
     {
       "relation": "uses",
@@ -52597,11 +53117,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L266",
+      "source_location": "L282",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_models_rationale_266",
-      "target": "integrations_models_person"
+      "source": "integrations_models_rationale_282",
+      "target": "integrations_models_person",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -52617,11 +53137,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/models.py",
-      "source_location": "L291",
+      "source_location": "L308",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_models_rationale_291",
-      "target": "integrations_models_externalidentity"
+      "source": "integrations_models_rationale_308",
+      "target": "integrations_models_externalidentity",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -52941,9 +53461,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_models_webhookevent",
-      "confidence_score": 0.5
+      "target": "integrations_models_webhookevent"
     },
     {
       "relation": "uses",
@@ -57455,9 +57975,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L33",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_shield_client_shielderror",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shielderror"
     },
     {
       "relation": "uses",
@@ -58019,9 +58539,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L33",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_shield_client_shieldclient",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shieldclient"
     },
     {
       "relation": "uses",
@@ -58660,9 +59180,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1468",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests",
-      "target": "integrations_tests_sondesansendpointtest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest"
     },
     {
       "relation": "contains",
@@ -58820,9 +59340,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1468",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "apitestcase",
-      "confidence_score": 1.0
+      "target": "apitestcase"
     },
     {
       "relation": "inherits",
@@ -62156,9 +62676,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1287",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_echecsshieldqualifiestest_test_aucune_reponse_shield_ne_devient_un_5xx",
-      "target": "integrations_tests_sondesansendpointtest_tester",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_tester"
     },
     {
       "relation": "calls",
@@ -62167,9 +62687,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1296",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_echecsshieldqualifiestest_test_le_secret_ne_fuit_ni_dans_la_reponse_ni_dans_les_journaux",
-      "target": "integrations_tests_sondesansendpointtest_tester",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_tester"
     },
     {
       "relation": "rationale_for",
@@ -62504,9 +63024,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1469",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1469",
-      "target": "integrations_tests_sondesansendpointtest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest"
     },
     {
       "relation": "method",
@@ -62514,9 +63034,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1477",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_tests_sondesansendpointtest_setup",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_setup"
     },
     {
       "relation": "method",
@@ -62524,9 +63044,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1499",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_tests_sondesansendpointtest_test_avec_un_endpoint_declare_le_message_reste_factuel",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_test_avec_un_endpoint_declare_le_message_reste_factuel"
     },
     {
       "relation": "method",
@@ -62534,9 +63054,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1494",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_tests_sondesansendpointtest_test_sans_endpoint_le_message_indique_le_geste_a_faire",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_test_sans_endpoint_le_message_indique_le_geste_a_faire"
     },
     {
       "relation": "method",
@@ -62544,9 +63064,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1489",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest",
-      "target": "integrations_tests_sondesansendpointtest_tester",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_tester"
     },
     {
       "relation": "calls",
@@ -62555,9 +63075,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1502",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest_test_avec_un_endpoint_declare_le_message_reste_factuel",
-      "target": "integrations_tests_sondesansendpointtest_tester",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_tester"
     },
     {
       "relation": "calls",
@@ -62566,9 +63086,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1495",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_sondesansendpointtest_test_sans_endpoint_le_message_indique_le_geste_a_faire",
-      "target": "integrations_tests_sondesansendpointtest_tester",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_tester"
     },
     {
       "relation": "rationale_for",
@@ -62576,9 +63096,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1500",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1500",
-      "target": "integrations_tests_sondesansendpointtest_test_avec_un_endpoint_declare_le_message_reste_factuel",
-      "confidence_score": 1.0
+      "target": "integrations_tests_sondesansendpointtest_test_avec_un_endpoint_declare_le_message_reste_factuel"
     },
     {
       "relation": "contains",
@@ -62614,11 +63134,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "integrations_tests_admin",
+      "target": "integrations_tests_admin_adminsourcegardefoustest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
       "source_location": "L260",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "integrations_tests_admin",
       "target": "integrations_tests_admin_adminutilisateurtest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L369",
+      "weight": 1.0,
+      "source": "integrations_tests_admin",
+      "target": "integrations_tests_admin_derivationcletest",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -62796,9 +63336,9 @@
       "source_file": "backend/apps/integrations/tests_admin.py",
       "source_location": "L194",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "integrations_tests_admin_adminsecrettest",
-      "target": "integrations_tests_admin_adminsecrettest_test_le_masque_est_bien_affiche"
+      "target": "integrations_tests_admin_adminsecrettest_test_le_masque_est_sur_la_fiche_et_pas_dans_la_liste",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -62845,11 +63385,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L199",
+      "source_location": "L195",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_tests_admin_rationale_199",
-      "target": "integrations_tests_admin_adminsecrettest_test_un_secret_indechiffrable_naffiche_pas_une_erreur_500"
+      "source": "integrations_tests_admin_rationale_195",
+      "target": "integrations_tests_admin_adminsecrettest_test_le_masque_est_sur_la_fiche_et_pas_dans_la_liste",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L206",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_206",
+      "target": "integrations_tests_admin_adminsecrettest_test_un_secret_indechiffrable_naffiche_pas_une_erreur_500",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -62860,6 +63410,16 @@
       "confidence_score": 1.0,
       "source": "integrations_tests_admin_rationale_206",
       "target": "integrations_tests_admin_adminsecrettest_test_le_depot_dun_secret_est_impossible_depuis_ladmin"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L219",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_219",
+      "target": "integrations_tests_admin_adminsecrettest_test_le_depot_dun_secret_est_impossible_depuis_ladmin",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -62915,21 +63475,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L212",
+      "source_location": "L225",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_tests_admin_rationale_212",
-      "target": "integrations_tests_admin_adminpisteaudittest"
+      "source": "integrations_tests_admin_rationale_225",
+      "target": "integrations_tests_admin_adminpisteaudittest",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L244",
+      "source_location": "L257",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_tests_admin_rationale_244",
-      "target": "integrations_tests_admin_adminpisteaudittest_test_marquer_une_erreur_traitee_reste_possible"
+      "source": "integrations_tests_admin_rationale_257",
+      "target": "integrations_tests_admin_adminpisteaudittest_test_marquer_une_erreur_traitee_reste_possible",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -62965,11 +63525,311 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/tests_admin.py",
-      "source_location": "L261",
+      "source_location": "L274",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "integrations_tests_admin_rationale_261",
-      "target": "integrations_tests_admin_adminutilisateurtest"
+      "source": "integrations_tests_admin_rationale_274",
+      "target": "integrations_tests_admin_adminutilisateurtest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L315",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L361",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L305",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L327",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_la_suppression_en_masse_est_retiree",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L341",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_lauteur_est_renseigne_et_non_saisi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_le_code_nest_pas_regenere_a_la_modification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L354",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_le_connecteur_nest_pas_supprimable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L322",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_qui_a_produit_des_traces_nest_pas_supprimable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_sans_trace_reste_supprimable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L303",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_303",
+      "target": "integrations_tests_admin_adminsourcegardefoustest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L330",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_la_suppression_en_masse_est_retiree",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L352",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_lauteur_est_renseigne_et_non_saisi",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L336",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_le_code_nest_pas_regenere_a_la_modification",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L325",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_qui_a_produit_des_traces_nest_pas_supprimable",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L320",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_sans_trace_reste_supprimable",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L320",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_sans_trace_reste_supprimable",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L319",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_319",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_sans_trace_reste_supprimable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L325",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_qui_a_produit_des_traces_nest_pas_supprimable",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L323",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_323",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_une_source_qui_a_produit_des_traces_nest_pas_supprimable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L330",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_la_suppression_en_masse_est_retiree",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L328",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_328",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_la_suppression_en_masse_est_retiree",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L337",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_le_code_nest_pas_regenere_a_la_modification",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L333",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_333",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_le_code_nest_pas_regenere_a_la_modification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L358",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_adminsourcegardefoustest_test_le_connecteur_nest_pas_supprimable",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_requete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L355",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_355",
+      "target": "integrations_tests_admin_adminsourcegardefoustest_test_le_connecteur_nest_pas_supprimable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L378",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_derivationcletest",
+      "target": "integrations_tests_admin_derivationcletest_test_la_cle_nest_derivee_quune_seule_fois",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L392",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_derivationcletest",
+      "target": "integrations_tests_admin_derivationcletest_test_un_changement_de_reglage_invalide_le_cache",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L370",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_370",
+      "target": "integrations_tests_admin_derivationcletest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/tests_admin.py",
+      "source_location": "L393",
+      "weight": 1.0,
+      "source": "integrations_tests_admin_rationale_393",
+      "target": "integrations_tests_admin_derivationcletest_test_un_changement_de_reglage_invalide_le_cache",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -94800,5 +95660,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f2a4d11629ebc3bf76d836103af65838c451b707"
+  "built_at_commit": "8341c19b641552d1607e2fe07fe9dcbe5a2ec83e"
 }
