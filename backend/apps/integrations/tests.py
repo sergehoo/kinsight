@@ -30,6 +30,9 @@ from .models import (
     SyncLog,
     WebhookEvent,
 )
+from apps.audit.models import AccessLog
+from apps.organizations.models import Subsidiary
+
 from .shield_client import ShieldClient, ShieldError
 
 User = get_user_model()
@@ -154,7 +157,11 @@ class ShieldHrKpiTest(APITestCase):
     KEYS = {"effectif_total", "employes", "ouvriers", "presents", "absents", "retards", "taux_presence", "sites"}
 
     def setUp(self):
-        self.user = User.objects.create_user(username="rh", password="x", email="rh@k.co")
+        # Rôle et périmètre Groupe : ce test vérifie la FORME gouvernée de la réponse,
+        # pas l'autorisation — celle-ci est couverte par ShieldRbacTest. Sans rôle,
+        # l'utilisateur serait READER et recevrait un 403 qui masquerait le sujet.
+        self.user = User.objects.create_user(username="rh", password="x", email="rh@k.co",
+                                             role="DRH", is_group_scope=True)
 
     def test_requires_auth(self):
         self.assertEqual(self.client.get(self.URL).status_code, 401)
@@ -444,7 +451,10 @@ class ShieldApiEndpointsTest(APITestCase):
     """Les trois endpoints exposés à React exigent une authentification."""
 
     def setUp(self):
-        self.user = User.objects.create_user(username="rh2", password="x", email="rh2@k.co")
+        # DG Groupe : ce test balaie RH, Sécurité et Groupe, trois domaines distincts.
+        # L'autorisation de chacun est couverte par ShieldRbacTest.
+        self.user = User.objects.create_user(username="rh2", password="x", email="rh2@k.co",
+                                             role="DG_GROUP", is_group_scope=True)
 
     def test_authentification_requise(self):
         for path in ("hr-kpi", "security", "overview", "health"):
@@ -1584,3 +1594,88 @@ class SecretUniqueTest(APITestCase):
                 doublon = ConnectorCredential(connector=self.connecteur, kind="api_token")
                 doublon.set_secret("deux")
                 doublon.save()
+
+
+class ShieldRbacTest(APITestCase):
+    """Deux portes sur la même donnée, une seule était verrouillée.
+
+    Les endpoints du mart (/governance/hr/kpi/) refusaient un READER en 403. Les
+    endpoints Shield (/integrations/shield/hr-kpi/), qui servent EXACTEMENT les mêmes
+    indicateurs et sont le seul chemin alimenté aujourd'hui, l'acceptaient en 200 —
+    avec, en prime, la répartition nominative de douze sites. Le masquage côté
+    interface ne fermait rien : la voie API restait ouverte.
+    """
+
+    CHEMINS_RH = ("/api/v1/integrations/shield/hr-kpi/",
+                  "/api/v1/integrations/shield/attendance-series/?days=7")
+
+    def setUp(self):
+        self.lecteur = User.objects.create_user(username="lecteur", password="x",
+                                                email="l@k.co", role="READER",
+                                                is_group_scope=True)
+        self.drh = User.objects.create_user(username="drh-shield", password="x",
+                                            email="d@k.co", role="DRH", is_group_scope=True)
+        self.dg = User.objects.create_user(username="dg-shield", password="x",
+                                           email="g@k.co", role="DG_GROUP", is_group_scope=True)
+
+    def _get(self, utilisateur, chemin):
+        self.client.force_authenticate(utilisateur)
+        return self.client.get(chemin)
+
+    def test_un_lecteur_ne_passe_plus_par_shield_pour_lire_le_rh(self):
+        """Le contournement exact qui existait : 403 sur le mart, 200 sur Shield."""
+        for chemin in self.CHEMINS_RH:
+            with self.subTest(chemin=chemin):
+                self.assertEqual(self._get(self.lecteur, chemin).status_code, 403)
+
+    def test_le_drh_conserve_son_acces(self):
+        """Fermer la porte ne doit pas fermer celle des ayants droit."""
+        for chemin in self.CHEMINS_RH:
+            with self.subTest(chemin=chemin):
+                self.assertEqual(self._get(self.drh, chemin).status_code, 200)
+
+    def test_la_securite_shield_exige_le_domaine_risques(self):
+        chemin = "/api/v1/integrations/shield/security/"
+        self.assertEqual(self._get(self.drh, chemin).status_code, 403,
+                         "un DRH n'a pas le domaine Risques")
+        self.assertEqual(self._get(self.dg, chemin).status_code, 200)
+
+    def test_lapercu_groupe_exige_le_domaine_overview(self):
+        chemin = "/api/v1/integrations/shield/overview/"
+        self.assertEqual(self._get(self.drh, chemin).status_code, 403)
+        self.assertEqual(self._get(self.lecteur, chemin).status_code, 200,
+                         "un READER a bien le domaine Groupe")
+
+    def test_la_sante_du_connecteur_reste_lisible_par_tous(self):
+        """Aucune donnée métier : un décideur doit pouvoir voir si sa source répond."""
+        self.assertEqual(
+            self._get(self.lecteur, "/api/v1/integrations/shield/health/").status_code, 200)
+
+    def test_un_perimetre_restreint_ne_recoit_pas_la_liste_des_sites(self):
+        """La source ne rattache pas ses sites aux filiales : filtrer serait inventer,
+        montrer serait fuir. On retire, et on dit pourquoi."""
+        filiale = Subsidiary.objects.create(code="KSH", name="K-Shield")
+        drh_filiale = User.objects.create_user(username="drh-ksh", password="x",
+                                               email="k@k.co", role="DRH",
+                                               is_group_scope=False)
+        drh_filiale.subsidiaries.add(filiale)
+
+        faux = {"status": "connected", "kpis": [],
+                "by_site": {"status": "connected",
+                            "sites": [{"code": "S1", "nom": "Chantier A", "ouvriers": 40}]}}
+        with patch("apps.integrations.views.fetch_hr_kpis", return_value=faux):
+            groupe = self._get(self.drh, "/api/v1/integrations/shield/hr-kpi/").json()
+            restreint = self._get(drh_filiale, "/api/v1/integrations/shield/hr-kpi/").json()
+
+        self.assertEqual(len(groupe["by_site"]["sites"]), 1, "le groupe doit voir les sites")
+        self.assertEqual(restreint["by_site"]["sites"], [])
+        self.assertIn("Groupe", restreint["by_site"]["restriction"])
+
+    def test_une_lecture_shield_est_desormais_tracee(self):
+        """C'était la seule voie servant des données réelles, et la seule sans trace."""
+        AccessLog.objects.all().delete()
+        self._get(self.drh, "/api/v1/integrations/shield/hr-kpi/")
+        trace = AccessLog.objects.order_by("-occurred_at").first()
+        self.assertIsNotNone(trace, "aucune trace pour une lecture Shield")
+        self.assertEqual(trace.action, "shield.hr_kpi")
+        self.assertEqual(trace.subsidiary_scope, ["*"])

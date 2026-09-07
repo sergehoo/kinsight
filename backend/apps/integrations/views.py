@@ -10,6 +10,8 @@ from datetime import timedelta
 from django.utils import timezone
 
 from apps.audit.middleware import audit_source
+from apps.accounts.rbac import can_access_domain
+from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
 from .models import (
@@ -52,17 +54,68 @@ from .shield_rules import FENETRES_JOURS, MAX_JOURS
 STALE_AFTER_HOURS = 24
 
 
+def _refus_de_domaine(domaine: str) -> Response:
+    return Response(
+        {"detail": f"Accès au domaine « {domaine} » non autorisé pour votre rôle."},
+        status=http_status.HTTP_403_FORBIDDEN,
+    )
+
+
+def _codes_du_perimetre(user) -> list[str]:
+    scope = user.scope()
+    return ["*"] if scope.is_group else sorted(scope.subsidiaries)
+
+
+def _restreindre_la_repartition(charge: dict, user) -> dict:
+    """Retire la répartition par site aux utilisateurs à périmètre restreint.
+
+    `by_site` nomme jusqu'à douze sites — code, entreprise, effectif ouvrier,
+    présents, absents, retards, alertes. Or la réponse de Shield ne porte AUCUNE
+    correspondance fiable entre un site et une filiale du Groupe : impossible, donc,
+    de filtrer ces lignes selon le périmètre de l'utilisateur sans inventer ce
+    rattachement. Entre montrer tous les sites à quelqu'un qui n'a droit qu'à sa
+    filiale et n'en montrer aucun, on retire — et on dit pourquoi, plutôt que de
+    laisser croire à une source muette.
+    """
+    scope = user.scope()
+    if scope.is_group:
+        return charge
+    repartition = charge.get("by_site")
+    if not isinstance(repartition, dict):
+        return charge
+    return {
+        **charge,
+        "by_site": {
+            **repartition,
+            "sites": [],
+            "restriction": (
+                "Répartition par site réservée au périmètre Groupe : la source ne "
+                "rattache pas ses sites aux filiales, le filtrage serait une invention."
+            ),
+        },
+    }
+
+
 class ShieldHrKpiView(APIView):
     """KPIs RH normalisés depuis Kaydan Shield (backend → normalisation → API).
 
     React consomme UNIQUEMENT cet endpoint, jamais Shield en direct. Réponse gouvernée :
     status = connected | disconnected | error, chaque KPI portant son propre statut.
+
+    L'autorisation est celle du domaine Capital Humain, comme pour la voie du mart.
+    Sans elle, ce chemin contournait la RBAC : un READER se voyait refuser
+    `/governance/hr/kpi/` en 403 et obtenait ici les mêmes indicateurs en 200 —
+    deux portes sur la même donnée, une seule verrouillée.
     """
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response(fetch_hr_kpis())
+        if not can_access_domain(request.user, "capital-humain"):
+            return _refus_de_domaine("capital-humain")
+        charge = _restreindre_la_repartition(fetch_hr_kpis(), request.user)
+        _audit_shield(request, "shield.hr_kpi")
+        return Response(charge)
 
 
 class ShieldAttendanceSeriesView(APIView):
@@ -76,12 +129,15 @@ class ShieldAttendanceSeriesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        if not can_access_domain(request.user, "capital-humain"):
+            return _refus_de_domaine("capital-humain")
         try:
             days = int(request.query_params.get("days", 30))
         except (TypeError, ValueError):
             days = 30
         if days not in FENETRES_JOURS:
             days = MAX_JOURS
+        _audit_shield(request, "shield.attendance_series", {"days": days})
         return Response(fetch_attendance_series(days))
 
 
@@ -95,7 +151,11 @@ class ShieldSecurityView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response(fetch_security_kpis())
+        if not can_access_domain(request.user, "risques-conformite"):
+            return _refus_de_domaine("risques-conformite")
+        charge = _restreindre_la_repartition(fetch_security_kpis(), request.user)
+        _audit_shield(request, "shield.security")
+        return Response(charge)
 
 
 class ShieldOverviewView(APIView):
@@ -104,6 +164,9 @@ class ShieldOverviewView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        if not can_access_domain(request.user, "overview"):
+            return _refus_de_domaine("overview")
+        _audit_shield(request, "shield.overview")
         return Response(fetch_overview_kpis())
 
 
@@ -113,12 +176,29 @@ class ShieldHealthView(APIView):
     Volontairement distinct de `/integrations/sources/health/`, réservé aux
     administrateurs d'intégration : un décideur doit pouvoir savoir si la source
     qui alimente son tableau de bord répond, sans avoir accès au control-plane.
+    Aucune donnée métier n'est renvoyée ici, seulement un état de liaison — d'où
+    l'absence de porte de domaine, à la différence des quatre vues ci-dessus.
     """
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response(shield_health())
+
+
+def _audit_shield(request, action: str, charge: dict | None = None) -> None:
+    """Trace une lecture Shield, comme la voie du mart le fait déjà.
+
+    Sans cela, la seule voie qui servait des données réelles était aussi la seule à
+    ne rien laisser dans la piste d'audit.
+    """
+    AccessLog.record(
+        user=request.user,
+        action=action,
+        scope_codes=_codes_du_perimetre(request.user),
+        payload=charge or {},
+        **audit_source(request),
+    )
 
 
 def _audit(request, action_name: str, source: DataSource | None = None, payload=None):
