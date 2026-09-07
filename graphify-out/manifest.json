@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1788801767.4002104,
-    "ast_hash": "6fce49891f03168075590d6cb1760850",
+    "mtime": 1788805880.3733037,
+    "ast_hash": "6d10c01e9f953f66dd7b77e020527fc5",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {
@@ -690,8 +690,8 @@
     "semantic_hash": ""
   },
   "backend/apps/accounts/tests.py": {
-    "mtime": 1782584088.9602113,
-    "ast_hash": "48cf2038c72f3a5b66eee855e38949d7",
+    "mtime": 1788805880.3726492,
+    "ast_hash": "af971ec247b076626a63588293e2a94d",
     "semantic_hash": ""
   },
   "backend/apps/accounts/urls.py": {
@@ -1140,8 +1140,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationForm.tsx": {
-    "mtime": 1788730982.605714,
-    "ast_hash": "4eebd2fe8db5b14001781c5e2cd99fa9",
+    "mtime": 1788805974.4379466,
+    "ast_hash": "fdbdabe330daf84cef86295086f109f5",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationHealth.tsx": {
@@ -1907,6 +1907,21 @@
   "backend/apps/audit/management/commands/proxy_doctor.py": {
     "mtime": 1788801733.7814274,
     "ast_hash": "43287e9e08feba8e321dd9c4487a2080",
+    "semantic_hash": ""
+  },
+  "backend/apps/accounts/management/__init__.py": {
+    "mtime": 1788805807.998623,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/accounts/management/commands/__init__.py": {
+    "mtime": 1788805807.998685,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/accounts/management/commands/admin_access.py": {
+    "mtime": 1788805798.7013254,
+    "ast_hash": "4931195b480a6aed34fdf1030033fadf",
     "semantic_hash": ""
   }
 }
