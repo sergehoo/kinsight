@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/serializers.py": {
-    "mtime": 1788806806.6370683,
-    "ast_hash": "07b8b29cbd25012b748ccb581d5578fd",
+    "mtime": 1788819260.3902369,
+    "ast_hash": "596a5f012bd22ce4b0a4fbfd18afda3b",
     "semantic_hash": ""
   },
   "backend/apps/integrations/services.py": {
@@ -825,13 +825,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
-    "mtime": 1788806720.6808636,
-    "ast_hash": "2567bcbae98a262b22daeca3a7e1776d",
+    "mtime": 1788819260.3899512,
+    "ast_hash": "d028e42fcc7961e08201dd5ba659e69a",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788809320.0523129,
-    "ast_hash": "c65fcaf6ccf7b503529ed2db9bc1c73d",
+    "mtime": 1788819457.6154594,
+    "ast_hash": "a7dcfe4497fe5f33f2d8fb794a42d49f",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1788809097.3615348,
-    "ast_hash": "63eca11f6bbb93f9d36d7401f425f44c",
+    "mtime": 1788819284.234015,
+    "ast_hash": "ea11e00adb21c950dda927eaf62a3af5",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -1820,8 +1820,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_client.py": {
-    "mtime": 1788730904.3941493,
-    "ast_hash": "2828577ccb85c983f12a66f22bf962fc",
+    "mtime": 1788818930.1355639,
+    "ast_hash": "c387541138760a18ac335b21a093f9b6",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_endpoints.py": {
@@ -1922,6 +1922,16 @@
   "backend/apps/accounts/management/commands/admin_access.py": {
     "mtime": 1788805798.7013254,
     "ast_hash": "4931195b480a6aed34fdf1030033fadf",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/shield_auth.py": {
+    "mtime": 1788819284.2343857,
+    "ast_hash": "2c6a282b057a9bf5ca8d82309f1c6ce6",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/tests_auth.py": {
+    "mtime": 1788819226.3220487,
+    "ast_hash": "f32c530dccfe8ba089c6351ec898c5a7",
     "semantic_hash": ""
   }
 }
