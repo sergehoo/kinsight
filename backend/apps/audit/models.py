@@ -28,7 +28,17 @@ class AccessLog(models.Model):
         verbose_name_plural = "Journaux d'accès"
 
     @classmethod
-    def record(cls, *, user, action, metric_key="", scope_codes=None, payload=None, ip=None):
+    def record(cls, *, user, action, metric_key="", scope_codes=None, payload=None, ip=None,
+               via_proxy=None):
+        """`via_proxy=False` signale un appel qui n'est PAS passé par le proxy.
+
+        Sur un réseau partagé, c'est le cas d'un conteneur qui interroge le backend
+        en direct. L'adresse retenue est alors la sienne, et non ce qu'il prétend :
+        la marque `appel_direct` rend cette anomalie lisible dans la trace au lieu
+        de la laisser se confondre avec du trafic utilisateur ordinaire.
+        """
+        if via_proxy is False:
+            payload = {**(payload or {}), "appel_direct": True}
         return cls.objects.create(
             user=user if getattr(user, "pk", None) else None,
             user_role=getattr(user, "role", "") or "",

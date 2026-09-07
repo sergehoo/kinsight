@@ -9,6 +9,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 
+from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
 from .models import (
@@ -126,7 +127,7 @@ def _audit(request, action_name: str, source: DataSource | None = None, payload=
         action=action_name,
         metric_key=source.slug if source else "",
         payload=payload or {},
-        ip=request.META.get("REMOTE_ADDR"),
+        **audit_source(request),
     )
 
 

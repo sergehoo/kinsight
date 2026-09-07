@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.audit.middleware import client_ip
 from . import services
 from .models import AIActionRequest, AIConversation
 from .tools import (
@@ -66,7 +67,7 @@ class ChatView(APIView):
         payload = request.data.get("context") or {}
         payload.setdefault("mode", request.data.get("mode", "analyse"))
         result = services.chat(
-            request.user, message, payload, conversation=conversation, ip=request.META.get("REMOTE_ADDR")
+            request.user, message, payload, conversation=conversation, ip=client_ip(request)
         )
         return Response(result)
 

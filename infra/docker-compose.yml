@@ -4,9 +4,20 @@
 # Tous les services sont préfixés `kinsight-` (clé de service ET container_name)
 # afin d'éviter tout conflit avec d'autres projets Docker sur la même machine.
 # Chaque service publie aussi un alias réseau court (postgres, redis, minio,
-# backend, frontend) : les hôtes câblés dans le code (nginx.conf -> backend,
+# backend, frontend) : les hôtes câblés dans le code (
 # variables APP_DB_HOST=postgres, etc.) continuent donc de résoudre sans
-# modification. Airbyte (EL, ADR-0003) se déploie séparément via son CLI `abctl`
+# modification.#
+# ⚠ ROUTAGE — `frontend/web/nginx.conf` ne proxifie PLUS l'API. Traefik, fourni par
+# Dokploy, est devenu le seul reverse proxy de la plateforme (voir
+# docker-compose.dokploy.yml et infra/dokploy/README.md) : deux proxys en série
+# multipliaient les modes de panne sans rien apporter, et nginx résolvait « backend »
+# sur un réseau partagé où d'autres projets exposent un service homonyme.
+# Conséquence pour CETTE pile autonome, qui n'a pas de routeur devant elle : `/api`
+# et `/manage/app/back` renvoient un 503 explicite au lieu d'atteindre le backend.
+# Pour un usage local, viser le backend directement (VITE_API_BASE_URL absolue vers
+# le port publié du backend) ou placer un routeur devant. La pile de référence, et la
+# seule maintenue pour servir l'application, est celle de Dokploy.
+ Airbyte (EL, ADR-0003) se déploie séparément via son CLI `abctl`
 # (Airbyte n'est plus livré en docker-compose) et écrit dans le schéma `raw` du
 # PostgreSQL EDW ci-dessous. Un rôle loader `kinsight_airbyte` est provisionné par
 # ./postgres/init — procédure de connexion : voir infra/airbyte/README.md.

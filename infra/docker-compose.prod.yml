@@ -4,8 +4,19 @@
 # Noms entièrement préfixés/suffixés `kinsight-…-prod` (container_name, réseau,
 # volumes) pour cohabiter sans conflit avec l'environnement de dev sur une même
 # machine. Chaque service expose un alias réseau court (postgres, redis, minio,
-# backend) afin que la config nginx (proxy_pass backend) et les variables
+# backend) afin que les variables
 # APP_DB_HOST=postgres continuent de résoudre sans modification.
+#
+# ⚠ ROUTAGE — `frontend/web/nginx.conf` ne proxifie PLUS l'API. Traefik, fourni par
+# Dokploy, est devenu le seul reverse proxy de la plateforme (voir
+# docker-compose.dokploy.yml et infra/dokploy/README.md) : deux proxys en série
+# multipliaient les modes de panne sans rien apporter, et nginx résolvait « backend »
+# sur un réseau partagé où d'autres projets exposent un service homonyme.
+# Conséquence pour CETTE pile autonome, qui n'a pas de routeur devant elle : `/api`
+# et `/manage/app/back` renvoient un 503 explicite au lieu d'atteindre le backend.
+# Pour un usage local, viser le backend directement (VITE_API_BASE_URL absolue vers
+# le port publié du backend) ou placer un routeur devant. La pile de référence, et la
+# seule maintenue pour servir l'application, est celle de Dokploy.
 # ============================================================================
 
 name: k-insight-prod

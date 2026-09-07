@@ -33,6 +33,7 @@ from k_insight.kpi.hr_mart import (
     total_payroll_mass,
 )
 
+from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
 from .bindings import HR_MART_SOURCE, hr_binding
@@ -209,7 +210,7 @@ class ModuleDataView(APIView):
             metric_key=key,
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter},
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
         )
 
         return Response(
@@ -257,7 +258,7 @@ class HrScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_hr_score",
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
             metric_key="hr.human_capital_score",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter},
@@ -327,7 +328,7 @@ class DomainScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_domain_score",
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
             metric_key=f"{domain}.governance_score",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter, "domain": domain},
@@ -374,7 +375,7 @@ class GroupScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_group_score",
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
             metric_key="group.governance_index",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter},
@@ -403,7 +404,7 @@ class AiQueryView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_ai",
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
             metric_key=(result["metric"]["key"] if result["metric"] else ""),
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"grounded": result["grounded"], "question": question[:200]},
@@ -465,7 +466,7 @@ class AlertsView(APIView):
         AccessLog.record(
             user=request.user,
             action="query_alerts",
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
             metric_key="governance.alerts",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter, "count": len(alerts)},
@@ -514,7 +515,7 @@ class ExportGroupScoreView(APIView):
         AccessLog.record(
             user=request.user,
             action="export_group_score",
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
             metric_key="group.governance_index",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"year": year, "quarter": quarter, "format": ext},

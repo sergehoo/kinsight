@@ -6,15 +6,15 @@ un service **Compose** pointant sur [`docker-compose.dokploy.yml`](../../docker-
 ## Architecture servie
 
 ```
-Internet ──TLS──▶ Traefik (Dokploy, dokploy-network)
+Internet ──TLS──▶ Traefik (Dokploy, dokploy-network)  ── SEUL reverse proxy
                      │  Host(DOMAIN)
-                     ▼
-                 frontend (nginx :8080)
-                     ├─ /            → SPA React
-                     ├─ /api/        → proxy ▶ backend:8000   (réseau interne kinsight)
-                     ├─ /manage/app/back/ → proxy ▶ backend:8000  (admin Django)
-                     └─ /static/     → fichiers collectés (volume django-static)
-backend (gunicorn) ─ postgres (app + EDW) · redis · minio
+                     ├─ /                  → frontend:8080  (SPA React + /static/)
+                     ├─ /api               → backend:8000
+                     └─ /manage/app/back   → backend:8000   (admin Django)
+
+frontend (nginx :8080)   ne sert QUE le build React et les fichiers statiques
+backend  (gunicorn)      kinsight + dokploy-network, aucun port publié
+postgres · redis · minio réseau interne `kinsight` UNIQUEMENT
 celery-worker / celery-beat ─ orchestrent Airbyte + dbt
 ```
 
@@ -79,56 +79,52 @@ préfixée.**
    python manage.py createsuperuser
    ```
 
-## Dépannage — « 502 Bad Gateway » sur /api/ alors que le site s'affiche
+## Dépannage — le routage
 
-Symptôme : `https://DOMAIN/` et `/healthz` répondent 200, `/static/` aussi, mais **tout**
-ce qui passe par `/api/` et `/manage/app/back/` renvoie 502 — et vite (moins d'une seconde),
-pas après un délai. Le corps de la réponse est celui de nginx, pas de Traefik.
+Un seul routeur, donc peu de cas possibles. Le corps de la réponse dit qui parle.
 
-Ce n'est pas un dépassement de délai (qui donnerait un 504 après ~60 s) : c'est
-`proxy_pass` qui n'arrive pas à ouvrir la connexion vers `backend:8000`.
+**`404 page not found`, sans en-tête `Server`.** C'est Traefik : aucun routeur ne
+correspond à la requête. Le conteneur visé est arrêté, ou la règle du domaine manque
+dans l'onglet « Domains ».
 
-Deux causes, à départager dans cet ordre :
+**Une réponse `503` en texte brut nommant K-Insight.** C'est nginx, et le message le
+dit : la règle Traefik `/api` ou `/manage/app/back` n'est pas déclarée, donc le chemin
+est arrivé sur le frontend. Ce garde-fou existe pour éviter le pire diagnostic — sans
+lui, un appel JSON recevrait la page HTML du SPA avec un code 200.
 
-0. **Collision de noms sur le réseau partagé.** Avant toute autre piste, regarde l'adresse citée
-   dans le journal du frontend : si nginx écrit vers une IP qui n'appartient à aucun conteneur du
-   projet, c'est qu'il a résolu le service d'un autre locataire. Remède : viser un nom préfixé
-   `kinsight-` (voir plus haut).
-
-1. **nginx pointe vers une adresse périmée.** C'est le cas le plus fréquent après
-   un redéploiement : le conteneur backend repart avec une nouvelle IP, et un nginx
-   qui n'a pas été recréé continue d'écrire vers l'ancienne. Le journal du conteneur
-   frontend le dit mot pour mot :
-
-   ```bash
-   docker compose logs --tail=50 frontend | grep "connect() failed"
-   # connect() failed (111: Connection refused) while connecting to upstream,
-   # upstream: "http://172.19.0.2:8000/api/v1/..."
-   ```
-
-   Si l'IP citée n'est pas celle du conteneur backend actuel
-   (`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <backend>`),
-   c'est cette cause. Remède immédiat : recréer le conteneur frontend. Remède durable :
-   déjà en place dans [`frontend/web/nginx.conf`](../../frontend/web/nginx.conf) — un
-   `resolver 127.0.0.11` et un nom d'hôte passé par variable forcent nginx à
-   redemander l'adresse à chaque requête au lieu de la figer au démarrage.
-
-2. **Le backend n'écoute pas.** `migrate`, `collectstatic` ou `gunicorn` a échoué au
-   démarrage, et le conteneur boucle :
-
-   ```bash
-   docker compose ps backend
-   docker compose logs --tail=100 backend
-   ```
-
-   Le healthcheck interroge `/healthz/` : un conteneur durablement `unhealthy` signale
-   que gunicorn n'a jamais répondu.
-
-Pour trancher la sortie réseau du backend (DNS, TLS, endpoint, jeton), couche par couche :
+**Un `502` de Traefik.** Le conteneur cible ne répond pas sur son port. À vérifier
+depuis l'hôte :
 
 ```bash
-docker compose exec backend python manage.py integrations_doctor
+docker compose -f docker-compose.dokploy.yml ps backend && docker compose -f docker-compose.dokploy.yml logs --tail=100 backend
 ```
+
+La dernière ligne tranche : `Listening at: http://0.0.0.0:8000`, une migration figée
+sur un verrou, ou une trace d'erreur.
+
+Pour la sortie réseau vers Shield (DNS, TLS, endpoint, jeton), couche par couche :
+
+```bash
+docker compose -f docker-compose.dokploy.yml exec backend python manage.py integrations_doctor
+```
+
+### Confiance accordée au proxy
+
+Le backend partage `dokploy-network` avec les autres projets de la plateforme. Sans
+précaution, un conteneur voisin pourrait écrire `X-Forwarded-For` et `X-Forwarded-Proto`,
+donc choisir l'adresse inscrite dans la piste d'audit et le protocole que Django croit
+voir. Seul le pair déclaré dans `TRUSTED_PROXY_HOSTS` est cru ; pour tout autre appelant
+ces en-têtes sont retirés de la requête et l'adresse retenue est celle du pair lui-même.
+
+Vérifier que le nom du conteneur Traefik est le bon — c'est la seule valeur à régler :
+
+```bash
+docker ps --format '{{.Names}}' | grep -i traefik
+```
+
+S'il diffère de `dokploy-traefik`, le renseigner dans l'onglet « Environment » de Dokploy.
+Laissé vide ou erroné, le système reste sûr mais la piste d'audit retient l'adresse du
+proxy au lieu de celle de l'utilisateur — infalsifiable, mais peu informatif.
 
 ## Transformations dbt
 

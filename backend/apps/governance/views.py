@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from k_insight.semantic import CATALOG
 
 from apps.accounts.rbac import can_access_domain
+from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
 
@@ -49,7 +50,7 @@ class CatalogView(APIView):
             metric_key=f"catalog:{domain}" if domain else "catalog",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"domain": domain, "count": len(data)},
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
         )
         return Response({"count": len(data), "metrics": data})
 
@@ -90,7 +91,7 @@ class HrKpiView(APIView):
             metric_key="hr.*",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"period": summary["period"]},
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
         )
         return Response(summary)
 
@@ -138,6 +139,6 @@ class GovernanceOverviewView(APIView):
             metric_key="governance.overview",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
             payload={"period": payload["period"]},
-            ip=request.META.get("REMOTE_ADDR"),
+            **audit_source(request),
         )
         return Response(payload)

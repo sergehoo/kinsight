@@ -46,6 +46,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # EN PREMIER, impérativement : il neutralise les en-têtes de proxy venant d'un
+    # appelant inconnu, et `SecurityMiddleware` comme la protection CSRF lisent
+    # `request.is_secure()`, qui dépend de `X-Forwarded-Proto`.
+    "apps.audit.middleware.TrustedProxyMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -153,9 +157,26 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 CSRF_TRUSTED_ORIGINS = [
     origin for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin
 ]
-# Le proxy termine le TLS et transmet X-Forwarded-Proto=https : Django doit le reconnaître.
+# Le proxy termine le TLS et transmet X-Forwarded-Proto=https : Django doit le
+# reconnaître — mais seulement lorsque l'en-tête vient VRAIMENT du proxy. Le
+# backend partageant un réseau Docker avec d'autres projets, tout conteneur pourrait
+# sinon écrire cet en-tête et décider de ce que `request.is_secure()` renvoie.
+# `TrustedProxyMiddleware` retire l'en-tête si le pair n'est pas un proxy reconnu :
+# le réglage ci-dessous ne s'applique donc qu'au trafic proxy légitime.
 if os.environ.get("SECURE_SSL_PROXY", "0") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Qui a le droit de dire d'où vient une requête. Vide par défaut : on ne fait
+# confiance à personne, et l'audit retient alors le pair de la connexion — une
+# valeur peut-être peu informative, mais que l'appelant ne choisit pas.
+# Sur Dokploy, il s'agit du conteneur Traefik ; son adresse change à chaque
+# déploiement, d'où la résolution par NOM plutôt qu'une IP figée.
+TRUSTED_PROXY_HOSTS = [
+    h for h in os.environ.get("TRUSTED_PROXY_HOSTS", "").split(",") if h.strip()
+]
+TRUSTED_PROXY_CIDRS = [
+    c for c in os.environ.get("TRUSTED_PROXY_CIDRS", "").split(",") if c.strip()
+]
 # Cookies de session/CSRF en HTTPS uniquement (à activer en prod).
 if os.environ.get("DJANGO_SECURE_COOKIES", "0") == "1":
     SESSION_COOKIE_SECURE = True

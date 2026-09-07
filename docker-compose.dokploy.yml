@@ -2,8 +2,10 @@
 # k-insight — déploiement PRODUCTION via Dokploy (Compose + Traefik).
 #
 # À utiliser comme « Compose Path » dans Dokploy : ./docker-compose.dokploy.yml
-# - Ingress géré par Traefik (réseau externe `dokploy-network`) ; seul le frontend
-#   est exposé, il proxifie /api et /manage/app/back (admin Django) vers le backend.
+# - Traefik (réseau externe `dokploy-network`) est le SEUL reverse proxy. Il route
+#   trois chemins : `/` vers le frontend, `/api` et `/manage/app/back` vers le
+#   backend. nginx ne sert plus que le build React et les fichiers statiques —
+#   deux proxys en série multipliaient les modes de panne sans rien apporter.
 # - Pas de ports publiés, pas de `container_name`/`name:` figés : Dokploy gère le
 #   nommage du projet et l'orchestration.
 # - Renseigner les variables (DOMAIN, secrets…) dans l'onglet Environment de Dokploy
@@ -16,6 +18,15 @@ x-backend-env: &backend-env
   DJANGO_ALLOWED_HOSTS: ${DOMAIN:?DOMAIN is required},localhost,127.0.0.1
   CSRF_TRUSTED_ORIGINS: https://${DOMAIN:?DOMAIN is required}
   SECURE_SSL_PROXY: "1"
+  # Qui a le droit de dire d'où vient une requête. Le backend partage
+  # `dokploy-network` avec les autres projets : sans cette liste, n'importe quel
+  # conteneur voisin pourrait écrire X-Forwarded-For/Proto et choisir l'adresse
+  # inscrite dans la piste d'audit comme le protocole que Django croit voir.
+  # Le nom est résolu à la volée (l'adresse du conteneur Traefik change à chaque
+  # déploiement). Vérifier le nom réel avec :
+  #   docker ps --format '{{.Names}}' | grep -i traefik
+  TRUSTED_PROXY_HOSTS: ${TRUSTED_PROXY_HOSTS:-dokploy-traefik}
+  TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
   DJANGO_SECURE_COOKIES: "1"
   APP_DB_HOST: kinsight-postgres
   APP_DB_PORT: "5432"
