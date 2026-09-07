@@ -227,3 +227,60 @@ class MiddlewareEnPremierTest(TestCase):
                       "django.middleware.csrf.CsrfViewMiddleware"):
             self.assertLess(nettoyage, pile.index(apres),
                             f"{apres} lit is_secure() avant le nettoyage")
+
+
+@override_settings(TRUSTED_PROXY_CIDRS=PROXY_CIDR, TRUSTED_PROXY_HOSTS=[])
+class ProxyDoctorTest(TestCase):
+    """Le verdict de `proxy_doctor` doit porter dans le bon sens.
+
+    C'est un diagnostic : s'il classe une adresse de proxy en « client réel », il
+    rassure à tort sur une piste d'audit qui ne désigne personne.
+    """
+
+    def setUp(self):
+        oublier_les_resolutions()
+        self.utilisateur = User.objects.create_user(username="doc", password="x",
+                                                    email="d@k.co", role="DG_GROUP")
+
+    def tearDown(self):
+        oublier_les_resolutions()
+
+    def _lancer(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        sortie = StringIO()
+        call_command("proxy_doctor", stdout=sortie)
+        return sortie.getvalue()
+
+    def test_une_adresse_publique_est_reconnue_comme_le_client(self):
+        AccessLog.record(user=self.utilisateur, action="view_dashboard", ip=VRAI_CLIENT,
+                         via_proxy=True)
+        sortie = self._lancer()
+        self.assertIn("client réel", sortie)
+        self.assertIn("L'audit désigne bien l'utilisateur", sortie)
+
+    def test_ladresse_du_proxy_est_signalee_comme_un_defaut(self):
+        """Le cas qui rassurerait à tort : la trace existe, mais elle ne dit rien."""
+        AccessLog.record(user=self.utilisateur, action="view_dashboard", ip=PROXY, via_proxy=True)
+        sortie = self._lancer()
+        self.assertIn("adresse du PROXY", sortie)
+        self.assertIn("ne désignent personne", sortie)
+
+    def test_un_appel_direct_est_remonte(self):
+        AccessLog.record(user=self.utilisateur, action="query_metric", ip="10.0.1.77",
+                         via_proxy=False)
+        sortie = self._lancer()
+        self.assertIn("appel DIRECT", sortie)
+        self.assertIn("sans passer par le proxy", sortie)
+
+    def test_sans_configuration_le_defaut_est_signale(self):
+        with override_settings(TRUSTED_PROXY_CIDRS=[], TRUSTED_PROXY_HOSTS=[]):
+            oublier_les_resolutions()
+            sortie = self._lancer()
+        self.assertIn("Aucun proxy reconnu", sortie)
+
+    def test_sans_trace_la_commande_le_dit_au_lieu_de_conclure(self):
+        sortie = self._lancer()
+        self.assertIn("Aucune trace d'accès enregistrée", sortie)

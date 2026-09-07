@@ -126,6 +126,14 @@ S'il diffère de `dokploy-traefik`, le renseigner dans l'onglet « Environment �
 Laissé vide ou erroné, le système reste sûr mais la piste d'audit retient l'adresse du
 proxy au lieu de celle de l'utilisateur — infalsifiable, mais peu informatif.
 
+Pour trancher sans deviner, une commande dit laquelle des trois situations est en
+vigueur : proxy reconnu et adresses réelles dans la trace, proxy non reconnu, ou
+appels arrivés hors du proxy.
+
+```bash
+docker compose -f docker-compose.dokploy.yml exec backend python manage.py proxy_doctor
+```
+
 ## Transformations dbt
 
 Service `dbt` en profil opt-in. Depuis le serveur (ou un "Run" Dokploy) :
