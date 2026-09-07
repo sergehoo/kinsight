@@ -665,3 +665,114 @@ class HrKpiZeroVsAbsentTest(TestCase):
         body = self.client.get("/api/v1/governance/hr/kpi/?year=2026&quarter=1").json()
         self.assertTrue(body["available"])
         self.assertIsNotNone(body["metrics"]["hr.payroll_mass"]["value"])
+
+
+class FuiteInterFilialeTest(TestCase):
+    """Un paramètre de requête ne doit JAMAIS élargir le périmètre.
+
+    La RBAC par domaine est déjà couverte plus haut : un DRH n'atteint pas la
+    finance. Ce qui manquait est l'autre frontière, organisationnelle — un
+    responsable limité à une filiale qui force `?subsidiary=` sur une autre. Le
+    masquage côté interface ne protège rien : la question se joue au serveur, et se
+    tranche en comparant ce que DEUX utilisateurs reçoivent pour la MÊME requête.
+    """
+
+    # Endpoints RH et consolidés qui acceptent un paramètre `subsidiary`.
+    CHEMINS = (
+        "/api/v1/governance/hr/kpi/",
+        "/api/v1/governance/hr/score/",
+        "/api/v1/governance/score-group/",
+    )
+
+    def setUp(self):
+        gateway.set_mart_gateway(
+            InMemoryMartGateway(
+                build_hr_kpi_rows(EMP, PAY),
+                score_rows=[
+                    (date(2026, 1, 1), "KRE", "effectifs_stabilite", 80.0),
+                    (date(2026, 1, 1), "KSH", "effectifs_stabilite", 40.0),
+                ],
+            )
+        )
+        for code in ("KRE", "KSH", "MYK"):
+            Subsidiary.objects.create(code=code, name=code)
+        self.kre = Subsidiary.objects.get(code="KRE")
+
+        # Même rôle, même domaine autorisé : SEUL le périmètre diffère. C'est ce qui
+        # isole la variable testée.
+        self.dg_groupe = User.objects.create_user("dg-groupe", password="x",
+                                                  role="DG_GROUP", is_group_scope=True)
+        self.dg_kre = User.objects.create_user("dg-kre", password="x",
+                                               role="DG_GROUP", is_group_scope=False)
+        self.dg_kre.subsidiaries.add(self.kre)
+        self.client = APIClient()
+
+    def tearDown(self):
+        gateway.set_mart_gateway(None)
+
+    def _reponse(self, utilisateur, chemin, **params):
+        self.client.force_authenticate(utilisateur)
+        reponse = self.client.get(chemin, {"year": 2026, "quarter": 1, **params})
+        self.assertEqual(reponse.status_code, 200, f"{chemin} → {reponse.status_code}")
+        return reponse.content.decode()
+
+    def test_forcer_une_autre_filiale_ne_donne_rien_de_cette_filiale(self):
+        """Le cœur de la règle : même requête, deux périmètres, deux réponses."""
+        for chemin in self.CHEMINS:
+            with self.subTest(chemin=chemin):
+                vu_par_le_groupe = self._reponse(self.dg_groupe, chemin, subsidiary="KSH")
+                vu_par_kre = self._reponse(self.dg_kre, chemin, subsidiary="KSH")
+                self.assertIn("KSH", vu_par_le_groupe,
+                              "le groupe doit bien voir KSH, sinon le test ne prouve rien")
+                self.assertNotIn("KSH", vu_par_kre, "fuite : KRE reçoit des données de KSH")
+                self.assertNotEqual(vu_par_le_groupe, vu_par_kre)
+
+    def test_sans_parametre_le_perimetre_sapplique_deja(self):
+        """La fuite ne doit pas non plus passer par l'absence de filtre."""
+        for chemin in self.CHEMINS:
+            with self.subTest(chemin=chemin):
+                self.assertNotIn("KSH", self._reponse(self.dg_kre, chemin))
+
+    def test_subsidiary_all_ne_contourne_pas_le_perimetre(self):
+        """« all » est la valeur qui désactive le filtre : elle ne doit pas
+        désactiver le périmètre avec lui."""
+        for chemin in self.CHEMINS:
+            with self.subTest(chemin=chemin):
+                self.assertNotIn("KSH", self._reponse(self.dg_kre, chemin, subsidiary="all"))
+
+    def test_une_filiale_hors_perimetre_ne_donne_pas_le_groupe_entier(self):
+        """Piège classique : un filtre inconnu qui, ignoré, rend tout le jeu."""
+        contenu = self._reponse(self.dg_kre, "/api/v1/governance/hr/kpi/", subsidiary="MYK")
+        self.assertNotIn("KSH", contenu)
+        self.assertNotIn("MYK", contenu)
+
+    def test_lexport_respecte_le_perimetre_et_pas_seulement_lecran(self):
+        """Exporter est un autre chemin de sortie : il doit obéir à la même règle."""
+        from io import BytesIO
+
+        from openpyxl import load_workbook
+
+        self.client.force_authenticate(self.dg_kre)
+        reponse = self.client.get("/api/v1/governance/export/groupe.xlsx",
+                                  {"year": 2026, "quarter": 1, "subsidiary": "KSH"})
+        self.assertEqual(reponse.status_code, 200)
+        classeur = load_workbook(BytesIO(b"".join(reponse.streaming_content)
+                                         if reponse.streaming else reponse.content))
+        cellules = {
+            str(cellule.value)
+            for feuille in classeur.worksheets
+            for ligne in feuille.iter_rows()
+            for cellule in ligne
+            if cellule.value is not None
+        }
+        self.assertNotIn("KSH", cellules, "fuite : l'export contient une filiale hors périmètre")
+
+    def test_lexport_est_trace_avec_le_perimetre(self):
+        """Sans trace, une exfiltration ne laisse rien derrière elle."""
+        AccessLog.objects.all().delete()
+        self.client.force_authenticate(self.dg_kre)
+        self.client.get("/api/v1/governance/export/groupe.xlsx", {"year": 2026, "quarter": 1})
+        trace = AccessLog.objects.order_by("-occurred_at").first()
+        self.assertIsNotNone(trace, "aucun export tracé")
+        self.assertEqual(trace.user, self.dg_kre)
+        self.assertEqual(trace.subsidiary_scope, ["KRE"])
