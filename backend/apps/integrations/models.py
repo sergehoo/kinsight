@@ -198,6 +198,12 @@ class ConnectorCredential(TimestampedUUID):
     class Meta:
         verbose_name = "Identifiant chiffré"
         verbose_name_plural = "Identifiants chiffrés"
+        # Un connecteur n'a qu'UN secret par type. Sans cette contrainte, la règle
+        # posée dans le sérialiseur se contournerait par l'admin, une commande ou
+        # un futur endpoint — et l'empilement recommencerait.
+        constraints = [
+            models.UniqueConstraint(fields=["connector", "kind"], name="uniq_connector_kind")
+        ]
 
     def set_secret(self, value: str) -> None:
         self.secret_ciphertext = encrypt(value)

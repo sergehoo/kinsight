@@ -24,9 +24,32 @@ class ConnectorCredentialSerializer(serializers.ModelSerializer):
         fields = ["id", "connector", "kind", "label", "secret", "is_set", "masked", "created_at"]
         read_only_fields = ["id", "created_at"]
 
+    def get_unique_together_validators(self):
+        """Neutralise le validateur d'unicité fabriqué depuis la contrainte du modèle.
+
+        DRF en déduit qu'un POST sur un couple (connecteur, type) déjà présent est
+        une erreur, et répond 400 avant d'atteindre `create`. Or ici c'est
+        exactement le geste attendu : déposer un secret, c'est remplacer le
+        précédent. La contrainte reste en base, où elle protège des autres chemins
+        d'écriture — admin, commandes, futurs endpoints.
+        """
+        return []
+
     def create(self, validated):
+        """Dépose un secret, en REMPLAÇANT celui du même type s'il existe.
+
+        Un connecteur n'a qu'un jeton d'API, qu'une clé, qu'un mot de passe. Créer
+        une ligne à chaque enregistrement empilait les versions successives : la
+        fiche d'une source finissait par afficher huit jetons, et le connecteur en
+        choisissait un — sans que personne ne sache lequel. Un POST sur un couple
+        (connecteur, type) déjà présent est donc une mise à jour.
+        """
         secret = validated.pop("secret", "")
-        cred = ConnectorCredential(**validated)
+        connector = validated.pop("connector")
+        kind = validated.pop("kind")
+        cred, _ = ConnectorCredential.objects.get_or_create(connector=connector, kind=kind)
+        for champ, valeur in validated.items():
+            setattr(cred, champ, valeur)
         cred.set_secret(secret)
         cred.save()
         return cred

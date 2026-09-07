@@ -1502,3 +1502,85 @@ class SondeSansEndpointTest(APITestCase):
         message = self._tester()["message"]
         self.assertIn("404", message)
         self.assertNotIn("Aucun endpoint déclaré", message)
+
+
+class SecretUniqueTest(APITestCase):
+    """Déposer un secret remplace le précédent, et c'est le plus récent qui part.
+
+    Cas de production : la fiche d'une source Shield affichait HUIT jetons empilés,
+    et Shield répondait 401 quel que soit le jeton fraîchement saisi. Deux défauts
+    conjugués — chaque enregistrement créait une ligne, et le connecteur envoyait le
+    PLUS ANCIEN. Toute rotation de secret restait donc sans effet.
+    """
+
+    def setUp(self):
+        self.admin = User.objects.create_user(username="sec-admin", password="x",
+                                              email="su@k.co", role="ADMIN_INTEGRATION")
+        self.client.force_authenticate(self.admin)
+        self.client.post(f"{BASE}/sources/", {
+            "name": "Shield", "slug": "kaydan-shield", "source_type": "kaydan_shield",
+            "target_module": "rh",
+        }, format="json")
+        self.source = DataSource.objects.get(slug="kaydan-shield")
+        self.connecteur = self.source.connector
+        # Sans `bearer`, `_auth_headers` ne pose aucun en-tête Authorization : le
+        # test ne mesurerait alors pas ce qu'il croit mesurer.
+        self.connecteur.auth_method = "bearer"
+        self.connecteur.base_url = "https://api.kaydanshield.test/api/v1"
+        self.connecteur.save(update_fields=["auth_method", "base_url"])
+
+    def _deposer(self, secret, kind="api_token", label="Token API"):
+        return self.client.post(f"{BASE}/credentials/", {
+            "connector": str(self.connecteur.id), "kind": kind,
+            "label": label, "secret": secret,
+        }, format="json")
+
+    def test_deposer_deux_fois_ne_cree_quune_ligne(self):
+        self.assertEqual(self._deposer("jeton-1").status_code, 201)
+        self.assertEqual(self._deposer("jeton-2").status_code, 201)
+        self.assertEqual(self._deposer("jeton-3").status_code, 201)
+        self.assertEqual(self.connecteur.credentials.filter(kind="api_token").count(), 1,
+                         "les versions successives s'empilent encore")
+
+    def test_le_dernier_secret_depose_est_celui_qui_est_conserve(self):
+        self._deposer("jeton-perime")
+        self._deposer("jeton-courant")
+        cred = self.connecteur.credentials.get(kind="api_token")
+        self.assertEqual(cred.secret, "jeton-courant")
+
+    def test_le_connecteur_envoie_le_jeton_le_plus_recent(self):
+        """Le cœur du 401 : c'était le premier jeton jamais enregistré qui partait."""
+        ancien = ConnectorCredential(connector=self.connecteur, kind="api_token", label="ancien")
+        ancien.set_secret("jeton-tres-ancien")
+        ancien.save()
+        # On force une date antérieure : `created_at` est auto_now_add.
+        ConnectorCredential.objects.filter(pk=ancien.pk).update(
+            created_at=timezone.now() - timedelta(days=30))
+        recent = ConnectorCredential(connector=self.connecteur, kind="api_key", label="récent")
+        recent.set_secret("jeton-tout-neuf")
+        recent.save()
+
+        self.source.refresh_from_db()
+        entetes = shield._auth_headers(self.source)
+        self.assertIn("jeton-tout-neuf", entetes.get("Authorization", ""),
+                      "le connecteur envoie encore un jeton périmé")
+
+    def test_des_types_differents_coexistent(self):
+        """La contrainte porte sur (connecteur, type) : un client_id et un secret
+        client doivent pouvoir cohabiter."""
+        self.assertEqual(self._deposer("id-client", kind="client_id").status_code, 201)
+        self.assertEqual(self._deposer("secret-client", kind="client_secret").status_code, 201)
+        self.assertEqual(self.connecteur.credentials.count(), 2)
+
+    def test_la_base_refuse_un_doublon_meme_hors_serialiseur(self):
+        """La règle ne doit pas se contourner par l'admin ou une commande."""
+        from django.db import IntegrityError, transaction
+
+        premier = ConnectorCredential(connector=self.connecteur, kind="api_token")
+        premier.set_secret("un")
+        premier.save()
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                doublon = ConnectorCredential(connector=self.connecteur, kind="api_token")
+                doublon.set_secret("deux")
+                doublon.save()

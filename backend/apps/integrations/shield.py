@@ -52,10 +52,16 @@ def _pick_secret(connector) -> str:
 
     `credentials.first()` seul est non déterministe (aucun `ordering` sur le modèle) :
     avec plusieurs identifiants (client_id + api_token…), on risquait d'envoyer le mauvais.
-    On privilégie donc le token/clé API, puis le plus ancien, et on ignore les vides.
+    On privilégie donc le token/clé API, puis le PLUS RÉCENT, et on ignore les vides.
+
+    Le tri est descendant, et ce détail a coûté cher : en prenant le plus ancien, le
+    connecteur envoyait indéfiniment le premier jeton jamais enregistré. Chaque
+    rotation de secret restait donc sans effet, et Shield répondait 401 quel que
+    soit le jeton fraîchement saisi. Un secret qu'on vient de déposer est, par
+    construction, celui qu'on veut utiliser.
     """
     preferred = [CredentialKind.API_TOKEN, CredentialKind.API_KEY]
-    queryset = connector.credentials.order_by("created_at")
+    queryset = connector.credentials.order_by("-created_at")
     for cred in list(queryset.filter(kind__in=preferred)) + list(queryset.exclude(kind__in=preferred)):
         if cred.is_set:
             return cred.secret
