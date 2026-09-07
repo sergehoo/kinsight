@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "backend/config/urls.py": {
-    "mtime": 1782584074.231214,
-    "ast_hash": "4d1df6bee75f816e717792f326754cd2",
+    "mtime": 1788777087.725614,
+    "ast_hash": "9c29638bc8954be9f65c78e860ea8eae",
     "semantic_hash": ""
   },
   "backend/config/wsgi.py": {
@@ -1852,6 +1852,36 @@
   "backend/apps/integrations/management/commands/integrations_doctor.py": {
     "mtime": 1788729598.3151903,
     "ast_hash": "025904c0ecc4daafd3fd3af93d670013",
+    "semantic_hash": ""
+  },
+  "backend/apps/accounts/admin.py": {
+    "mtime": 1788777524.2290516,
+    "ast_hash": "cc2cd2a28b913a86f274b13efe468bff",
+    "semantic_hash": ""
+  },
+  "backend/apps/ai_copilot/admin.py": {
+    "mtime": 1788777659.3571293,
+    "ast_hash": "c62ce47a2d9fc588e89eb6cc54da6c97",
+    "semantic_hash": ""
+  },
+  "backend/apps/audit/admin.py": {
+    "mtime": 1788777537.677578,
+    "ast_hash": "e9f7bed422ce2284b89da24dde19be55",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/admin.py": {
+    "mtime": 1788777611.2277489,
+    "ast_hash": "3ef61a8ee351a502b350eecf29270cf8",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/tests_admin.py": {
+    "mtime": 1788777749.60518,
+    "ast_hash": "f75bba8958b4563e3657c5963eb8569e",
+    "semantic_hash": ""
+  },
+  "backend/apps/organizations/admin.py": {
+    "mtime": 1788777537.6758184,
+    "ast_hash": "8467a3d687a699f0b94917981dd8fe49",
     "semantic_hash": ""
   }
 }
