@@ -2630,7 +2630,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "ai_copilot_views_chatview_post",
-      "community": 111,
+      "community": 276,
       "norm_label": ".post()"
     },
     {
@@ -2894,13 +2894,123 @@
       "norm_label": "auditconfig"
     },
     {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/__init__.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_apps_audit_management_init_py_management_init",
+      "community": 287,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/__init__.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_apps_audit_management_commands_init_py_commands_init",
+      "community": 282,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "proxy_doctor.py",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor",
+      "community": 274,
+      "norm_label": "proxy_doctor.py"
+    },
+    {
+      "label": "Command",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_command",
+      "community": 274,
+      "norm_label": "command"
+    },
+    {
+      "label": "BaseCommand",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "basecommand",
+      "community": 91,
+      "norm_label": "basecommand"
+    },
+    {
+      "label": ".add_arguments()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_command_add_arguments",
+      "community": 274,
+      "norm_label": ".add_arguments()"
+    },
+    {
+      "label": "._ligne()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_command_ligne",
+      "community": 274,
+      "norm_label": "._ligne()"
+    },
+    {
+      "label": ".handle()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_command_handle",
+      "community": 274,
+      "norm_label": ".handle()"
+    },
+    {
+      "label": "._analyser_les_traces()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L72",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_command_analyser_les_traces",
+      "community": 274,
+      "norm_label": "._analyser_les_traces()"
+    },
+    {
+      "label": "._adresse()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L117",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_command_adresse",
+      "community": 274,
+      "norm_label": "._adresse()"
+    },
+    {
+      "label": "La piste d'audit enregistre-t-elle la bonne adresse ?      docker compose exec b",
+      "file_type": "rationale",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "commands_proxy_doctor_rationale_1",
+      "community": 274,
+      "norm_label": "la piste d'audit enregistre-t-elle la bonne adresse ?      docker compose exec b"
+    },
+    {
       "label": "middleware.py",
       "file_type": "code",
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L1",
       "_origin": "ast",
       "id": "audit_middleware",
-      "community": 111,
+      "community": 264,
       "norm_label": "middleware.py"
     },
     {
@@ -2910,7 +3020,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "audit_middleware_reseaux_declares",
-      "community": 111,
+      "community": 264,
       "norm_label": "_reseaux_declares()"
     },
     {
@@ -2920,7 +3030,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "audit_middleware_reseaux_resolus",
-      "community": 111,
+      "community": 264,
       "norm_label": "_reseaux_resolus()"
     },
     {
@@ -2930,7 +3040,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "audit_middleware_reseaux_de_confiance",
-      "community": 111,
+      "community": 264,
       "norm_label": "reseaux_de_confiance()"
     },
     {
@@ -2940,7 +3050,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "audit_middleware_oublier_les_resolutions",
-      "community": 111,
+      "community": 212,
       "norm_label": "oublier_les_resolutions()"
     },
     {
@@ -2950,7 +3060,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "audit_middleware_adresse",
-      "community": 111,
+      "community": 264,
       "norm_label": "_adresse()"
     },
     {
@@ -2960,7 +3070,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "audit_middleware_est_de_confiance",
-      "community": 111,
+      "community": 264,
       "norm_label": "_est_de_confiance()"
     },
     {
@@ -2970,7 +3080,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "audit_middleware_client_derriere_le_proxy",
-      "community": 111,
+      "community": 264,
       "norm_label": "_client_derriere_le_proxy()"
     },
     {
@@ -2980,7 +3090,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "audit_middleware_trustedproxymiddleware",
-      "community": 111,
+      "community": 263,
       "norm_label": "trustedproxymiddleware"
     },
     {
@@ -2990,7 +3100,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "audit_middleware_trustedproxymiddleware_init",
-      "community": 111,
+      "community": 263,
       "norm_label": ".__init__()"
     },
     {
@@ -3000,7 +3110,7 @@
       "source_location": "L167",
       "_origin": "ast",
       "id": "audit_middleware_trustedproxymiddleware_call",
-      "community": 111,
+      "community": 264,
       "norm_label": ".__call__()"
     },
     {
@@ -3010,7 +3120,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "audit_middleware_client_ip",
-      "community": 111,
+      "community": 276,
       "norm_label": "client_ip()"
     },
     {
@@ -3030,7 +3140,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "audit_middleware_rationale_1",
-      "community": 111,
+      "community": 264,
       "norm_label": "a qui fait-on confiance pour dire d'ou vient une requete ?  le backend est joign"
     },
     {
@@ -3040,7 +3150,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "audit_middleware_rationale_65",
-      "community": 111,
+      "community": 264,
       "norm_label": "les reseaux de confiance, tels que declares en configuration."
     },
     {
@@ -3050,7 +3160,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "audit_middleware_rationale_76",
-      "community": 111,
+      "community": 264,
       "norm_label": "les adresses actuelles des hotes de proxy declares, en /32 ou /128."
     },
     {
@@ -3060,7 +3170,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "audit_middleware_rationale_99",
-      "community": 111,
+      "community": 264,
       "norm_label": "ensemble des reseaux de confiance, avec un cache borne dans le temps."
     },
     {
@@ -3070,7 +3180,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "audit_middleware_rationale_115",
-      "community": 111,
+      "community": 212,
       "norm_label": "vide le cache. utile aux tests, et apres un changement de configuration."
     },
     {
@@ -3080,7 +3190,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "audit_middleware_rationale_121",
-      "community": 111,
+      "community": 264,
       "norm_label": "analyse une adresse, en tolerant la forme `ip:port` et les crochets ipv6."
     },
     {
@@ -3090,7 +3200,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "audit_middleware_rationale_140",
-      "community": 111,
+      "community": 264,
       "norm_label": "remonte la chaine `x-forwarded-for` jusqu'au premier maillon non fiable.      la"
     },
     {
@@ -3100,7 +3210,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "audit_middleware_rationale_156",
-      "community": 111,
+      "community": 263,
       "norm_label": "pose `request.client_ip` et `request.via_trusted_proxy`, et neutralise les     e"
     },
     {
@@ -3110,7 +3220,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "audit_middleware_rationale_188",
-      "community": 111,
+      "community": 276,
       "norm_label": "l'adresse du client, telle que le middleware l'a etablie.      retombe sur le pa"
     },
     {
@@ -3200,7 +3310,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "audit_tests",
-      "community": 111,
+      "community": 263,
       "norm_label": "tests.py"
     },
     {
@@ -3220,7 +3330,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "audit_tests_originederequetetest_setup",
-      "community": 111,
+      "community": 212,
       "norm_label": ".setup()"
     },
     {
@@ -3230,7 +3340,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "audit_tests_originederequetetest_teardown",
-      "community": 111,
+      "community": 212,
       "norm_label": ".teardown()"
     },
     {
@@ -3370,7 +3480,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "audit_tests_tracabilitetest",
-      "community": 92,
+      "community": 263,
       "norm_label": "tracabilitetest"
     },
     {
@@ -3380,7 +3490,7 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "audit_tests_tracabilitetest_setup",
-      "community": 111,
+      "community": 263,
       "norm_label": ".setup()"
     },
     {
@@ -3390,7 +3500,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "audit_tests_tracabilitetest_teardown",
-      "community": 92,
+      "community": 263,
       "norm_label": ".teardown()"
     },
     {
@@ -3400,7 +3510,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "audit_tests_tracabilitetest_requete",
-      "community": 92,
+      "community": 263,
       "norm_label": "._requete()"
     },
     {
@@ -3410,7 +3520,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "audit_tests_tracabilitetest_test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur",
-      "community": 92,
+      "community": 263,
       "norm_label": ".test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur()"
     },
     {
@@ -3430,7 +3540,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "audit_tests_tracabilitetest_test_hors_requete_http_on_retombe_sur_le_pair",
-      "community": 92,
+      "community": 276,
       "norm_label": ".test_hors_requete_http_on_retombe_sur_le_pair()"
     },
     {
@@ -3440,7 +3550,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "audit_tests_middlewareenpremiertest",
-      "community": 111,
+      "community": 263,
       "norm_label": "middlewareenpremiertest"
     },
     {
@@ -3450,8 +3560,98 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "audit_tests_middlewareenpremiertest_test_le_middleware_precede_la_securite_et_le_csrf",
-      "community": 111,
+      "community": 263,
       "norm_label": ".test_le_middleware_precede_la_securite_et_le_csrf()"
+    },
+    {
+      "label": "ProxyDoctorTest",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L233",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest",
+      "community": 212,
+      "norm_label": "proxydoctortest"
+    },
+    {
+      "label": ".setUp()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L240",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_setup",
+      "community": 212,
+      "norm_label": ".setup()"
+    },
+    {
+      "label": ".tearDown()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L245",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_teardown",
+      "community": 212,
+      "norm_label": ".teardown()"
+    },
+    {
+      "label": "._lancer()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L248",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_lancer",
+      "community": 212,
+      "norm_label": "._lancer()"
+    },
+    {
+      "label": ".test_une_adresse_publique_est_reconnue_comme_le_client()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L257",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_test_une_adresse_publique_est_reconnue_comme_le_client",
+      "community": 212,
+      "norm_label": ".test_une_adresse_publique_est_reconnue_comme_le_client()"
+    },
+    {
+      "label": ".test_ladresse_du_proxy_est_signalee_comme_un_defaut()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L264",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_test_ladresse_du_proxy_est_signalee_comme_un_defaut",
+      "community": 212,
+      "norm_label": ".test_ladresse_du_proxy_est_signalee_comme_un_defaut()"
+    },
+    {
+      "label": ".test_un_appel_direct_est_remonte()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L271",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_test_un_appel_direct_est_remonte",
+      "community": 212,
+      "norm_label": ".test_un_appel_direct_est_remonte()"
+    },
+    {
+      "label": ".test_sans_configuration_le_defaut_est_signale()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L278",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_test_sans_configuration_le_defaut_est_signale",
+      "community": 212,
+      "norm_label": ".test_sans_configuration_le_defaut_est_signale()"
+    },
+    {
+      "label": ".test_sans_trace_la_commande_le_dit_au_lieu_de_conclure()",
+      "file_type": "code",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L284",
+      "_origin": "ast",
+      "id": "audit_tests_proxydoctortest_test_sans_trace_la_commande_le_dit_au_lieu_de_conclure",
+      "community": 212,
+      "norm_label": ".test_sans_trace_la_commande_le_dit_au_lieu_de_conclure()"
     },
     {
       "label": "Un appelant peut-il choisir ce que la piste d'audit retiendra de lui ?  Le backe",
@@ -3460,7 +3660,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "audit_tests_rationale_1",
-      "community": 111,
+      "community": 263,
       "norm_label": "un appelant peut-il choisir ce que la piste d'audit retiendra de lui ?  le backe"
     },
     {
@@ -3550,7 +3750,7 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "audit_tests_rationale_170",
-      "community": 92,
+      "community": 263,
       "norm_label": "ce que la piste d'audit retient, et comment elle signale une anomalie."
     },
     {
@@ -3560,7 +3760,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "audit_tests_rationale_190",
-      "community": 92,
+      "community": 263,
       "norm_label": "avant, l'audit retenait remote_addr : donc l'adresse de traefik, la meme"
     },
     {
@@ -3580,7 +3780,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "audit_tests_rationale_211",
-      "community": 92,
+      "community": 276,
       "norm_label": "commandes de gestion et tests unitaires : jamais sur un en-tete."
     },
     {
@@ -3590,8 +3790,28 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "audit_tests_rationale_219",
-      "community": 111,
+      "community": 263,
       "norm_label": "l'ordre n'est pas cosmetique : nettoyer apres la securite ne sert a rien."
+    },
+    {
+      "label": "Le verdict de `proxy_doctor` doit porter dans le bon sens.      C'est un diagnos",
+      "file_type": "rationale",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L234",
+      "_origin": "ast",
+      "id": "audit_tests_rationale_234",
+      "community": 212,
+      "norm_label": "le verdict de `proxy_doctor` doit porter dans le bon sens.      c'est un diagnos"
+    },
+    {
+      "label": "Le cas qui rassurerait \u00e0 tort : la trace existe, mais elle ne dit rien.",
+      "file_type": "rationale",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L265",
+      "_origin": "ast",
+      "id": "audit_tests_rationale_265",
+      "community": 212,
+      "norm_label": "le cas qui rassurerait a tort : la trace existe, mais elle ne dit rien."
     },
     {
       "label": "__init__.py",
@@ -3630,7 +3850,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_bindings",
-      "community": 116,
+      "community": 64,
       "norm_label": "bindings.py"
     },
     {
@@ -3640,7 +3860,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "governance_bindings_hr_binding",
-      "community": 116,
+      "community": 64,
       "norm_label": "hr_binding()"
     },
     {
@@ -3650,7 +3870,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_bindings_rationale_1",
-      "community": 116,
+      "community": 64,
       "norm_label": "registre des liaisons module \u2194 mart (gabarit de branchement des donnees reelles)"
     },
     {
@@ -3790,7 +4010,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "runtimeerror",
-      "community": 81,
+      "community": 277,
       "norm_label": "runtimeerror"
     },
     {
@@ -3800,7 +4020,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "governance_gateway_fetch_or_unavailable",
-      "community": 92,
+      "community": 81,
       "norm_label": "fetch_or_unavailable()"
     },
     {
@@ -4000,7 +4220,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "governance_gateway_rationale_43",
-      "community": 92,
+      "community": 81,
       "norm_label": "execute une lecture du mart. retourne `(resultat, disponible)`.      aucune exce"
     },
     {
@@ -4060,7 +4280,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_module_views",
-      "community": 116,
+      "community": 64,
       "norm_label": "module_views.py"
     },
     {
@@ -4100,7 +4320,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "governance_module_views_dims_avg",
-      "community": 116,
+      "community": 64,
       "norm_label": "_dims_avg()"
     },
     {
@@ -4110,7 +4330,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "governance_module_views_aggregate_score",
-      "community": 116,
+      "community": 92,
       "norm_label": "aggregate_score()"
     },
     {
@@ -4120,7 +4340,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "governance_module_views_domain_rows",
-      "community": 116,
+      "community": 64,
       "norm_label": "_domain_rows()"
     },
     {
@@ -4130,7 +4350,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "governance_module_views_domain_score_fn",
-      "community": 116,
+      "community": 259,
       "norm_label": "_domain_score_fn()"
     },
     {
@@ -4140,7 +4360,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "governance_module_views_build_group_report",
-      "community": 116,
+      "community": 92,
       "norm_label": "build_group_report()"
     },
     {
@@ -4290,7 +4510,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_module_views_rationale_1",
-      "community": 116,
+      "community": 64,
       "norm_label": "endpoint generique de donnees par module (gabarit data reelle).  get /api/v1/gov"
     },
     {
@@ -4300,7 +4520,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "governance_module_views_rationale_57",
-      "community": 116,
+      "community": 64,
       "norm_label": "moyenne par dimension sur un ensemble de lignes (month, sub, dim, score)."
     },
     {
@@ -4310,7 +4530,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "governance_module_views_rationale_65",
-      "community": 116,
+      "community": 92,
       "norm_label": "agregation commune des scores (hr & domaines).      `all_rows` : lignes (month,"
     },
     {
@@ -4320,7 +4540,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "governance_module_views_rationale_90",
-      "community": 116,
+      "community": 64,
       "norm_label": "lignes de score brutes d'un domaine : rh via mart.hr_score, autres via mart.doma"
     },
     {
@@ -4330,7 +4550,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "governance_module_views_rationale_95",
-      "community": 116,
+      "community": 259,
       "norm_label": "fonction de score global d'un domaine (ponderations propres au domaine)."
     },
     {
@@ -4340,7 +4560,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "governance_module_views_rationale_102",
-      "community": 116,
+      "community": 92,
       "norm_label": "indice de gouvernance groupe consolide (reutilise par l'api et l'export).      a"
     },
     {
@@ -4420,7 +4640,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "governance_services_period_from_quarter",
-      "community": 242,
+      "community": 92,
       "norm_label": "period_from_quarter()"
     },
     {
@@ -4500,7 +4720,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "any",
-      "community": 282,
+      "community": 73,
       "norm_label": "any"
     },
     {
@@ -4550,7 +4770,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "governance_services_rationale_24",
-      "community": 242,
+      "community": 92,
       "norm_label": "construit la periode [start, end[ d'un trimestre civil."
     },
     {
@@ -4620,7 +4840,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "governance_tests_failingmartgateway_fetch_hr_kpi",
-      "community": 81,
+      "community": 277,
       "norm_label": ".fetch_hr_kpi()"
     },
     {
@@ -5560,7 +5780,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views",
-      "community": 242,
+      "community": 81,
       "norm_label": "views.py"
     },
     {
@@ -5640,7 +5860,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views_rationale_1",
-      "community": 242,
+      "community": 81,
       "norm_label": "api governance (drf). lecture seule, filtree par perimetre, journalisee."
     },
     {
@@ -6349,8 +6569,8 @@
       "source_file": "backend/apps/integrations/management/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "management_init",
-      "community": 267,
+      "id": "backend_apps_integrations_management_init_py_management_init",
+      "community": 289,
       "norm_label": "__init__.py"
     },
     {
@@ -6359,8 +6579,8 @@
       "source_file": "backend/apps/integrations/management/commands/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "commands_init",
-      "community": 266,
+      "id": "backend_apps_integrations_management_commands_init_py_commands_init",
+      "community": 288,
       "norm_label": "__init__.py"
     },
     {
@@ -6370,7 +6590,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_integrations_doctor",
-      "community": 212,
+      "community": 91,
       "norm_label": "integrations_doctor.py"
     },
     {
@@ -6380,18 +6600,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command",
-      "community": 212,
+      "community": 91,
       "norm_label": "command"
-    },
-    {
-      "label": "BaseCommand",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "basecommand",
-      "community": 212,
-      "norm_label": "basecommand"
     },
     {
       "label": ".add_arguments()",
@@ -6400,7 +6610,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_add_arguments",
-      "community": 212,
+      "community": 91,
       "norm_label": ".add_arguments()"
     },
     {
@@ -6410,7 +6620,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_ligne",
-      "community": 212,
+      "community": 91,
       "norm_label": "._ligne()"
     },
     {
@@ -6420,7 +6630,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_dns",
-      "community": 212,
+      "community": 91,
       "norm_label": "._dns()"
     },
     {
@@ -6430,7 +6640,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_tls",
-      "community": 212,
+      "community": 91,
       "norm_label": "._tls()"
     },
     {
@@ -6440,7 +6650,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_endpoint_sans_jeton",
-      "community": 212,
+      "community": 91,
       "norm_label": "._endpoint_sans_jeton()"
     },
     {
@@ -6450,7 +6660,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_essai_authentifie",
-      "community": 212,
+      "community": 91,
       "norm_label": "._essai_authentifie()"
     },
     {
@@ -6460,7 +6670,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_boucle_locale",
-      "community": 212,
+      "community": 91,
       "norm_label": "._boucle_locale()"
     },
     {
@@ -6470,7 +6680,7 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "commands_integrations_doctor_command_handle",
-      "community": 212,
+      "community": 91,
       "norm_label": ".handle()"
     },
     {
@@ -6480,7 +6690,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_1",
-      "community": 212,
+      "community": 91,
       "norm_label": "diagnostic reseau a lancer depuis le conteneur backend.      docker compose exec"
     },
     {
@@ -6490,7 +6700,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_96",
-      "community": 212,
+      "community": 91,
       "norm_label": "un 401 est le resultat attendu : il prouve que l'endpoint existe et         qu'i"
     },
     {
@@ -6500,7 +6710,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_117",
-      "community": 212,
+      "community": 91,
       "norm_label": "derniere couche : le vrai client du connecteur, avec le vrai jeton."
     },
     {
@@ -6510,7 +6720,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "commands_integrations_doctor_rationale_153",
-      "community": 212,
+      "community": 91,
       "norm_label": "le backend se voit-il lui-meme ? separe \u00ab backend mort \u00bb de \u00ab proxy mal cable \u00bb."
     },
     {
@@ -6520,7 +6730,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_shield_smoke",
-      "community": 212,
+      "community": 91,
       "norm_label": "shield_smoke.py"
     },
     {
@@ -6530,7 +6740,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "commands_shield_smoke_command",
-      "community": 212,
+      "community": 91,
       "norm_label": "command"
     },
     {
@@ -6540,7 +6750,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "commands_shield_smoke_command_handle",
-      "community": 212,
+      "community": 91,
       "norm_label": ".handle()"
     },
     {
@@ -6550,7 +6760,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_shield_smoke_rationale_1",
-      "community": 212,
+      "community": 91,
       "norm_label": "smoke test kaydan shield \u2014 peu d'appels, avant toute serie lourde.      python m"
     },
     {
@@ -6680,7 +6890,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "integrations_models_datasource",
-      "community": 236,
+      "community": 69,
       "norm_label": "datasource"
     },
     {
@@ -6690,7 +6900,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "integrations_models_datasource_str",
-      "community": 236,
+      "community": 69,
       "norm_label": ".__str__()"
     },
     {
@@ -6700,7 +6910,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "integrations_models_datasource_set_status",
-      "community": 236,
+      "community": 69,
       "norm_label": ".set_status()"
     },
     {
@@ -6710,7 +6920,7 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "integrations_models_dataconnector",
-      "community": 69,
+      "community": 236,
       "norm_label": "dataconnector"
     },
     {
@@ -6720,7 +6930,7 @@
       "source_location": "L165",
       "_origin": "ast",
       "id": "integrations_models_dataconnector_str",
-      "community": 69,
+      "community": 236,
       "norm_label": ".__str__()"
     },
     {
@@ -6930,7 +7140,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "integrations_models_rationale_114",
-      "community": 236,
+      "community": 69,
       "norm_label": "une plateforme source (k-shield, k-express, crm, odoo...)."
     },
     {
@@ -6940,7 +7150,7 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "integrations_models_rationale_146",
-      "community": 69,
+      "community": 236,
       "norm_label": "configuration de connexion d'une source (1-1)."
     },
     {
@@ -7000,7 +7210,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_odoo",
-      "community": 280,
+      "community": 236,
       "norm_label": "odoo.py"
     },
     {
@@ -7010,7 +7220,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "integrations_odoo_get_odoo_source",
-      "community": 280,
+      "community": 262,
       "norm_label": "get_odoo_source()"
     },
     {
@@ -7030,7 +7240,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "integrations_odoo_fetch_hr_reference",
-      "community": 280,
+      "community": 262,
       "norm_label": "fetch_hr_reference()"
     },
     {
@@ -7040,7 +7250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_odoo_rationale_1",
-      "community": 280,
+      "community": 236,
       "norm_label": "squelette connecteur odoo rh (adr-0003/0004) \u2014 aucun appel reel a ce stade.  vol"
     },
     {
@@ -7050,7 +7260,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "integrations_odoo_rationale_46",
-      "community": 280,
+      "community": 262,
       "norm_label": "etat gouverne du referentiel rh odoo. ne renvoie jamais de donnees.      `not_co"
     },
     {
@@ -7490,7 +7700,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "integrations_shield_base_url",
-      "community": 262,
+      "community": 73,
       "norm_label": "_base_url()"
     },
     {
@@ -7500,7 +7710,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "integrations_shield_pick_secret",
-      "community": 262,
+      "community": 73,
       "norm_label": "_pick_secret()"
     },
     {
@@ -7510,7 +7720,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "integrations_shield_auth_headers",
-      "community": 262,
+      "community": 73,
       "norm_label": "_auth_headers()"
     },
     {
@@ -7520,7 +7730,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "integrations_shield_build_client",
-      "community": 262,
+      "community": 73,
       "norm_label": "build_client()"
     },
     {
@@ -7630,7 +7840,7 @@
       "source_location": "L325",
       "_origin": "ast",
       "id": "integrations_shield_collect_flag",
-      "community": 282,
+      "community": 104,
       "norm_label": "_collect_flag()"
     },
     {
@@ -7640,7 +7850,7 @@
       "source_location": "L349",
       "_origin": "ast",
       "id": "integrations_shield_oldest_reliable",
-      "community": 282,
+      "community": 73,
       "norm_label": "_oldest_reliable()"
     },
     {
@@ -7650,7 +7860,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "integrations_shield_collect_period",
-      "community": 282,
+      "community": 73,
       "norm_label": "collect_period()"
     },
     {
@@ -7660,7 +7870,7 @@
       "source_location": "L383",
       "_origin": "ast",
       "id": "integrations_shield_tally",
-      "community": 282,
+      "community": 73,
       "norm_label": "_tally()"
     },
     {
@@ -7670,7 +7880,7 @@
       "source_location": "L393",
       "_origin": "ast",
       "id": "integrations_shield_fetch_attendance_series",
-      "community": 282,
+      "community": 73,
       "norm_label": "fetch_attendance_series()"
     },
     {
@@ -7680,7 +7890,7 @@
       "source_location": "L441",
       "_origin": "ast",
       "id": "integrations_shield_presence_by_kind_from",
-      "community": 282,
+      "community": 73,
       "norm_label": "_presence_by_kind_from()"
     },
     {
@@ -7730,7 +7940,7 @@
       "source_location": "L579",
       "_origin": "ast",
       "id": "integrations_shield_shield_health",
-      "community": 262,
+      "community": 73,
       "norm_label": "shield_health()"
     },
     {
@@ -7750,7 +7960,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "integrations_shield_rationale_51",
-      "community": 262,
+      "community": 73,
       "norm_label": "selectionne le credential porteur du secret, de facon deterministe.      `creden"
     },
     {
@@ -7760,7 +7970,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "integrations_shield_rationale_66",
-      "community": 262,
+      "community": 73,
       "norm_label": "construit les en-tetes d'auth depuis le connecteur (secrets chiffres) ou l'env."
     },
     {
@@ -7820,7 +8030,7 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "integrations_shield_rationale_326",
-      "community": 282,
+      "community": 104,
       "norm_label": "tous les enregistrements de la periode portant `flag`, du plus recent au plus an"
     },
     {
@@ -7830,7 +8040,7 @@
       "source_location": "L350",
       "_origin": "ast",
       "id": "integrations_shield_rationale_350",
-      "community": 282,
+      "community": 73,
       "norm_label": "date a partir de laquelle les comptages sont fiables.      si la collecte a ete"
     },
     {
@@ -7840,7 +8050,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "integrations_shield_rationale_364",
-      "community": 282,
+      "community": 73,
       "norm_label": "les trois jeux d'enregistrements de la periode, avec leur fiabilite."
     },
     {
@@ -7850,7 +8060,7 @@
       "source_location": "L394",
       "_origin": "ast",
       "id": "integrations_shield_rationale_394",
-      "community": 282,
+      "community": 73,
       "norm_label": "serie journaliere de presence, batie sur une lecture de periode par indicateur."
     },
     {
@@ -7860,7 +8070,7 @@
       "source_location": "L442",
       "_origin": "ast",
       "id": "integrations_shield_rationale_442",
-      "community": 282,
+      "community": 73,
       "norm_label": "presents du jour par `holder_kind`, deduits de la periode deja collectee."
     },
     {
@@ -7880,7 +8090,7 @@
       "source_location": "L580",
       "_origin": "ast",
       "id": "integrations_shield_rationale_580",
-      "community": 262,
+      "community": 73,
       "norm_label": "sante du connecteur, pour sourcehealth et l'ecran d'administration."
     },
     {
@@ -7910,7 +8120,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror",
-      "community": 236,
+      "community": 91,
       "norm_label": "shielderror"
     },
     {
@@ -7920,7 +8130,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror_init",
-      "community": 274,
+      "community": 104,
       "norm_label": ".__init__()"
     },
     {
@@ -7930,7 +8140,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror_str",
-      "community": 236,
+      "community": 91,
       "norm_label": ".__str__()"
     },
     {
@@ -7940,7 +8150,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache",
-      "community": 274,
+      "community": 104,
       "norm_label": "_ttlcache"
     },
     {
@@ -7950,7 +8160,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_init",
-      "community": 274,
+      "community": 104,
       "norm_label": ".__init__()"
     },
     {
@@ -7970,7 +8180,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_set",
-      "community": 274,
+      "community": 104,
       "norm_label": ".set()"
     },
     {
@@ -7980,7 +8190,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_clear",
-      "community": 274,
+      "community": 104,
       "norm_label": ".clear()"
     },
     {
@@ -7990,7 +8200,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics",
-      "community": 274,
+      "community": 104,
       "norm_label": "shieldmetrics"
     },
     {
@@ -8000,7 +8210,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics_init",
-      "community": 274,
+      "community": 104,
       "norm_label": ".__init__()"
     },
     {
@@ -8020,7 +8230,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics_as_dict",
-      "community": 274,
+      "community": 104,
       "norm_label": ".as_dict()"
     },
     {
@@ -8040,7 +8250,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldclient_init",
-      "community": 274,
+      "community": 104,
       "norm_label": ".__init__()"
     },
     {
@@ -8140,7 +8350,7 @@
       "source_location": "L347",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldclient_clear_cache",
-      "community": 274,
+      "community": 104,
       "norm_label": ".clear_cache()"
     },
     {
@@ -8170,7 +8380,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_50",
-      "community": 236,
+      "community": 91,
       "norm_label": "echec d'appel qualifie par sa cause, pas seulement par son message.      `kind`"
     },
     {
@@ -8180,7 +8390,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_72",
-      "community": 274,
+      "community": 104,
       "norm_label": "cache memoire court, protege par un verrou (django sert en multi-thread)."
     },
     {
@@ -8190,7 +8400,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_100",
-      "community": 274,
+      "community": 104,
       "norm_label": "compteurs d'usage d'un client. aucun jeton, aucune donnee personnelle :     uniq"
     },
     {
@@ -8260,7 +8470,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints",
-      "community": 73,
+      "community": 280,
       "norm_label": "shield_endpoints.py"
     },
     {
@@ -8270,7 +8480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints_rationale_1",
-      "community": 73,
+      "community": 280,
       "norm_label": "chemins kaydan shield reellement documentes (swagger `/api/docs/`).  un seul end"
     },
     {
@@ -9270,7 +9480,7 @@
       "source_location": "L701",
       "_origin": "ast",
       "id": "integrations_tests_shieldobservabilitytest",
-      "community": 236,
+      "community": 213,
       "norm_label": "shieldobservabilitytest"
     },
     {
@@ -9660,7 +9870,7 @@
       "source_location": "L1120",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest",
-      "community": 236,
+      "community": 267,
       "norm_label": "sondeconnexiontest"
     },
     {
@@ -9670,7 +9880,7 @@
       "source_location": "L1129",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_setup",
-      "community": 236,
+      "community": 267,
       "norm_label": ".setup()"
     },
     {
@@ -9690,7 +9900,7 @@
       "source_location": "L1146",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_404_nest_pas_un_succes",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_404_nest_pas_un_succes()"
     },
     {
@@ -9700,7 +9910,7 @@
       "source_location": "L1154",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_401_distingue_du_404",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_401_distingue_du_404()"
     },
     {
@@ -9710,7 +9920,7 @@
       "source_location": "L1163",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_403_qualifie_en_permissions",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_403_qualifie_en_permissions()"
     },
     {
@@ -9720,7 +9930,7 @@
       "source_location": "L1170",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_500_impute_la_panne_a_la_source",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_500_impute_la_panne_a_la_source()"
     },
     {
@@ -9730,7 +9940,7 @@
       "source_location": "L1177",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_2xx_seul_vaut_succes",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_2xx_seul_vaut_succes()"
     },
     {
@@ -9740,7 +9950,7 @@
       "source_location": "L1187",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_causes_reseau_nommees_une_par_une",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_causes_reseau_nommees_une_par_une()"
     },
     {
@@ -9750,7 +9960,7 @@
       "source_location": "L1202",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_404_laisse_la_source_en_erreur_et_bloque_la_synchro",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_404_laisse_la_source_en_erreur_et_bloque_la_synchro()"
     },
     {
@@ -9770,7 +9980,7 @@
       "source_location": "L1229",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_probe0_ne_declare_jamais_connectee",
-      "community": 236,
+      "community": 267,
       "norm_label": ".test_probe0_ne_declare_jamais_connectee()"
     },
     {
@@ -9800,7 +10010,7 @@
       "source_location": "L1258",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_setup",
-      "community": 236,
+      "community": 18,
       "norm_label": ".setup()"
     },
     {
@@ -9840,7 +10050,7 @@
       "source_location": "L1302",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_test_une_exception_inattendue_ne_passe_pas_pour_un_succes",
-      "community": 81,
+      "community": 277,
       "norm_label": ".test_une_exception_inattendue_ne_passe_pas_pour_un_succes()"
     },
     {
@@ -9970,7 +10180,7 @@
       "source_location": "L1416",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest",
-      "community": 288,
+      "community": 236,
       "norm_label": "smokeenumerationtest"
     },
     {
@@ -9980,7 +10190,7 @@
       "source_location": "L1426",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_setup",
-      "community": 288,
+      "community": 236,
       "norm_label": ".setup()"
     },
     {
@@ -9990,7 +10200,7 @@
       "source_location": "L1433",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_lancer",
-      "community": 288,
+      "community": 236,
       "norm_label": "._lancer()"
     },
     {
@@ -10000,7 +10210,7 @@
       "source_location": "L1452",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_test_enumeration_ignoree_est_signalee_comme_bloquante",
-      "community": 288,
+      "community": 236,
       "norm_label": ".test_enumeration_ignoree_est_signalee_comme_bloquante()"
     },
     {
@@ -10010,7 +10220,7 @@
       "source_location": "L1458",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_test_enumeration_honoree_est_confirmee",
-      "community": 288,
+      "community": 236,
       "norm_label": ".test_enumeration_honoree_est_confirmee()"
     },
     {
@@ -10020,7 +10230,7 @@
       "source_location": "L1463",
       "_origin": "ast",
       "id": "integrations_tests_smokeenumerationtest_test_latence_moyenne_rapportee",
-      "community": 288,
+      "community": 236,
       "norm_label": ".test_latence_moyenne_rapportee()"
     },
     {
@@ -10280,7 +10490,7 @@
       "source_location": "L693",
       "_origin": "ast",
       "id": "integrations_tests_rationale_693",
-      "community": 91,
+      "community": 213,
       "norm_label": "4 compteurs + 1 liste de sites + 3 lectures de periode + 2 par site."
     },
     {
@@ -10290,7 +10500,7 @@
       "source_location": "L702",
       "_origin": "ast",
       "id": "integrations_tests_rationale_702",
-      "community": 236,
+      "community": 213,
       "norm_label": "compteurs d'usage : ce qu'on mesure, et ce qu'on ne journalise jamais."
     },
     {
@@ -10420,7 +10630,7 @@
       "source_location": "L1121",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1121",
-      "community": 236,
+      "community": 267,
       "norm_label": "une source n'est \u00ab connectee \u00bb qu'apres une reponse valide.      avant, `network"
     },
     {
@@ -10430,7 +10640,7 @@
       "source_location": "L1155",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1155",
-      "community": 236,
+      "community": 267,
       "norm_label": "un 401 prouve qu'une api repond et refuse le jeton \u2014 ce n'est pas la         mem"
     },
     {
@@ -10440,7 +10650,7 @@
       "source_location": "L1188",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1188",
-      "community": 236,
+      "community": 267,
       "norm_label": "\u00ab injoignable \u00bb ne dit pas s'il faut corriger un certificat ou un dns."
     },
     {
@@ -10480,7 +10690,7 @@
       "source_location": "L1303",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1303",
-      "community": 81,
+      "community": 277,
       "norm_label": "si un jour une exception non prevue s'echappe, mieux vaut une erreur         fra"
     },
     {
@@ -10560,7 +10770,7 @@
       "source_location": "L1417",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1417",
-      "community": 288,
+      "community": 236,
       "norm_label": "le smoke test doit detecter une enumeration ignoree par le serveur.      c'est l"
     },
     {
@@ -10570,7 +10780,7 @@
       "source_location": "L1434",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1434",
-      "community": 288,
+      "community": 236,
       "norm_label": "execute la commande avec des comptages controles, et rend sa sortie."
     },
     {
@@ -10580,7 +10790,7 @@
       "source_location": "L1453",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1453",
-      "community": 288,
+      "community": 236,
       "norm_label": "valeur absurde = meme total que sans filtre \u2192 le serveur n'en tient pas compte."
     },
     {
@@ -12271,7 +12481,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "date",
-      "community": 14,
+      "community": 12,
       "norm_label": "date"
     },
     {
@@ -12861,7 +13071,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "kpi_hr_mart_month_start",
-      "community": 30,
+      "community": 12,
       "norm_label": "_month_start()"
     },
     {
@@ -14741,7 +14951,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_copilot",
-      "community": 263,
+      "community": 221,
       "norm_label": "copilot.ts"
     },
     {
@@ -14751,7 +14961,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_copilot_chatbody",
-      "community": 263,
+      "community": 221,
       "norm_label": "chatbody"
     },
     {
@@ -14761,7 +14971,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_copilot_usecopilotchat",
-      "community": 263,
+      "community": 221,
       "norm_label": "usecopilotchat()"
     },
     {
@@ -14771,7 +14981,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "api_copilot_useapproveaction",
-      "community": 263,
+      "community": 221,
       "norm_label": "useapproveaction()"
     },
     {
@@ -14781,7 +14991,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "api_copilot_userejectaction",
-      "community": 263,
+      "community": 221,
       "norm_label": "userejectaction()"
     },
     {
@@ -14811,7 +15021,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "api_governance_useaiquery",
-      "community": 80,
+      "community": 67,
       "norm_label": "useaiquery()"
     },
     {
@@ -14821,7 +15031,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "api_governance_downloadgroupexport",
-      "community": 263,
+      "community": 221,
       "norm_label": "downloadgroupexport()"
     },
     {
@@ -14841,7 +15051,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "api_governance_usehrkpi",
-      "community": 277,
+      "community": 1,
       "norm_label": "usehrkpi()"
     },
     {
@@ -14911,7 +15121,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_globalfilters",
-      "community": 264,
+      "community": 1,
       "norm_label": "globalfilters.tsx"
     },
     {
@@ -14921,7 +15131,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_globalfilters_years",
-      "community": 264,
+      "community": 1,
       "norm_label": "years"
     },
     {
@@ -14931,7 +15141,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_globalfilters_quarters",
-      "community": 264,
+      "community": 1,
       "norm_label": "quarters"
     },
     {
@@ -14941,7 +15151,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_globalfilters_select",
-      "community": 264,
+      "community": 1,
       "norm_label": "select()"
     },
     {
@@ -14951,7 +15161,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "components_globalfilters_globalfilters",
-      "community": 264,
+      "community": 1,
       "norm_label": "globalfilters()"
     },
     {
@@ -14961,7 +15171,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_kpicard",
-      "community": 278,
+      "community": 1,
       "norm_label": "kpicard.tsx"
     },
     {
@@ -14971,7 +15181,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_kpicard_kpicardprops",
-      "community": 278,
+      "community": 1,
       "norm_label": "kpicardprops"
     },
     {
@@ -14981,7 +15191,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "components_kpicard_tonering",
-      "community": 278,
+      "community": 1,
       "norm_label": "tonering"
     },
     {
@@ -14991,7 +15201,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_kpicard_kpicard",
-      "community": 278,
+      "community": 1,
       "norm_label": "kpicard()"
     },
     {
@@ -15001,7 +15211,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart",
-      "community": 277,
+      "community": 1,
       "norm_label": "payrollbysubsidiarychart.tsx"
     },
     {
@@ -15011,7 +15221,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_props",
-      "community": 277,
+      "community": 1,
       "norm_label": "props"
     },
     {
@@ -15021,7 +15231,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_subsidiary_labels",
-      "community": 277,
+      "community": 1,
       "norm_label": "subsidiary_labels"
     },
     {
@@ -15031,7 +15241,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_payrollbysubsidiarychart",
-      "community": 277,
+      "community": 1,
       "norm_label": "payrollbysubsidiarychart()"
     },
     {
@@ -15191,7 +15401,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_appheader",
-      "community": 80,
+      "community": 266,
       "norm_label": "appheader.tsx"
     },
     {
@@ -15201,7 +15411,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "chrome_appheader_appheader",
-      "community": 80,
+      "community": 266,
       "norm_label": "appheader()"
     },
     {
@@ -15211,7 +15421,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_avatar",
-      "community": 0,
+      "community": 266,
       "norm_label": "avatar.tsx"
     },
     {
@@ -15221,7 +15431,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_avatar_avatar",
-      "community": 0,
+      "community": 266,
       "norm_label": "avatar()"
     },
     {
@@ -15231,7 +15441,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_brand",
-      "community": 80,
+      "community": 266,
       "norm_label": "brand.tsx"
     },
     {
@@ -15241,7 +15451,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_brand_brand",
-      "community": 80,
+      "community": 266,
       "norm_label": "brand()"
     },
     {
@@ -15281,7 +15491,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_circlebutton",
-      "community": 80,
+      "community": 266,
       "norm_label": "circlebutton.tsx"
     },
     {
@@ -15291,7 +15501,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "chrome_circlebutton_circlebuttonprops",
-      "community": 80,
+      "community": 266,
       "norm_label": "circlebuttonprops"
     },
     {
@@ -15301,7 +15511,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "chrome_circlebutton_circlebutton",
-      "community": 0,
+      "community": 266,
       "norm_label": "circlebutton()"
     },
     {
@@ -15311,7 +15521,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_headeractions",
-      "community": 0,
+      "community": 266,
       "norm_label": "headeractions.tsx"
     },
     {
@@ -15321,7 +15531,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "chrome_headeractions_headeractions",
-      "community": 80,
+      "community": 266,
       "norm_label": "headeractions()"
     },
     {
@@ -15331,7 +15541,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_heroimage",
-      "community": 265,
+      "community": 80,
       "norm_label": "heroimage.tsx"
     },
     {
@@ -15341,7 +15551,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "chrome_heroimage_heroimageprops",
-      "community": 265,
+      "community": 80,
       "norm_label": "heroimageprops"
     },
     {
@@ -15351,7 +15561,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "chrome_heroimage_default_widths",
-      "community": 265,
+      "community": 80,
       "norm_label": "default_widths"
     },
     {
@@ -15361,7 +15571,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "chrome_heroimage_heroimage",
-      "community": 265,
+      "community": 80,
       "norm_label": "heroimage()"
     },
     {
@@ -15441,7 +15651,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_topnav",
-      "community": 80,
+      "community": 266,
       "norm_label": "topnav.tsx"
     },
     {
@@ -15451,7 +15661,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_topnav_topnav",
-      "community": 80,
+      "community": 266,
       "norm_label": "topnav()"
     },
     {
@@ -15481,7 +15691,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "chrome_usermenu_usermenu",
-      "community": 1,
+      "community": 221,
       "norm_label": "usermenu()"
     },
     {
@@ -15511,7 +15721,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "copilot_aicopilotpanel",
-      "community": 263,
+      "community": 221,
       "norm_label": "aicopilotpanel.tsx"
     },
     {
@@ -15521,7 +15731,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "copilot_aicopilotpanel_suggestions",
-      "community": 263,
+      "community": 221,
       "norm_label": "suggestions"
     },
     {
@@ -15531,7 +15741,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "copilot_aicopilotpanel_sparkle",
-      "community": 263,
+      "community": 221,
       "norm_label": "sparkle()"
     },
     {
@@ -15541,7 +15751,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "copilot_aicopilotpanel_actioncard",
-      "community": 263,
+      "community": 221,
       "norm_label": "actioncard()"
     },
     {
@@ -15551,7 +15761,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "copilot_aicopilotpanel_messagebubble",
-      "community": 263,
+      "community": 221,
       "norm_label": "messagebubble()"
     },
     {
@@ -15561,7 +15771,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "copilot_aicopilotpanel_aicopilotpanel",
-      "community": 263,
+      "community": 221,
       "norm_label": "aicopilotpanel()"
     },
     {
@@ -15571,7 +15781,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icons",
-      "community": 287,
+      "community": 1,
       "norm_label": "icons.tsx"
     },
     {
@@ -15581,7 +15791,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_icons_iconprops",
-      "community": 287,
+      "community": 1,
       "norm_label": "iconprops"
     },
     {
@@ -15591,7 +15801,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_icons_base",
-      "community": 287,
+      "community": 1,
       "norm_label": "base()"
     },
     {
@@ -15601,7 +15811,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_icons_iconusers",
-      "community": 287,
+      "community": 1,
       "norm_label": "iconusers()"
     },
     {
@@ -15611,7 +15821,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "components_icons_iconwallet",
-      "community": 287,
+      "community": 1,
       "norm_label": "iconwallet()"
     },
     {
@@ -15621,7 +15831,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_icons_iconarrowdownright",
-      "community": 287,
+      "community": 1,
       "norm_label": "iconarrowdownright()"
     },
     {
@@ -15631,7 +15841,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "components_icons_icontrend",
-      "community": 287,
+      "community": 1,
       "norm_label": "icontrend()"
     },
     {
@@ -15641,7 +15851,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "components_icons_iconshield",
-      "community": 287,
+      "community": 1,
       "norm_label": "iconshield()"
     },
     {
@@ -15651,7 +15861,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_parts",
-      "community": 80,
+      "community": 19,
       "norm_label": "parts.tsx"
     },
     {
@@ -15661,7 +15871,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "integrations_parts_status_style",
-      "community": 80,
+      "community": 19,
       "norm_label": "status_style"
     },
     {
@@ -15691,7 +15901,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "integrations_parts_integrationsnav",
-      "community": 80,
+      "community": 19,
       "norm_label": "integrationsnav"
     },
     {
@@ -15821,7 +16031,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters",
-      "community": 264,
+      "community": 80,
       "norm_label": "globaldashboardfilters.tsx"
     },
     {
@@ -15831,7 +16041,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_filtertrigger",
-      "community": 264,
+      "community": 80,
       "norm_label": "filtertrigger()"
     },
     {
@@ -15841,7 +16051,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_periodfilter",
-      "community": 264,
+      "community": 80,
       "norm_label": "periodfilter()"
     },
     {
@@ -15851,7 +16061,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_subsidiaryfilter",
-      "community": 264,
+      "community": 80,
       "norm_label": "subsidiaryfilter()"
     },
     {
@@ -15861,7 +16071,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_genericfilter",
-      "community": 264,
+      "community": 80,
       "norm_label": "genericfilter()"
     },
     {
@@ -15931,7 +16141,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_requireauth",
-      "community": 1,
+      "community": 221,
       "norm_label": "requireauth.tsx"
     },
     {
@@ -15941,7 +16151,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "navigation_requireauth_requireauth",
-      "community": 1,
+      "community": 221,
       "norm_label": "requireauth()"
     },
     {
@@ -15951,7 +16161,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "navigation_requireauth_rootredirect",
-      "community": 1,
+      "community": 221,
       "norm_label": "rootredirect()"
     },
     {
@@ -16001,7 +16211,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_aiquerybox",
-      "community": 80,
+      "community": 67,
       "norm_label": "aiquerybox.tsx"
     },
     {
@@ -16011,7 +16221,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "overview_aiquerybox_samples",
-      "community": 80,
+      "community": 67,
       "norm_label": "samples"
     },
     {
@@ -16021,7 +16231,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_aiquerybox_aiquerybox",
-      "community": 80,
+      "community": 67,
       "norm_label": "aiquerybox()"
     },
     {
@@ -16611,7 +16821,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_saleshistogram",
-      "community": 289,
+      "community": 1,
       "norm_label": "saleshistogram.tsx"
     },
     {
@@ -16621,7 +16831,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "overview_saleshistogram_saleshistogramprops",
-      "community": 289,
+      "community": 1,
       "norm_label": "saleshistogramprops"
     },
     {
@@ -16631,7 +16841,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "overview_saleshistogram_fallback",
-      "community": 289,
+      "community": 1,
       "norm_label": "fallback"
     },
     {
@@ -16641,7 +16851,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "overview_saleshistogram_share_colors",
-      "community": 289,
+      "community": 1,
       "norm_label": "share_colors"
     },
     {
@@ -16651,7 +16861,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "overview_saleshistogram_makerng",
-      "community": 289,
+      "community": 1,
       "norm_label": "makerng()"
     },
     {
@@ -16661,7 +16871,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "overview_saleshistogram_buildspectrum",
-      "community": 289,
+      "community": 1,
       "norm_label": "buildspectrum()"
     },
     {
@@ -16671,7 +16881,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "overview_saleshistogram_gridlines",
-      "community": 289,
+      "community": 1,
       "norm_label": "gridlines()"
     },
     {
@@ -16681,7 +16891,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "overview_saleshistogram_saleshistogram",
-      "community": 289,
+      "community": 1,
       "norm_label": "saleshistogram()"
     },
     {
@@ -17131,7 +17341,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_card",
-      "community": 278,
+      "community": 1,
       "norm_label": "card.tsx"
     },
     {
@@ -17141,7 +17351,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "ui_card_card",
-      "community": 278,
+      "community": 1,
       "norm_label": "card()"
     },
     {
@@ -17151,7 +17361,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "ui_card_cardheader",
-      "community": 278,
+      "community": 1,
       "norm_label": "cardheader()"
     },
     {
@@ -17161,7 +17371,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "ui_card_cardtitle",
-      "community": 278,
+      "community": 1,
       "norm_label": "cardtitle()"
     },
     {
@@ -17171,7 +17381,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "ui_card_cardcontent",
-      "community": 278,
+      "community": 1,
       "norm_label": "cardcontent()"
     },
     {
@@ -17761,7 +17971,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_domaintheme",
-      "community": 265,
+      "community": 80,
       "norm_label": "domaintheme.ts"
     },
     {
@@ -17771,7 +17981,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "config_domaintheme_domainaccent",
-      "community": 265,
+      "community": 80,
       "norm_label": "domainaccent"
     },
     {
@@ -17781,7 +17991,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "config_domaintheme_fallback",
-      "community": 265,
+      "community": 80,
       "norm_label": "fallback"
     },
     {
@@ -17791,7 +18001,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "config_domaintheme_domain_accents",
-      "community": 265,
+      "community": 80,
       "norm_label": "domain_accents"
     },
     {
@@ -17801,7 +18011,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "config_domaintheme_getdomainaccent",
-      "community": 265,
+      "community": 80,
       "norm_label": "getdomainaccent()"
     },
     {
@@ -17811,7 +18021,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "config_domaintheme_withalpha",
-      "community": 265,
+      "community": 80,
       "norm_label": "withalpha()"
     },
     {
@@ -17821,7 +18031,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "config_domaintheme_domaintokens",
-      "community": 265,
+      "community": 80,
       "norm_label": "domaintokens()"
     },
     {
@@ -18041,7 +18251,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "layouts_applayout",
-      "community": 287,
+      "community": 1,
       "norm_label": "applayout.tsx"
     },
     {
@@ -18051,7 +18261,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "layouts_applayout_nav",
-      "community": 287,
+      "community": 1,
       "norm_label": "nav"
     },
     {
@@ -18371,7 +18581,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_auth_isauthenticated",
-      "community": 1,
+      "community": 221,
       "norm_label": "isauthenticated()"
     },
     {
@@ -18381,7 +18591,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_auth_getstoreduser",
-      "community": 1,
+      "community": 221,
       "norm_label": "getstoreduser()"
     },
     {
@@ -18421,7 +18631,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format",
-      "community": 277,
+      "community": 1,
       "norm_label": "format.ts"
     },
     {
@@ -18431,7 +18641,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "lib_format_xof",
-      "community": 277,
+      "community": 1,
       "norm_label": "xof"
     },
     {
@@ -18441,7 +18651,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_format_formatxof",
-      "community": 277,
+      "community": 1,
       "norm_label": "formatxof()"
     },
     {
@@ -18451,7 +18661,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_format_compact",
-      "community": 277,
+      "community": 1,
       "norm_label": "compact"
     },
     {
@@ -18461,7 +18671,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_format_formatcompact",
-      "community": 289,
+      "community": 1,
       "norm_label": "formatcompact()"
     },
     {
@@ -18471,7 +18681,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "lib_format_formatint",
-      "community": 277,
+      "community": 1,
       "norm_label": "formatint()"
     },
     {
@@ -18481,7 +18691,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_format_formatsigned",
-      "community": 277,
+      "community": 1,
       "norm_label": "formatsigned()"
     },
     {
@@ -19181,7 +19391,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_motion",
-      "community": 80,
+      "community": 5,
       "norm_label": "motion.ts"
     },
     {
@@ -19481,7 +19691,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_usedomaintheme",
-      "community": 265,
+      "community": 80,
       "norm_label": "usedomaintheme.ts"
     },
     {
@@ -19491,7 +19701,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_usedomaintheme_usedomaintheme",
-      "community": 265,
+      "community": 80,
       "norm_label": "usedomaintheme()"
     },
     {
@@ -19501,7 +19711,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_utils",
-      "community": 278,
+      "community": 1,
       "norm_label": "utils.ts"
     },
     {
@@ -19511,7 +19721,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_utils_cn",
-      "community": 278,
+      "community": 1,
       "norm_label": "cn()"
     },
     {
@@ -19661,7 +19871,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_domainhome",
-      "community": 265,
+      "community": 80,
       "norm_label": "domainhome.tsx"
     },
     {
@@ -19671,7 +19881,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "pages_domainhome_chip_colors",
-      "community": 265,
+      "community": 80,
       "norm_label": "chip_colors"
     },
     {
@@ -19681,7 +19891,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "pages_domainhome_periodmenu",
-      "community": 264,
+      "community": 80,
       "norm_label": "periodmenu()"
     },
     {
@@ -19691,7 +19901,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "pages_domainhome_actionsmenu",
-      "community": 264,
+      "community": 80,
       "norm_label": "actionsmenu()"
     },
     {
@@ -19701,7 +19911,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "pages_domainhome_signalscard",
-      "community": 265,
+      "community": 80,
       "norm_label": "signalscard()"
     },
     {
@@ -19711,7 +19921,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "pages_domainhome_domainhome",
-      "community": 265,
+      "community": 16,
       "norm_label": "domainhome()"
     },
     {
@@ -19851,7 +20061,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "pages_governanceoverview_periodmenu",
-      "community": 264,
+      "community": 80,
       "norm_label": "periodmenu()"
     },
     {
@@ -19891,7 +20101,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_hrdashboard",
-      "community": 277,
+      "community": 1,
       "norm_label": "hrdashboard.tsx"
     },
     {
@@ -19901,7 +20111,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "pages_hrdashboard_periodlabel",
-      "community": 277,
+      "community": 1,
       "norm_label": "periodlabel()"
     },
     {
@@ -19911,7 +20121,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "pages_hrdashboard_hrdashboard",
-      "community": 277,
+      "community": 1,
       "norm_label": "hrdashboard()"
     },
     {
@@ -19921,7 +20131,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "pages_hrdashboard_skeletongrid",
-      "community": 277,
+      "community": 1,
       "norm_label": "skeletongrid()"
     },
     {
@@ -19931,7 +20141,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_loginpage",
-      "community": 80,
+      "community": 221,
       "norm_label": "loginpage.tsx"
     },
     {
@@ -19941,7 +20151,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "pages_loginpage_loginpage",
-      "community": 80,
+      "community": 221,
       "norm_label": "loginpage()"
     },
     {
@@ -20041,7 +20251,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "pages_modulepage_kpicard",
-      "community": 277,
+      "community": 1,
       "norm_label": "kpicard()"
     },
     {
@@ -20161,7 +20371,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "pages_moduleshome_moduleshome",
-      "community": 0,
+      "community": 16,
       "norm_label": "moduleshome()"
     },
     {
@@ -20631,7 +20841,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "store_filters",
-      "community": 264,
+      "community": 80,
       "norm_label": "filters.ts"
     },
     {
@@ -20641,7 +20851,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "store_filters_filtersstate",
-      "community": 264,
+      "community": 80,
       "norm_label": "filtersstate"
     },
     {
@@ -20651,7 +20861,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "store_filters_subsidiaries",
-      "community": 264,
+      "community": 80,
       "norm_label": "subsidiaries"
     },
     {
@@ -20661,7 +20871,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "store_filters_usefilters",
-      "community": 264,
+      "community": 80,
       "norm_label": "usefilters"
     },
     {
@@ -20711,7 +20921,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "types_copilot",
-      "community": 263,
+      "community": 221,
       "norm_label": "copilot.ts"
     },
     {
@@ -20721,7 +20931,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "types_copilot_copilotmetric",
-      "community": 263,
+      "community": 221,
       "norm_label": "copilotmetric"
     },
     {
@@ -20731,7 +20941,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "types_copilot_copilotaction",
-      "community": 263,
+      "community": 221,
       "norm_label": "copilotaction"
     },
     {
@@ -20741,7 +20951,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "types_copilot_copilotchatresponse",
-      "community": 263,
+      "community": 221,
       "norm_label": "copilotchatresponse"
     },
     {
@@ -20751,7 +20961,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "types_copilot_copilotmessage",
-      "community": 263,
+      "community": 221,
       "norm_label": "copilotmessage"
     },
     {
@@ -23759,7 +23969,7 @@
       "source_location": "L2322",
       "_origin": "ast",
       "id": "docs_changelog_6_14_2",
-      "community": 276,
+      "community": 62,
       "norm_label": "6.14.2"
     },
     {
@@ -23769,7 +23979,7 @@
       "source_location": "L2324",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2324",
-      "community": 276,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -23899,7 +24109,7 @@
       "source_location": "L2400",
       "_origin": "ast",
       "id": "docs_changelog_6_11_2",
-      "community": 62,
+      "community": 278,
       "norm_label": "6.11.2"
     },
     {
@@ -23909,7 +24119,7 @@
       "source_location": "L2402",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2402",
-      "community": 62,
+      "community": 278,
       "norm_label": "patch changes"
     },
     {
@@ -30836,7 +31046,7 @@
       "label": "Transformations dbt",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L129",
+      "source_location": "L137",
       "_origin": "ast",
       "id": "dokploy_readme_transformations_dbt",
       "community": 93,
@@ -30846,7 +31056,7 @@
       "label": "Airbyte (EL)",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L139",
+      "source_location": "L147",
       "_origin": "ast",
       "id": "dokploy_readme_airbyte_el",
       "community": 93,
@@ -30856,7 +31066,7 @@
       "label": "Points production d\u00e9j\u00e0 c\u00e2bl\u00e9s",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L144",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "dokploy_readme_points_production_d\u00e9j\u00e0_c\u00e2bl\u00e9s",
       "community": 93,
@@ -30866,7 +31076,7 @@
       "label": "Mises \u00e0 jour",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L154",
+      "source_location": "L162",
       "_origin": "ast",
       "id": "dokploy_readme_mises_\u00e0_jour",
       "community": 93,
@@ -30876,7 +31086,7 @@
       "label": "Notes / extensions",
       "file_type": "document",
       "source_file": "infra/dokploy/README.md",
-      "source_location": "L159",
+      "source_location": "L167",
       "_origin": "ast",
       "id": "dokploy_readme_notes_extensions",
       "community": 93,
@@ -31229,7 +31439,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "lib_api_api_base",
-      "community": 221,
+      "community": 19,
       "norm_label": "api_base"
     }
   ],
@@ -31962,9 +32172,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L218",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_middlewareenpremiertest",
-      "target": "testcase",
-      "confidence_score": 1.0
+      "target": "testcase"
     },
     {
       "relation": "inherits",
@@ -31972,7 +32182,17 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
+      "target": "testcase"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L233",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
       "target": "testcase",
       "confidence_score": 1.0
     },
@@ -31982,9 +32202,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "testcase",
-      "confidence_score": 1.0
+      "target": "testcase"
     },
     {
       "relation": "inherits",
@@ -40856,9 +41076,9 @@
       "source_file": "backend/apps/ai_copilot/views.py",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ai_copilot_views_rationale_130",
-      "target": "ai_copilot_views_actionlistview",
-      "confidence_score": 1.0
+      "target": "ai_copilot_views_actionlistview"
     },
     {
       "relation": "calls",
@@ -40997,12 +41217,178 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor",
+      "target": "commands_proxy_doctor_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_rationale_1",
+      "target": "commands_proxy_doctor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command",
+      "target": "basecommand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command",
+      "target": "commands_proxy_doctor_command_add_arguments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command",
+      "target": "commands_proxy_doctor_command_adresse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command",
+      "target": "commands_proxy_doctor_command_analyser_les_traces",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command",
+      "target": "commands_proxy_doctor_command_handle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command",
+      "target": "commands_proxy_doctor_command_ligne",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/management/commands/integrations_doctor.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "commands_integrations_doctor_command",
+      "target": "basecommand"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/integrations/management/commands/shield_smoke.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "commands_shield_smoke_command",
+      "target": "basecommand"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command_analyser_les_traces",
+      "target": "commands_proxy_doctor_command_ligne",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command_handle",
+      "target": "commands_proxy_doctor_command_ligne",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command_handle",
+      "target": "audit_middleware_oublier_les_resolutions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command_handle",
+      "target": "audit_middleware_reseaux_de_confiance"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command_handle",
+      "target": "commands_proxy_doctor_command_analyser_les_traces",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/management/commands/proxy_doctor.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "commands_proxy_doctor_command_analyser_les_traces",
+      "target": "commands_proxy_doctor_command_adresse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_adresse",
-      "confidence_score": 1.0
+      "target": "audit_middleware_adresse"
     },
     {
       "relation": "contains",
@@ -41010,9 +41396,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L200",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_audit_source",
-      "confidence_score": 1.0
+      "target": "audit_middleware_audit_source"
     },
     {
       "relation": "contains",
@@ -41020,9 +41406,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_client_derriere_le_proxy",
-      "confidence_score": 1.0
+      "target": "audit_middleware_client_derriere_le_proxy"
     },
     {
       "relation": "contains",
@@ -41030,9 +41416,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L187",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_client_ip",
-      "confidence_score": 1.0
+      "target": "audit_middleware_client_ip"
     },
     {
       "relation": "contains",
@@ -41040,9 +41426,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_est_de_confiance",
-      "confidence_score": 1.0
+      "target": "audit_middleware_est_de_confiance"
     },
     {
       "relation": "contains",
@@ -41050,9 +41436,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_oublier_les_resolutions",
-      "confidence_score": 1.0
+      "target": "audit_middleware_oublier_les_resolutions"
     },
     {
       "relation": "contains",
@@ -41060,9 +41446,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_reseaux_de_confiance",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_de_confiance"
     },
     {
       "relation": "contains",
@@ -41070,9 +41456,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_reseaux_declares",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_declares"
     },
     {
       "relation": "contains",
@@ -41080,9 +41466,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_reseaux_resolus",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_resolus"
     },
     {
       "relation": "contains",
@@ -41090,9 +41476,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware",
-      "target": "audit_middleware_trustedproxymiddleware",
-      "confidence_score": 1.0
+      "target": "audit_middleware_trustedproxymiddleware"
     },
     {
       "relation": "rationale_for",
@@ -41100,9 +41486,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_1",
-      "target": "audit_middleware",
-      "confidence_score": 1.0
+      "target": "audit_middleware"
     },
     {
       "relation": "rationale_for",
@@ -41110,9 +41496,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_65",
-      "target": "audit_middleware_reseaux_declares",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_declares"
     },
     {
       "relation": "calls",
@@ -41121,9 +41507,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_reseaux_de_confiance",
-      "target": "audit_middleware_reseaux_declares",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_declares"
     },
     {
       "relation": "rationale_for",
@@ -41131,9 +41517,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_76",
-      "target": "audit_middleware_reseaux_resolus",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_resolus"
     },
     {
       "relation": "calls",
@@ -41142,9 +41528,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_reseaux_de_confiance",
-      "target": "audit_middleware_reseaux_resolus",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_resolus"
     },
     {
       "relation": "calls",
@@ -41153,9 +41539,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_est_de_confiance",
-      "target": "audit_middleware_reseaux_de_confiance",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_de_confiance"
     },
     {
       "relation": "rationale_for",
@@ -41163,9 +41549,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_99",
-      "target": "audit_middleware_reseaux_de_confiance",
-      "confidence_score": 1.0
+      "target": "audit_middleware_reseaux_de_confiance"
     },
     {
       "relation": "rationale_for",
@@ -41173,9 +41559,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_115",
-      "target": "audit_middleware_oublier_les_resolutions",
-      "confidence_score": 1.0
+      "target": "audit_middleware_oublier_les_resolutions"
     },
     {
       "relation": "calls",
@@ -41197,6 +41583,39 @@
       "source_location": "L39",
       "weight": 1.0,
       "source": "audit_tests_originederequetetest_teardown",
+      "target": "audit_middleware_oublier_les_resolutions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L241",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_setup",
+      "target": "audit_middleware_oublier_les_resolutions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L246",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_teardown",
+      "target": "audit_middleware_oublier_les_resolutions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L280",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_sans_configuration_le_defaut_est_signale",
       "target": "audit_middleware_oublier_les_resolutions"
     },
     {
@@ -41228,9 +41647,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_client_derriere_le_proxy",
-      "target": "audit_middleware_adresse",
-      "confidence_score": 1.0
+      "target": "audit_middleware_adresse"
     },
     {
       "relation": "calls",
@@ -41239,9 +41658,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L196",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_client_ip",
-      "target": "audit_middleware_adresse",
-      "confidence_score": 1.0
+      "target": "audit_middleware_adresse"
     },
     {
       "relation": "rationale_for",
@@ -41249,9 +41668,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_121",
-      "target": "audit_middleware_adresse",
-      "confidence_score": 1.0
+      "target": "audit_middleware_adresse"
     },
     {
       "relation": "calls",
@@ -41260,9 +41679,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L168",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_trustedproxymiddleware_call",
-      "target": "audit_middleware_adresse",
-      "confidence_score": 1.0
+      "target": "audit_middleware_adresse"
     },
     {
       "relation": "calls",
@@ -41271,9 +41690,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_client_derriere_le_proxy",
-      "target": "audit_middleware_est_de_confiance",
-      "confidence_score": 1.0
+      "target": "audit_middleware_est_de_confiance"
     },
     {
       "relation": "calls",
@@ -41282,9 +41701,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_trustedproxymiddleware_call",
-      "target": "audit_middleware_est_de_confiance",
-      "confidence_score": 1.0
+      "target": "audit_middleware_est_de_confiance"
     },
     {
       "relation": "rationale_for",
@@ -41292,9 +41711,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_140",
-      "target": "audit_middleware_client_derriere_le_proxy",
-      "confidence_score": 1.0
+      "target": "audit_middleware_client_derriere_le_proxy"
     },
     {
       "relation": "calls",
@@ -41303,9 +41722,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L173",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_trustedproxymiddleware_call",
-      "target": "audit_middleware_client_derriere_le_proxy",
-      "confidence_score": 1.0
+      "target": "audit_middleware_client_derriere_le_proxy"
     },
     {
       "relation": "rationale_for",
@@ -41313,9 +41732,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_156",
-      "target": "audit_middleware_trustedproxymiddleware",
-      "confidence_score": 1.0
+      "target": "audit_middleware_trustedproxymiddleware"
     },
     {
       "relation": "method",
@@ -41323,9 +41742,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L167",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_trustedproxymiddleware",
-      "target": "audit_middleware_trustedproxymiddleware_call",
-      "confidence_score": 1.0
+      "target": "audit_middleware_trustedproxymiddleware_call"
     },
     {
       "relation": "method",
@@ -41333,9 +41752,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L164",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_trustedproxymiddleware",
-      "target": "audit_middleware_trustedproxymiddleware_init",
-      "confidence_score": 1.0
+      "target": "audit_middleware_trustedproxymiddleware_init"
     },
     {
       "relation": "uses",
@@ -41343,9 +41762,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L15",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "audit_tests_middlewareenpremiertest",
-      "target": "audit_middleware_trustedproxymiddleware",
-      "confidence_score": 0.5
+      "target": "audit_middleware_trustedproxymiddleware"
     },
     {
       "relation": "uses",
@@ -41353,9 +41772,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L15",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_middleware_trustedproxymiddleware",
-      "confidence_score": 0.5
+      "target": "audit_middleware_trustedproxymiddleware"
     },
     {
       "relation": "calls",
@@ -41374,9 +41793,19 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L15",
       "weight": 0.8,
-      "source": "audit_tests_tracabilitetest",
+      "source": "audit_tests_proxydoctortest",
       "target": "audit_middleware_trustedproxymiddleware",
       "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L15",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "audit_tests_tracabilitetest",
+      "target": "audit_middleware_trustedproxymiddleware"
     },
     {
       "relation": "calls",
@@ -41396,9 +41825,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L207",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_audit_source",
-      "target": "audit_middleware_client_ip",
-      "confidence_score": 1.0
+      "target": "audit_middleware_client_ip"
     },
     {
       "relation": "rationale_for",
@@ -41406,9 +41835,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_188",
-      "target": "audit_middleware_client_ip",
-      "confidence_score": 1.0
+      "target": "audit_middleware_client_ip"
     },
     {
       "relation": "calls",
@@ -41427,9 +41856,9 @@
       "source_file": "backend/apps/audit/middleware.py",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_middleware_rationale_201",
-      "target": "audit_middleware_audit_source",
-      "confidence_score": 1.0
+      "target": "audit_middleware_audit_source"
     },
     {
       "relation": "calls",
@@ -41641,9 +42070,42 @@
       "source_file": "backend/apps/audit/models.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_models_rationale_33",
-      "target": "audit_models_accesslog_record",
-      "confidence_score": 1.0
+      "target": "audit_models_accesslog_record"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L266",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_ladresse_du_proxy_est_signalee_comme_un_defaut",
+      "target": "audit_models_accesslog_record"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L272",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_un_appel_direct_est_remonte",
+      "target": "audit_models_accesslog_record"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_une_adresse_publique_est_reconnue_comme_le_client",
+      "target": "audit_models_accesslog_record"
     },
     {
       "relation": "calls",
@@ -41816,9 +42278,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L218",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests",
-      "target": "audit_tests_middlewareenpremiertest",
-      "confidence_score": 1.0
+      "target": "audit_tests_middlewareenpremiertest"
     },
     {
       "relation": "contains",
@@ -41826,8 +42288,18 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests",
-      "target": "audit_tests_originederequetetest",
+      "target": "audit_tests_originederequetetest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L233",
+      "weight": 1.0,
+      "source": "audit_tests",
+      "target": "audit_tests_proxydoctortest",
       "confidence_score": 1.0
     },
     {
@@ -41836,9 +42308,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests",
-      "target": "audit_tests_tracabilitetest",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest"
     },
     {
       "relation": "rationale_for",
@@ -41846,9 +42318,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_1",
-      "target": "audit_tests",
-      "confidence_score": 1.0
+      "target": "audit_tests"
     },
     {
       "relation": "method",
@@ -41856,9 +42328,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_setup",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_setup"
     },
     {
       "relation": "method",
@@ -41866,9 +42338,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_teardown",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_teardown"
     },
     {
       "relation": "method",
@@ -41876,9 +42348,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_derriere_le_proxy_on_retient_le_vrai_client",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_derriere_le_proxy_on_retient_le_vrai_client"
     },
     {
       "relation": "method",
@@ -41886,9 +42358,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_la_chaine_est_remontee_par_la_droite",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_la_chaine_est_remontee_par_la_droite"
     },
     {
       "relation": "method",
@@ -41896,9 +42368,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_la_forme_adresse_port_est_acceptee",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_la_forme_adresse_port_est_acceptee"
     },
     {
       "relation": "method",
@@ -41906,9 +42378,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L152",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_le_proxy_est_reconnu_par_son_nom",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_le_proxy_est_reconnu_par_son_nom"
     },
     {
       "relation": "method",
@@ -41916,9 +42388,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_les_entetes_de_proxy_sont_retires_et_pas_seulement_ignores",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_les_entetes_de_proxy_sont_retires_et_pas_seulement_ignores"
     },
     {
       "relation": "method",
@@ -41926,9 +42398,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_sans_configuration_aucun_proxy_nest_reconnu",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_sans_configuration_aucun_proxy_nest_reconnu"
     },
     {
       "relation": "method",
@@ -41936,9 +42408,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_le_protocole",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_le_protocole"
     },
     {
       "relation": "method",
@@ -41946,9 +42418,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_son_adresse",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_son_adresse"
     },
     {
       "relation": "method",
@@ -41956,9 +42428,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L164",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_un_cidr_invalide_est_ignore_sans_tout_casser",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_un_cidr_invalide_est_ignore_sans_tout_casser"
     },
     {
       "relation": "method",
@@ -41966,9 +42438,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_un_hote_de_proxy_introuvable_ne_fait_confiance_a_personne",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_un_hote_de_proxy_introuvable_ne_fait_confiance_a_personne"
     },
     {
       "relation": "method",
@@ -41976,9 +42448,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_une_chaine_entierement_fiable_retombe_sur_le_pair",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_une_chaine_entierement_fiable_retombe_sur_le_pair"
     },
     {
       "relation": "method",
@@ -41986,9 +42458,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_test_une_chaine_illisible_ne_fait_pas_tomber_la_requete",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_une_chaine_illisible_ne_fait_pas_tomber_la_requete"
     },
     {
       "relation": "method",
@@ -41996,9 +42468,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42007,9 +42479,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_derriere_le_proxy_on_retient_le_vrai_client",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42018,9 +42490,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_la_chaine_est_remontee_par_la_droite",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42029,9 +42501,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_la_forme_adresse_port_est_acceptee",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42040,9 +42512,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L159",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_le_proxy_est_reconnu_par_son_nom",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42051,9 +42523,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_les_entetes_de_proxy_sont_retires_et_pas_seulement_ignores",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42062,9 +42534,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_sans_configuration_aucun_proxy_nest_reconnu",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42073,9 +42545,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_le_protocole",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42084,9 +42556,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_son_adresse",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42095,9 +42567,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_un_cidr_invalide_est_ignore_sans_tout_casser",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42106,9 +42578,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_un_hote_de_proxy_introuvable_ne_fait_confiance_a_personne",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42117,9 +42589,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_une_chaine_entierement_fiable_retombe_sur_le_pair",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "calls",
@@ -42128,9 +42600,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_originederequetetest_test_une_chaine_illisible_ne_fait_pas_tomber_la_requete",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "rationale_for",
@@ -42138,9 +42610,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_42",
-      "target": "audit_tests_originederequetetest_traiter",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_traiter"
     },
     {
       "relation": "rationale_for",
@@ -42148,9 +42620,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_68",
-      "target": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_le_protocole",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_un_appelant_inconnu_ne_choisit_pas_le_protocole"
     },
     {
       "relation": "rationale_for",
@@ -42158,9 +42630,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_75",
-      "target": "audit_tests_originederequetetest_test_les_entetes_de_proxy_sont_retires_et_pas_seulement_ignores",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_les_entetes_de_proxy_sont_retires_et_pas_seulement_ignores"
     },
     {
       "relation": "rationale_for",
@@ -42168,9 +42640,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_95",
-      "target": "audit_tests_originederequetetest_test_la_chaine_est_remontee_par_la_droite",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_la_chaine_est_remontee_par_la_droite"
     },
     {
       "relation": "rationale_for",
@@ -42178,9 +42650,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_114",
-      "target": "audit_tests_originederequetetest_test_une_chaine_illisible_ne_fait_pas_tomber_la_requete",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_une_chaine_illisible_ne_fait_pas_tomber_la_requete"
     },
     {
       "relation": "rationale_for",
@@ -42188,9 +42660,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_129",
-      "target": "audit_tests_originederequetetest_test_sans_configuration_aucun_proxy_nest_reconnu",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_sans_configuration_aucun_proxy_nest_reconnu"
     },
     {
       "relation": "rationale_for",
@@ -42198,9 +42670,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_141",
-      "target": "audit_tests_originederequetetest_test_un_hote_de_proxy_introuvable_ne_fait_confiance_a_personne",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_un_hote_de_proxy_introuvable_ne_fait_confiance_a_personne"
     },
     {
       "relation": "rationale_for",
@@ -42208,9 +42680,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L153",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_153",
-      "target": "audit_tests_originederequetetest_test_le_proxy_est_reconnu_par_son_nom",
-      "confidence_score": 1.0
+      "target": "audit_tests_originederequetetest_test_le_proxy_est_reconnu_par_son_nom"
     },
     {
       "relation": "rationale_for",
@@ -42218,9 +42690,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L170",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_170",
-      "target": "audit_tests_tracabilitetest",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest"
     },
     {
       "relation": "method",
@@ -42228,9 +42700,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "audit_tests_tracabilitetest_requete",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_requete"
     },
     {
       "relation": "method",
@@ -42238,9 +42710,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "audit_tests_tracabilitetest_setup",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_setup"
     },
     {
       "relation": "method",
@@ -42248,9 +42720,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L178",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "audit_tests_tracabilitetest_teardown",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_teardown"
     },
     {
       "relation": "method",
@@ -42258,9 +42730,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L210",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "audit_tests_tracabilitetest_test_hors_requete_http_on_retombe_sur_le_pair",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_test_hors_requete_http_on_retombe_sur_le_pair"
     },
     {
       "relation": "method",
@@ -42268,9 +42740,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "audit_tests_tracabilitetest_test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur"
     },
     {
       "relation": "method",
@@ -42278,9 +42750,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L199",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest",
-      "target": "audit_tests_tracabilitetest_test_un_appel_direct_est_marque_comme_tel",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_test_un_appel_direct_est_marque_comme_tel"
     },
     {
       "relation": "calls",
@@ -42289,9 +42761,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L192",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest_test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur",
-      "target": "audit_tests_tracabilitetest_requete",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_requete"
     },
     {
       "relation": "calls",
@@ -42300,9 +42772,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L202",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_tracabilitetest_test_un_appel_direct_est_marque_comme_tel",
-      "target": "audit_tests_tracabilitetest_requete",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_requete"
     },
     {
       "relation": "rationale_for",
@@ -42310,9 +42782,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L190",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_190",
-      "target": "audit_tests_tracabilitetest_test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_test_le_trafic_legitime_enregistre_ladresse_de_lutilisateur"
     },
     {
       "relation": "rationale_for",
@@ -42320,9 +42792,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L200",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_200",
-      "target": "audit_tests_tracabilitetest_test_un_appel_direct_est_marque_comme_tel",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_test_un_appel_direct_est_marque_comme_tel"
     },
     {
       "relation": "rationale_for",
@@ -42330,9 +42802,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L211",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_211",
-      "target": "audit_tests_tracabilitetest_test_hors_requete_http_on_retombe_sur_le_pair",
-      "confidence_score": 1.0
+      "target": "audit_tests_tracabilitetest_test_hors_requete_http_on_retombe_sur_le_pair"
     },
     {
       "relation": "method",
@@ -42340,9 +42812,9 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_middlewareenpremiertest",
-      "target": "audit_tests_middlewareenpremiertest_test_le_middleware_precede_la_securite_et_le_csrf",
-      "confidence_score": 1.0
+      "target": "audit_tests_middlewareenpremiertest_test_le_middleware_precede_la_securite_et_le_csrf"
     },
     {
       "relation": "rationale_for",
@@ -42350,8 +42822,163 @@
       "source_file": "backend/apps/audit/tests.py",
       "source_location": "L219",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "audit_tests_rationale_219",
-      "target": "audit_tests_middlewareenpremiertest",
+      "target": "audit_tests_middlewareenpremiertest"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L248",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_lancer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L240",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L245",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_teardown",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L264",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_test_ladresse_du_proxy_est_signalee_comme_un_defaut",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L278",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_test_sans_configuration_le_defaut_est_signale",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L284",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_test_sans_trace_la_commande_le_dit_au_lieu_de_conclure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L271",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_test_un_appel_direct_est_remonte",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L257",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest",
+      "target": "audit_tests_proxydoctortest_test_une_adresse_publique_est_reconnue_comme_le_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L234",
+      "weight": 1.0,
+      "source": "audit_tests_rationale_234",
+      "target": "audit_tests_proxydoctortest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L267",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_ladresse_du_proxy_est_signalee_comme_un_defaut",
+      "target": "audit_tests_proxydoctortest_lancer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_sans_configuration_le_defaut_est_signale",
+      "target": "audit_tests_proxydoctortest_lancer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L285",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_sans_trace_la_commande_le_dit_au_lieu_de_conclure",
+      "target": "audit_tests_proxydoctortest_lancer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L274",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_un_appel_direct_est_remonte",
+      "target": "audit_tests_proxydoctortest_lancer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L260",
+      "weight": 1.0,
+      "source": "audit_tests_proxydoctortest_test_une_adresse_publique_est_reconnue_comme_le_client",
+      "target": "audit_tests_proxydoctortest_lancer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/apps/audit/tests.py",
+      "source_location": "L265",
+      "weight": 1.0,
+      "source": "audit_tests_rationale_265",
+      "target": "audit_tests_proxydoctortest_test_ladresse_du_proxy_est_signalee_comme_un_defaut",
       "confidence_score": 1.0
     },
     {
@@ -43805,9 +44432,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_57",
-      "target": "governance_module_views_dims_avg",
-      "confidence_score": 1.0
+      "target": "governance_module_views_dims_avg"
     },
     {
       "relation": "calls",
@@ -43848,9 +44475,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_65",
-      "target": "governance_module_views_aggregate_score",
-      "confidence_score": 1.0
+      "target": "governance_module_views_aggregate_score"
     },
     {
       "relation": "calls",
@@ -43869,9 +44496,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_90",
-      "target": "governance_module_views_domain_rows",
-      "confidence_score": 1.0
+      "target": "governance_module_views_domain_rows"
     },
     {
       "relation": "calls",
@@ -43901,9 +44528,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_95",
-      "target": "governance_module_views_domain_score_fn",
-      "confidence_score": 1.0
+      "target": "governance_module_views_domain_score_fn"
     },
     {
       "relation": "calls",
@@ -43966,9 +44593,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_102",
-      "target": "governance_module_views_build_group_report",
-      "confidence_score": 1.0
+      "target": "governance_module_views_build_group_report"
     },
     {
       "relation": "method",
@@ -44084,9 +44711,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L230",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_230",
-      "target": "governance_module_views_hrscoreview",
-      "confidence_score": 1.0
+      "target": "governance_module_views_hrscoreview"
     },
     {
       "relation": "imports",
@@ -44137,9 +44764,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L281",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_281",
-      "target": "governance_module_views_domainscoreview",
-      "confidence_score": 1.0
+      "target": "governance_module_views_domainscoreview"
     },
     {
       "relation": "imports",
@@ -44201,9 +44828,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L353",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_353",
-      "target": "governance_module_views_groupscoreview",
-      "confidence_score": 1.0
+      "target": "governance_module_views_groupscoreview"
     },
     {
       "relation": "imports",
@@ -44243,9 +44870,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L387",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_387",
-      "target": "governance_module_views_aiqueryview",
-      "confidence_score": 1.0
+      "target": "governance_module_views_aiqueryview"
     },
     {
       "relation": "imports",
@@ -44285,9 +44912,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L416",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_416",
-      "target": "governance_module_views_alertsview",
-      "confidence_score": 1.0
+      "target": "governance_module_views_alertsview"
     },
     {
       "relation": "imports",
@@ -44338,9 +44965,9 @@
       "source_file": "backend/apps/governance/module_views.py",
       "source_location": "L487",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_module_views_rationale_487",
-      "target": "governance_module_views_exportgroupscoreview",
-      "confidence_score": 1.0
+      "target": "governance_module_views_exportgroupscoreview"
     },
     {
       "relation": "imports",
@@ -46585,9 +47212,9 @@
       "source_file": "backend/apps/governance/views.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_views_rationale_27",
-      "target": "governance_views_catalogview",
-      "confidence_score": 1.0
+      "target": "governance_views_catalogview"
     },
     {
       "relation": "calls",
@@ -46616,9 +47243,9 @@
       "source_file": "backend/apps/governance/views.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_views_rationale_59",
-      "target": "governance_views_hrkpiview",
-      "confidence_score": 1.0
+      "target": "governance_views_hrkpiview"
     },
     {
       "relation": "calls",
@@ -46647,9 +47274,9 @@
       "source_file": "backend/apps/governance/views.py",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "governance_views_rationale_100",
-      "target": "governance_views_governanceoverviewview",
-      "confidence_score": 1.0
+      "target": "governance_views_governanceoverviewview"
     },
     {
       "relation": "imports_from",
@@ -49520,16 +50147,6 @@
       "target": "commands_integrations_doctor"
     },
     {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/apps/integrations/management/commands/integrations_doctor.py",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "commands_integrations_doctor_command",
-      "target": "basecommand"
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/apps/integrations/management/commands/integrations_doctor.py",
@@ -49618,16 +50235,6 @@
       "confidence_score": 0.5,
       "source": "commands_integrations_doctor_command",
       "target": "integrations_shield_client_shielderror"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/apps/integrations/management/commands/shield_smoke.py",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "commands_shield_smoke_command",
-      "target": "basecommand"
     },
     {
       "relation": "calls",
@@ -66041,9 +66648,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_56",
-      "target": "integrations_views_shieldhrkpiview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldhrkpiview"
     },
     {
       "relation": "method",
@@ -66149,9 +66756,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_69",
-      "target": "integrations_views_shieldattendanceseriesview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldattendanceseriesview"
     },
     {
       "relation": "method",
@@ -66180,9 +66787,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_89",
-      "target": "integrations_views_shieldsecurityview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldsecurityview"
     },
     {
       "relation": "method",
@@ -66200,9 +66807,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_102",
-      "target": "integrations_views_shieldoverviewview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldoverviewview"
     },
     {
       "relation": "method",
@@ -66220,9 +66827,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L111",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_111",
-      "target": "integrations_views_shieldhealthview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldhealthview"
     },
     {
       "relation": "method",
@@ -66485,9 +67092,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L195",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_195",
-      "target": "integrations_views_datasourceviewset_health",
-      "confidence_score": 1.0
+      "target": "integrations_views_datasourceviewset_health"
     },
     {
       "relation": "method",
@@ -66575,9 +67182,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L314",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_314",
-      "target": "integrations_views_webhookreceiver",
-      "confidence_score": 1.0
+      "target": "integrations_views_webhookreceiver"
     },
     {
       "relation": "method",
@@ -97242,9 +97849,9 @@
       "source_file": "infra/dokploy/README.md",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dokploy_readme_d\u00e9ploiement_production_dokploy",
-      "target": "dokploy_readme_d\u00e9pannage_le_routage",
-      "confidence_score": 1.0
+      "target": "dokploy_readme_d\u00e9pannage_le_routage"
     },
     {
       "relation": "contains",
@@ -97332,9 +97939,9 @@
       "source_file": "infra/dokploy/README.md",
       "source_location": "L111",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dokploy_readme_d\u00e9pannage_le_routage",
-      "target": "dokploy_readme_confiance_accord\u00e9e_au_proxy",
-      "confidence_score": 1.0
+      "target": "dokploy_readme_confiance_accord\u00e9e_au_proxy"
     },
     {
       "relation": "contains",
@@ -97528,5 +98135,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3de5b5cf3f89770b6edaaf9fda662aa8ff889365"
+  "built_at_commit": "e0173dd8de14bf69122e7624de163b7fb7daf1ef"
 }

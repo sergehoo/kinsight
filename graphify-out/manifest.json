@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1788797644.4736187,
-    "ast_hash": "e1e8f99120703c072b76cec3c9a36401",
+    "mtime": 1788801767.4002104,
+    "ast_hash": "6fce49891f03168075590d6cb1760850",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {
@@ -1890,8 +1890,23 @@
     "semantic_hash": ""
   },
   "backend/apps/audit/tests.py": {
-    "mtime": 1788797586.8609927,
-    "ast_hash": "ea7f2fd2adfefcab6617820e53369724",
+    "mtime": 1788801756.0851154,
+    "ast_hash": "0fb7acf2dc7307f8f45502aa603c5619",
+    "semantic_hash": ""
+  },
+  "backend/apps/audit/management/__init__.py": {
+    "mtime": 1788801739.0691006,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/audit/management/commands/__init__.py": {
+    "mtime": 1788801739.0691955,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/audit/management/commands/proxy_doctor.py": {
+    "mtime": 1788801733.7814274,
+    "ast_hash": "43287e9e08feba8e321dd9c4487a2080",
     "semantic_hash": ""
   }
 }
