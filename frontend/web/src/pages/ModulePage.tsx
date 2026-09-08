@@ -33,12 +33,22 @@ function isUnavailable(value: string) {
   return value === "N/D" || value === "--" || value === "-";
 }
 
-function chartLabels(chart: ModuleChart) {
-  const fallback = ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Juil", "Aout"];
-  if (chart.type === "heatmap") return ["Zone A", "Zone B", "Zone C", "Zone D", "Zone E"];
-  if (chart.type === "gantt") return ["Phase 1", "Phase 2", "Phase 3", "Phase 4"];
-  if (chart.type === "funnel") return ["Etape 1", "Etape 2", "Etape 3", "Etape 4"];
-  return fallback;
+/** Nombre d'emplacements d'axe, SANS les nommer.
+ *
+ *  La version précédente rendait des libellés : « Jan…Aout » pour une série,
+ *  « Zone A…E » pour une carte de chaleur, « Phase 1…4 » pour un Gantt. Aucun de
+ *  ces noms ne venait d'une source — ils affirmaient une granularité mensuelle,
+ *  un découpage en zones ou un découpage en phases que le mart, muet, n'a jamais
+ *  déclarés. Un axe nommé est une donnée : on garde donc la place, pas le nom.
+ */
+function chartSlots(chart: ModuleChart) {
+  if (chart.type === "heatmap") return 5;
+  if (chart.type === "gantt" || chart.type === "funnel") return 4;
+  return 8;
+}
+
+function emptyLabels(chart: ModuleChart) {
+  return Array.from({ length: chartSlots(chart) }, () => "");
 }
 
 function emptyGraphic(source: string): NonNullable<EChartsOption["graphic"]> {
@@ -84,7 +94,7 @@ function emptyGraphic(source: string): NonNullable<EChartsOption["graphic"]> {
 }
 
 function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
-  const labels = chartLabels(chart);
+  const labels = emptyLabels(chart);
   const base: EChartsOption = {
     animation: true,
     animationDuration: 700,
@@ -135,7 +145,8 @@ function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
       xAxis: { type: "category", data: labels, axisLine: { show: false }, axisTick: { show: false }, axisLabel: AXIS_LABEL_STYLE },
       yAxis: {
         type: "category",
-        data: ["Budget", "Planning", "Cash", "Qualite"],
+        // Ces quatre dimensions étaient nommées sans qu'aucune source ne les déclare.
+        data: ["", "", "", ""],
         axisLine: { show: false },
         axisTick: { show: false },
         axisLabel: AXIS_LABEL_STYLE,
@@ -161,7 +172,9 @@ function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
       series: [
         {
           type: "radar",
-          data: [{ name: "EDW", value: labels.slice(0, 5).map(() => 0) }],
+          // `0` traçait un polygone : un radar entièrement au minimum se lit comme
+          // un score nul, pas comme une absence de mesure. `null` ne trace rien.
+          data: [{ name: "EDW", value: labels.slice(0, 5).map(() => null) }],
           areaStyle: { color: accent, opacity: 0.06 },
           lineStyle: { color: accent, opacity: 0.18, width: 2 },
           symbolSize: 0,
@@ -197,18 +210,20 @@ function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
     ...base,
     xAxis: {
       type: "category",
-      data: asGantt ? ["S1", "S2", "S3", "S4", "S5", "S6"] : labels,
+      // « S1…S6 » annonçait un découpage hebdomadaire qu'aucune source ne porte.
+      data: asGantt ? ["", "", "", "", "", ""] : labels,
       boundaryGap: chart.type === "bar" || asGantt,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: AXIS_LABEL_STYLE,
     },
+    // Sans donnée, ni l'échelle ni l'unité ne sont connues : imposer 0 → 100 avec
+    // un suffixe « % » affirmait que l'indicateur est un pourcentage et qu'il est
+    // borné, ce qui est faux pour une masse salariale ou un effectif.
     yAxis: {
       type: "value",
-      min: 0,
-      max: 100,
       splitLine: { lineStyle: GRID_LINE_STYLE },
-      axisLabel: { ...AXIS_LABEL_STYLE, formatter: "{value}%" },
+      axisLabel: { ...AXIS_LABEL_STYLE, show: false },
     },
     series: [
       {
@@ -389,56 +404,29 @@ function DataContract({ module }: { module: ModuleDef }) {
   );
 }
 
-function HrGovernanceControls({ module }: { module: ModuleDef }) {
-  if (!module.key.startsWith("hr-")) return null;
-
-  const filters = ["Groupe", "Filiale", "Département", "Site", "Métier", "Période"];
-  const exports = ["PDF", "Excel", "PowerPoint"];
-
-  return (
-    <motion.div
-      className="grid gap-4 rounded-[28px] p-4 lg:grid-cols-[minmax(280px,1fr)_auto_auto]"
-      style={{ ...glass, background: "rgba(255,255,255,0.6)" }}
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, duration: 0.45, ease: EASE_OUT }}
-    >
-      <label className="relative block">
-        <span className="sr-only">Recherche collaborateur</span>
-        <input
-          readOnly
-          value=""
-          placeholder="Collaborateur, matricule, métier"
-          className="h-12 w-full rounded-full border border-white/70 bg-white/72 px-5 text-[13px] font-semibold text-[#1A1F1F] outline-none placeholder:text-[#8B9394]"
-        />
-      </label>
-
-      <div className="flex flex-wrap items-center gap-2">
-        {filters.map((filter) => (
-          <button
-            key={filter}
-            type="button"
-            className="h-11 rounded-full border border-white/70 bg-white/62 px-4 text-[12px] font-bold text-[#525A5B] shadow-sm transition-transform hover:-translate-y-0.5"
-          >
-            {filter}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
-        {exports.map((format) => (
-          <button
-            key={format}
-            type="button"
-            className="h-11 rounded-full bg-[#111313] px-4 text-[12px] font-bold text-white shadow-[0_12px_24px_rgba(0,0,0,0.14)] transition-transform hover:-translate-y-0.5"
-          >
-            {format}
-          </button>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
+/* `HrGovernanceControls` a été RETIRÉ.
+ *
+ *  Le bloc affichait, sur les 19 modules dont la clé commence par « hr- », une
+ *  barre de recherche « Collaborateur, matricule, métier » en `readOnly value=""`
+ *  — on ne pouvait même pas y taper —, six puces de regroupement
+ *  (Groupe/Filiale/Département/Site/Métier/Période) sans le moindre gestionnaire,
+ *  et trois boutons d'export PDF / Excel / PowerPoint qui n'appelaient rien.
+ *  `grep -c onClick` sur ce fichier rendait 0.
+ *
+ *  Un contrôle qui ne fait rien est une affirmation fausse sur ce que l'écran
+ *  sait faire : même registre qu'un chiffre inventé, et plus coûteux, parce qu'un
+ *  utilisateur clique, ne voit rien se produire et conclut que l'outil est cassé.
+ *
+ *  Ce qui EST filtrable l'est ailleurs et réellement : Période et Filiale, par
+ *  `GlobalDashboardFilters`, relié au store lu par la requête. Les exports PDF et
+ *  Excel ont bien des générateurs (`apps/governance/exports.py`) mais aucun
+ *  endpoint pour cette page : c'est un lot à part. PowerPoint n'a d'implémentation
+ *  à aucun niveau — ni endpoint, ni générateur, ni dépendance déclarée.
+ *
+ *  La recherche nominative, elle, ne revient pas sans décision préalable : c'est
+ *  une donnée à caractère personnel sur la présence d'individus identifiés, et
+ *  qui peut chercher qui se tranche avant de l'implémenter.
+ */
 
 function AiGuardrail({ module }: { module: ModuleDef }) {
   if (module.kind !== "ai") return null;
@@ -473,7 +461,6 @@ function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<str
   return (
     <div className="space-y-8">
       <DataContract module={module} />
-      <HrGovernanceControls module={module} />
       {module.key === "hr-executive" ? <HumanCapitalScore /> : null}
       {isAlerts ? <AlertsPanel /> : null}
       <AiGuardrail module={module} />

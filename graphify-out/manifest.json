@@ -635,13 +635,13 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/modules.tsx": {
-    "mtime": 1782515215.199561,
-    "ast_hash": "a52eb1501c6e5326f82b00cc1560817c",
+    "mtime": 1788866425.18068,
+    "ast_hash": "3cbb02a105a66772812e2b8a3611dc9a",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulePage.tsx": {
-    "mtime": 1782556603.9767957,
-    "ast_hash": "f0486eef22bb38d090a53298a326a71e",
+    "mtime": 1788866474.6061535,
+    "ast_hash": "11574eea6063ff7f7e6a9ce3dc6217a2",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulesHome.tsx": {
@@ -825,13 +825,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
-    "mtime": 1788819260.3899512,
-    "ast_hash": "d028e42fcc7961e08201dd5ba659e69a",
+    "mtime": 1788867235.4296129,
+    "ast_hash": "257eea188ad3bc5d831d41455ec0f600",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1788824656.0946808,
-    "ast_hash": "c1cfcb9f3e9a191e904b4ffa5fb6e4fd",
+    "mtime": 1788867235.4311032,
+    "ast_hash": "a4690583782f7b40efc719fee8c018ba",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -955,8 +955,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/UserMenu.tsx": {
-    "mtime": 1782584401.001747,
-    "ast_hash": "94168acbb4ccc5543dc479b294dfdc3e",
+    "mtime": 1788866881.1360834,
+    "ast_hash": "1808b341e913ee960490b5553b19cef7",
     "semantic_hash": ""
   },
   "frontend/web/src/components/copilot/AICopilotPanel.tsx": {
@@ -975,8 +975,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/DashboardLayout.tsx": {
-    "mtime": 1782486468.4182682,
-    "ast_hash": "6d2a240bcf62264bfdce1976ca0baeec",
+    "mtime": 1788866600.3479187,
+    "ast_hash": "0fbd3ba52e68a8c4887ee3a145f3f864",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/DynamicSidebar.tsx": {
@@ -1055,8 +1055,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/ui/kit.tsx": {
-    "mtime": 1788657045.9957442,
-    "ast_hash": "266199fc01f893f66784d26883249cd3",
+    "mtime": 1788866927.2385519,
+    "ast_hash": "cc9d560f6376e03e7f1e2d46da1d43d0",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainHeroes.generated.ts": {
@@ -1070,8 +1070,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainMetrics.ts": {
-    "mtime": 1788686676.4300613,
-    "ast_hash": "3f9dc388ff249cfd0d1b8d899350ee1e",
+    "mtime": 1788865998.545562,
+    "ast_hash": "abc8de052e78f152a39fee3ad3eab300",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainTheme.ts": {
@@ -1115,8 +1115,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/shieldHr.ts": {
-    "mtime": 1788688837.9948466,
-    "ast_hash": "5de9931847f2a72e9df94ccb7d82f0f7",
+    "mtime": 1788866575.496364,
+    "ast_hash": "2b25dd1bd6742cd3340cc7b612977210",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/useDomainTheme.ts": {
@@ -1830,8 +1830,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_rules.py": {
-    "mtime": 1788824626.3565547,
-    "ast_hash": "6f8f9e5b12621e782075f32ead956cee",
+    "mtime": 1788866166.8729098,
+    "ast_hash": "e813c138b1587aa1f3646bf0cf6f8289",
     "semantic_hash": ""
   },
   "backend/apps/integrations/management/__init__.py": {
@@ -1932,6 +1932,11 @@
   "backend/apps/integrations/tests_auth.py": {
     "mtime": 1788821676.6170006,
     "ast_hash": "1a184cbd95dab11f4f06543144ce7cc8",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/pages/AttendancePage.tsx": {
+    "mtime": 1788867379.632023,
+    "ast_hash": "35db1af5de1a5a4100074a9d53cfa351",
     "semantic_hash": ""
   }
 }

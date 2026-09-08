@@ -23,7 +23,20 @@ export function UserMenu() {
   const name = user?.full_name || user?.username || "Utilisateur";
   const roleLabel = user?.is_superuser ? "Super Admin" : ROLE_LABELS[user?.role ?? ""] ?? user?.role ?? "—";
   const initials = name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase() || "U";
-  const scopeLabel = user ? (user.scope === "GROUP" ? "Groupe — toutes filiales" : (user.scope as string[]).join(", ") || "Aucune filiale") : "";
+  // `user` vient de `localStorage`, écrit par une version PRÉCÉDENTE de
+  // l'application aussi bien que par celle-ci. Sans le garde `Array.isArray`, un
+  // enregistrement dépourvu de `scope` — ce qu'un déploiement ajoutant le champ
+  // laisse derrière lui — faisait `undefined.join(", ")` : ce menu est monté par
+  // l'en-tête de TOUTES les pages, et l'exception blanchissait l'application
+  // entière, sans message, jusqu'à ce que l'utilisateur pense à vider son
+  // stockage. Le type promet `"GROUP" | string[]` ; le stockage ne le garantit pas.
+  const scopeLabel = !user
+    ? ""
+    : user.scope === "GROUP"
+      ? "Groupe — toutes filiales"
+      : Array.isArray(user.scope) && user.scope.length
+        ? user.scope.join(", ")
+        : "Périmètre à confirmer";
 
   const doLogout = () => {
     logout();

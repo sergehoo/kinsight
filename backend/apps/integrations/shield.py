@@ -461,6 +461,15 @@ def fetch_attendance_series(days: int = 30) -> dict[str, Any]:
     for offset in range(window - 1, -1, -1):
         date = (today - timedelta(days=offset)).isoformat()
         # Au-delà du point de troncature, on ne SAIT pas : on ne compte pas 0.
+        #
+        # Une journée COUVERTE par la collecte mais sans aucune ligne reste, elle,
+        # « mesurée » à 0 : Shield a été interrogé sur cette date et n'a rien
+        # renvoyé, ce qui est une observation et non une lacune. La non-couverture
+        # réelle, elle, se manifeste par la troncature, traitée juste au-dessus.
+        # Conséquence à connaître côté écran : un tel jour creuse la courbe des
+        # effectifs à zéro tandis que celle du taux laisse un trou (0 présent et
+        # 0 absent n'a pas de taux) — les deux sont exacts, mais ils ne se lisent
+        # pas de la même façon.
         unreliable = bool(failed_flags) or (cutoff is not None and date < cutoff)
         present = None if unreliable else per_day["present"].get(date, 0)
         absent = None if unreliable else per_day["absent"].get(date, 0)

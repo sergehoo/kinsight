@@ -27,7 +27,11 @@ import {
 export interface ModuleKpi {
   label: string;
   value: string;
-  gauge: number;
+  /** 0..100, ou `null` quand la donnée n'existe pas. `Gauge` accepte déjà `null`
+   *  et s'abstient alors de tracer l'aiguille (ADR-0007) ; c'est ce type qui
+   *  l'interdisait, et `metricKpis` posait donc `8` — une aiguille dessinée à
+   *  côté d'un « N/D ». */
+  gauge: number | null;
   color: string;
   delta: string;
   up: boolean;
@@ -77,11 +81,18 @@ const ICON_SIZE = { width: 30, height: 30 };
 const COLORS = ["#416FF4", "#42BFA0", "#D92B55", "#FF8735", "#8A63D2"];
 const MART_STATUS = "Mart à connecter — aucune donnée inventée";
 
+/** Métriques DÉCLARÉES d'un module : les libellés attendus, sans aucune valeur.
+ *
+ *  `gauge: null` est le point important. La version précédente posait `8`, et
+ *  comme `Gauge` ne s'abstient que sur `null`, l'aiguille était bel et bien
+ *  tracée à 8/100 juste à côté du « N/D » : un score inventé, exactement ce que
+ *  l'ADR-0007 interdit. Une jauge sans donnée ne montre plus rien.
+ */
 function metricKpis(source: string, labels: string[]): ModuleKpi[] {
   return labels.map((label, index) => ({
     label,
     value: "N/D",
-    gauge: 8,
+    gauge: null,
     color: COLORS[index % COLORS.length],
     delta: "mart à connecter",
     up: false,

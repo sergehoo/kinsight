@@ -6,7 +6,13 @@ import type { DataState } from "@/components/ui/kit";
 
 export type ShieldKpiKey =
   | "effectif_total" | "employes" | "ouvriers" | "presents"
-  | "absents" | "retards" | "taux_presence" | "sites";
+  | "absents" | "retards" | "taux_presence"
+  // Deux taux dérivés des mêmes compteurs, sans appel Shield supplémentaire.
+  // Le libellé du backend dit « du jour » : le dépôt porte une seconde
+  // définition de l'absentéisme, mensuelle et rapportée aux jours travaillés
+  // théoriques, qui ne mesure pas la même chose.
+  | "taux_absence_jour" | "taux_ponctualite"
+  | "sites";
 
 export interface ShieldKpi {
   key: ShieldKpiKey;

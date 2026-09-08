@@ -165,12 +165,21 @@ export interface MetricCardProps {
   accent?: string;
   highlighted?: boolean;
   href?: string;
+  /** Pourquoi cette mesure n'a pas de valeur, dans les mots de l'appelant.
+   *
+   *  Le message générique ci-dessous suppose une source identifiée qu'il suffit
+   *  de raccorder. C'est le cas courant, mais pas le seul : un indicateur dont
+   *  AUCUNE source n'existe donne « Aucune source à raccorder », qui se lit comme
+   *  une phrase bancale et laisse croire à un branchement oublié. Quand
+   *  l'appelant connaît la vraie raison, elle prime. */
+  unavailableNote?: string;
 }
 
 export function MetricCard(props: MetricCardProps) {
   const {
     title, value, unit, trend, trendUp, comparison,
     source, updatedAt, scope, accent = "var(--domain-accent)", highlighted = false, href,
+    unavailableNote,
   } = props;
   const state = normalizeState(props.state ?? props.status);
   const meta = STATE_META[state];
@@ -209,13 +218,15 @@ export function MetricCard(props: MetricCardProps) {
 
       {!hasValue && state !== "connecting" ? (
         <p className="mt-1.5 text-[11px] font-medium leading-snug text-[#8C9391]">
-          {state === "disconnected"
-            ? `${source ?? "Source"} à raccorder — aucune donnée publiée.`
-            : state === "error"
-              ? "Source injoignable — dernière tentative échouée."
-              : state === "offline"
-                ? "Hors ligne — aucune donnée en cache pour cette mesure."
-                : "Mesure absente de la réponse de la source."}
+          {unavailableNote
+            ? unavailableNote
+            : state === "disconnected"
+              ? `${source ?? "Source"} à raccorder — aucune donnée publiée.`
+              : state === "error"
+                ? "Source injoignable — dernière tentative échouée."
+                : state === "offline"
+                  ? "Hors ligne — aucune donnée en cache pour cette mesure."
+                  : "Mesure absente de la réponse de la source."}
         </p>
       ) : null}
 
