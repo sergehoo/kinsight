@@ -33,7 +33,7 @@ interface DashboardModel extends DashboardSummary {
 
 const DASHBOARD_IMAGES: Record<DashboardKey, Pick<DashboardModel, "imageSrc" | "imageMode">> = {
   realEstate: {
-    imageSrc: "/assets/%E2%80%94Pngtree%E2%80%94modern%20yellow%20construction%20crane%20for_20885637.png",
+    imageSrc: "/assets/AI.png",
     imageMode: "contain",
   },
   hr: {
