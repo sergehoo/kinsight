@@ -27,7 +27,7 @@
  */
 import * as React from "react";
 
-import { TrendChart } from "@/components/charts";
+import { BreakdownChart, TrendChart } from "@/components/charts";
 import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
 import { CheckCircle } from "@/components/overview/icons";
@@ -38,7 +38,15 @@ import {
   StateBadge,
   type DataState,
 } from "@/components/ui/kit";
-import { shieldSeriesHeadcount, shieldSeriesInsights, shieldSeriesPoints } from "@/lib/adapters/shield";
+import {
+  shieldAttendanceRateBreakdown,
+  shieldBreakdownStatus,
+  shieldPresenceBreakdown,
+  shieldPresenceByKind,
+  shieldSeriesHeadcount,
+  shieldSeriesInsights,
+  shieldSeriesPoints,
+} from "@/lib/adapters/shield";
 import {
   SERIES_WINDOWS,
   useShieldAttendanceSeries,
@@ -49,6 +57,7 @@ import {
   type ShieldSeriesQuery,
 } from "@/lib/shieldHr";
 import { useOnlineStatus } from "@/pwa/useNetwork";
+import { bornesDuTrimestre, libellePeriode, trimestreEnCoursOuFutur, useFilters } from "@/store/filters";
 
 const SOURCE = "Kaydan Shield";
 const ACCENT = "#FF8735";
@@ -165,10 +174,18 @@ function Bandeau({
 
 export function AttendancePage() {
   const enLigne = useOnlineStatus();
+  const { year, quarter } = useFilters();
+
+  // Deux façons de cadrer la série, et l'écran doit dire laquelle est active :
+  // la fenêtre glissante (7 ou 30 derniers jours) ou la PÉRIODE choisie dans la
+  // barre de filtres. Le trimestre était jusqu'ici décoratif sur cette page ;
+  // il produit désormais de vraies bornes, envoyées au serveur.
+  const [cadrage, setCadrage] = React.useState<"glissant" | "periode">("glissant");
   const [fenetre, setFenetre] = React.useState<SeriesWindow>(30);
+  const bornes = React.useMemo(() => bornesDuTrimestre(year, quarter), [year, quarter]);
 
   const kpis = useShieldHrKpis();
-  const serie = useShieldAttendanceSeries(fenetre);
+  const serie = useShieldAttendanceSeries(fenetre, cadrage === "periode" ? bornes : undefined);
 
   const etatKpis = etatDeLaRequete(kpis, enLigne);
   const etatSerie = etatDeLaRequete(serie, enLigne);
@@ -199,6 +216,23 @@ export function AttendancePage() {
   const constats = shieldSeriesInsights(serie.data);
   const joursMesures = serie.data?.payload.measured_days;
   const joursTotal = serie.data?.payload.points.length;
+  // Les bornes que le SERVEUR a employées, pas celles demandées : c'est la seule
+  // façon de voir qu'une période a été ramenée (trimestre en cours, borne de 92
+  // jours) au lieu de croire qu'elle a été couverte.
+  const bornesServies = serie.data?.payload.date_from && serie.data?.payload.date_to
+    ? `${serie.data.payload.date_from} → ${serie.data.payload.date_to}`
+    : null;
+
+  // Trois ventilations que le backend sert DÉJÀ et que rien ne consommait :
+  // employés/ouvriers parmi les présents du jour (`by_kind`, filtre `holder_kind`
+  // réel), présents par site et taux par site (`by_site`). Aucune ne coûte un
+  // appel de plus : elles sortent de la collecte du jour déjà faite.
+  const parType = shieldPresenceByKind(kpis.data);
+  const presentsParSite = shieldPresenceBreakdown(kpis.data);
+  const tauxParSite = shieldAttendanceRateBreakdown(kpis.data);
+  const etatRepartition = shieldBreakdownStatus(kpis.data);
+  // Le backend retire les lignes de site hors périmètre Groupe et dit pourquoi.
+  const restrictionSite = kpis.data?.payload.by_site?.restriction;
 
   return (
     <PageShell
@@ -217,9 +251,20 @@ export function AttendancePage() {
         />
 
         <section>
-          <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
-            Indicateurs du jour
-          </h2>
+          {/* « Aujourd'hui » est écrit, avec sa date. Ces compteurs viennent de
+              `/attendance/summary/today/`, qui n'accepte AUCUN filtre : ni la
+              période, ni le site, ni le type de personne ne peuvent les changer.
+              Laisser croire que le sélecteur de trimestre agit dessus serait le
+              mensonge le plus facile de cette page. */}
+          <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
+              Indicateurs du jour — aujourd'hui{" "}
+              {new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+            </h2>
+            <span className="text-[11.5px] font-semibold text-[#9AA09D]">
+              instantané non historisé — le filtre de période ne s'y applique pas
+            </span>
+          </div>
           <ResponsiveGrid min={232}>
             {cartes.map((carte) => (
               <MetricCard
@@ -251,6 +296,14 @@ export function AttendancePage() {
               <h2 className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
                 Évolution journalière
               </h2>
+              {bornesServies ? (
+                <p className="mt-1 text-[12px] font-semibold text-[#586061]">
+                  Période lue : {bornesServies}
+                  {cadrage === "periode" && trimestreEnCoursOuFutur(year, quarter)
+                    ? " — trimestre en cours, la borne haute s'arrête à aujourd'hui."
+                    : ""}
+                </p>
+              ) : null}
               {joursMesures !== undefined && joursTotal ? (
                 <p className="mt-1 text-[12px] font-semibold text-[#8C9391]">
                   {joursMesures} jour(s) mesuré(s) sur {joursTotal}
@@ -265,14 +318,26 @@ export function AttendancePage() {
                 <button
                   key={jours}
                   type="button"
-                  onClick={() => setFenetre(jours)}
-                  aria-pressed={fenetre === jours}
+                  onClick={() => { setCadrage("glissant"); setFenetre(jours); }}
+                  aria-pressed={cadrage === "glissant" && fenetre === jours}
                   className="rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-colors"
-                  style={fenetre === jours ? { background: "#0B0B0C", color: "#fff" } : { color: "#52595A" }}
+                  style={cadrage === "glissant" && fenetre === jours
+                    ? { background: "#0B0B0C", color: "#fff" }
+                    : { color: "#52595A" }}
                 >
                   {jours} jours
                 </button>
               ))}
+              {/* Le trimestre de la barre de filtres, ici rendu effectif. */}
+              <button
+                type="button"
+                onClick={() => setCadrage("periode")}
+                aria-pressed={cadrage === "periode"}
+                className="rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-colors"
+                style={cadrage === "periode" ? { background: "#0B0B0C", color: "#fff" } : { color: "#52595A" }}
+              >
+                {libellePeriode(year, quarter)}
+              </button>
             </div>
           </div>
 
@@ -301,6 +366,56 @@ export function AttendancePage() {
               />
             </div>
           </div>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
+            Ventilation du jour
+          </h2>
+          <div className="grid gap-5 xl:grid-cols-3">
+            {/* Employés / ouvriers : le seul découpage de personnes que Shield
+                expose réellement, via le filtre `holder_kind` de la présence. */}
+            <div className="rounded-[26px] p-5" style={glass}>
+              <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Présents par type</p>
+              <BreakdownChart
+                items={parType}
+                state={kpis.data?.payload.by_kind?.status ?? etatKpis}
+                source={kpis.data?.payload.source ?? SOURCE}
+                emptyMessage="Ventilation employés / ouvriers non servie aujourd'hui."
+              />
+            </div>
+            <div className="rounded-[26px] p-5" style={glass}>
+              <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Présents par site</p>
+              <BreakdownChart
+                items={presentsParSite}
+                state={etatRepartition}
+                source={kpis.data?.payload.source ?? SOURCE}
+                emptyMessage={restrictionSite ?? "Aucun site actif publié par la source."}
+              />
+            </div>
+            <div className="rounded-[26px] p-5" style={glass}>
+              <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Taux de présence par site</p>
+              <BreakdownChart
+                items={tauxParSite}
+                unit="%"
+                state={etatRepartition}
+                source={kpis.data?.payload.source ?? SOURCE}
+                emptyMessage={restrictionSite ?? "Aucun site actif publié par la source."}
+              />
+            </div>
+          </div>
+
+          {/* Le motif de restriction est affiché même quand les graphes sont vides :
+              un périmètre restreint doit savoir que la donnée existe et pourquoi
+              elle ne lui est pas servie, plutôt que de croire la source muette. */}
+          {restrictionSite ? (
+            <p className="mt-3 text-[12px] font-medium leading-relaxed text-[#8C6D1F]">{restrictionSite}</p>
+          ) : null}
+          {kpis.data?.payload.by_site?.detail ? (
+            <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-[#8C9391]">
+              {kpis.data.payload.by_site.detail}
+            </p>
+          ) : null}
         </section>
 
         {constats.length ? (

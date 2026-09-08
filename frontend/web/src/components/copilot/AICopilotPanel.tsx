@@ -8,7 +8,8 @@ import { glass } from "@/components/chrome/theme";
 import { getModuleFromPath } from "@/config/modules.config";
 import { EASE_OUT } from "@/lib/motion";
 import { isAuthenticated } from "@/lib/auth";
-import { SUBSIDIARIES, useFilters } from "@/store/filters";
+import { TOUTES_FILIALES, useFilters } from "@/store/filters";
+import { nomDeFiliale, useSubsidiaries } from "@/lib/subsidiaries";
 import type { CopilotAction, CopilotMessage } from "@/types/copilot";
 
 const SUGGESTIONS = [
@@ -139,7 +140,13 @@ export function AICopilotPanel() {
   const { year, quarter, subsidiary } = useFilters();
   const chat = useCopilotChat();
   const module = getModuleFromPath(pathname);
-  const subLabel = SUBSIDIARIES.find((s) => s.code === subsidiary)?.label ?? "Toutes filiales";
+  // Le libellé vient du référentiel servi, jamais d'une constante locale : un
+  // code hors périmètre n'a pas de nom ici, et on n'en fabrique pas.
+  const { data: filiales } = useSubsidiaries();
+  const subLabel =
+    subsidiary === TOUTES_FILIALES
+      ? "Toutes filiales"
+      : nomDeFiliale(filiales, subsidiary) ?? "Filiale sélectionnée";
 
   React.useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });

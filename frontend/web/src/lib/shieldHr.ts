@@ -29,10 +29,17 @@ export interface ShieldKpi {
   source_field?: string;
 }
 
-/** Un site réel de Shield. `present_count` reste null : Shield n'expose aucun
- *  compteur de présence agrégé par site (le seul endpoint par site est nominatif). */
 /** Une ligne de répartition par site, telle que normalisée par le backend.
- *  `employees` reste null : Shield n'expose aucun filtre par site sur les employés. */
+ *
+ *  `employees` reste null : l'endpoint employés de Shield n'accepte AUCUN filtre
+ *  `site` (vérifié dans `shield_endpoints.py`), et le répartir au prorata
+ *  donnerait un chiffre crédible et faux.
+ *
+ *  Présence, absences et retards par site, EUX, sont bien servis : ils sont
+ *  dérivés de la collecte de période, sans appel supplémentaire. Un commentaire
+ *  précédent affirmait le contraire — « Shield n'expose aucun compteur de présence
+ *  agrégé par site » — juste au-dessus des champs que le backend remplit.
+ */
 export interface ShieldSiteRow {
   site: { id: number | null; code: string; name: string; type: string; status: string; company: string };
   employees: number | null;
@@ -83,8 +90,21 @@ export interface ShieldHrResponse {
     employees_share: number | null;
     workers_share: number | null;
   };
-  /** Répartition par site, montée sur les relations réelles de l'API. */
-  by_site?: { status: DataState; detail?: string; date?: string; truncated?: boolean; sites: ShieldSiteRow[] };
+  /** Répartition par site, montée sur les relations réelles de l'API.
+   *
+   *  `restriction` est renseigné quand le serveur a RETIRÉ les lignes faute de
+   *  périmètre Groupe : la source ne rattache pas ses sites aux filiales, donc
+   *  filtrer serait inventer et montrer serait fuir. Le champ manquait à ce type,
+   *  si bien que l'écran ne pouvait pas expliquer le vide et laissait croire à
+   *  une source muette. */
+  by_site?: {
+    status: DataState;
+    detail?: string;
+    date?: string;
+    truncated?: boolean;
+    restriction?: string;
+    sites: ShieldSiteRow[];
+  };
   insights?: ShieldInsight[];
 }
 
@@ -161,6 +181,11 @@ export interface ShieldSeriesResponse {
   detail?: string;
   updated_at?: string;
   days: number;
+  /** Bornes RÉELLEMENT employées par le serveur, et non celles demandées.
+   *  Sans elles, l'écran ne peut pas dire si le filtre de période a agi — ni
+   *  signaler qu'une période a été ramenée à une borne. */
+  date_from?: string;
+  date_to?: string;
   points: ShieldSeriesPoint[];
   measured_days?: number;
   insights?: ShieldInsight[];
@@ -172,17 +197,39 @@ export interface ShieldSeriesQuery {
   cachedAt?: string;
 }
 
-/** Fenêtres réellement supportées : la série se construit par comptages
- *  journaliers, 90 jours demanderaient 270 appels à chaque rafraîchissement. */
+/** Fenêtres glissantes proposées.
+ *
+ *  LE COMMENTAIRE PRÉCÉDENT ÉTAIT FAUX : il refusait 90 jours au motif de « 270
+ *  appels, un par jour ». La collecte lit la période entière en 3 jeux paginés,
+ *  donc la durée ne change pas le nombre d'appels. La vraie borne est le volume —
+ *  2 400 lignes par indicateur, soit ~3 jours à 722 personnes/jour. Ouvrir 90
+ *  jours promettrait un trimestre pour livrer trois jours de mesures. Le détail
+ *  chiffré est dans `backend/apps/integrations/shield_rules.py`.
+ */
 export const SERIES_WINDOWS = [7, 30] as const;
 export type SeriesWindow = (typeof SERIES_WINDOWS)[number];
 
-export function useShieldAttendanceSeries(days: SeriesWindow = 30) {
+/** Une période explicite, telle que produite par le sélecteur trimestre + année. */
+export interface Periode {
+  dateFrom: string;
+  dateTo: string;
+}
+
+/** Série de présence, sur une fenêtre glissante OU une période datée.
+ *
+ *  `periode` prend le pas sur `days` : c'est le filtre explicite de l'écran. La
+ *  clé de cache porte les deux, sinon un changement de trimestre resservirait la
+ *  réponse du précédent.
+ */
+export function useShieldAttendanceSeries(days: SeriesWindow = 30, periode?: Periode) {
+  const requete = periode
+    ? `date_from=${periode.dateFrom}&date_to=${periode.dateTo}`
+    : `days=${days}`;
   return useQuery<ShieldSeriesQuery>({
-    queryKey: ["shield", "attendance-series", days],
+    queryKey: ["shield", "attendance-series", periode ? [periode.dateFrom, periode.dateTo] : days],
     queryFn: async () => {
       const { data, stale, cachedAt } = await apiGetMeta<ShieldSeriesResponse>(
-        `/integrations/shield/attendance-series/?days=${days}`,
+        `/integrations/shield/attendance-series/?${requete}`,
       );
       return { payload: data, stale, cachedAt };
     },

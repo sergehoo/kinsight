@@ -4,7 +4,8 @@ import { getModuleById, getModuleFromLegacyKey, getModuleFromPath } from "@/conf
 import { ChevronDown } from "@/components/overview/icons";
 import { Menu, MenuItem } from "@/components/ui/Menu";
 import { BLACK, ORANGE } from "@/components/chrome/theme";
-import { SUBSIDIARIES, useFilters } from "@/store/filters";
+import { TOUTES_FILIALES, libellePeriode, useFilters } from "@/store/filters";
+import { useSubsidiaries } from "@/lib/subsidiaries";
 import { useNavigationStore } from "@/state/navigationStore";
 
 const pill =
@@ -23,7 +24,7 @@ function FilterTrigger({ label, value }: { label: string; value?: string }) {
 function PeriodFilter() {
   const { year, quarter, setYear, setQuarter } = useFilters();
   return (
-    <Menu align="left" width={240} trigger={FilterTrigger({ label: "Période", value: `T${quarter} ${year}` })}>
+    <Menu align="left" width={240} trigger={FilterTrigger({ label: "Période", value: libellePeriode(year, quarter) })}>
       {() => (
         <div className="p-1">
           <div className="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-[#8A908D]">Trimestre</div>
@@ -46,29 +47,85 @@ function PeriodFilter() {
 
 function SubsidiaryFilter() {
   const { subsidiary, setSubsidiary } = useFilters();
-  const current = SUBSIDIARIES.find((s) => s.code === subsidiary) ?? SUBSIDIARIES[0];
+  const { data, isLoading, isError } = useSubsidiaries();
+
+  // « Toutes » ne veut pas dire « toutes celles du Groupe » : le périmètre serveur
+  // borne la réponse de toute façon. Pour un directeur de filiale, c'est « tout
+  // mon périmètre » — et sa liste ne contient que la sienne.
+  const options = [
+    { code: TOUTES_FILIALES, name: "Toutes les filiales" },
+    ...(data?.results ?? []),
+  ];
+  const courante = options.find((o) => o.code === subsidiary) ?? options[0];
+
   return (
-    <Menu align="left" width={220} trigger={FilterTrigger({ label: "Filiale", value: current.label })}>
+    <Menu align="left" width={240} trigger={FilterTrigger({ label: "Filiale", value: courante.name })}>
       {(close) => (
         <div className="p-1">
-          {SUBSIDIARIES.map((s) => (
-            <MenuItem key={s.code} onClick={() => { setSubsidiary(s.code); close(); }}>
-              <span style={s.code === subsidiary ? { fontWeight: 700, color: "#16191A" } : undefined}>{s.label}</span>
-            </MenuItem>
-          ))}
+          {isLoading ? (
+            <div className="px-3 py-2 text-[11px] font-semibold text-[#9AA09D]">Chargement du référentiel…</div>
+          ) : isError ? (
+            /* On ne retombe PAS sur une liste codée en dur : proposer des filiales
+               que le serveur n'a pas confirmées reviendrait à inventer le
+               référentiel, et à en proposer hors périmètre. */
+            <div className="px-3 py-2 text-[11px] font-semibold leading-relaxed text-[#A32D2D]">
+              Référentiel des filiales injoignable. Le périmètre reste celui du serveur ;
+              aucune liste n'est fabriquée localement.
+            </div>
+          ) : (
+            options.map((o) => (
+              <MenuItem key={o.code} onClick={() => { setSubsidiary(o.code); close(); }}>
+                <span style={o.code === subsidiary ? { fontWeight: 700, color: "#16191A" } : undefined}>{o.name}</span>
+              </MenuItem>
+            ))
+          )}
+          {data && !isError ? (
+            <div className="px-3 pt-1.5 text-[10.5px] font-semibold text-[#9AA09D]">
+              {data.scope === "GROUP"
+                ? "Périmètre Groupe — toutes les filiales actives."
+                : `Périmètre restreint : ${data.results.length} filiale(s).`}
+            </div>
+          ) : null}
         </div>
       )}
     </Menu>
   );
 }
 
-function GenericFilter({ label }: { label: string }) {
+/** Pourquoi une dimension n'est pas filtrable, dimension par dimension.
+ *
+ *  Le composant précédent offrait pour chacune un menu dont la seule option était
+ *  « Tous », suivie de « Options à connecter au Data Warehouse ». Deux problèmes :
+ *  l'option « Tous » se cliquait et ne faisait rien — un contrôle qui ne fait rien
+ *  affirme une capacité inexistante —, et le motif était faux. Ce n'est pas
+ *  l'entrepôt qui manque : Département et Métier sont des référentiels ODOO, dont
+ *  le connecteur est inerte (aucun transport, `apps/integrations/odoo.py`) ; Site
+ *  existe bien chez Shield, mais l'endpoint qui alimente les compteurs du jour
+ *  (`/attendance/summary/today/`) n'accepte AUCUN filtre.
+ *
+ *  Nommer la cause exacte vaut mieux que promettre un branchement imminent.
+ */
+const MOTIFS: Record<string, string> = {
+  Département:
+    "Référentiel Odoo (hr.department) : le connecteur Odoo n'a pas de couche de transport, aucune donnée n'en sort.",
+  Métier:
+    "Référentiel Odoo (hr.job) : même connecteur, même absence de transport.",
+  Site:
+    "Les sites existent chez Kaydan Shield, mais les compteurs du jour proviennent d'un endpoint sans filtre. La répartition par site est servie telle quelle, sur la page Présence.",
+  Collaborateur:
+    "Recherche nominative : donnée à caractère personnel. L'accès (qui peut chercher qui, et sur quelle mesure) se décide avant l'implémentation.",
+};
+
+function FiltreIndisponible({ label }: { label: string }) {
+  const motif = MOTIFS[label] ?? "Source non raccordée : ce filtre n'agirait sur aucune donnée.";
   return (
-    <Menu align="left" width={220} trigger={FilterTrigger({ label, value: "Tous" })}>
-      {(close) => (
+    <Menu align="left" width={280} trigger={FilterTrigger({ label, value: "indisponible" })}>
+      {() => (
         <div className="p-1">
-          <MenuItem onClick={close}><span className="font-bold text-[#16191A]">Tous</span></MenuItem>
-          <div className="px-3 py-2 text-[11px] font-semibold text-[#9AA09D]">Options « {label} » à connecter au Data Warehouse</div>
+          <div className="px-3 py-2 text-[11.5px] font-semibold leading-relaxed text-[#586061]">
+            Ce filtre n'est pas actif.
+          </div>
+          <div className="px-3 pb-2 text-[11px] font-medium leading-relaxed text-[#8A908D]">{motif}</div>
         </div>
       )}
     </Menu>
@@ -92,7 +149,7 @@ export function GlobalDashboardFilters() {
         ) : filter === "Filiale" ? (
           <SubsidiaryFilter key={filter} />
         ) : (
-          <GenericFilter key={filter} label={filter} />
+          <FiltreIndisponible key={filter} label={filter} />
         ),
       )}
     </div>
