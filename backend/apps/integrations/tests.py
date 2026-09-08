@@ -155,7 +155,8 @@ class ShieldHrKpiTest(APITestCase):
     """KPIs RH Shield : gouvernance (aucune donnée inventée) + accès authentifié."""
 
     URL = f"{BASE}/shield/hr-kpi/"
-    KEYS = {"effectif_total", "employes", "ouvriers", "presents", "absents", "retards", "taux_presence", "sites"}
+    KEYS = {"effectif_total", "employes", "ouvriers", "presents", "absents", "retards",
+            "taux_presence", "taux_absence_jour", "taux_ponctualite", "sites"}
 
     def setUp(self):
         # Rôle et périmètre Groupe : ce test vérifie la FORME gouvernée de la réponse,
@@ -409,11 +410,18 @@ class ShieldConnectorTest(TestCase):
         self.assertEqual(kpis["terminaux_hs"]["level"], "computed")
 
     def test_overview_reste_court(self):
+        """Le pouls Groupe, sans la présence du jour.
+
+        `presents` a été retiré de cette liste : la mesure est servie par le
+        cockpit RH derrière le domaine capital-humain, et la voir ici la rendait
+        accessible à un READER qui se la voit refuser sur l'autre porte
+        (cf. ShieldRbacTest.test_lapercu_groupe_ne_sert_plus_la_presence_du_jour).
+        """
         self._source()
         with patch.object(ShieldClient, "get_json", side_effect=self._routes()):
             data = shield.fetch_overview_kpis()
         keys = [k["key"] for k in data["kpis"]]
-        self.assertEqual(keys, ["workforce", "presents", "sites_actifs", "alertes_critiques"])
+        self.assertEqual(keys, ["workforce", "sites_actifs", "alertes_critiques"])
         self.assertEqual({k["key"]: k["value"] for k in data["kpis"]}["workforce"], 200)
 
     def test_insights_deterministes_et_justifies(self):
@@ -1791,3 +1799,74 @@ class ShieldRbacTest(APITestCase):
             restreint = self._get(drh_filiale, "/api/v1/integrations/shield/hr-kpi/").json()
 
         self.assertEqual(len(restreint["insights"]), len(globaux))
+
+    def test_lapercu_groupe_ne_sert_plus_la_presence_du_jour(self):
+        """Le même chiffre ne peut pas être 403 par une porte et 200 par l'autre.
+
+        `/shield/hr-kpi/` refuse « Présents » à un READER faute du domaine
+        capital-humain ; `/shield/overview/`, gardé par le domaine overview que
+        tout READER porte, servait la MÊME mesure — `attendance.present_count`.
+        C'est le contournement que la RBAC par domaine existe pour fermer.
+        """
+        reponse = self._get(self.lecteur, "/api/v1/integrations/shield/overview/")
+        self.assertEqual(reponse.status_code, 200, "l'aperçu Groupe reste ouvert au READER")
+        cles = {k["key"] for k in reponse.json()["kpis"]}
+        self.assertNotIn("presents", cles)
+        # Contre-épreuve : l'aperçu doit garder son pouls, sinon on a vidé la vue
+        # au lieu de fermer une porte.
+        self.assertTrue({"workforce", "sites_actifs", "alertes_critiques"} <= cles, cles)
+
+    def test_la_presence_du_jour_reste_servie_au_cockpit_rh(self):
+        """Fermer la mauvaise porte ne doit pas fermer la bonne."""
+        cles = {k["key"] for k in
+                self._get(self.drh, "/api/v1/integrations/shield/hr-kpi/").json()["kpis"]}
+        self.assertIn("presents", cles)
+
+
+class TauxDerivesTest(TestCase):
+    """Deux taux de plus, zéro appel Shield de plus.
+
+    Les formules existaient et étaient testées, mais ne servaient qu'aux alertes
+    de seuil : la page ne pouvait pas les afficher. Ces tests fixent le contrat
+    d'émission — et surtout le fait qu'un taux indéterminable reste `None`.
+    """
+
+    def test_les_deux_taux_derivent_des_compteurs_deja_lus(self):
+        from .shield_rules import part_absents, taux_ponctualite
+
+        # 80 présents, 20 absents, 8 retards.
+        self.assertEqual(part_absents(80, 20), 20.0)
+        self.assertEqual(taux_ponctualite(8, 80), 90.0)
+
+    def test_un_taux_indeterminable_reste_none_jamais_zero(self):
+        """Personne de présent : la ponctualité n'a pas de valeur.
+
+        La donner à 0 % annoncerait un service entièrement en retard, ce qui est
+        un tout autre message que « on ne sait pas ».
+        """
+        from .shield_rules import part_absents, taux_ponctualite
+
+        self.assertIsNone(taux_ponctualite(0, 0))
+        self.assertIsNone(part_absents(0, 0))
+        self.assertIsNone(taux_ponctualite(None, 80))
+        self.assertIsNone(part_absents(80, None))
+
+    def test_la_ponctualite_est_complementaire_de_la_part_de_retards(self):
+        from .shield_rules import part_retards, taux_ponctualite
+
+        for late, present in ((0, 50), (5, 50), (50, 50)):
+            with self.subTest(late=late, present=present):
+                self.assertAlmostEqual(
+                    taux_ponctualite(late, present) + part_retards(late, present), 100, places=1)
+
+    def test_les_deux_taux_portent_leur_formule_jusqua_lecran(self):
+        """La base du calcul n'a pas à être devinée : elle voyage avec la valeur.
+
+        « Ponctualité » rapportée aux PRÉSENTS et non à l'effectif attendu est une
+        définition défendable mais pas la seule ; l'écran doit pouvoir la dire.
+        """
+        meta = shield.KPI_META
+        self.assertIn("présents", meta["taux_ponctualite"][3])
+        self.assertIn("absents", meta["taux_absence_jour"][3])
+        self.assertEqual(meta["taux_ponctualite"][2], "computed")
+        self.assertEqual(meta["taux_absence_jour"][2], "computed")

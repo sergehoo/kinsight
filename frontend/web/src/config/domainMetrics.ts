@@ -60,7 +60,10 @@ const OVERVIEW: MetricSpec[] = [
   // Identifiants alignés sur ceux que produit l'adaptateur Shield : sans cela le
   // même indicateur apparaîtrait deux fois, une version déclarée et une version vivante.
   { id: "groupe.workforce", title: "Effectif Shield", source: "shield", level: "computed", formula: "employés + ouvriers, toutes filiales" },
-  { id: "groupe.presents", title: "Présents aujourd'hui", source: "shield" },
+  // « Présents aujourd'hui » ne figure PLUS ici : la mesure est servie par le
+  // cockpit RH, derrière le domaine `capital-humain`. La déclarer sur l'aperçu
+  // Groupe la rendait accessible à un READER qui se la voit refuser en 403 sur
+  // l'autre porte — deux portes sur le même chiffre, une seule verrouillée.
   { id: "groupe.sites_actifs", title: "Sites actifs", source: "shield" },
   { id: "groupe.alertes_critiques", title: "Alertes critiques", source: "shield" },
   { id: "groupe.patrimoine", title: "Patrimoine", unit: "XOF", source: "edw" },

@@ -63,10 +63,25 @@ def part_retards(late: Any, present: Any) -> float | None:
     return _pct(late, present)
 
 
+def taux_ponctualite(late: Any, present: Any) -> float | None:
+    """Complément à 100 de la part de retardataires, RAPPORTÉE AUX PRÉSENTS.
+
+    La base est explicite parce qu'elle change le sens du chiffre : un retard
+    suppose une présence, donc le taux porte sur les gens venus, pas sur
+    l'effectif attendu. Un service où la moitié des effectifs est absente et où
+    tous les venus sont à l'heure affiche 100 % — c'est correct sous cette
+    définition, et trompeur sous l'autre. La formule voyage avec la valeur
+    jusqu'à l'écran pour que la base ne soit jamais devinée.
+    """
+    part = part_retards(late, present)
+    return None if part is None else round(100 - part, 1)
+
+
 FORMULES = {
     "taux_presence": "présents ÷ (présents + absents) × 100",
     "part_absents": "absents ÷ (présents + absents) × 100",
     "part_retards": "retards ÷ présents × 100",
+    "taux_ponctualite": "100 − (retards ÷ présents × 100), sur les présents du jour",
     "baisse": "taux du jour − moyenne des jours précédents de la fenêtre",
 }
 

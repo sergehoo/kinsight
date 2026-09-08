@@ -154,6 +154,17 @@ KPI_SPECS: list[tuple[str, str, str, str, str, str]] = [
     ("absents", "Absents", "", MEASURED, "", "attendance.absent_count"),
     ("retards", "Retards", "", MEASURED, "", "attendance.late_count"),
     ("taux_presence", "Taux de présence", "%", COMPUTED, "présents ÷ (présents + absents) × 100", ""),
+    # Deux taux dérivés des MÊMES trois compteurs déjà lus : aucun appel Shield
+    # supplémentaire. Leurs formules étaient écrites et testées dans
+    # `shield_rules` mais ne servaient qu'à déclencher des alertes de seuil.
+    #
+    # Le libellé dit « du jour » à dessein : le dépôt porte une seconde définition
+    # de l'absentéisme, mensuelle et rapportée aux jours travaillés théoriques
+    # (domainMetrics.ts, source Odoo, non alimentée). Les deux ne mesurent pas la
+    # même chose ; publier celle-ci sous le libellé nu « Taux d'absentéisme »
+    # laisserait croire qu'elle répond à la question RH habituelle.
+    ("taux_absence_jour", "Taux d'absence du jour", "%", COMPUTED, R.FORMULES["part_absents"], ""),
+    ("taux_ponctualite", "Taux de ponctualité", "%", COMPUTED, R.FORMULES["taux_ponctualite"], ""),
     ("sites", "Sites", "", MEASURED, "", "sites.count"),
 ]
 KPI_META = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in KPI_SPECS}
@@ -308,6 +319,8 @@ def fetch_hr_kpis() -> dict[str, Any]:
         _from_spec(KPI_META, "absents", absent, st(sum_err)),
         _from_spec(KPI_META, "retards", late, st(sum_err)),
         _from_spec(KPI_META, "taux_presence", taux, st(sum_err)),
+        _from_spec(KPI_META, "taux_absence_jour", R.part_absents(present, absent), st(sum_err)),
+        _from_spec(KPI_META, "taux_ponctualite", R.taux_ponctualite(late, present), st(sum_err)),
         _from_spec(KPI_META, "sites", sites_count, st(s_err)),
     ]
 
@@ -529,14 +542,21 @@ def fetch_security_kpis() -> dict[str, Any]:
 
 # ── Overview Groupe ──────────────────────────────────────────────────────────
 def fetch_overview_kpis() -> dict[str, Any]:
-    """Agrégats Shield pour la vue Groupe : effectif, présence, sites, alertes.
+    """Agrégats Shield pour la vue Groupe : effectif, sites, alertes.
 
     Volontairement plus court que les cockpits RH et Risques : la vue Groupe
     donne le pouls, elle ne duplique pas le détail métier.
+
+    « Présents aujourd'hui » A ÉTÉ RETIRÉ, et son absence est le point de cette
+    fonction. Cet endpoint est gardé par le domaine `overview`, que porte un simple
+    READER ; `/shield/hr-kpi/` sert la MÊME mesure derrière le domaine
+    `capital-humain`, qu'un READER n'a pas. Le même chiffre était donc refusé en 403
+    par une porte et servi en 200 par l'autre — le contournement exact que la RBAC
+    par domaine est censée fermer. La présence du jour est une mesure RH
+    opérationnelle : elle reste sur le cockpit RH.
     """
     source, blocked = _guard("overview")
     specs = [("workforce", "Effectif Shield", "", COMPUTED, "employés + ouvriers", ""),
-             ("presents", "Présents aujourd'hui", "", MEASURED, "", "attendance.present_count"),
              ("sites_actifs", "Sites actifs", "", MEASURED, "", "sites[status=active].count"),
              ("alertes_critiques", "Alertes critiques", "", MEASURED, "", "antifraud.alerts[severity=critical,status=open]")]
     meta = {k: (t, u, lv, f, sf) for k, t, u, lv, f, sf in specs}
@@ -549,23 +569,22 @@ def fetch_overview_kpis() -> dict[str, Any]:
     employes, e_err = _safe(lambda: client.count(EP.EMPLOYEES))
     ouvriers, o_err = _safe(lambda: client.count(EP.WORKERS))
     sites_actifs, s_err = _safe(lambda: client.count(EP.SITES, {"status": "active"}))
-    summary, sum_err = _safe(lambda: client.get_json(EP.ATTENDANCE_TODAY))
+    # Plus d'appel à ATTENDANCE_TODAY ici : la mesure ne sortant plus, la lire
+    # coûterait un appel Shield pour une valeur jetée.
     crit, c_err = _safe(lambda: client.count(EP.ALERTS, {"severity": "critical", "status": "open"}))
 
     workforce = employes + ouvriers if isinstance(employes, int) and isinstance(ouvriers, int) else None
-    present = summary.get("present_count") if isinstance(summary, dict) else None
 
     def st(err):
         return "error" if err else "connected"
 
     kpis = [
         _from_spec(meta, "workforce", workforce, st(e_err or o_err)),
-        _from_spec(meta, "presents", present, st(sum_err)),
         _from_spec(meta, "sites_actifs", sites_actifs, st(s_err)),
         _from_spec(meta, "alertes_critiques", crit, st(c_err)),
     ]
-    errors = [e_err or o_err, sum_err, s_err, c_err]
-    values = [workforce, present, sites_actifs, crit]
+    errors = [e_err or o_err, s_err, c_err]
+    values = [workforce, sites_actifs, crit]
     return _envelope(_state_of(errors, values), src, kpis)
 
 
