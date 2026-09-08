@@ -117,6 +117,32 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     imageAlt: "Épargne en croissance, symbole de trésorerie",
     imageMode: "cover",
   },
+
+  /** IA Décisionnelle — on ne redéfinit QUE le visuel.
+   *
+   *  Le reste de la spec (titre, accroche, KPI, libellés d'alerte) vient du
+   *  fichier généré, qui porte la mention « ne pas éditer à la main » : le
+   *  recopier ici en ferait une seconde version, et les deux divergeraient à la
+   *  première régénération. On étend, on ne duplique pas.
+   *
+   *  `illustrationSvg` reste dans la spec sans être rendu : `DomainHome` donne la
+   *  priorité à `image` et ne retombe sur le SVG qu'en son absence. Le garder
+   *  coûte quelques octets et préserve le repli si le visuel venait à disparaître.
+   */
+  ia: {
+    ...generatedHeroes.ia,
+    image: "/assets/AI.png",
+    imageSlug: "ia-copilote",
+    // 640 et 1024 UNIQUEMENT : la source fait 1229 px de côté, une variante 1600
+    // serait un agrandissement — et `HeroImage` avertit qu'une largeur déclarée
+    // mais non générée provoque un 404 puis un repli sur l'original de 1,6 Mo.
+    imageWidths: [640, 1024],
+    imageAlt:
+      "Tête robotique de profil, coque blanche entrouverte laissant voir des rouages et des circuits lumineux",
+    // Sujet détouré sur fond transparent : `contain` conserve la silhouette,
+    // là où `cover` la recadrerait dans un cadre presque carré.
+    imageMode: "contain",
+  },
 };
 
 export const domainHeroes: Record<string, DomainHeroSpec> = { ...generatedHeroes, ...photoHeroes };

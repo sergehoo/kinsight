@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/GovernanceOverview.tsx": {
-    "mtime": 1788655669.6382165,
-    "ast_hash": "5a068d84424d2971a598beac3b793aa6",
+    "mtime": 1788884506.20722,
+    "ast_hash": "b36a8cd2962f5b100bcdd0d47076e3be",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/HrDashboard.tsx": {
@@ -1065,8 +1065,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainHome.config.ts": {
-    "mtime": 1788876468.9636917,
-    "ast_hash": "e6302ccd36790b354aa3472855bcc543",
+    "mtime": 1788885008.994552,
+    "ast_hash": "36726071b69b6b2afcc14264a0a1ad36",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainMetrics.ts": {
@@ -1942,6 +1942,46 @@
   "frontend/web/src/lib/subsidiaries.ts": {
     "mtime": 1788875933.143432,
     "ast_hash": "1e622f688a4ec9af86eeea06090d4777",
+    "semantic_hash": ""
+  },
+  "kenvi/bin/celery": {
+    "mtime": 1788885067.5632026,
+    "ast_hash": "01348e8d4550caab792447bb6cc625c2",
+    "semantic_hash": ""
+  },
+  "kenvi/bin/chardetect": {
+    "mtime": 1788885065.032013,
+    "ast_hash": "15aa9850b35b3cd776ebe019d1b5c366",
+    "semantic_hash": ""
+  },
+  "kenvi/bin/django-admin": {
+    "mtime": 1788885067.1185224,
+    "ast_hash": "10122850d137d8fb5563b1bbedb95606",
+    "semantic_hash": ""
+  },
+  "kenvi/bin/gunicorn": {
+    "mtime": 1788885065.9289556,
+    "ast_hash": "f9b0bc49fcd492ff4916874f31a6c252",
+    "semantic_hash": ""
+  },
+  "kenvi/bin/sqlformat": {
+    "mtime": 1788885064.6191804,
+    "ast_hash": "dd7313678a8c5063643f8ace1b1b24e1",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/AI.png": {
+    "mtime": 1788884391.0905662,
+    "ast_hash": "1f3a3007bc7516aace37a30e28d0846e",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/ia-copilote-1024.webp": {
+    "mtime": 1788884962.9958367,
+    "ast_hash": "817f6d7c5e698b71762e4128094ce865",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/ia-copilote-640.webp": {
+    "mtime": 1788884959.7998402,
+    "ast_hash": "32712efb771d1bd6f1e6754f76103e05",
     "semantic_hash": ""
   }
 }
