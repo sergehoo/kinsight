@@ -21,6 +21,8 @@ import type { DomainHeroSpec } from "@/config/domainHome.config";
 import { getCurrentPermissions } from "@/lib/permissions";
 import { EASE_OUT } from "@/lib/motion";
 import { useFilters } from "@/store/filters";
+import { formatInt } from "@/lib/format";
+import { useShieldHrKpis } from "@/lib/shieldHr";
 import { useNavigationStore } from "@/state/navigationStore";
 
 const CHIP_COLORS = ["#D92B55", "#E8703F", "#EF9F27", "#7FB933", "#42BFA0", "#37A0DD", "#5B8DEF", "#8A63D2"];
@@ -149,6 +151,60 @@ function SignalsCard({ spec }: { spec: DomainHeroSpec }) {
   );
 }
 
+/** La valeur de la carte vedette, quand une source vivante la sert.
+ *
+ *  La carte affichait « N/D » et « Mart EDW à raccorder » en dur, pour tous les
+ *  domaines — y compris Capital Humain, où l'effectif était servi par Shield à
+ *  deux centimètres de là. Deux versions du même chiffre sur le même écran, dont
+ *  une fausse.
+ *
+ *  Le composant ne résout QUE ce que le descripteur du domaine déclare. Sans
+ *  descripteur, il rend exactement ce que la carte rendait avant : le domaine
+ *  n'a alors pas de source, et le dire reste juste.
+ */
+function ValeurVedette({ spec, sourceParDefaut }: { spec: DomainHeroSpec; sourceParDefaut: string }) {
+  // Le hook est appelé sans condition — règle des hooks — mais la requête n'est
+  // activée que pour les domaines qui déclarent cette source.
+  const shield = useShieldHrKpis();
+  const attendu = spec.featuredMetric;
+
+  if (!attendu) {
+    return (
+      <>
+        <span className="block text-[36px] font-semibold leading-none">N/D</span>
+        <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.06em] text-white/75">
+          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
+          {sourceParDefaut} à raccorder
+        </span>
+      </>
+    );
+  }
+
+  const kpi = shield.data?.payload.kpis.find((k) => k.key === attendu.key);
+  const enCours = shield.isLoading;
+  const valeurReelle = kpi && kpi.status === "connected" && kpi.value !== null;
+  const source = shield.data?.payload.source ?? "Kaydan Shield";
+  // Une donnée servie par le cache hors ligne est réelle mais datée : elle ne
+  // doit pas s'afficher comme fraîche.
+  const datee = Boolean(shield.data?.stale);
+
+  return (
+    <>
+      <span className="block text-[36px] font-semibold leading-none">
+        {enCours ? "…" : valeurReelle ? formatInt(kpi.value as number) : "N/D"}
+      </span>
+      <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.06em] text-white/75">
+        <span className="h-1.5 w-1.5 rounded-full" style={{ background: valeurReelle && !datee ? "#7FE0BE" : "rgba(255,255,255,0.6)" }} />
+        {enCours
+          ? "Lecture en cours"
+          : valeurReelle
+            ? datee ? `${source} · donnée datée` : source
+            : `${source} · mesure non servie`}
+      </span>
+    </>
+  );
+}
+
 export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: DashboardModuleConfig }) {
   const sidebarExpanded = useNavigationStore((state) => state.sidebarExpanded);
   const permissions = getCurrentPermissions();
@@ -249,11 +305,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                     </div>
                     <div className="mt-5 flex items-end justify-between gap-3">
                       <div className="min-w-0">
-                        <span className="block text-[36px] font-semibold leading-none">N/D</span>
-                        <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.06em] text-white/75">
-                          <span className="h-1.5 w-1.5 rounded-full bg-white/60" />
-                          {chartSource} à raccorder
-                        </span>
+                        <ValeurVedette spec={spec} sourceParDefaut={chartSource} />
                       </div>
                       <div className="flex items-center">
                         {spec.featuredBadges.slice(0, 3).map((initials, i) => (

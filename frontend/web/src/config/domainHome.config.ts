@@ -15,6 +15,14 @@ export interface DomainHeroSpec {
   featuredTitle: string;
   featuredSubtitle: string;
   featuredBadges: string[];
+  /** La mesure RÉELLE que la carte vedette doit afficher, quand il en existe une.
+   *
+   *  Sans ce descripteur la carte affiche « N/D » et « Mart EDW à raccorder » —
+   *  ce qui était codé en dur pour TOUS les domaines, y compris ceux dont une
+   *  source vivante servait déjà le même chiffre à deux centimètres de là. La
+   *  clé est celle du KPI servi par le backend, jamais un identifiant parallèle :
+   *  deux identités pour une mesure, c'est deux versions qui divergent. */
+  featuredMetric?: { source: "shield-hr"; key: string };
   kpis: HeroKpi[];
   chartTitle: string;
   chartUnit: string;
@@ -66,6 +74,10 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     featuredTitle: "Effectif Groupe",
     featuredSubtitle: "Consolidé multi-filiales",
     featuredBadges: ["RH", "DG"],
+    // `effectif_total` est la MÊME clé que celle de la grille de KPI : la carte
+    // vedette affichait « N/D · Mart EDW à raccorder » pendant que la carte
+    // voisine affichait 722 depuis Shield. Un seul chiffre, une seule source.
+    featuredMetric: { source: "shield-hr", key: "effectif_total" },
     kpis: [
       { label: "Effectif total", color: "#416FF4" },
       { label: "Turnover", color: "#D92B55" },

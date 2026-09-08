@@ -21,6 +21,12 @@ from apps.integrations.shield_client import ShieldError
 
 OK, KO, WARN = "  OK  ", " ÉCHEC", " ALERTE"
 
+# Identifiant de site qui ne peut correspondre à aucune ligne. Sert de SENTINELLE :
+# un filtre honoré rend zéro, un filtre ignoré rend le total non filtré. Le choix
+# d'un très grand entier plutôt que 0 ou -1 est délibéré : ces deux valeurs sont
+# parfois traitées comme « pas de filtre » par les couches de validation.
+SITE_IMPOSSIBLE = 999_999_999
+
 
 class Command(BaseCommand):
     help = "Vérifie l'accès Kaydan Shield en une poignée d'appels, avant les séries."
@@ -57,8 +63,14 @@ class Command(BaseCommand):
         # 3. Présence du jour.
         run("présence du jour", lambda: client.get_json(EP.ATTENDANCE_TODAY) and "réponse reçue")
         # 4. Le booléen documenté est-il accepté ?
+        #
+        # Une seule lecture ne peut pas le dire : si DRF ignore `present`, il rend
+        # le total, et « présents ≤ total » reste vrai. On lit donc les DEUX faces
+        # du booléen — leur somme doit valoir le total quand le filtre est honoré.
         total = run("attendance (sans filtre)", lambda: client.count(EP.ATTENDANCE_DAYS))
         presents = run("attendance present=true", lambda: client.count(EP.ATTENDANCE_DAYS, {"present": "true"}))
+        non_presents = run("attendance present=false",
+                           lambda: client.count(EP.ATTENDANCE_DAYS, {"present": "false"}))
         # 5. Le filtre site est-il effectif ?
         first_site = None
         try:
@@ -68,6 +80,13 @@ class Command(BaseCommand):
             pass
         scoped = run(f"attendance site={first_site}",
                      lambda: client.count(EP.ATTENDANCE_DAYS, {"site": first_site})) if first_site else None
+        # La sentinelle, appliquée AUSSI au site — c'est la correction du contrôle
+        # précédent, qui concluait « filtre site effectif » sur la seule inégalité
+        # `scoped <= total`. Un filtre ignoré rend exactement le total : l'inégalité
+        # large était donc satisfaite par le cas même qu'elle prétendait détecter.
+        # Un identifiant de site qui ne peut pas exister tranche sans ambiguïté.
+        site_sentinelle = run("attendance site=<id inexistant>",
+                              lambda: client.count(EP.ATTENDANCE_DAYS, {"site": SITE_IMPOSSIBLE}))
         # 6. La pagination expose-t-elle bien un total cohérent ?
         page = run("pagination (count vs results)",
                    lambda: client.get_json(EP.SITES, {"limit": 2}, use_cache=False))
@@ -92,19 +111,31 @@ class Command(BaseCommand):
         # ── Confirmations explicites demandées avant toute collecte lourde ──
         self.stdout.write("\nConfirmations :")
 
-        if isinstance(total, int) and isinstance(presents, int):
-            coherent = presents <= total
-            self.stdout.write(f"[{OK if coherent else WARN}] `count` reflète le total FILTRÉ "
-                              f"(présents {presents} ≤ total {total})")
-            if not coherent:
-                self.stdout.write("      → un filtre inconnu serait ignoré : NE PAS lancer les séries.")
+        if isinstance(total, int) and isinstance(presents, int) and isinstance(non_presents, int):
+            # Somme des deux faces == total : le booléen partitionne réellement.
+            partitionne = presents + non_presents == total
+            self.stdout.write(f"[{OK if partitionne else WARN}] filtre `present` HONORÉ "
+                              f"(true {presents} + false {non_presents} = {presents + non_presents}, "
+                              f"total {total})")
+            if not partitionne:
+                self.stdout.write("      → le booléen n'est pas appliqué comme un partitionnement : "
+                                  "NE PAS bâtir de série sur ces comptes.")
+            if presents == total and non_presents == total:
+                self.stdout.write("      → les deux faces rendent le total : le filtre est IGNORÉ.")
         else:
-            self.stdout.write(f"[{WARN}] `count` non vérifiable (lecture en échec)")
+            self.stdout.write(f"[{WARN}] filtre `present` non vérifiable (lecture en échec)")
 
-        if isinstance(scoped, int) and isinstance(total, int):
-            filtre_actif = scoped <= total
-            self.stdout.write(f"[{OK if filtre_actif else WARN}] filtre `site` effectif "
-                              f"({scoped} ≤ {total})")
+        if isinstance(scoped, int) and isinstance(total, int) and isinstance(site_sentinelle, int):
+            # Le verdict tient à la SENTINELLE, pas à l'inégalité : un site
+            # impossible doit rendre autre chose que le total non filtré.
+            ignore = site_sentinelle == total
+            self.stdout.write(f"[{KO if ignore else OK}] filtre `site` effectif "
+                              f"(site réel {scoped}, site impossible {site_sentinelle}, total {total})")
+            if ignore:
+                self.stdout.write("      → un site inexistant renvoie le total : le filtre `site` est "
+                                  "IGNORÉ. Toute ventilation par site serait le total répété.")
+        elif isinstance(scoped, int):
+            self.stdout.write(f"[{WARN}] filtre `site` non concluant (sentinelle non lue)")
 
         if isinstance(page, dict):
             forme = {"count", "results"} <= set(page)

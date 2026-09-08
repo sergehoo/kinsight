@@ -990,7 +990,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "ai_copilot_admin_conversationadmin_get_queryset",
-      "community": 265,
+      "community": 61,
       "norm_label": ".get_queryset()"
     },
     {
@@ -1570,7 +1570,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_providers",
-      "community": 65,
+      "community": 79,
       "norm_label": "providers.py"
     },
     {
@@ -1580,7 +1580,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "ai_copilot_providers_providerunavailable",
-      "community": 65,
+      "community": 79,
       "norm_label": "providerunavailable"
     },
     {
@@ -1600,7 +1600,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "ai_copilot_providers_groundedfacts",
-      "community": 65,
+      "community": 79,
       "norm_label": "groundedfacts"
     },
     {
@@ -1610,7 +1610,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "ai_copilot_providers_providerresult",
-      "community": 65,
+      "community": 79,
       "norm_label": "providerresult"
     },
     {
@@ -1620,7 +1620,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "ai_copilot_providers_providerclient",
-      "community": 65,
+      "community": 79,
       "norm_label": "providerclient"
     },
     {
@@ -1630,7 +1630,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "ai_copilot_providers_providerclient_is_available",
-      "community": 65,
+      "community": 79,
       "norm_label": ".is_available()"
     },
     {
@@ -1640,7 +1640,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_providers_providerclient_complete",
-      "community": 65,
+      "community": 79,
       "norm_label": ".complete()"
     },
     {
@@ -1680,7 +1680,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "ai_copilot_providers_httpllmclient",
-      "community": 65,
+      "community": 79,
       "norm_label": "_httpllmclient"
     },
     {
@@ -1690,7 +1690,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "ai_copilot_providers_httpllmclient_key",
-      "community": 65,
+      "community": 79,
       "norm_label": "._key()"
     },
     {
@@ -1700,7 +1700,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "ai_copilot_providers_httpllmclient_is_available",
-      "community": 65,
+      "community": 79,
       "norm_label": ".is_available()"
     },
     {
@@ -1710,7 +1710,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "ai_copilot_providers_httpllmclient_system_prompt",
-      "community": 65,
+      "community": 79,
       "norm_label": "._system_prompt()"
     },
     {
@@ -1720,7 +1720,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "ai_copilot_providers_httpllmclient_post",
-      "community": 65,
+      "community": 79,
       "norm_label": "._post()"
     },
     {
@@ -1730,7 +1730,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ai_copilot_providers_deepseekclient",
-      "community": 65,
+      "community": 79,
       "norm_label": "deepseekclient"
     },
     {
@@ -1740,7 +1740,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "ai_copilot_providers_deepseekclient_complete",
-      "community": 65,
+      "community": 79,
       "norm_label": ".complete()"
     },
     {
@@ -1750,7 +1750,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "ai_copilot_providers_claudeclient",
-      "community": 65,
+      "community": 79,
       "norm_label": "claudeclient"
     },
     {
@@ -1760,7 +1760,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "ai_copilot_providers_claudeclient_complete",
-      "community": 65,
+      "community": 79,
       "norm_label": ".complete()"
     },
     {
@@ -1770,7 +1770,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "ai_copilot_providers_default_providers",
-      "community": 65,
+      "community": 79,
       "norm_label": "default_providers()"
     },
     {
@@ -1790,7 +1790,7 @@
       "source_location": "L171",
       "_origin": "ast",
       "id": "ai_copilot_providers_aiproviderrouter_init",
-      "community": 65,
+      "community": 79,
       "norm_label": ".__init__()"
     },
     {
@@ -1800,7 +1800,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "ai_copilot_providers_aiproviderrouter_complete",
-      "community": 65,
+      "community": 79,
       "norm_label": ".complete()"
     },
     {
@@ -1810,7 +1810,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_1",
-      "community": 65,
+      "community": 79,
       "norm_label": "routage multi-provider du copilot : deepseek (principal) \u2192 claude (fallback) \u2192 r"
     },
     {
@@ -1820,7 +1820,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_23",
-      "community": 65,
+      "community": 79,
       "norm_label": "le provider ne peut pas repondre (cle absente, reseau, erreur api)."
     },
     {
@@ -1830,7 +1830,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_28",
-      "community": 65,
+      "community": 79,
       "norm_label": "faits ancres (sortie de semantic.grounding.answer) servant de base factuelle."
     },
     {
@@ -1850,7 +1850,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_80",
-      "community": 65,
+      "community": 79,
       "norm_label": "base commune aux providers http (deepseek/claude). reseau garde-fou par cle + ti"
     },
     {
@@ -2100,7 +2100,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_tests_toolrbacapprovaltest_setup",
-      "community": 79,
+      "community": 63,
       "norm_label": ".setup()"
     },
     {
@@ -2580,7 +2580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_tools",
-      "community": 269,
+      "community": 299,
       "norm_label": "tools.py"
     },
     {
@@ -2610,7 +2610,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool",
-      "community": 79,
+      "community": 299,
       "norm_label": "tool"
     },
     {
@@ -2620,7 +2620,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_needs_approval",
-      "community": 79,
+      "community": 299,
       "norm_label": ".needs_approval()"
     },
     {
@@ -2630,7 +2630,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_confirmations",
-      "community": 79,
+      "community": 299,
       "norm_label": ".confirmations()"
     },
     {
@@ -2640,7 +2640,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai_copilot_tools_can_use",
-      "community": 63,
+      "community": 299,
       "norm_label": "can_use()"
     },
     {
@@ -2650,7 +2650,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry",
-      "community": 79,
+      "community": 299,
       "norm_label": "toolregistry"
     },
     {
@@ -2660,7 +2660,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_init",
-      "community": 79,
+      "community": 299,
       "norm_label": ".__init__()"
     },
     {
@@ -2670,7 +2670,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_register",
-      "community": 79,
+      "community": 299,
       "norm_label": ".register()"
     },
     {
@@ -2680,7 +2680,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_get",
-      "community": 63,
+      "community": 299,
       "norm_label": ".get()"
     },
     {
@@ -2690,7 +2690,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_all",
-      "community": 79,
+      "community": 299,
       "norm_label": ".all()"
     },
     {
@@ -2700,7 +2700,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_allowed_for",
-      "community": 79,
+      "community": 299,
       "norm_label": ".allowed_for()"
     },
     {
@@ -2730,7 +2730,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ai_copilot_tools_permissionawaretoolexecutor_init",
-      "community": 79,
+      "community": 299,
       "norm_label": ".__init__()"
     },
     {
@@ -2760,7 +2760,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "ai_copilot_tools_actionapprovalservice_init",
-      "community": 79,
+      "community": 299,
       "norm_label": ".__init__()"
     },
     {
@@ -2790,7 +2790,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_explain_kpi",
-      "community": 269,
+      "community": 299,
       "norm_label": "_tool_explain_kpi()"
     },
     {
@@ -2800,7 +2800,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_group_score",
-      "community": 269,
+      "community": 299,
       "norm_label": "_tool_group_score()"
     },
     {
@@ -2810,7 +2810,7 @@
       "source_location": "L236",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_run_connector_sync",
-      "community": 269,
+      "community": 299,
       "norm_label": "_tool_run_connector_sync()"
     },
     {
@@ -2820,7 +2820,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_generate_report",
-      "community": 92,
+      "community": 299,
       "norm_label": "_tool_generate_report()"
     },
     {
@@ -2830,7 +2830,7 @@
       "source_location": "L266",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_delete_connector",
-      "community": 269,
+      "community": 299,
       "norm_label": "_tool_delete_connector()"
     },
     {
@@ -2840,7 +2840,7 @@
       "source_location": "L278",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_send_report_email",
-      "community": 269,
+      "community": 299,
       "norm_label": "_tool_send_report_email()"
     },
     {
@@ -2850,7 +2850,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "ai_copilot_tools_build_default_registry",
-      "community": 79,
+      "community": 299,
       "norm_label": "build_default_registry()"
     },
     {
@@ -2860,7 +2860,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_1",
-      "community": 269,
+      "community": 299,
       "norm_label": "outils controles du copilot : registre declaratif + executeur conscient des perm"
     },
     {
@@ -2890,7 +2890,7 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_237",
-      "community": 269,
+      "community": 299,
       "norm_label": "lance une synchronisation d'un connecteur (ecriture sensible \u2014 passe par approba"
     },
     {
@@ -2900,7 +2900,7 @@
       "source_location": "L248",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_248",
-      "community": 92,
+      "community": 299,
       "norm_label": "genere la synthese de gouvernance groupe + indique les exports disponibles (lect"
     },
     {
@@ -2910,7 +2910,7 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_267",
-      "community": 269,
+      "community": 299,
       "norm_label": "supprime un connecteur (destructif \u2014 double validation)."
     },
     {
@@ -2920,7 +2920,7 @@
       "source_location": "L279",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_279",
-      "community": 269,
+      "community": 299,
       "norm_label": "envoie un rapport par email (destructif/sortant \u2014 double validation).      phase"
     },
     {
@@ -4380,7 +4380,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "runtimeerror",
-      "community": 260,
+      "community": 81,
       "norm_label": "runtimeerror"
     },
     {
@@ -4390,7 +4390,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "governance_gateway_fetch_or_unavailable",
-      "community": 81,
+      "community": 92,
       "norm_label": "fetch_or_unavailable()"
     },
     {
@@ -4590,7 +4590,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "governance_gateway_rationale_43",
-      "community": 81,
+      "community": 92,
       "norm_label": "execute une lecture du mart. retourne `(resultat, disponible)`.      aucune exce"
     },
     {
@@ -4700,7 +4700,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "governance_module_views_aggregate_score",
-      "community": 92,
+      "community": 116,
       "norm_label": "aggregate_score()"
     },
     {
@@ -4720,7 +4720,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "governance_module_views_domain_score_fn",
-      "community": 259,
+      "community": 116,
       "norm_label": "_domain_score_fn()"
     },
     {
@@ -4730,7 +4730,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "governance_module_views_build_group_report",
-      "community": 92,
+      "community": 116,
       "norm_label": "build_group_report()"
     },
     {
@@ -4900,7 +4900,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "governance_module_views_rationale_65",
-      "community": 92,
+      "community": 116,
       "norm_label": "agregation commune des scores (hr & domaines).      `all_rows` : lignes (month,"
     },
     {
@@ -4920,7 +4920,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "governance_module_views_rationale_95",
-      "community": 259,
+      "community": 116,
       "norm_label": "fonction de score global d'un domaine (ponderations propres au domaine)."
     },
     {
@@ -4930,7 +4930,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "governance_module_views_rationale_102",
-      "community": 92,
+      "community": 116,
       "norm_label": "indice de gouvernance groupe consolide (reutilise par l'api et l'export).      a"
     },
     {
@@ -5010,7 +5010,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "governance_services_period_from_quarter",
-      "community": 92,
+      "community": 262,
       "norm_label": "period_from_quarter()"
     },
     {
@@ -5140,7 +5140,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "governance_services_rationale_24",
-      "community": 92,
+      "community": 262,
       "norm_label": "construit la periode [start, end[ d'un trimestre civil."
     },
     {
@@ -5210,7 +5210,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "governance_tests_failingmartgateway_fetch_hr_kpi",
-      "community": 260,
+      "community": 81,
       "norm_label": ".fetch_hr_kpi()"
     },
     {
@@ -5230,7 +5230,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "governance_tests_governanceapitest_setup",
-      "community": 9,
+      "community": 30,
       "norm_label": ".setup()"
     },
     {
@@ -6320,7 +6320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views",
-      "community": 81,
+      "community": 262,
       "norm_label": "views.py"
     },
     {
@@ -6400,7 +6400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views_rationale_1",
-      "community": 81,
+      "community": 262,
       "norm_label": "api governance (drf). lecture seule, filtree par perimetre, journalisee."
     },
     {
@@ -7277,7 +7277,7 @@
       "label": "Command",
       "file_type": "code",
       "source_file": "backend/apps/integrations/management/commands/shield_smoke.py",
-      "source_location": "L25",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "commands_shield_smoke_command",
       "community": 2,
@@ -7287,7 +7287,7 @@
       "label": ".handle()",
       "file_type": "code",
       "source_file": "backend/apps/integrations/management/commands/shield_smoke.py",
-      "source_location": "L28",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "commands_shield_smoke_command_handle",
       "community": 2,
@@ -7370,7 +7370,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "integrations_models_credentialkind",
-      "community": 236,
+      "community": 65,
       "norm_label": "credentialkind"
     },
     {
@@ -7480,7 +7480,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "integrations_models_connectorendpoint",
-      "community": 10,
+      "community": 69,
       "norm_label": "connectorendpoint"
     },
     {
@@ -7490,7 +7490,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "integrations_models_connectorendpoint_str",
-      "community": 10,
+      "community": 69,
       "norm_label": ".__str__()"
     },
     {
@@ -7580,7 +7580,7 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "integrations_models_synclog",
-      "community": 69,
+      "community": 10,
       "norm_label": "synclog"
     },
     {
@@ -7700,7 +7700,7 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "integrations_models_rationale_170",
-      "community": 10,
+      "community": 69,
       "norm_label": "un point d'acces (endpoint rest, requete graphql, table, fichier...)."
     },
     {
@@ -7760,7 +7760,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "integrations_odoo_get_odoo_source",
-      "community": 290,
+      "community": 236,
       "norm_label": "get_odoo_source()"
     },
     {
@@ -7780,7 +7780,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "integrations_odoo_fetch_hr_reference",
-      "community": 290,
+      "community": 236,
       "norm_label": "fetch_hr_reference()"
     },
     {
@@ -7800,7 +7800,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "integrations_odoo_rationale_46",
-      "community": 290,
+      "community": 236,
       "norm_label": "etat gouverne du referentiel rh odoo. ne renvoie jamais de donnees.      `not_co"
     },
     {
@@ -8140,7 +8140,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "integrations_services_qualifier_exception",
-      "community": 290,
+      "community": 278,
       "norm_label": "_qualifier_exception()"
     },
     {
@@ -8160,7 +8160,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "integrations_services_network_probe",
-      "community": 290,
+      "community": 278,
       "norm_label": "network_probe()"
     },
     {
@@ -8220,7 +8220,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "integrations_services_rationale_78",
-      "community": 290,
+      "community": 278,
       "norm_label": "nomme la cause reelle. \u00ab injoignable \u00bb ne dit pas s'il faut corriger un     cert"
     },
     {
@@ -8240,7 +8240,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "integrations_services_rationale_113",
-      "community": 290,
+      "community": 278,
       "norm_label": "sonde reseau reelle. \u00ab connectee \u00bb exige une reponse valide, pas une reponse."
     },
     {
@@ -8430,7 +8430,7 @@
       "source_location": "L371",
       "_origin": "ast",
       "id": "integrations_shield_collect_flag",
-      "community": 104,
+      "community": 73,
       "norm_label": "_collect_flag()"
     },
     {
@@ -8440,7 +8440,7 @@
       "source_location": "L395",
       "_origin": "ast",
       "id": "integrations_shield_oldest_reliable",
-      "community": 104,
+      "community": 73,
       "norm_label": "_oldest_reliable()"
     },
     {
@@ -8450,7 +8450,7 @@
       "source_location": "L409",
       "_origin": "ast",
       "id": "integrations_shield_collect_period",
-      "community": 104,
+      "community": 73,
       "norm_label": "collect_period()"
     },
     {
@@ -8480,7 +8480,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "date",
-      "community": 13,
+      "community": 4,
       "norm_label": "date"
     },
     {
@@ -8650,7 +8650,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "integrations_shield_rationale_372",
-      "community": 104,
+      "community": 73,
       "norm_label": "tous les enregistrements de la periode portant `flag`, du plus recent au plus an"
     },
     {
@@ -8660,7 +8660,7 @@
       "source_location": "L396",
       "_origin": "ast",
       "id": "integrations_shield_rationale_396",
-      "community": 104,
+      "community": 73,
       "norm_label": "date a partir de laquelle les comptages sont fiables.      si la collecte a ete"
     },
     {
@@ -8670,7 +8670,7 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "integrations_shield_rationale_410",
-      "community": 104,
+      "community": 73,
       "norm_label": "les trois jeux d'enregistrements de la periode, avec leur fiabilite."
     },
     {
@@ -8770,7 +8770,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "datetime",
-      "community": 32,
+      "community": 221,
       "norm_label": "datetime"
     },
     {
@@ -9060,7 +9060,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_client",
-      "community": 293,
+      "community": 265,
       "norm_label": "shield_client.py"
     },
     {
@@ -9080,7 +9080,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror",
-      "community": 236,
+      "community": 265,
       "norm_label": "shielderror"
     },
     {
@@ -9090,7 +9090,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror_init",
-      "community": 293,
+      "community": 265,
       "norm_label": ".__init__()"
     },
     {
@@ -9100,7 +9100,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror_str",
-      "community": 236,
+      "community": 265,
       "norm_label": ".__str__()"
     },
     {
@@ -9110,7 +9110,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache",
-      "community": 293,
+      "community": 265,
       "norm_label": "_ttlcache"
     },
     {
@@ -9120,7 +9120,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_init",
-      "community": 293,
+      "community": 265,
       "norm_label": ".__init__()"
     },
     {
@@ -9140,7 +9140,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_set",
-      "community": 293,
+      "community": 265,
       "norm_label": ".set()"
     },
     {
@@ -9150,7 +9150,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_clear",
-      "community": 293,
+      "community": 265,
       "norm_label": ".clear()"
     },
     {
@@ -9160,7 +9160,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics",
-      "community": 293,
+      "community": 265,
       "norm_label": "shieldmetrics"
     },
     {
@@ -9170,7 +9170,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics_init",
-      "community": 293,
+      "community": 265,
       "norm_label": ".__init__()"
     },
     {
@@ -9190,7 +9190,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics_as_dict",
-      "community": 293,
+      "community": 265,
       "norm_label": ".as_dict()"
     },
     {
@@ -9210,7 +9210,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldclient_init",
-      "community": 293,
+      "community": 265,
       "norm_label": ".__init__()"
     },
     {
@@ -9310,7 +9310,7 @@
       "source_location": "L377",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldclient_clear_cache",
-      "community": 293,
+      "community": 265,
       "norm_label": ".clear_cache()"
     },
     {
@@ -9320,7 +9320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_1",
-      "community": 293,
+      "community": 265,
       "norm_label": "client http kaydan shield : transport, erreurs, pagination, cache.  separe de la"
     },
     {
@@ -9340,7 +9340,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_50",
-      "community": 236,
+      "community": 265,
       "norm_label": "echec d'appel qualifie par sa cause, pas seulement par son message.      `kind`"
     },
     {
@@ -9350,7 +9350,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_72",
-      "community": 293,
+      "community": 265,
       "norm_label": "cache memoire court, protege par un verrou (django sert en multi-thread)."
     },
     {
@@ -9360,7 +9360,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_100",
-      "community": 293,
+      "community": 265,
       "norm_label": "compteurs d'usage d'un client. aucun jeton, aucune donnee personnelle :     uniq"
     },
     {
@@ -9430,7 +9430,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints",
-      "community": 307,
+      "community": 73,
       "norm_label": "shield_endpoints.py"
     },
     {
@@ -9440,7 +9440,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints_rationale_1",
-      "community": 307,
+      "community": 73,
       "norm_label": "chemins kaydan shield reellement documentes (swagger `/api/docs/`).  un seul end"
     },
     {
@@ -9650,7 +9650,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "integrations_tests_encryptiontest",
-      "community": 236,
+      "community": 278,
       "norm_label": "encryptiontest"
     },
     {
@@ -10490,7 +10490,7 @@
       "source_location": "L748",
       "_origin": "ast",
       "id": "integrations_tests_shieldobservabilitytest",
-      "community": 236,
+      "community": 213,
       "norm_label": "shieldobservabilitytest"
     },
     {
@@ -10950,7 +10950,7 @@
       "source_location": "L1224",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_2xx_seul_vaut_succes",
-      "community": 112,
+      "community": 11,
       "norm_label": ".test_2xx_seul_vaut_succes()"
     },
     {
@@ -11060,7 +11060,7 @@
       "source_location": "L1349",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_test_une_exception_inattendue_ne_passe_pas_pour_un_succes",
-      "community": 260,
+      "community": 81,
       "norm_label": ".test_une_exception_inattendue_ne_passe_pas_pour_un_succes()"
     },
     {
@@ -11180,7 +11180,7 @@
       "source_location": "L1451",
       "_origin": "ast",
       "id": "integrations_tests_secretillisibletest_test_secret_indechiffrable_donne_un_verdict_et_non_un_500",
-      "community": 269,
+      "community": 299,
       "norm_label": ".test_secret_indechiffrable_donne_un_verdict_et_non_un_500()"
     },
     {
@@ -11390,7 +11390,7 @@
       "source_location": "L1655",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest",
-      "community": 291,
+      "community": 236,
       "norm_label": "shieldrbactest"
     },
     {
@@ -11400,7 +11400,7 @@
       "source_location": "L1668",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_setup",
-      "community": 291,
+      "community": 236,
       "norm_label": ".setup()"
     },
     {
@@ -11950,7 +11950,7 @@
       "source_location": "L749",
       "_origin": "ast",
       "id": "integrations_tests_rationale_749",
-      "community": 236,
+      "community": 213,
       "norm_label": "compteurs d'usage : ce qu'on mesure, et ce qu'on ne journalise jamais."
     },
     {
@@ -12140,7 +12140,7 @@
       "source_location": "L1350",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1350",
-      "community": 260,
+      "community": 81,
       "norm_label": "si un jour une exception non prevue s'echappe, mieux vaut une erreur         fra"
     },
     {
@@ -12320,7 +12320,7 @@
       "source_location": "L1656",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1656",
-      "community": 291,
+      "community": 236,
       "norm_label": "deux portes sur la meme donnee, une seule etait verrouillee.      les endpoints"
     },
     {
@@ -13110,7 +13110,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_tests_auth",
-      "community": 236,
+      "community": 65,
       "norm_label": "tests_auth.py"
     },
     {
@@ -13140,7 +13140,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "integrations_tests_auth_socleshield",
-      "community": 236,
+      "community": 65,
       "norm_label": "socleshield"
     },
     {
@@ -13150,7 +13150,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "integrations_tests_auth_socleshield_setup",
-      "community": 236,
+      "community": 65,
       "norm_label": ".setup()"
     },
     {
@@ -13180,7 +13180,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest",
-      "community": 236,
+      "community": 65,
       "norm_label": "echeancedujetontest"
     },
     {
@@ -13200,7 +13200,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest_test_un_jeton_opaque_rend_une_echeance_inconnue",
-      "community": 236,
+      "community": 65,
       "norm_label": ".test_un_jeton_opaque_rend_une_echeance_inconnue()"
     },
     {
@@ -13210,7 +13210,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest_test_un_jwt_sans_exp_rend_une_echeance_inconnue",
-      "community": 11,
+      "community": 65,
       "norm_label": ".test_un_jwt_sans_exp_rend_une_echeance_inconnue()"
     },
     {
@@ -13220,7 +13220,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest",
-      "community": 236,
+      "community": 65,
       "norm_label": "jetonutilisabletest"
     },
     {
@@ -13260,7 +13260,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest_test_sans_access_il_ny_a_rien_a_employer",
-      "community": 236,
+      "community": 65,
       "norm_label": ".test_sans_access_il_ny_a_rien_a_employer()"
     },
     {
@@ -13360,7 +13360,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "integrations_tests_auth_concurrencetest",
-      "community": 236,
+      "community": 65,
       "norm_label": "concurrencetest"
     },
     {
@@ -13380,7 +13380,7 @@
       "source_location": "L270",
       "_origin": "ast",
       "id": "integrations_tests_auth_rejeuapres401test",
-      "community": 236,
+      "community": 265,
       "norm_label": "rejeuapres401test"
     },
     {
@@ -13510,7 +13510,7 @@
       "source_location": "L418",
       "_origin": "ast",
       "id": "integrations_tests_auth_entetesdesessiontest",
-      "community": 11,
+      "community": 65,
       "norm_label": "entetesdesessiontest"
     },
     {
@@ -13540,7 +13540,7 @@
       "source_location": "L449",
       "_origin": "ast",
       "id": "integrations_tests_auth_entetesdesessiontest_test_sans_session_aucun_entete_dautorisation_nest_pose",
-      "community": 11,
+      "community": 65,
       "norm_label": ".test_sans_session_aucun_entete_dautorisation_nest_pose()"
     },
     {
@@ -13560,7 +13560,7 @@
       "source_location": "L462",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest",
-      "community": 11,
+      "community": 1,
       "norm_label": "endpointreauthtest"
     },
     {
@@ -13570,7 +13570,7 @@
       "source_location": "L474",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_setup",
-      "community": 11,
+      "community": 1,
       "norm_label": ".setup()"
     },
     {
@@ -13580,7 +13580,7 @@
       "source_location": "L491",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_url",
-      "community": 11,
+      "community": 1,
       "norm_label": "._url()"
     },
     {
@@ -13590,7 +13590,7 @@
       "source_location": "L500",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_shield_accepte",
-      "community": 11,
+      "community": 1,
       "norm_label": "._shield_accepte()"
     },
     {
@@ -13600,7 +13600,7 @@
       "source_location": "L513",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_shield_repond",
-      "community": 11,
+      "community": 1,
       "norm_label": "._shield_repond()"
     },
     {
@@ -13610,7 +13610,7 @@
       "source_location": "L517",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_shield_injoignable",
-      "community": 11,
+      "community": 1,
       "norm_label": "._shield_injoignable()"
     },
     {
@@ -13620,7 +13620,7 @@
       "source_location": "L521",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_secret_stocke",
-      "community": 11,
+      "community": 1,
       "norm_label": "._secret_stocke()"
     },
     {
@@ -13630,7 +13630,7 @@
       "source_location": "L525",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_deposer_refresh",
-      "community": 11,
+      "community": 1,
       "norm_label": "._deposer_refresh()"
     },
     {
@@ -13640,7 +13640,7 @@
       "source_location": "L533",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_couple_accepte_par_shield_est_depose_et_letat_revient_valide",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_couple_accepte_par_shield_est_depose_et_letat_revient_valide()"
     },
     {
@@ -13650,7 +13650,7 @@
       "source_location": "L547",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_le_jeton_enregistre_est_celui_que_shield_vient_demettre",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_le_jeton_enregistre_est_celui_que_shield_vient_demettre()"
     },
     {
@@ -13660,7 +13660,7 @@
       "source_location": "L562",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_couple_refuse_par_shield_rend_401_et_nest_pas_ecrit",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_couple_refuse_par_shield_rend_401_et_nest_pas_ecrit()"
     },
     {
@@ -13670,7 +13670,7 @@
       "source_location": "L574",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_couple_refuse_ne_condamne_pas_la_session_en_place",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_couple_refuse_ne_condamne_pas_la_session_en_place()"
     },
     {
@@ -13680,7 +13680,7 @@
       "source_location": "L595",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_shield_injoignable_pendant_un_depot_rend_503_et_necrit_rien",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_shield_injoignable_pendant_un_depot_rend_503_et_necrit_rien()"
     },
     {
@@ -13690,7 +13690,7 @@
       "source_location": "L605",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_certificat_non_verifiable_est_nomme_pour_ce_quil_est",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_certificat_non_verifiable_est_nomme_pour_ce_quil_est()"
     },
     {
@@ -13700,7 +13700,7 @@
       "source_location": "L621",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_une_panne_shield_pendant_un_depot_rend_502",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_une_panne_shield_pendant_un_depot_rend_502()"
     },
     {
@@ -13710,7 +13710,7 @@
       "source_location": "L628",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_quota_shield_pendant_un_depot_rend_429",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_quota_shield_pendant_un_depot_rend_429()"
     },
     {
@@ -13720,7 +13720,7 @@
       "source_location": "L636",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_la_reponse_ne_renvoie_jamais_les_jetons",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_la_reponse_ne_renvoie_jamais_les_jetons()"
     },
     {
@@ -13730,7 +13730,7 @@
       "source_location": "L649",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_access_sans_refresh_est_refuse_en_400",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_access_sans_refresh_est_refuse_en_400()"
     },
     {
@@ -13740,7 +13740,7 @@
       "source_location": "L657",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_refresh_sans_access_est_refuse_de_meme",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_refresh_sans_access_est_refuse_de_meme()"
     },
     {
@@ -13750,7 +13750,7 @@
       "source_location": "L661",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_champ_manquant_natteint_jamais_shield",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_champ_manquant_natteint_jamais_shield()"
     },
     {
@@ -13760,7 +13760,7 @@
       "source_location": "L669",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_sans_jeton_fourni_le_renouvellement_est_force",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_sans_jeton_fourni_le_renouvellement_est_force()"
     },
     {
@@ -13770,7 +13770,7 @@
       "source_location": "L676",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_refresh_refuse_rend_401_avec_sa_cause",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_refresh_refuse_rend_401_avec_sa_cause()"
     },
     {
@@ -13780,7 +13780,7 @@
       "source_location": "L687",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_quota_shield_est_rendu_comme_tel",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_quota_shield_est_rendu_comme_tel()"
     },
     {
@@ -13790,7 +13790,7 @@
       "source_location": "L694",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_sans_aucun_refresh_enregistre_le_renouvellement_rend_409",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_sans_aucun_refresh_enregistre_le_renouvellement_rend_409()"
     },
     {
@@ -13800,7 +13800,7 @@
       "source_location": "L708",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_role_sans_droit_dintegration_recoit_403",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_role_sans_droit_dintegration_recoit_403()"
     },
     {
@@ -13810,7 +13810,7 @@
       "source_location": "L713",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_la_reauthentification_est_tracee_sans_secret",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_la_reauthentification_est_tracee_sans_secret()"
     },
     {
@@ -13820,7 +13820,7 @@
       "source_location": "L726",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_depot_refuse_est_trace_avec_sa_cause",
-      "community": 11,
+      "community": 1,
       "norm_label": ".test_un_depot_refuse_est_trace_avec_sa_cause()"
     },
     {
@@ -13830,7 +13830,7 @@
       "source_location": "L736",
       "_origin": "ast",
       "id": "integrations_tests_auth_etatsansaccesstest",
-      "community": 236,
+      "community": 65,
       "norm_label": "etatsansaccesstest"
     },
     {
@@ -13840,7 +13840,7 @@
       "source_location": "L739",
       "_origin": "ast",
       "id": "integrations_tests_auth_etatsansaccesstest_test_un_refresh_seul_donne_renouvelable_et_non_valide",
-      "community": 11,
+      "community": 65,
       "norm_label": ".test_un_refresh_seul_donne_renouvelable_et_non_valide()"
     },
     {
@@ -13880,7 +13880,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_1",
-      "community": 236,
+      "community": 65,
       "norm_label": "la session shield se prolonge-t-elle seule, sans jamais boucler ni fuir ?  contr"
     },
     {
@@ -13900,7 +13900,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_68",
-      "community": 236,
+      "community": 65,
       "norm_label": "savoir quand renouveler, sans que l'api ne le dise."
     },
     {
@@ -13910,7 +13910,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_77",
-      "community": 236,
+      "community": 65,
       "norm_label": "plutot que d'inventer une duree de vie : inconnue, et c'est shield qui         t"
     },
     {
@@ -13980,7 +13980,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_201",
-      "community": 236,
+      "community": 65,
       "norm_label": "un seul renouvellement, meme si dix appels le reclament ensemble.      shield le"
     },
     {
@@ -14000,7 +14000,7 @@
       "source_location": "L271",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_271",
-      "community": 236,
+      "community": 265,
       "norm_label": "401 \u2192 renouvellement \u2192 rejeu une fois \u2192 200. jamais de boucle."
     },
     {
@@ -14050,7 +14050,7 @@
       "source_location": "L419",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_419",
-      "community": 11,
+      "community": 65,
       "norm_label": "le chemin complet : de la source aux en-tetes http."
     },
     {
@@ -14070,7 +14070,7 @@
       "source_location": "L450",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_450",
-      "community": 11,
+      "community": 65,
       "norm_label": "mieux vaut pas d'en-tete qu'un en-tete vide : shield repondra 401, et la"
     },
     {
@@ -14080,7 +14080,7 @@
       "source_location": "L463",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_463",
-      "community": 11,
+      "community": 1,
       "norm_label": "l'action que la fiche appelle : depot d'un couple, ou renouvellement force."
     },
     {
@@ -14090,7 +14090,7 @@
       "source_location": "L548",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_548",
-      "community": 11,
+      "community": 1,
       "norm_label": "celui-la est vivant par construction, et son echeance est exacte.          conse"
     },
     {
@@ -14100,7 +14100,7 @@
       "source_location": "L575",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_575",
-      "community": 11,
+      "community": 1,
       "norm_label": "une frappe malheureuse ne doit pas detruire une session qui fonctionne."
     },
     {
@@ -14110,7 +14110,7 @@
       "source_location": "L596",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_596",
-      "community": 11,
+      "community": 1,
       "norm_label": "ni refus, ni faute de saisie : renvoyer 401 enverrait chercher un jeton."
     },
     {
@@ -14120,7 +14120,7 @@
       "source_location": "L606",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_606",
-      "community": 11,
+      "community": 1,
       "norm_label": "symptome cryptique, cause banale : le magasin de certificats du conteneur."
     },
     {
@@ -14130,7 +14130,7 @@
       "source_location": "L637",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_637",
-      "community": 11,
+      "community": 1,
       "norm_label": "un jeton renvoye a l'ecran finirait dans un cache ou une capture."
     },
     {
@@ -14140,7 +14140,7 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_650",
-      "community": 11,
+      "community": 1,
       "norm_label": "c'est exactement le probleme qu'on supprime : une session sans recours."
     },
     {
@@ -14150,7 +14150,7 @@
       "source_location": "L662",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_662",
-      "community": 11,
+      "community": 1,
       "norm_label": "un 400 de saisie ne doit pas consommer le quota de renouvellement."
     },
     {
@@ -14160,7 +14160,7 @@
       "source_location": "L677",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_677",
-      "community": 11,
+      "community": 1,
       "norm_label": "401 et non 500 : le serveur a bien travaille, c'est shield qui refuse."
     },
     {
@@ -14170,7 +14170,7 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_695",
-      "community": 11,
+      "community": 1,
       "norm_label": "rien a renouveler : c'est l'etat de la source, pas un refus de shield."
     },
     {
@@ -14180,7 +14180,7 @@
       "source_location": "L709",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_709",
-      "community": 11,
+      "community": 1,
       "norm_label": "le masquage cote ecran ne fermerait pas cette porte."
     },
     {
@@ -14190,7 +14190,7 @@
       "source_location": "L737",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_737",
-      "community": 236,
+      "community": 65,
       "norm_label": "deux cas que la premiere version de `etat_auth` jugeait a tort \u00ab valide \u00bb."
     },
     {
@@ -14200,7 +14200,7 @@
       "source_location": "L740",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_740",
-      "community": 11,
+      "community": 65,
       "norm_label": "aucun jeton d'acces n'a encore ete obtenu : il n'y a pas de session, mais"
     },
     {
@@ -14930,7 +14930,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_settings",
-      "community": 32,
+      "community": 221,
       "norm_label": "settings.py"
     },
     {
@@ -14940,7 +14940,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_settings_rationale_1",
-      "community": 32,
+      "community": 221,
       "norm_label": "reglages django de k-insight (backend governance).  deux bases logiques (adr-000"
     },
     {
@@ -15321,7 +15321,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_core",
-      "community": 4,
+      "community": 221,
       "norm_label": "core.py"
     },
     {
@@ -15341,7 +15341,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "valueerror",
-      "community": 269,
+      "community": 299,
       "norm_label": "valueerror"
     },
     {
@@ -15391,7 +15391,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "kpi_core_metricresult",
-      "community": 13,
+      "community": 221,
       "norm_label": "metricresult"
     },
     {
@@ -15441,7 +15441,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_core_rationale_1",
-      "community": 4,
+      "community": 221,
       "norm_label": "types et helpers transverses du moteur de kpi.  conventions (coherentes avec aug"
     },
     {
@@ -15491,7 +15491,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "kpi_core_rationale_52",
-      "community": 13,
+      "community": 221,
       "norm_label": "resultat d'un kpi : valeur + unite + contexte (periode, dimensions).      `value"
     },
     {
@@ -15661,7 +15661,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_hr",
-      "community": 13,
+      "community": 221,
       "norm_label": "hr.py"
     },
     {
@@ -15791,7 +15791,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "kpi_hr_headcount_result",
-      "community": 13,
+      "community": 221,
       "norm_label": "headcount_result()"
     },
     {
@@ -15811,7 +15811,7 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "kpi_hr_payroll_mass_result",
-      "community": 13,
+      "community": 221,
       "norm_label": "payroll_mass_result()"
     },
     {
@@ -15821,7 +15821,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "kpi_hr_rationale_1",
-      "community": 13,
+      "community": 221,
       "norm_label": "kpi de gouvernance rh (domaine pur, teste).  indicateurs couverts par le 1er inc"
     },
     {
@@ -15961,7 +15961,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "kpi_hr_mart_month_start",
-      "community": 30,
+      "community": 4,
       "norm_label": "_month_start()"
     },
     {
@@ -16971,7 +16971,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_turnovertest",
-      "community": 14,
+      "community": 13,
       "norm_label": "turnovertest"
     },
     {
@@ -16981,7 +16981,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_turnovertest_test_turnover_rate",
-      "community": 14,
+      "community": 13,
       "norm_label": ".test_turnover_rate()"
     },
     {
@@ -16991,7 +16991,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "tests_test_hr_kpis_turnovertest_test_turnover_effectif_nul",
-      "community": 14,
+      "community": 13,
       "norm_label": ".test_turnover_effectif_nul()"
     },
     {
@@ -17221,7 +17221,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tests_test_hr_mart_reconciliation_reconciliationtest_test_masse_salariale_reconcilie",
-      "community": 221,
+      "community": 4,
       "norm_label": ".test_masse_salariale_reconcilie()"
     },
     {
@@ -17241,7 +17241,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "tests_test_hr_mart_reconciliation_reconciliationtest_test_ventilation_filiale_reconcilie",
-      "community": 4,
+      "community": 221,
       "norm_label": ".test_ventilation_filiale_reconcilie()"
     },
     {
@@ -17911,7 +17911,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "api_governance_useaiquery",
-      "community": 276,
+      "community": 277,
       "norm_label": "useaiquery()"
     },
     {
@@ -17921,7 +17921,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "api_governance_downloadgroupexport",
-      "community": 292,
+      "community": 8,
       "norm_label": "downloadgroupexport()"
     },
     {
@@ -18011,7 +18011,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_globalfilters",
-      "community": 67,
+      "community": 267,
       "norm_label": "globalfilters.tsx"
     },
     {
@@ -18021,7 +18021,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_globalfilters_years",
-      "community": 67,
+      "community": 267,
       "norm_label": "years"
     },
     {
@@ -18031,7 +18031,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_globalfilters_quarters",
-      "community": 67,
+      "community": 267,
       "norm_label": "quarters"
     },
     {
@@ -18041,7 +18041,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_globalfilters_select",
-      "community": 67,
+      "community": 267,
       "norm_label": "select()"
     },
     {
@@ -18051,7 +18051,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "components_globalfilters_globalfilters",
-      "community": 67,
+      "community": 267,
       "norm_label": "globalfilters()"
     },
     {
@@ -18061,7 +18061,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_kpicard",
-      "community": 284,
+      "community": 66,
       "norm_label": "kpicard.tsx"
     },
     {
@@ -18071,7 +18071,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_kpicard_kpicardprops",
-      "community": 284,
+      "community": 66,
       "norm_label": "kpicardprops"
     },
     {
@@ -18081,7 +18081,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "components_kpicard_tonering",
-      "community": 284,
+      "community": 66,
       "norm_label": "tonering"
     },
     {
@@ -18091,7 +18091,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_kpicard_kpicard",
-      "community": 284,
+      "community": 66,
       "norm_label": "kpicard()"
     },
     {
@@ -18101,7 +18101,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart",
-      "community": 1,
+      "community": 66,
       "norm_label": "payrollbysubsidiarychart.tsx"
     },
     {
@@ -18111,7 +18111,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_props",
-      "community": 1,
+      "community": 66,
       "norm_label": "props"
     },
     {
@@ -18121,7 +18121,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_subsidiary_labels",
-      "community": 1,
+      "community": 66,
       "norm_label": "subsidiary_labels"
     },
     {
@@ -18131,7 +18131,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_payrollbysubsidiarychart",
-      "community": 1,
+      "community": 66,
       "norm_label": "payrollbysubsidiarychart()"
     },
     {
@@ -18201,7 +18201,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "charts_base_chartframeprops",
-      "community": 86,
+      "community": 104,
       "norm_label": "chartframeprops"
     },
     {
@@ -18241,7 +18241,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "charts_index_commonprops",
-      "community": 86,
+      "community": 104,
       "norm_label": "commonprops"
     },
     {
@@ -18311,7 +18311,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_avatar",
-      "community": 0,
+      "community": 277,
       "norm_label": "avatar.tsx"
     },
     {
@@ -18321,7 +18321,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_avatar_avatar",
-      "community": 0,
+      "community": 277,
       "norm_label": "avatar()"
     },
     {
@@ -18381,7 +18381,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_circlebutton",
-      "community": 0,
+      "community": 277,
       "norm_label": "circlebutton.tsx"
     },
     {
@@ -18391,7 +18391,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "chrome_circlebutton_circlebuttonprops",
-      "community": 0,
+      "community": 277,
       "norm_label": "circlebuttonprops"
     },
     {
@@ -18401,7 +18401,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "chrome_circlebutton_circlebutton",
-      "community": 0,
+      "community": 277,
       "norm_label": "circlebutton()"
     },
     {
@@ -18411,7 +18411,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "chrome_headeractions",
-      "community": 0,
+      "community": 277,
       "norm_label": "headeractions.tsx"
     },
     {
@@ -18581,7 +18581,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "chrome_usermenu_usermenu",
-      "community": 277,
+      "community": 292,
       "norm_label": "usermenu()"
     },
     {
@@ -18671,7 +18671,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icons",
-      "community": 301,
+      "community": 66,
       "norm_label": "icons.tsx"
     },
     {
@@ -18681,7 +18681,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_icons_iconprops",
-      "community": 301,
+      "community": 66,
       "norm_label": "iconprops"
     },
     {
@@ -18691,7 +18691,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_icons_base",
-      "community": 301,
+      "community": 66,
       "norm_label": "base()"
     },
     {
@@ -18701,7 +18701,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_icons_iconusers",
-      "community": 301,
+      "community": 66,
       "norm_label": "iconusers()"
     },
     {
@@ -18711,7 +18711,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "components_icons_iconwallet",
-      "community": 301,
+      "community": 66,
       "norm_label": "iconwallet()"
     },
     {
@@ -18721,7 +18721,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_icons_iconarrowdownright",
-      "community": 301,
+      "community": 66,
       "norm_label": "iconarrowdownright()"
     },
     {
@@ -18731,7 +18731,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "components_icons_icontrend",
-      "community": 301,
+      "community": 66,
       "norm_label": "icontrend()"
     },
     {
@@ -18741,7 +18741,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "components_icons_iconshield",
-      "community": 301,
+      "community": 66,
       "norm_label": "iconshield()"
     },
     {
@@ -18851,7 +18851,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_dashboardlayout",
-      "community": 12,
+      "community": 138,
       "norm_label": "dashboardlayout.tsx"
     },
     {
@@ -18861,7 +18861,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "navigation_dashboardlayout_dashboardlayoutprops",
-      "community": 12,
+      "community": 138,
       "norm_label": "dashboardlayoutprops"
     },
     {
@@ -18871,7 +18871,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "navigation_dashboardlayout_pages_reelles",
-      "community": 12,
+      "community": 138,
       "norm_label": "pages_reelles"
     },
     {
@@ -18881,7 +18881,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "navigation_dashboardlayout_dashboardlayout",
-      "community": 12,
+      "community": 138,
       "norm_label": "dashboardlayout()"
     },
     {
@@ -18931,7 +18931,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters",
-      "community": 16,
+      "community": 267,
       "norm_label": "globaldashboardfilters.tsx"
     },
     {
@@ -18941,7 +18941,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_filtertrigger",
-      "community": 67,
+      "community": 267,
       "norm_label": "filtertrigger()"
     },
     {
@@ -18951,7 +18951,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_periodfilter",
-      "community": 67,
+      "community": 267,
       "norm_label": "periodfilter()"
     },
     {
@@ -18961,7 +18961,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_subsidiaryfilter",
-      "community": 67,
+      "community": 267,
       "norm_label": "subsidiaryfilter()"
     },
     {
@@ -18971,7 +18971,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_motifs",
-      "community": 16,
+      "community": 267,
       "norm_label": "motifs"
     },
     {
@@ -18981,7 +18981,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_filtreindisponible",
-      "community": 67,
+      "community": 267,
       "norm_label": "filtreindisponible()"
     },
     {
@@ -19051,7 +19051,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_requireauth",
-      "community": 66,
+      "community": 292,
       "norm_label": "requireauth.tsx"
     },
     {
@@ -19061,7 +19061,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "navigation_requireauth_requireauth",
-      "community": 66,
+      "community": 292,
       "norm_label": "requireauth()"
     },
     {
@@ -19071,7 +19071,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "navigation_requireauth_rootredirect",
-      "community": 66,
+      "community": 292,
       "norm_label": "rootredirect()"
     },
     {
@@ -19121,7 +19121,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_aiquerybox",
-      "community": 276,
+      "community": 277,
       "norm_label": "aiquerybox.tsx"
     },
     {
@@ -19131,7 +19131,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "overview_aiquerybox_samples",
-      "community": 276,
+      "community": 277,
       "norm_label": "samples"
     },
     {
@@ -19141,7 +19141,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_aiquerybox_aiquerybox",
-      "community": 276,
+      "community": 277,
       "norm_label": "aiquerybox()"
     },
     {
@@ -19731,7 +19731,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_saleshistogram",
-      "community": 276,
+      "community": 66,
       "norm_label": "saleshistogram.tsx"
     },
     {
@@ -19741,7 +19741,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "overview_saleshistogram_saleshistogramprops",
-      "community": 276,
+      "community": 66,
       "norm_label": "saleshistogramprops"
     },
     {
@@ -19751,7 +19751,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "overview_saleshistogram_fallback",
-      "community": 276,
+      "community": 66,
       "norm_label": "fallback"
     },
     {
@@ -19761,7 +19761,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "overview_saleshistogram_share_colors",
-      "community": 276,
+      "community": 66,
       "norm_label": "share_colors"
     },
     {
@@ -19771,7 +19771,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "overview_saleshistogram_makerng",
-      "community": 276,
+      "community": 66,
       "norm_label": "makerng()"
     },
     {
@@ -19781,7 +19781,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "overview_saleshistogram_buildspectrum",
-      "community": 276,
+      "community": 66,
       "norm_label": "buildspectrum()"
     },
     {
@@ -19791,7 +19791,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "overview_saleshistogram_gridlines",
-      "community": 276,
+      "community": 66,
       "norm_label": "gridlines()"
     },
     {
@@ -19801,7 +19801,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "overview_saleshistogram_saleshistogram",
-      "community": 276,
+      "community": 66,
       "norm_label": "saleshistogram()"
     },
     {
@@ -19811,7 +19811,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_shieldhrkpis",
-      "community": 129,
+      "community": 74,
       "norm_label": "shieldhrkpis.tsx"
     },
     {
@@ -19821,7 +19821,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "overview_shieldhrkpis_placeholders",
-      "community": 129,
+      "community": 74,
       "norm_label": "placeholders"
     },
     {
@@ -19831,7 +19831,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "overview_shieldhrkpis_grid",
-      "community": 129,
+      "community": 74,
       "norm_label": "grid()"
     },
     {
@@ -19841,7 +19841,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_shieldhrkpis_shieldhrkpis",
-      "community": 129,
+      "community": 74,
       "norm_label": "shieldhrkpis()"
     },
     {
@@ -19981,7 +19981,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "overview_icons_arrowupright",
-      "community": 0,
+      "community": 8,
       "norm_label": "arrowupright()"
     },
     {
@@ -20251,7 +20251,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_card",
-      "community": 284,
+      "community": 66,
       "norm_label": "card.tsx"
     },
     {
@@ -20261,7 +20261,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "ui_card_card",
-      "community": 284,
+      "community": 66,
       "norm_label": "card()"
     },
     {
@@ -20271,7 +20271,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "ui_card_cardheader",
-      "community": 284,
+      "community": 66,
       "norm_label": "cardheader()"
     },
     {
@@ -20281,7 +20281,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "ui_card_cardtitle",
-      "community": 284,
+      "community": 66,
       "norm_label": "cardtitle()"
     },
     {
@@ -20291,7 +20291,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "ui_card_cardcontent",
-      "community": 284,
+      "community": 66,
       "norm_label": "cardcontent()"
     },
     {
@@ -20361,7 +20361,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "ui_insight_decisioninsight",
-      "community": 78,
+      "community": 138,
       "norm_label": "decisioninsight"
     },
     {
@@ -20431,7 +20431,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "ui_kit_datastate",
-      "community": 138,
+      "community": 104,
       "norm_label": "datastate"
     },
     {
@@ -20511,7 +20511,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "ui_kit_statebadge",
-      "community": 129,
+      "community": 74,
       "norm_label": "statebadge()"
     },
     {
@@ -20591,7 +20591,7 @@
       "source_location": "L261",
       "_origin": "ast",
       "id": "ui_kit_emptychartstate",
-      "community": 86,
+      "community": 74,
       "norm_label": "emptychartstate()"
     },
     {
@@ -20688,7 +20688,7 @@
       "label": "photoHeroes",
       "file_type": "code",
       "source_file": "frontend/web/src/config/domainHome.config.ts",
-      "source_location": "L36",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "config_domainhome_config_photoheroes",
       "community": 80,
@@ -20698,7 +20698,7 @@
       "label": "domainHeroes",
       "file_type": "code",
       "source_file": "frontend/web/src/config/domainHome.config.ts",
-      "source_location": "L110",
+      "source_location": "L122",
       "_origin": "ast",
       "id": "config_domainhome_config_domainheroes",
       "community": 80,
@@ -20708,7 +20708,7 @@
       "label": "getDomainHero()",
       "file_type": "code",
       "source_file": "frontend/web/src/config/domainHome.config.ts",
-      "source_location": "L112",
+      "source_location": "L124",
       "_origin": "ast",
       "id": "config_domainhome_config_getdomainhero",
       "community": 16,
@@ -21131,7 +21131,7 @@
       "source_location": "L334",
       "_origin": "ast",
       "id": "config_modules_config_getsidebaritemfrommodulekey",
-      "community": 0,
+      "community": 16,
       "norm_label": "getsidebaritemfrommodulekey()"
     },
     {
@@ -21161,7 +21161,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "layouts_applayout",
-      "community": 301,
+      "community": 66,
       "norm_label": "applayout.tsx"
     },
     {
@@ -21171,7 +21171,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "layouts_applayout_nav",
-      "community": 301,
+      "community": 66,
       "norm_label": "nav"
     },
     {
@@ -21191,7 +21191,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "adapters_governance",
-      "community": 78,
+      "community": 100,
       "norm_label": "governance.ts"
     },
     {
@@ -21491,7 +21491,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_auth_isauthenticated",
-      "community": 66,
+      "community": 292,
       "norm_label": "isauthenticated()"
     },
     {
@@ -21501,7 +21501,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_auth_getstoreduser",
-      "community": 66,
+      "community": 292,
       "norm_label": "getstoreduser()"
     },
     {
@@ -21541,7 +21541,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format",
-      "community": 1,
+      "community": 66,
       "norm_label": "format.ts"
     },
     {
@@ -21551,7 +21551,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "lib_format_xof",
-      "community": 1,
+      "community": 66,
       "norm_label": "xof"
     },
     {
@@ -21561,7 +21561,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_format_formatxof",
-      "community": 1,
+      "community": 66,
       "norm_label": "formatxof()"
     },
     {
@@ -21571,7 +21571,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_format_compact",
-      "community": 1,
+      "community": 66,
       "norm_label": "compact"
     },
     {
@@ -21581,7 +21581,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_format_formatcompact",
-      "community": 276,
+      "community": 66,
       "norm_label": "formatcompact()"
     },
     {
@@ -21591,7 +21591,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "lib_format_formatint",
-      "community": 1,
+      "community": 66,
       "norm_label": "formatint()"
     },
     {
@@ -21601,7 +21601,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_format_formatsigned",
-      "community": 1,
+      "community": 66,
       "norm_label": "formatsigned()"
     },
     {
@@ -21891,7 +21891,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_kmetric_datalevel",
-      "community": 78,
+      "community": 138,
       "norm_label": "datalevel"
     },
     {
@@ -21911,7 +21911,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "lib_kmetric_kseriespoint",
-      "community": 86,
+      "community": 138,
       "norm_label": "kseriespoint"
     },
     {
@@ -21921,7 +21921,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "lib_kmetric_kbreakdownitem",
-      "community": 78,
+      "community": 104,
       "norm_label": "kbreakdownitem"
     },
     {
@@ -22311,7 +22311,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_motion",
-      "community": 276,
+      "community": 277,
       "norm_label": "motion.ts"
     },
     {
@@ -22321,7 +22321,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_motion_ease_out",
-      "community": 276,
+      "community": 277,
       "norm_label": "ease_out"
     },
     {
@@ -22451,7 +22451,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_shieldhr",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldhr.ts"
     },
     {
@@ -22461,7 +22461,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldkpikey",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldkpikey"
     },
     {
@@ -22471,7 +22471,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldkpi",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldkpi"
     },
     {
@@ -22481,7 +22481,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldsiterow",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldsiterow"
     },
     {
@@ -22491,7 +22491,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldinsight",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldinsight"
     },
     {
@@ -22501,7 +22501,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldhrresponse",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldhrresponse"
     },
     {
@@ -22511,7 +22511,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldhrquery",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldhrquery"
     },
     {
@@ -22521,7 +22521,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "lib_shieldhr_useshieldhrkpis",
-      "community": 129,
+      "community": 74,
       "norm_label": "useshieldhrkpis()"
     },
     {
@@ -22551,7 +22551,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldseriespoint",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldseriespoint"
     },
     {
@@ -22561,7 +22561,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldseriesresponse",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldseriesresponse"
     },
     {
@@ -22571,7 +22571,7 @@
       "source_location": "L194",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldseriesquery",
-      "community": 138,
+      "community": 104,
       "norm_label": "shieldseriesquery"
     },
     {
@@ -22581,7 +22581,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "lib_shieldhr_series_windows",
-      "community": 138,
+      "community": 104,
       "norm_label": "series_windows"
     },
     {
@@ -22591,7 +22591,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "lib_shieldhr_serieswindow",
-      "community": 138,
+      "community": 104,
       "norm_label": "serieswindow"
     },
     {
@@ -22601,7 +22601,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "lib_shieldhr_periode",
-      "community": 138,
+      "community": 104,
       "norm_label": "periode"
     },
     {
@@ -22691,7 +22691,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_utils",
-      "community": 284,
+      "community": 66,
       "norm_label": "utils.ts"
     },
     {
@@ -22701,7 +22701,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_utils_cn",
-      "community": 284,
+      "community": 66,
       "norm_label": "cn()"
     },
     {
@@ -22908,7 +22908,7 @@
       "label": "CHIP_COLORS",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/DomainHome.tsx",
-      "source_location": "L26",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "pages_domainhome_chip_colors",
       "community": 277,
@@ -22918,40 +22918,50 @@
       "label": "PeriodMenu()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/DomainHome.tsx",
-      "source_location": "L28",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "pages_domainhome_periodmenu",
-      "community": 67,
+      "community": 267,
       "norm_label": "periodmenu()"
     },
     {
       "label": "ActionsMenu()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/DomainHome.tsx",
-      "source_location": "L74",
+      "source_location": "L76",
       "_origin": "ast",
       "id": "pages_domainhome_actionsmenu",
-      "community": 67,
+      "community": 267,
       "norm_label": "actionsmenu()"
     },
     {
       "label": "SignalsCard()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/DomainHome.tsx",
-      "source_location": "L114",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "pages_domainhome_signalscard",
       "community": 277,
       "norm_label": "signalscard()"
     },
     {
+      "label": "ValeurVedette()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L165",
+      "_origin": "ast",
+      "id": "pages_domainhome_valeurvedette",
+      "community": 66,
+      "norm_label": "valeurvedette()"
+    },
+    {
       "label": "DomainHome()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/DomainHome.tsx",
-      "source_location": "L152",
+      "source_location": "L208",
       "_origin": "ast",
       "id": "pages_domainhome_domainhome",
-      "community": 16,
+      "community": 277,
       "norm_label": "domainhome()"
     },
     {
@@ -23091,7 +23101,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "pages_governanceoverview_periodmenu",
-      "community": 67,
+      "community": 267,
       "norm_label": "periodmenu()"
     },
     {
@@ -23131,7 +23141,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_hrdashboard",
-      "community": 284,
+      "community": 66,
       "norm_label": "hrdashboard.tsx"
     },
     {
@@ -23141,7 +23151,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "pages_hrdashboard_periodlabel",
-      "community": 1,
+      "community": 66,
       "norm_label": "periodlabel()"
     },
     {
@@ -23151,7 +23161,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "pages_hrdashboard_hrdashboard",
-      "community": 1,
+      "community": 66,
       "norm_label": "hrdashboard()"
     },
     {
@@ -23161,7 +23171,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "pages_hrdashboard_skeletongrid",
-      "community": 284,
+      "community": 66,
       "norm_label": "skeletongrid()"
     },
     {
@@ -23171,7 +23181,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_loginpage",
-      "community": 276,
+      "community": 277,
       "norm_label": "loginpage.tsx"
     },
     {
@@ -23181,7 +23191,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "pages_loginpage_loginpage",
-      "community": 276,
+      "community": 277,
       "norm_label": "loginpage()"
     },
     {
@@ -23241,7 +23251,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "pages_modulepage_isunavailable",
-      "community": 1,
+      "community": 66,
       "norm_label": "isunavailable()"
     },
     {
@@ -23291,7 +23301,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "pages_modulepage_kpicard",
-      "community": 1,
+      "community": 66,
       "norm_label": "kpicard()"
     },
     {
@@ -23871,7 +23881,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "pwa_usenetwork_useonlinestatus",
-      "community": 129,
+      "community": 74,
       "norm_label": "useonlinestatus()"
     },
     {
@@ -23941,7 +23951,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "store_filters",
-      "community": 138,
+      "community": 267,
       "norm_label": "filters.ts"
     },
     {
@@ -23951,7 +23961,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "store_filters_filtersstate",
-      "community": 138,
+      "community": 267,
       "norm_label": "filtersstate"
     },
     {
@@ -23961,7 +23971,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "store_filters_usefilters",
-      "community": 67,
+      "community": 267,
       "norm_label": "usefilters"
     },
     {
@@ -23971,7 +23981,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "store_filters_bornesdutrimestre",
-      "community": 138,
+      "community": 267,
       "norm_label": "bornesdutrimestre()"
     },
     {
@@ -23981,7 +23991,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "store_filters_iso",
-      "community": 138,
+      "community": 267,
       "norm_label": "iso()"
     },
     {
@@ -23991,7 +24001,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "store_filters_libelleperiode",
-      "community": 138,
+      "community": 267,
       "norm_label": "libelleperiode()"
     },
     {
@@ -26709,7 +26719,7 @@
       "source_location": "L2026",
       "_origin": "ast",
       "id": "docs_changelog_6_23_1",
-      "community": 62,
+      "community": 260,
       "norm_label": "6.23.1"
     },
     {
@@ -26719,7 +26729,7 @@
       "source_location": "L2028",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2028",
-      "community": 62,
+      "community": 260,
       "norm_label": "patch changes"
     },
     {
@@ -26759,7 +26769,7 @@
       "source_location": "L2047",
       "_origin": "ast",
       "id": "docs_changelog_6_22_3",
-      "community": 306,
+      "community": 62,
       "norm_label": "6.22.3"
     },
     {
@@ -26769,7 +26779,7 @@
       "source_location": "L2049",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2049",
-      "community": 306,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -35330,9 +35340,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests",
-      "target": "accounts_tests_subsidiariesapitest",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest"
     },
     {
       "relation": "rationale_for",
@@ -35460,9 +35470,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "testcase",
-      "confidence_score": 1.0
+      "target": "testcase"
     },
     {
       "relation": "inherits",
@@ -35770,9 +35780,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1875",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "testcase",
-      "confidence_score": 1.0
+      "target": "testcase"
     },
     {
       "relation": "inherits",
@@ -36144,9 +36154,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_rationale_129",
-      "target": "accounts_tests_subsidiariesapitest",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest"
     },
     {
       "relation": "method",
@@ -36154,9 +36164,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_get",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_get"
     },
     {
       "relation": "method",
@@ -36164,9 +36174,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_setup",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_setup"
     },
     {
       "relation": "method",
@@ -36174,9 +36184,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L160",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_test_authentification_requise",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_authentification_requise"
     },
     {
       "relation": "method",
@@ -36184,9 +36194,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_test_le_nom_affiche_vient_de_la_base_et_non_du_code",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_le_nom_affiche_vient_de_la_base_et_non_du_code"
     },
     {
       "relation": "method",
@@ -36194,9 +36204,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L163",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_test_le_perimetre_groupe_voit_les_filiales_actives",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_le_perimetre_groupe_voit_les_filiales_actives"
     },
     {
       "relation": "method",
@@ -36204,9 +36214,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L180",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_test_un_compte_sans_filiale_ne_recoit_aucune_option",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_un_compte_sans_filiale_ne_recoit_aucune_option"
     },
     {
       "relation": "method",
@@ -36214,9 +36224,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L170",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest",
-      "target": "accounts_tests_subsidiariesapitest_test_un_perimetre_restreint_ne_voit_que_le_sien",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_un_perimetre_restreint_ne_voit_que_le_sien"
     },
     {
       "relation": "calls",
@@ -36225,9 +36235,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L192",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest_test_le_nom_affiche_vient_de_la_base_et_non_du_code",
-      "target": "accounts_tests_subsidiariesapitest_get",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_get"
     },
     {
       "relation": "calls",
@@ -36236,9 +36246,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L164",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest_test_le_perimetre_groupe_voit_les_filiales_actives",
-      "target": "accounts_tests_subsidiariesapitest_get",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_get"
     },
     {
       "relation": "calls",
@@ -36247,9 +36257,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L184",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest_test_un_compte_sans_filiale_ne_recoit_aucune_option",
-      "target": "accounts_tests_subsidiariesapitest_get",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_get"
     },
     {
       "relation": "calls",
@@ -36258,9 +36268,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L171",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_subsidiariesapitest_test_un_perimetre_restreint_ne_voit_que_le_sien",
-      "target": "accounts_tests_subsidiariesapitest_get",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_get"
     },
     {
       "relation": "rationale_for",
@@ -36268,9 +36278,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_rationale_181",
-      "target": "accounts_tests_subsidiariesapitest_test_un_compte_sans_filiale_ne_recoit_aucune_option",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_un_compte_sans_filiale_ne_recoit_aucune_option"
     },
     {
       "relation": "rationale_for",
@@ -36278,9 +36288,9 @@
       "source_file": "backend/apps/accounts/tests.py",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_tests_rationale_189",
-      "target": "accounts_tests_subsidiariesapitest_test_le_nom_affiche_vient_de_la_base_et_non_du_code",
-      "confidence_score": 1.0
+      "target": "accounts_tests_subsidiariesapitest_test_le_nom_affiche_vient_de_la_base_et_non_du_code"
     },
     {
       "relation": "imports_from",
@@ -36311,9 +36321,9 @@
       "source_file": "backend/apps/accounts/urls.py",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_urls",
-      "target": "accounts_views_subsidiariesview",
-      "confidence_score": 1.0
+      "target": "accounts_views_subsidiariesview"
     },
     {
       "relation": "contains",
@@ -36331,9 +36341,9 @@
       "source_file": "backend/apps/accounts/views.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_views",
-      "target": "accounts_views_subsidiariesview",
-      "confidence_score": 1.0
+      "target": "accounts_views_subsidiariesview"
     },
     {
       "relation": "rationale_for",
@@ -36381,9 +36391,9 @@
       "source_file": "backend/apps/accounts/views.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_views_subsidiariesview",
-      "target": "apiview",
-      "confidence_score": 1.0
+      "target": "apiview"
     },
     {
       "relation": "inherits",
@@ -36631,9 +36641,9 @@
       "source_file": "backend/apps/accounts/views.py",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_views_rationale_34",
-      "target": "accounts_views_subsidiariesview",
-      "confidence_score": 1.0
+      "target": "accounts_views_subsidiariesview"
     },
     {
       "relation": "method",
@@ -36641,9 +36651,9 @@
       "source_file": "backend/apps/accounts/views.py",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "accounts_views_subsidiariesview",
-      "target": "accounts_views_subsidiariesview_get",
-      "confidence_score": 1.0
+      "target": "accounts_views_subsidiariesview_get"
     },
     {
       "relation": "imports_from",
@@ -55255,9 +55265,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_sourcetype",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcetype"
     },
     {
       "relation": "uses",
@@ -55325,9 +55335,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_sourcetype",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcetype"
     },
     {
       "relation": "uses",
@@ -55548,9 +55558,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_sourcestatus",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcestatus"
     },
     {
       "relation": "uses",
@@ -55618,9 +55628,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_sourcestatus",
-      "confidence_score": 0.5
+      "target": "integrations_models_sourcestatus"
     },
     {
       "relation": "uses",
@@ -55991,9 +56001,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_authmethod",
-      "confidence_score": 0.5
+      "target": "integrations_models_authmethod"
     },
     {
       "relation": "uses",
@@ -56061,9 +56071,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_authmethod",
-      "confidence_score": 0.5
+      "target": "integrations_models_authmethod"
     },
     {
       "relation": "uses",
@@ -56994,9 +57004,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_datasource",
-      "confidence_score": 0.5
+      "target": "integrations_models_datasource"
     },
     {
       "relation": "uses",
@@ -57064,9 +57074,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_datasource",
-      "confidence_score": 0.5
+      "target": "integrations_models_datasource"
     },
     {
       "relation": "uses",
@@ -57678,9 +57688,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_dataconnector",
-      "confidence_score": 0.5
+      "target": "integrations_models_dataconnector"
     },
     {
       "relation": "uses",
@@ -57748,9 +57758,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_dataconnector",
-      "confidence_score": 0.5
+      "target": "integrations_models_dataconnector"
     },
     {
       "relation": "uses",
@@ -58791,9 +58801,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_connectorcredential",
-      "confidence_score": 0.5
+      "target": "integrations_models_connectorcredential"
     },
     {
       "relation": "uses",
@@ -58894,9 +58904,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_connectorcredential",
-      "confidence_score": 0.5
+      "target": "integrations_models_connectorcredential"
     },
     {
       "relation": "uses",
@@ -59701,9 +59711,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_syncjob",
-      "confidence_score": 0.5
+      "target": "integrations_models_syncjob"
     },
     {
       "relation": "uses",
@@ -59771,9 +59781,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_syncjob",
-      "confidence_score": 0.5
+      "target": "integrations_models_syncjob"
     },
     {
       "relation": "uses",
@@ -60265,9 +60275,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_synclog",
-      "confidence_score": 0.5
+      "target": "integrations_models_synclog"
     },
     {
       "relation": "uses",
@@ -60335,9 +60345,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_synclog",
-      "confidence_score": 0.5
+      "target": "integrations_models_synclog"
     },
     {
       "relation": "uses",
@@ -61150,9 +61160,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_models_webhookevent",
-      "confidence_score": 0.5
+      "target": "integrations_models_webhookevent"
     },
     {
       "relation": "uses",
@@ -61220,9 +61230,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L22",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_models_webhookevent",
-      "confidence_score": 0.5
+      "target": "integrations_models_webhookevent"
     },
     {
       "relation": "uses",
@@ -64381,9 +64391,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L439",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield",
-      "target": "integrations_shield_fenetre_de_serie",
-      "confidence_score": 1.0
+      "target": "integrations_shield_fenetre_de_serie"
     },
     {
       "relation": "contains",
@@ -65384,9 +65394,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L439",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_fenetre_de_serie",
-      "target": "date",
-      "confidence_score": 1.0
+      "target": "date"
     },
     {
       "relation": "calls",
@@ -65406,9 +65416,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L486",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_fetch_attendance_series",
-      "target": "integrations_shield_fenetre_de_serie",
-      "confidence_score": 1.0
+      "target": "integrations_shield_fenetre_de_serie"
     },
     {
       "relation": "rationale_for",
@@ -65416,9 +65426,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L441",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rationale_441",
-      "target": "integrations_shield_fenetre_de_serie",
-      "confidence_score": 1.0
+      "target": "integrations_shield_fenetre_de_serie"
     },
     {
       "relation": "references",
@@ -65427,9 +65437,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L474",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_fetch_attendance_series",
-      "target": "date",
-      "confidence_score": 1.0
+      "target": "date"
     },
     {
       "relation": "references",
@@ -65503,9 +65513,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L476",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rationale_476",
-      "target": "integrations_shield_fetch_attendance_series",
-      "confidence_score": 1.0
+      "target": "integrations_shield_fetch_attendance_series"
     },
     {
       "relation": "imports",
@@ -65535,9 +65545,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L545",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rationale_545",
-      "target": "integrations_shield_presence_by_kind_from",
-      "confidence_score": 1.0
+      "target": "integrations_shield_presence_by_kind_from"
     },
     {
       "relation": "calls",
@@ -65578,9 +65588,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L602",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rationale_602",
-      "target": "integrations_shield_fetch_overview_kpis",
-      "confidence_score": 1.0
+      "target": "integrations_shield_fetch_overview_kpis"
     },
     {
       "relation": "imports",
@@ -65621,9 +65631,9 @@
       "source_file": "backend/apps/integrations/shield.py",
       "source_location": "L689",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rationale_689",
-      "target": "integrations_shield_shield_health",
-      "confidence_score": 1.0
+      "target": "integrations_shield_shield_health"
     },
     {
       "relation": "imports",
@@ -66788,9 +66798,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L36",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_shield_client_shielderror",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shielderror"
     },
     {
       "relation": "uses",
@@ -66869,9 +66879,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L36",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_shield_client_shielderror",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shielderror"
     },
     {
       "relation": "uses",
@@ -67601,9 +67611,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L36",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_shield_client_shieldclient",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shieldclient"
     },
     {
       "relation": "uses",
@@ -67682,9 +67692,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L36",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_shield_client_shieldclient",
-      "confidence_score": 0.5
+      "target": "integrations_shield_client_shieldclient"
     },
     {
       "relation": "uses",
@@ -68168,9 +68178,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_53",
-      "target": "integrations_shield_rules_pct",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_pct"
     },
     {
       "relation": "calls",
@@ -68200,9 +68210,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_62",
-      "target": "integrations_shield_rules_taux_presence",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_taux_presence"
     },
     {
       "relation": "calls",
@@ -68265,9 +68275,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_79",
-      "target": "integrations_shield_rules_part_retards",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_part_retards"
     },
     {
       "relation": "calls",
@@ -68308,9 +68318,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_86",
-      "target": "integrations_shield_rules_taux_ponctualite",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_taux_ponctualite"
     },
     {
       "relation": "imports",
@@ -68395,9 +68405,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_110",
-      "target": "integrations_shield_rules_insight",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_insight"
     },
     {
       "relation": "rationale_for",
@@ -68405,9 +68415,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_128",
-      "target": "integrations_shield_rules_evaluer_presence_globale",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_evaluer_presence_globale"
     },
     {
       "relation": "imports",
@@ -68437,9 +68447,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L162",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_162",
-      "target": "integrations_shield_rules_evaluer_sites",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_evaluer_sites"
     },
     {
       "relation": "imports",
@@ -68469,9 +68479,9 @@
       "source_file": "backend/apps/integrations/shield_rules.py",
       "source_location": "L186",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_shield_rules_rationale_186",
-      "target": "integrations_shield_rules_evaluer_tendance",
-      "confidence_score": 1.0
+      "target": "integrations_shield_rules_evaluer_tendance"
     },
     {
       "relation": "contains",
@@ -68531,9 +68541,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1875",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests",
-      "target": "integrations_tests_fenetredeserietest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest"
     },
     {
       "relation": "contains",
@@ -68601,9 +68611,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1931",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests",
-      "target": "integrations_tests_seriedateeendpointtest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest"
     },
     {
       "relation": "contains",
@@ -68871,9 +68881,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1931",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "apitestcase",
-      "confidence_score": 1.0
+      "target": "apitestcase"
     },
     {
       "relation": "inherits",
@@ -73420,9 +73430,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1895",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_tests_fenetredeserietest_test_des_bornes_explicites_sont_respectees",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_des_bornes_explicites_sont_respectees"
     },
     {
       "relation": "method",
@@ -73430,9 +73440,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1922",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_tests_fenetredeserietest_test_des_bornes_inversees_sont_ignorees_et_dites",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_des_bornes_inversees_sont_ignorees_et_dites"
     },
     {
       "relation": "method",
@@ -73440,9 +73450,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1883",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_tests_fenetredeserietest_test_sans_dates_la_fenetre_glisse_depuis_aujourdhui",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_sans_dates_la_fenetre_glisse_depuis_aujourdhui"
     },
     {
       "relation": "method",
@@ -73450,9 +73460,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1903",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_tests_fenetredeserietest_test_une_borne_dans_le_futur_est_ramenee_a_aujourdhui",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_une_borne_dans_le_futur_est_ramenee_a_aujourdhui"
     },
     {
       "relation": "method",
@@ -73460,9 +73470,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1891",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_tests_fenetredeserietest_test_une_fenetre_hors_liste_retombe_sur_le_maximum",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_une_fenetre_hors_liste_retombe_sur_le_maximum"
     },
     {
       "relation": "method",
@@ -73470,9 +73480,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1914",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_fenetredeserietest",
-      "target": "integrations_tests_fenetredeserietest_test_une_periode_trop_longue_est_ramenee_et_le_dit",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_une_periode_trop_longue_est_ramenee_et_le_dit"
     },
     {
       "relation": "rationale_for",
@@ -73480,9 +73490,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1876",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1876",
-      "target": "integrations_tests_fenetredeserietest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest"
     },
     {
       "relation": "rationale_for",
@@ -73490,9 +73500,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1904",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1904",
-      "target": "integrations_tests_fenetredeserietest_test_une_borne_dans_le_futur_est_ramenee_a_aujourdhui",
-      "confidence_score": 1.0
+      "target": "integrations_tests_fenetredeserietest_test_une_borne_dans_le_futur_est_ramenee_a_aujourdhui"
     },
     {
       "relation": "rationale_for",
@@ -73500,9 +73510,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1932",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1932",
-      "target": "integrations_tests_seriedateeendpointtest",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest"
     },
     {
       "relation": "method",
@@ -73510,9 +73520,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1936",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_tests_seriedateeendpointtest_setup",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_setup"
     },
     {
       "relation": "method",
@@ -73520,9 +73530,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1954",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_tests_seriedateeendpointtest_test_la_periode_reellement_lue_est_tracee",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_test_la_periode_reellement_lue_est_tracee"
     },
     {
       "relation": "method",
@@ -73530,9 +73540,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1941",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_tests_seriedateeendpointtest_test_la_reponse_porte_les_bornes_employees",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_test_la_reponse_porte_les_bornes_employees"
     },
     {
       "relation": "method",
@@ -73540,9 +73550,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1962",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_tests_seriedateeendpointtest_test_un_role_sans_le_domaine_rh_reste_refuse",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_test_un_role_sans_le_domaine_rh_reste_refuse"
     },
     {
       "relation": "method",
@@ -73550,9 +73560,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1948",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_seriedateeendpointtest",
-      "target": "integrations_tests_seriedateeendpointtest_test_une_date_illisible_retombe_sur_la_fenetre_glissante",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_test_une_date_illisible_retombe_sur_la_fenetre_glissante"
     },
     {
       "relation": "rationale_for",
@@ -73560,9 +73570,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1942",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1942",
-      "target": "integrations_tests_seriedateeendpointtest_test_la_reponse_porte_les_bornes_employees",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_test_la_reponse_porte_les_bornes_employees"
     },
     {
       "relation": "rationale_for",
@@ -73570,9 +73580,9 @@
       "source_file": "backend/apps/integrations/tests.py",
       "source_location": "L1949",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_tests_rationale_1949",
-      "target": "integrations_tests_seriedateeendpointtest_test_une_date_illisible_retombe_sur_la_fenetre_glissante",
-      "confidence_score": 1.0
+      "target": "integrations_tests_seriedateeendpointtest_test_une_date_illisible_retombe_sur_la_fenetre_glissante"
     },
     {
       "relation": "contains",
@@ -77622,9 +77632,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_shieldattendanceseriesview",
-      "target": "integrations_views_shieldattendanceseriesview_date",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldattendanceseriesview_date"
     },
     {
       "relation": "method",
@@ -77642,9 +77652,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_156",
-      "target": "integrations_views_shieldattendanceseriesview_date",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldattendanceseriesview_date"
     },
     {
       "relation": "calls",
@@ -77653,9 +77663,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L179",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_shieldattendanceseriesview_get",
-      "target": "integrations_views_shieldattendanceseriesview_date",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldattendanceseriesview_date"
     },
     {
       "relation": "calls",
@@ -77685,9 +77695,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L193",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_193",
-      "target": "integrations_views_shieldsecurityview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldsecurityview"
     },
     {
       "relation": "method",
@@ -77716,9 +77726,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L210",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_210",
-      "target": "integrations_views_shieldoverviewview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldoverviewview"
     },
     {
       "relation": "method",
@@ -77747,9 +77757,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L222",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_222",
-      "target": "integrations_views_shieldhealthview",
-      "confidence_score": 1.0
+      "target": "integrations_views_shieldhealthview"
     },
     {
       "relation": "method",
@@ -77866,9 +77876,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L238",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_238",
-      "target": "integrations_views_audit_shield",
-      "confidence_score": 1.0
+      "target": "integrations_views_audit_shield"
     },
     {
       "relation": "calls",
@@ -78043,9 +78053,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L307",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_307",
-      "target": "integrations_views_datasourceviewset_reauthenticate",
-      "confidence_score": 1.0
+      "target": "integrations_views_datasourceviewset_reauthenticate"
     },
     {
       "relation": "calls",
@@ -78064,9 +78074,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L366",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_366",
-      "target": "integrations_views_datasourceviewset_health",
-      "confidence_score": 1.0
+      "target": "integrations_views_datasourceviewset_health"
     },
     {
       "relation": "method",
@@ -78154,9 +78164,9 @@
       "source_file": "backend/apps/integrations/views.py",
       "source_location": "L485",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "integrations_views_rationale_485",
-      "target": "integrations_views_webhookreceiver",
-      "confidence_score": 1.0
+      "target": "integrations_views_webhookreceiver"
     },
     {
       "relation": "method",
@@ -84769,9 +84779,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "charts_index_breakdownchart",
-      "confidence_score": 1.0
+      "target": "charts_index_breakdownchart"
     },
     {
       "relation": "contains",
@@ -86648,9 +86658,9 @@
       "source_file": "frontend/web/src/components/copilot/AICopilotPanel.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "copilot_aicopilotpanel",
-      "target": "lib_subsidiaries",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries"
     },
     {
       "relation": "imports",
@@ -86659,9 +86669,9 @@
       "source_file": "frontend/web/src/components/copilot/AICopilotPanel.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "copilot_aicopilotpanel",
-      "target": "lib_subsidiaries_nomdefiliale",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_nomdefiliale"
     },
     {
       "relation": "imports",
@@ -86670,9 +86680,9 @@
       "source_file": "frontend/web/src/components/copilot/AICopilotPanel.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "copilot_aicopilotpanel",
-      "target": "lib_subsidiaries_usesubsidiaries",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_usesubsidiaries"
     },
     {
       "relation": "imports_from",
@@ -87815,9 +87825,9 @@
       "source_file": "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "navigation_globaldashboardfilters",
-      "target": "lib_subsidiaries",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries"
     },
     {
       "relation": "imports",
@@ -87826,9 +87836,9 @@
       "source_file": "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "navigation_globaldashboardfilters",
-      "target": "lib_subsidiaries_usesubsidiaries",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_usesubsidiaries"
     },
     {
       "relation": "contains",
@@ -87846,9 +87856,9 @@
       "source_file": "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "navigation_globaldashboardfilters",
-      "target": "navigation_globaldashboardfilters_filtreindisponible",
-      "confidence_score": 1.0
+      "target": "navigation_globaldashboardfilters_filtreindisponible"
     },
     {
       "relation": "contains",
@@ -87866,9 +87876,9 @@
       "source_file": "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "navigation_globaldashboardfilters",
-      "target": "navigation_globaldashboardfilters_motifs",
-      "confidence_score": 1.0
+      "target": "navigation_globaldashboardfilters_motifs"
     },
     {
       "relation": "contains",
@@ -87952,9 +87962,9 @@
       "source_file": "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "navigation_globaldashboardfilters",
-      "target": "store_filters_libelleperiode",
-      "confidence_score": 1.0
+      "target": "store_filters_libelleperiode"
     },
     {
       "relation": "imports",
@@ -88007,9 +88017,9 @@
       "source_file": "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "navigation_globaldashboardfilters_filtreindisponible",
-      "target": "navigation_globaldashboardfilters_filtertrigger",
-      "confidence_score": 1.0
+      "target": "navigation_globaldashboardfilters_filtertrigger"
     },
     {
       "relation": "calls",
@@ -95226,9 +95236,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "adapters_shield_shieldpresencebreakdown",
-      "confidence_score": 1.0
+      "target": "adapters_shield_shieldpresencebreakdown"
     },
     {
       "relation": "calls",
@@ -95248,9 +95258,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "adapters_shield_shieldattendanceratebreakdown",
-      "confidence_score": 1.0
+      "target": "adapters_shield_shieldattendanceratebreakdown"
     },
     {
       "relation": "calls",
@@ -95270,9 +95280,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "adapters_shield_shieldbreakdownstatus",
-      "confidence_score": 1.0
+      "target": "adapters_shield_shieldbreakdownstatus"
     },
     {
       "relation": "calls",
@@ -95336,9 +95346,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "adapters_shield_shieldpresencebykind",
-      "confidence_score": 1.0
+      "target": "adapters_shield_shieldpresencebykind"
     },
     {
       "relation": "calls",
@@ -95523,9 +95533,9 @@
       "source_file": "frontend/web/src/lib/subsidiaries.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_subsidiaries",
-      "target": "lib_api",
-      "confidence_score": 1.0
+      "target": "lib_api"
     },
     {
       "relation": "calls",
@@ -95743,9 +95753,9 @@
       "source_file": "frontend/web/src/lib/subsidiaries.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_subsidiaries",
-      "target": "lib_api_apiget",
-      "confidence_score": 1.0
+      "target": "lib_api_apiget"
     },
     {
       "relation": "imports",
@@ -95970,6 +95980,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "pages_domainhome",
+      "target": "lib_format",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/pages/HrDashboard.tsx",
       "source_location": "L7",
       "weight": 1.0,
@@ -96041,6 +96062,28 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "lib_format_formatsigned",
+      "target": "lib_format_formatint"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "pages_domainhome",
+      "target": "lib_format_formatint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "pages_domainhome_valeurvedette",
       "target": "lib_format_formatint"
     },
     {
@@ -98314,9 +98357,9 @@
       "source_file": "frontend/web/src/lib/shieldHr.ts",
       "source_location": "L213",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_shieldhr",
-      "target": "lib_shieldhr_periode",
-      "confidence_score": 1.0
+      "target": "lib_shieldhr_periode"
     },
     {
       "relation": "contains",
@@ -98480,6 +98523,17 @@
       "target": "lib_shieldhr"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "pages_domainhome",
+      "target": "lib_shieldhr",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -98521,6 +98575,28 @@
       "source_location": "L170",
       "weight": 1.0,
       "source": "pages_attendancepage_attendancepage",
+      "target": "lib_shieldhr_useshieldhrkpis"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "pages_domainhome",
+      "target": "lib_shieldhr_useshieldhrkpis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "pages_domainhome_valeurvedette",
       "target": "lib_shieldhr_useshieldhrkpis"
     },
     {
@@ -98584,9 +98660,9 @@
       "source_file": "frontend/web/src/lib/subsidiaries.ts",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_subsidiaries",
-      "target": "lib_subsidiaries_nomdefiliale",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_nomdefiliale"
     },
     {
       "relation": "contains",
@@ -98594,9 +98670,9 @@
       "source_file": "frontend/web/src/lib/subsidiaries.ts",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_subsidiaries",
-      "target": "lib_subsidiaries_subsidiariesresponse",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_subsidiariesresponse"
     },
     {
       "relation": "contains",
@@ -98604,9 +98680,9 @@
       "source_file": "frontend/web/src/lib/subsidiaries.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_subsidiaries",
-      "target": "lib_subsidiaries_subsidiary",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_subsidiary"
     },
     {
       "relation": "contains",
@@ -98614,9 +98690,9 @@
       "source_file": "frontend/web/src/lib/subsidiaries.ts",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_subsidiaries",
-      "target": "lib_subsidiaries_usesubsidiaries",
-      "confidence_score": 1.0
+      "target": "lib_subsidiaries_usesubsidiaries"
     },
     {
       "relation": "contains",
@@ -98980,9 +99056,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "store_filters",
-      "confidence_score": 1.0
+      "target": "store_filters"
     },
     {
       "relation": "imports",
@@ -98991,9 +99067,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "store_filters_bornesdutrimestre",
-      "confidence_score": 1.0
+      "target": "store_filters_bornesdutrimestre"
     },
     {
       "relation": "imports",
@@ -99002,9 +99078,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "store_filters_libelleperiode",
-      "confidence_score": 1.0
+      "target": "store_filters_libelleperiode"
     },
     {
       "relation": "imports",
@@ -99013,9 +99089,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "store_filters_trimestreencoursoufutur",
-      "confidence_score": 1.0
+      "target": "store_filters_trimestreencoursoufutur"
     },
     {
       "relation": "imports",
@@ -99024,9 +99100,9 @@
       "source_file": "frontend/web/src/pages/AttendancePage.tsx",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_attendancepage",
-      "target": "store_filters_usefilters",
-      "confidence_score": 1.0
+      "target": "store_filters_usefilters"
     },
     {
       "relation": "calls",
@@ -99132,6 +99208,16 @@
       "confidence_score": 1.0,
       "source": "pages_domainhome",
       "target": "pages_domainhome_signalscard"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/DomainHome.tsx",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "pages_domainhome",
+      "target": "pages_domainhome_valeurvedette",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -100550,9 +100636,9 @@
       "source_file": "frontend/web/src/store/filters.ts",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_filters",
-      "target": "store_filters_bornesdutrimestre",
-      "confidence_score": 1.0
+      "target": "store_filters_bornesdutrimestre"
     },
     {
       "relation": "contains",
@@ -100570,9 +100656,9 @@
       "source_file": "frontend/web/src/store/filters.ts",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_filters",
-      "target": "store_filters_iso",
-      "confidence_score": 1.0
+      "target": "store_filters_iso"
     },
     {
       "relation": "contains",
@@ -100580,9 +100666,9 @@
       "source_file": "frontend/web/src/store/filters.ts",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_filters",
-      "target": "store_filters_libelleperiode",
-      "confidence_score": 1.0
+      "target": "store_filters_libelleperiode"
     },
     {
       "relation": "contains",
@@ -100590,9 +100676,9 @@
       "source_file": "frontend/web/src/store/filters.ts",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_filters",
-      "target": "store_filters_trimestreencoursoufutur",
-      "confidence_score": 1.0
+      "target": "store_filters_trimestreencoursoufutur"
     },
     {
       "relation": "contains",
@@ -100611,9 +100697,9 @@
       "source_file": "frontend/web/src/store/filters.ts",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_filters_bornesdutrimestre",
-      "target": "store_filters_iso",
-      "confidence_score": 1.0
+      "target": "store_filters_iso"
     },
     {
       "relation": "contains",
@@ -110129,5 +110215,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "142b6b9c147174fe63342218f7a3addcb05c8717"
+  "built_at_commit": "b367ff2b0cd43d4d82b9ada8253f4b29cb78b3be"
 }

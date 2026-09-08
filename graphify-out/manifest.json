@@ -1065,8 +1065,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainHome.config.ts": {
-    "mtime": 1788661285.1963055,
-    "ast_hash": "96ba8892fe86155855edc8b7a05302da",
+    "mtime": 1788876468.9636917,
+    "ast_hash": "e6302ccd36790b354aa3472855bcc543",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainMetrics.ts": {
@@ -1125,8 +1125,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/DomainHome.tsx": {
-    "mtime": 1788661285.1969182,
-    "ast_hash": "7047cf6132fa58f44accd6d95c938fed",
+    "mtime": 1788876661.4487205,
+    "ast_hash": "ed78afae44cfcb70ca9af8e34bc71ecd",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/LoginPage.tsx": {
@@ -1845,8 +1845,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/management/commands/shield_smoke.py": {
-    "mtime": 1788776720.4327238,
-    "ast_hash": "8146bfcd8c14ba0bf4f2cbe6210bf50c",
+    "mtime": 1788876564.130121,
+    "ast_hash": "f1d58209cf7332c571558958b02c90c6",
     "semantic_hash": ""
   },
   "backend/apps/integrations/management/commands/integrations_doctor.py": {
