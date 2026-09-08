@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from datetime import timedelta
+from datetime import date as dt_date, timedelta
 
 from django.utils import timezone
 
@@ -135,14 +135,36 @@ class ShieldHrKpiView(APIView):
 
 
 class ShieldAttendanceSeriesView(APIView):
-    """Série journalière de présence, sur une fenêtre glissante.
+    """Série journalière de présence, sur une fenêtre glissante ou datée.
 
-    Endpoint distinct de `hr-kpi/` à dessein : la série se construit par comptages
-    journaliers (3 appels Shield par jour), elle ne doit pas alourdir le
-    chargement des cartes KPI.
+    Endpoint distinct de `hr-kpi/` à dessein : la collecte de période lit trois
+    jeux paginés là où les cartes KPI ne demandent que des compteurs, et elle ne
+    doit pas alourdir leur chargement.
+
+    Deux façons de désigner la période. `days` (7 ou 30) donne une fenêtre
+    glissante ancrée sur aujourd'hui. `date_from`/`date_to` donnent des bornes
+    explicites — c'est ce que produit le sélecteur trimestre + année. Les bornes
+    sont validées ICI, à l'entrée : une date illisible ou inversée ne doit pas
+    descendre jusqu'au connecteur, et une période hors borne est ramenée avec
+    un avis dans la réponse plutôt que rognée en silence.
     """
 
     permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def _date(valeur: str | None):
+        """Une date ISO, ou None si la valeur est absente ou illisible.
+
+        On ne lève pas : une date mal formée fait retomber sur la fenêtre
+        glissante, ce qui donne un écran utile plutôt qu'une erreur 400 sur un
+        paramètre que l'utilisateur n'a pas saisi à la main.
+        """
+        if not valeur:
+            return None
+        try:
+            return dt_date.fromisoformat(valeur.strip())
+        except ValueError:
+            return None
 
     def get(self, request):
         if not can_access_domain(request.user, "capital-humain"):
@@ -153,8 +175,18 @@ class ShieldAttendanceSeriesView(APIView):
             days = 30
         if days not in FENETRES_JOURS:
             days = MAX_JOURS
-        _audit_shield(request, "shield.attendance_series", {"days": days})
-        return Response(fetch_attendance_series(days))
+
+        debut = self._date(request.query_params.get("date_from"))
+        fin = self._date(request.query_params.get("date_to"))
+        charge = fetch_attendance_series(days, date_from=debut, date_to=fin)
+        # La trace porte les bornes RÉELLEMENT employées, pas celles demandées :
+        # c'est la période effectivement lue qu'un audit doit pouvoir rejouer.
+        _audit_shield(request, "shield.attendance_series", {
+            "days": charge.get("days"),
+            "date_from": charge.get("date_from"),
+            "date_to": charge.get("date_to"),
+        })
+        return Response(charge)
 
 
 class ShieldSecurityView(APIView):

@@ -123,3 +123,71 @@ class AdminAccessTest(TestCase):
         User.objects.create_user(username="idem", password="x", email="i@k.co")
         self._lancer("idem", "--accorder")
         self.assertIn("Rien à modifier", self._lancer("idem", "--accorder"))
+
+
+class SubsidiariesApiTest(TestCase):
+    """La liste des filiales proposée au filtre, bornée par le périmètre.
+
+    Le frontend codait quatre filiales en dur : la même liste pour tout le monde.
+    Proposer une filiale qu'on n'a pas le droit de voir est déjà une fuite, même
+    si la requête suivante la refuse — le nom de l'entité et son existence sont
+    eux-mêmes de l'information.
+    """
+
+    URL = "/api/v1/auth/subsidiaries/"
+
+    def setUp(self):
+        from apps.organizations.models import Subsidiary
+
+        self.client = APIClient()
+        self.kre = Subsidiary.objects.create(code="KRE", name="K-Express")
+        self.ksh = Subsidiary.objects.create(code="KSH", name="K-Shield")
+        Subsidiary.objects.create(code="MYK", name="MyKaydan")
+        # Une filiale désactivée : elle ne doit apparaître pour personne.
+        Subsidiary.objects.create(code="OLD", name="Ancienne entité", is_active=False)
+
+        self.dg = User.objects.create_user(username="dg-sub", password="x",
+                                           role="DG_GROUP", is_group_scope=True)
+        # MÊME rôle, seul le périmètre diffère : c'est ce qui isole la variable testée.
+        self.dg_kre = User.objects.create_user(username="dg-kre-sub", password="x",
+                                               role="DG_GROUP", is_group_scope=False)
+        self.dg_kre.subsidiaries.add(self.kre)
+
+    def _get(self, utilisateur):
+        self.client.force_authenticate(utilisateur)
+        return self.client.get(self.URL)
+
+    def test_authentification_requise(self):
+        self.assertIn(self.client.get(self.URL).status_code, (401, 403))
+
+    def test_le_perimetre_groupe_voit_les_filiales_actives(self):
+        reponse = self._get(self.dg)
+        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse.json()["scope"], "GROUP")
+        codes = [f["code"] for f in reponse.json()["results"]]
+        self.assertEqual(codes, ["KRE", "KSH", "MYK"], "la filiale désactivée ne doit pas sortir")
+
+    def test_un_perimetre_restreint_ne_voit_que_le_sien(self):
+        reponse = self._get(self.dg_kre)
+        self.assertEqual(reponse.status_code, 200)
+        codes = [f["code"] for f in reponse.json()["results"]]
+        self.assertEqual(codes, ["KRE"])
+        # Preuve directe : aucune autre entité n'est même nommée.
+        rendu = reponse.content.decode()
+        self.assertNotIn("K-Shield", rendu)
+        self.assertNotIn("MyKaydan", rendu)
+
+    def test_un_compte_sans_filiale_ne_recoit_aucune_option(self):
+        """`Scope.none()` : ni Groupe, ni filiale attachée. Aucun choix, pas tous."""
+        orphelin = User.objects.create_user(username="orphelin", password="x",
+                                            role="RH_SUB", is_group_scope=False)
+        reponse = self._get(orphelin)
+        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse.json()["results"], [])
+
+    def test_le_nom_affiche_vient_de_la_base_et_non_du_code(self):
+        """Le frontend affichait « K-Express » depuis une constante ; ici c'est la base."""
+        self.kre.name = "K-Express Côte d'Ivoire"
+        self.kre.save(update_fields=["name"])
+        noms = {f["code"]: f["name"] for f in self._get(self.dg).json()["results"]}
+        self.assertEqual(noms["KRE"], "K-Express Côte d'Ivoire")

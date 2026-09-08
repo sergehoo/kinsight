@@ -1870,3 +1870,97 @@ class TauxDerivesTest(TestCase):
         self.assertIn("absents", meta["taux_absence_jour"][3])
         self.assertEqual(meta["taux_ponctualite"][2], "computed")
         self.assertEqual(meta["taux_absence_jour"][2], "computed")
+
+
+class FenetreDeSerieTest(TestCase):
+    """Le sélecteur de période produit de vraies bornes, et le serveur les borne.
+
+    Auparavant, T1/T2/T3/T4 + année ne produisait AUCUNE date : la série restait
+    une fenêtre glissante de 7 ou 30 jours quel que soit le trimestre choisi. Le
+    filtre paraissait agir et n'agissait pas.
+    """
+
+    def test_sans_dates_la_fenetre_glisse_depuis_aujourdhui(self):
+        from django.utils import timezone as tz
+
+        debut, fin, avis = shield.fenetre_de_serie(7)
+        self.assertEqual(fin, tz.localdate())
+        self.assertEqual((fin - debut).days + 1, 7)
+        self.assertIsNone(avis)
+
+    def test_une_fenetre_hors_liste_retombe_sur_le_maximum(self):
+        debut, fin, _ = shield.fenetre_de_serie(13)
+        self.assertEqual((fin - debut).days + 1, R.MAX_JOURS)
+
+    def test_des_bornes_explicites_sont_respectees(self):
+        from datetime import date
+
+        debut, fin, avis = shield.fenetre_de_serie(
+            30, debut=date(2026, 4, 1), fin=date(2026, 6, 30))
+        self.assertEqual((debut.isoformat(), fin.isoformat()), ("2026-04-01", "2026-06-30"))
+        self.assertIsNone(avis, "un trimestre entier tient dans la borne")
+
+    def test_une_borne_dans_le_futur_est_ramenee_a_aujourdhui(self):
+        """Le trimestre EN COURS déborde toujours : ses jours à venir ne sont pas
+        mesurables, et les rendre vides se lirait comme une chute de la présence."""
+        from datetime import date
+
+        from django.utils import timezone as tz
+
+        _, fin, avis = shield.fenetre_de_serie(30, debut=date(2026, 1, 1), fin=date(2099, 12, 31))
+        self.assertEqual(fin, tz.localdate())
+        self.assertIn("aujourd'hui", avis.lower())
+
+    def test_une_periode_trop_longue_est_ramenee_et_le_dit(self):
+        from datetime import date
+
+        debut, fin, avis = shield.fenetre_de_serie(
+            30, debut=date(2020, 1, 1), fin=date(2020, 12, 31))
+        self.assertEqual((fin - debut).days + 1, R.MAX_JOURS_EXPLICITE)
+        self.assertIn(str(R.MAX_JOURS_EXPLICITE), avis)
+
+    def test_des_bornes_inversees_sont_ignorees_et_dites(self):
+        from datetime import date
+
+        debut, fin, avis = shield.fenetre_de_serie(
+            7, debut=date(2026, 6, 30), fin=date(2026, 4, 1))
+        self.assertLess(debut, fin)
+        self.assertIn("inversées", avis)
+
+
+class SerieDateeEndpointTest(APITestCase):
+    """L'endpoint accepte les bornes, les valide, et rend celles qu'il a employées."""
+
+    URL = "/api/v1/integrations/shield/attendance-series/"
+
+    def setUp(self):
+        self.drh = User.objects.create_user(username="drh-serie", password="x",
+                                            email="ds@k.co", role="DRH", is_group_scope=True)
+        self.client.force_authenticate(self.drh)
+
+    def test_la_reponse_porte_les_bornes_employees(self):
+        """Sans elles, l'écran ne peut pas dire si le filtre a agi."""
+        corps = self.client.get(f"{self.URL}?date_from=2026-04-01&date_to=2026-06-30").json()
+        self.assertEqual(corps["date_from"], "2026-04-01")
+        self.assertEqual(corps["date_to"], "2026-06-30")
+        self.assertEqual(corps["days"], 91)
+
+    def test_une_date_illisible_retombe_sur_la_fenetre_glissante(self):
+        """Un 400 sur un paramètre que l'utilisateur n'a pas tapé n'aiderait personne."""
+        corps = self.client.get(f"{self.URL}?date_from=pas-une-date&days=7").json()
+        self.assertEqual(corps["days"], 7)
+        self.assertIn("date_from", corps)
+
+    def test_la_periode_reellement_lue_est_tracee(self):
+        AccessLog.objects.all().delete()
+        self.client.get(f"{self.URL}?date_from=2026-04-01&date_to=2026-06-30")
+        trace = AccessLog.objects.filter(action="shield.attendance_series").first()
+        self.assertIsNotNone(trace)
+        self.assertEqual(trace.payload["date_from"], "2026-04-01")
+        self.assertEqual(trace.payload["date_to"], "2026-06-30")
+
+    def test_un_role_sans_le_domaine_rh_reste_refuse(self):
+        lecteur = User.objects.create_user(username="lecteur-serie", password="x",
+                                           email="ls@k.co", role="READER", is_group_scope=True)
+        self.client.force_authenticate(lecteur)
+        self.assertEqual(self.client.get(f"{self.URL}?date_from=2026-04-01").status_code, 403)

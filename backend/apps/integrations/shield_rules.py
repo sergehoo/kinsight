@@ -22,12 +22,31 @@ RETARDS_ELEVES = 15.0           # part de retardataires parmi les présents
 BAISSE_INHABITUELLE = 15.0      # chute, en points, vs la moyenne de la période
 MIN_JOURS_POUR_COMPARER = 5     # en deçà, une moyenne n'a pas de sens
 
-# Nombre de jours proposés pour la série de présence. 90 n'y figure pas :
-# la série se construit par des comptages JOURNALIERS (le seul moyen documenté),
-# soit 3 requêtes par jour. 90 jours demanderaient 270 allers-retours à chaque
-# rafraîchissement — un coût que l'API Shield n'a pas à supporter.
+# Fenêtres glissantes proposées pour la série de présence.
+#
+# LE COMMENTAIRE PRÉCÉDENT ÉTAIT FAUX et refusait 90 jours pour la mauvaise
+# raison : il annonçait « 3 requêtes par jour, donc 270 allers-retours pour 90
+# jours ». La collecte ne procède pas par jour — `collect_period` lit la période
+# ENTIÈRE en 3 jeux paginés (un par indicateur), donc 7 jours et 90 jours coûtent
+# le même nombre d'appels tant que le volume tient dans les pages.
+#
+# La vraie borne est le VOLUME, pas la durée : `MAX_PAGES_PERIOD * PAGE_SIZE`,
+# soit 2 400 lignes par indicateur. À 722 personnes par jour — l'effectif que
+# Shield rend aujourd'hui — le plafond est atteint en 3,3 jours ; à 4 570, en une
+# demi-journée. Au-delà, la collecte est tronquée et les jours les plus anciens
+# reviennent en `unknown`, ce que la réponse dit explicitement.
+#
+# Ouvrir 90 jours serait donc promettre un trimestre pour livrer trois jours de
+# mesures et 87 jours d'inconnu. On garde 7 et 30, et l'écart entre demandé et
+# mesuré reste affiché.
 FENETRES_JOURS = (7, 30)
 MAX_JOURS = 30
+
+# Borne d'une fenêtre EXPLICITE (date_from/date_to), pour absorber un trimestre
+# entier : 92 jours est le plus long trimestre civil. Au-delà, la requête est
+# ramenée à cette borne et la réponse le signale — la tronquer en silence
+# laisserait croire que la période demandée a été couverte.
+MAX_JOURS_EXPLICITE = 92
 
 
 def _pct(part: float | int | None, total: float | int | None) -> float | None:

@@ -14,7 +14,7 @@ from __future__ import annotations
 from typing import Any
 
 from django.conf import settings
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.utils import timezone
 
@@ -436,22 +436,64 @@ def _tally(rows: list[dict], key) -> dict[Any, int]:
     return counts
 
 
-def fetch_attendance_series(days: int = 30) -> dict[str, Any]:
+def fenetre_de_serie(days: int = 30, *, debut: date | None = None,
+                     fin: date | None = None) -> tuple[date, date, str | None]:
+    """Les deux bornes de la série, et ce qu'on a dû corriger pour les obtenir.
+
+    Deux façons de désigner une période, et une seule vérité renvoyée : une
+    fenêtre glissante (`days`, ancrée sur aujourd'hui) ou des bornes explicites
+    — ce que le sélecteur de trimestre produit. Rend (début, fin, avis), où
+    `avis` est non nul dès que la demande a été RAMENÉE à une borne : la corriger
+    en silence laisserait croire que la période demandée a été couverte.
+    """
+    aujourdhui = timezone.localdate()
+    if debut is None or fin is None:
+        window = days if days in R.FENETRES_JOURS else R.MAX_JOURS
+        return aujourdhui - timedelta(days=window - 1), aujourdhui, None
+
+    avis: list[str] = []
+    if fin > aujourdhui:
+        # Une borne dans le futur ne peut rien mesurer : le trimestre en cours
+        # s'arrête donc aujourd'hui, et on le dit plutôt que de rendre des jours
+        # vides qui se liraient comme une chute de la présence.
+        avis.append(f"Période ramenée à aujourd'hui ({aujourdhui.isoformat()}) : "
+                    f"les jours à venir ne sont pas mesurables.")
+        fin = aujourdhui
+    if debut > fin:
+        avis.append("Bornes inversées : la période a été ignorée.")
+        window = R.MAX_JOURS
+        return aujourdhui - timedelta(days=window - 1), aujourdhui, " ".join(avis)
+    etendue = (fin - debut).days + 1
+    if etendue > R.MAX_JOURS_EXPLICITE:
+        debut = fin - timedelta(days=R.MAX_JOURS_EXPLICITE - 1)
+        avis.append(f"Période ramenée à {R.MAX_JOURS_EXPLICITE} jours "
+                    f"(à partir du {debut.isoformat()}).")
+    return debut, fin, (" ".join(avis) or None)
+
+
+def fetch_attendance_series(days: int = 30, *, date_from: date | None = None,
+                            date_to: date | None = None) -> dict[str, Any]:
     """Série journalière de présence, bâtie sur UNE lecture de période par indicateur.
 
     Un jour sans mesure exploitable reste à `null` : le mettre à 0 le ferait passer
     pour une journée sans personne, ce qui est un tout autre message.
+
+    `date_from`/`date_to` servent le sélecteur de période (trimestre + année) ;
+    sans eux, la fenêtre glisse depuis aujourd'hui. La réponse renvoie TOUJOURS
+    les bornes réellement employées : sans elles, l'écran ne pourrait pas dire si
+    le filtre a agi.
     """
-    window = days if days in R.FENETRES_JOURS else R.MAX_JOURS
+    start, end, avis_fenetre = fenetre_de_serie(days, debut=date_from, fin=date_to)
+    window = (end - start).days + 1
     source, blocked = _guard("series")
     if blocked:
-        return {**blocked, "days": window, "points": [], "insights": []}
+        return {**blocked, "days": window, "date_from": start.isoformat(),
+                "date_to": end.isoformat(), "points": [], "insights": []}
 
     client = build_client(source)
     src = source.name or "Kaydan Shield"
-    today = timezone.localdate()
-    start = today - timedelta(days=window - 1)
-    period = collect_period(client, start.isoformat(), today.isoformat())
+    today = end
+    period = collect_period(client, start.isoformat(), end.isoformat())
 
     per_day = {flag: _tally(period["rows"][flag], lambda r: r.get("date")) for flag in FLAGS}
     failed_flags = set(period["errors"])
@@ -482,14 +524,20 @@ def fetch_attendance_series(days: int = 30) -> dict[str, Any]:
 
     mesures = sum(1 for p in points if p["status"] == "measured")
     status = "connected" if mesures == len(points) else ("partial" if mesures else "error")
-    detail = None
+    # L'avis de fenêtre passe en PREMIER : si la période demandée a été ramenée à
+    # une borne, c'est la chose que l'écran doit dire avant de commenter le volume.
+    raisons = [avis_fenetre] if avis_fenetre else []
     if period["truncated"]:
-        detail = (f"Volume supérieur au plafond de collecte : les jours antérieurs au "
-                  f"{cutoff} ne sont pas comptabilisés.")
+        raisons.append(f"Volume supérieur au plafond de collecte : les jours antérieurs au "
+                       f"{cutoff} ne sont pas comptabilisés.")
     elif failed_flags:
-        detail = f"Indicateur(s) indisponible(s) : {', '.join(sorted(failed_flags))}."
-    return _envelope(status, src, [], days=window, points=points, measured_days=mesures,
-                     detail=detail, api_calls=client.metrics.calls,
+        raisons.append(f"Indicateur(s) indisponible(s) : {', '.join(sorted(failed_flags))}.")
+    return _envelope(status, src, [], days=window,
+                     # Les bornes réellement employées, et non celles demandées :
+                     # sans elles, l'écran ne peut pas dire si le filtre a agi.
+                     date_from=start.isoformat(), date_to=end.isoformat(),
+                     points=points, measured_days=mesures,
+                     detail=" ".join(raisons) or None, api_calls=client.metrics.calls,
                      insights=R.evaluer_tendance(points, src))
 
 
