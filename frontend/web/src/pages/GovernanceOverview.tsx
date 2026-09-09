@@ -31,18 +31,35 @@ interface DashboardModel extends DashboardSummary {
   imageMode: "contain" | "cover";
 }
 
+/** Visuels des trois cartes de pilotage, alignés sur ceux des domaines.
+ *
+ *  DEUX RÉFÉRENCES ÉTAIENT CASSÉES : `african-man-holding-ipad.jpg` (le fichier
+ *  portait l'extension .png) et `tree-grows-coin-glass-jar-with-copy-space.jpg`,
+ *  tous deux absents du dossier. Les cartes RH et Finance affichaient donc une
+ *  image manquante.
+ *
+ *  On pointe sur les variantes WebP plutôt que sur les PNG d'origine : ce
+ *  composant rend un `<img>` simple, sans le `<picture>` de `HeroImage`, donc il
+ *  téléchargerait le fichier tel quel — jusqu'à 1,4 Mo pour un cadre de quelques
+ *  centaines de pixels. WebP est reconnu par tous les navigateurs visés et pèse
+ *  ici de 50 à 130 Ko ; AVIF descendrait plus bas encore mais n'aurait pas de
+ *  repli dans un `<img>` seul.
+ *
+ *  `contain` partout : ces PNG sont détourés sur fond transparent, et le mode
+ *  `cover` leur ajouterait un cadre arrondi et un voile dégradé.
+ */
 const DASHBOARD_IMAGES: Record<DashboardKey, Pick<DashboardModel, "imageSrc" | "imageMode">> = {
   realEstate: {
-    imageSrc: "/assets/AI.png",
+    imageSrc: "/assets/opt/immobilier-chantier-1024.webp",
     imageMode: "contain",
   },
   hr: {
-    imageSrc: "/assets/african-man-holding-ipad.jpg",
-    imageMode: "cover",
+    imageSrc: "/assets/opt/capital-humain-collaboratrice-1024.webp",
+    imageMode: "contain",
   },
   finance: {
-    imageSrc: "/assets/tree-grows-coin-glass-jar-with-copy-space.jpg",
-    imageMode: "cover",
+    imageSrc: "/assets/opt/finance-croissance-1024.webp",
+    imageMode: "contain",
   },
 };
 

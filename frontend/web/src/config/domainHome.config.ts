@@ -60,9 +60,11 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartTitle: "Évolution des ventes & avancement",
     chartUnit: "%",
     alertLabels: ["Chantier arrêté", "Dépassement budget", "Retard livraison", "Stock critique", "Nouvelle vente"],
-    image: "/assets/%E2%80%94Pngtree%E2%80%94modern%20yellow%20construction%20crane%20for_20885637.png",
-    imageSlug: "immobilier-crane",
-    imageAlt: "Grue de chantier sur un programme immobilier en construction",
+    image: "/assets/construction.png",
+    imageSlug: "immobilier-chantier",
+    imageWidths: [640, 1024],
+    imageAlt:
+      "Maquette d'immeuble en construction, structure et échafaudages apparents, surmontée d'une grue à tour",
     imageMode: "contain",
   },
   "capital-humain": {
@@ -87,12 +89,13 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartTitle: "Évolution de l'effectif",
     chartUnit: "pers.",
     alertLabels: ["Turnover élevé", "Contrat à échéance", "Effectif critique", "Absentéisme", "Recrutement"],
-    image: "/assets/capital-humain-equipe-stocksnap.jpg",
-    imageSlug: "capital-humain-equipe",
-    imageWidths: [640, 960],
-    imageFocus: "right",
-    imageAlt: "Équipe pluridisciplinaire en réunion de travail autour d'une table, ordinateurs et notes",
-    imageMode: "cover",
+    image: "/assets/capitalhumain.png",
+    imageSlug: "capital-humain-collaboratrice",
+    imageWidths: [640, 1024],
+    // `imageFocus` retiré avec `cover` : l'ancrage du recadrage n'a de sens que
+    // pour un visuel qui remplit le cadre. Un sujet détouré, lui, se contient.
+    imageAlt: "Collaboratrice souriante en tenue professionnelle, tenant une tablette numérique",
+    imageMode: "contain",
   },
   finance: {
     id: "finance",
@@ -112,10 +115,11 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     chartTitle: "Évolution de la trésorerie",
     chartUnit: "XOF",
     alertLabels: ["Cash négatif", "Dépassement budget", "Créance en retard", "Échéance fiscale", "Encaissement"],
-    image: "/assets/tree-grows-coin-glass-jar-with-copy-space.jpg",
-    imageSlug: "finance-tresorerie",
-    imageAlt: "Épargne en croissance, symbole de trésorerie",
-    imageMode: "cover",
+    image: "/assets/finance.png",
+    imageSlug: "finance-croissance",
+    imageWidths: [640, 1024],
+    imageAlt: "Piles de pièces de monnaie surmontées d'une jeune pousse verte, image d'un capital qui croît",
+    imageMode: "contain",
   },
 
   /** IA Décisionnelle — on ne redéfinit QUE le visuel.
@@ -141,6 +145,53 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
       "Tête robotique de profil, coque blanche entrouverte laissant voir des rouages et des circuits lumineux",
     // Sujet détouré sur fond transparent : `contain` conserve la silhouette,
     // là où `cover` la recadrerait dans un cadre presque carré.
+    imageMode: "contain",
+  },
+
+  /* Les quatre domaines ci-dessous n'avaient qu'une illustration SVG générée. On
+     leur donne un visuel SANS recopier leur spec : `...generatedHeroes.<id>`
+     conserve titre, accroche, KPI et libellés d'alerte du fichier généré, qui
+     porte la mention « ne pas éditer à la main ». Tous ces PNG sont détourés sur
+     fond transparent, d'où `contain` partout : `cover` les recadrerait et
+     poserait un cadre arrondi autour du sujet. */
+
+  overview: {
+    ...generatedHeroes.overview,
+    image: "/assets/vision.png",
+    imageSlug: "overview-cible",
+    imageWidths: [640, 1024],
+    imageAlt: "Cible de fléchettes vue de trois quarts, une fléchette plantée en plein centre",
+    imageMode: "contain",
+  },
+
+  operations: {
+    ...generatedHeroes.operations,
+    image: "/assets/logistique.png",
+    imageSlug: "operations-logistique",
+    // 640 et 900 : la source ne fait que 900 px de large, contre 1229 pour les
+    // autres. Déclarer 1024 ici demanderait un fichier qui n'existe pas.
+    imageWidths: [640, 900],
+    imageAlt:
+      "Montage logistique : avion de ligne, globe terrestre, porte-conteneurs, camion et utilitaire",
+    imageMode: "contain",
+  },
+
+  "commercial-clients": {
+    ...generatedHeroes["commercial-clients"],
+    image: "/assets/commercial.png",
+    imageSlug: "commercial-equipe",
+    imageWidths: [640, 1024],
+    imageAlt: "Deux commerciaux en costume, souriants, l'un présentant de la main, l'autre bras croisés",
+    imageMode: "contain",
+  },
+
+  "risques-conformite": {
+    ...generatedHeroes["risques-conformite"],
+    image: "/assets/risk.png",
+    imageSlug: "risques-balance",
+    imageWidths: [640, 1024],
+    imageAlt:
+      "Balance à deux plateaux en équilibre : pièces de monnaie d'un côté, le mot « Risk » en rouge de l'autre",
     imageMode: "contain",
   },
 };

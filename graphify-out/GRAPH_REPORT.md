@@ -1,16 +1,16 @@
-# Graph Report - k-insight  (2026-09-08)
+# Graph Report - k-insight  (2026-09-09)
 
 ## Corpus Check
-- 359 files · ~3,071,711 words
+- 359 files · ~595,690 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3453 nodes · 7301 edges · 302 communities (219 shown, 83 thin omitted)
+- 3453 nodes · 7301 edges · 302 communities (220 shown, 82 thin omitted)
 - Extraction: 78% EXTRACTED · 22% INFERRED · 0% AMBIGUOUS · INFERRED: 1589 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9c6d5ac6`
+- Built from commit: `dd521d33`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -309,7 +309,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (302 total, 83 thin omitted)
+## Communities (302 total, 82 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.10
@@ -991,6 +991,10 @@ Nodes (9): ConnectorCredential, Secret chiffré at-rest. Jamais exposé en clair
 Cohesion: 0.09
 Nodes (31): ChatBody, useApproveAction(), useCopilotChat(), useRejectAction(), GlobalFilters(), QUARTERS, YEARS, ActionCard() (+23 more)
 
+### Community 268 - "Community 268"
+Cohesion: 0.29
+Nodes (3): AdminUtilisateurTest, L'admin Django se charge-t-il vraiment ?  `manage.py check` valide les noms de c, Le mot de passe doit être HACHÉ, et le rôle attribuable sans passer par un shell
+
 ### Community 269 - "Community 269"
 Cohesion: 0.16
 Nodes (14): build_context(), Construction du contexte dynamique transmis au Copilot à chaque message.  Le con, detect_tool_intent(), _first_int(), _norm(), Routage d'intention → outil (déterministe, hors-ligne).  Permet au Copilot d'AGI, (tool_name, args) si une intention d'action claire est détectée, sinon None., chat() (+6 more)
@@ -1012,8 +1016,8 @@ Cohesion: 0.15
 Nodes (5): IntegrationCentreTest, Centre d'intégrations : création, test réel, secrets, santé consolidée., Le centre est réservé : la cause doit être un refus explicite., Un jeton refusé ne doit pas passer pour « hôte joignable »., Ne pas inventer l'API Odoo : sans `database`, la config est incomplète.
 
 ### Community 281 - "Community 281"
-Cohesion: 0.29
-Nodes (4): DerivationCleTest, L'admin Django se charge-t-il vraiment ?  `manage.py check` valide les noms de c, La clé de chiffrement ne doit être dérivée qu'une fois par processus.      120 0, Sinon un `override_settings` sur la clé déchiffrerait avec l'ancienne.
+Cohesion: 0.40
+Nodes (3): DerivationCleTest, La clé de chiffrement ne doit être dérivée qu'une fois par processus.      120 0, Sinon un `override_settings` sur la clé déchiffrerait avec l'ancienne.
 
 ### Community 290 - "Community 290"
 Cohesion: 0.36
@@ -1046,7 +1050,7 @@ Nodes (3): MiddlewareEnPremierTest, Un appelant peut-il choisir ce que la piste 
 ## Knowledge Gaps
 - **854 isolated node(s):** `ProviderKind`, `Meta`, `Role`, `Mode`, `Status` (+849 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **83 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **82 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

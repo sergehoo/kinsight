@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/GovernanceOverview.tsx": {
-    "mtime": 1788884506.20722,
-    "ast_hash": "b36a8cd2962f5b100bcdd0d47076e3be",
+    "mtime": 1788923944.0432122,
+    "ast_hash": "d3011b80ff2887a013d8974b5dc38b49",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/HrDashboard.tsx": {
@@ -559,31 +559,6 @@
     "ast_hash": "5e13f83a082ced7d5168a71eff7749e4",
     "semantic_hash": ""
   },
-  "frontend/web/public/assets/group-afro-americans-working-together.jpg": {
-    "mtime": 1782326259.5792348,
-    "ast_hash": "43401cbc22e7c28a1026801e2869d6b1",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/k-insight-building-scene.png": {
-    "mtime": 1782322513.091079,
-    "ast_hash": "0074163c7f1bdc24648630ef9d71a472",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/logo.png": {
-    "mtime": 1782318668.292161,
-    "ast_hash": "31d07b0b974f9e5c6dc3a721febde7a4",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/tree-grows-coin-glass-jar-with-copy-space.jpg": {
-    "mtime": 1782326367.0326028,
-    "ast_hash": "903b367492f13b0de2f5710e00a023ee",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/\u2014Pngtree\u2014modern yellow construction crane for_20885637.png": {
-    "mtime": 1782324764.0349422,
-    "ast_hash": "6cca12d85adac841a336d8e613d70d1e",
-    "semantic_hash": ""
-  },
   "frontend/web/src/components/chrome/AppHeader.tsx": {
     "mtime": 1788653981.015494,
     "ast_hash": "935a3eb10879c0c2e807e937abf09787",
@@ -652,21 +627,6 @@
   "infra/dbt/profiles.yml": {
     "mtime": 1782385628.7506459,
     "ast_hash": "ffa4abe36465bd7687a492d6c93f2caa",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/9315943.png": {
-    "mtime": 1711089658.0,
-    "ast_hash": "ad4ac9ba9b8575f99677e3742c7d18a5",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/11005799.png": {
-    "mtime": 1717500582.0,
-    "ast_hash": "2a8b60bfea9ee9fef4cf0f94df749a65",
-    "semantic_hash": ""
-  },
-  "frontend/web/public/assets/african-man-holding-ipad.png": {
-    "mtime": 1782386495.0629306,
-    "ast_hash": "457f1cd83543cf95cb48678f2b91e29b",
     "semantic_hash": ""
   },
   "docker-compose.dokploy.yml": {
@@ -940,8 +900,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/BrandFooter.tsx": {
-    "mtime": 1782500912.1801019,
-    "ast_hash": "4707c1b824531a11bb3a6b7361c561fa",
+    "mtime": 1788923368.985733,
+    "ast_hash": "9dab59d6a4d357cbd0956db894bca88f",
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/HeroImage.tsx": {
@@ -1065,8 +1025,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainHome.config.ts": {
-    "mtime": 1788885008.994552,
-    "ast_hash": "36726071b69b6b2afcc14264a0a1ad36",
+    "mtime": 1788923333.4011211,
+    "ast_hash": "64aac62a19082d5b848e768dec849443",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainMetrics.ts": {
@@ -1744,11 +1704,6 @@
     "ast_hash": "0766e5d67ad51b5a666f881f930a66fd",
     "semantic_hash": ""
   },
-  "frontend/web/public/assets/capital-humain-equipe-stocksnap.jpg": {
-    "mtime": 1788661179.9884598,
-    "ast_hash": "a0df857583eb34836bf159c2d8d74bf6",
-    "semantic_hash": ""
-  },
   "frontend/web/public/assets/opt/capital-humain-equipe-640.webp": {
     "mtime": 1788661180.1342258,
     "ast_hash": "e5bdbeb29919cf68b89f5d764c05be1d",
@@ -1982,6 +1937,116 @@
   "frontend/web/public/assets/opt/ia-copilote-640.webp": {
     "mtime": 1788884959.7998402,
     "ast_hash": "32712efb771d1bd6f1e6754f76103e05",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/capitalhumain.png": {
+    "mtime": 1788886026.0,
+    "ast_hash": "ef4e49956b6436f0346ad5cedd377ee3",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/commercial.png": {
+    "mtime": 1788885958.0,
+    "ast_hash": "c18ce577125e2ef0b46dc602107d2f3e",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/construction.png": {
+    "mtime": 1788885508.0,
+    "ast_hash": "e68267ee479c120c9bf90a134b941b21",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/finance.png": {
+    "mtime": 1788886162.0,
+    "ast_hash": "9a48d315cf05b14833aa813425e9d0b9",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/logistique.png": {
+    "mtime": 1788906495.5555558,
+    "ast_hash": "ff88073b81b15984072ae98f58b5e952",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/logo_kaydanG_B.png": {
+    "mtime": 1778749861.396829,
+    "ast_hash": "1d996fe6b676edc346994deca49bcd6d",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/capital-humain-collaboratrice-1024.webp": {
+    "mtime": 1788923252.914043,
+    "ast_hash": "f025d706e3379b519ea9bcfe213f8b8d",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/capital-humain-collaboratrice-640.webp": {
+    "mtime": 1788923248.22575,
+    "ast_hash": "fc66aa677505bde1bb8aea76424b199e",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/commercial-equipe-1024.webp": {
+    "mtime": 1788923264.725196,
+    "ast_hash": "5d12a00458f6862b85aadf93aa20e0d3",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/commercial-equipe-640.webp": {
+    "mtime": 1788923259.9925745,
+    "ast_hash": "4edcf077019ce3406c39bcd5c6c2970f",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/finance-croissance-1024.webp": {
+    "mtime": 1788923257.3799322,
+    "ast_hash": "e040012bdcb2e499d3bead5e514210fa",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/finance-croissance-640.webp": {
+    "mtime": 1788923254.3575318,
+    "ast_hash": "04211f0278331152186d682a7f1ba583",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/immobilier-chantier-1024.webp": {
+    "mtime": 1788923245.7683783,
+    "ast_hash": "24aa4496bf8e563b44a69f311d700dc8",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/immobilier-chantier-640.webp": {
+    "mtime": 1788923241.3120427,
+    "ast_hash": "e8729c373f88e3e7fb2bb0deaf059303",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/operations-logistique-640.webp": {
+    "mtime": 1788923273.3295162,
+    "ast_hash": "c0646c8446ec2f49f5827c8e8b923d27",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/operations-logistique-900.webp": {
+    "mtime": 1788923274.0436199,
+    "ast_hash": "4e9be7462d612e86f6d85e54d19f296a",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/overview-cible-1024.webp": {
+    "mtime": 1788923238.8605642,
+    "ast_hash": "ee06306c700f9a4b3aa6235fe248eca9",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/overview-cible-640.webp": {
+    "mtime": 1788923236.268039,
+    "ast_hash": "b3d4abe993dfda8950dea7097f70d54a",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/risques-balance-1024.webp": {
+    "mtime": 1788923270.4584517,
+    "ast_hash": "13a6f89638d2757bd5b6c6f792606507",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/opt/risques-balance-640.webp": {
+    "mtime": 1788923266.6782086,
+    "ast_hash": "03f7f9d462fa931663d7d90dc6c05f0a",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/risk.png": {
+    "mtime": 1788885898.0,
+    "ast_hash": "20d945c081dfb9c4159546c71efba08e",
+    "semantic_hash": ""
+  },
+  "frontend/web/public/assets/vision.png": {
+    "mtime": 1788885798.0,
+    "ast_hash": "bb6760c724c1dd1d74088b8cebefec08",
     "semantic_hash": ""
   }
 }

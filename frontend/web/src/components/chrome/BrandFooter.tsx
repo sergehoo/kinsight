@@ -11,12 +11,28 @@ function DatariumLogo() {
   );
 }
 
-/** Pied de page commun : copyright K-Insight + crédit Datarium. */
+/** Pied de page commun : copyright K-Insight + logo du Groupe + crédit Datarium. */
 export function BrandFooter() {
   const year = new Date().getFullYear();
   return (
     <footer className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6E2]/90 pt-5 text-[12px] text-[#8A8F8E]">
-      <span>© {year} K-Insight — Plateforme de gouvernance du Groupe</span>
+      <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        © {year} K-Insight — Plateforme de gouvernance du Groupe
+        {/* Le logo suit le copyright, dont il est la signature. Dimensions
+            explicites : sans elles, l'image arrive après le texte et pousse la
+            ligne, ce qui décale le pied de page une fois la mise en page déjà
+            peinte. La hauteur est fixée et la largeur suit le rapport réel du
+            fichier (786 × 330), donc aucune déformation. */}
+        <img
+          src="/assets/logo_kaydanG_B.png"
+          alt="Groupe Kaydan"
+          width={57}
+          height={24}
+          loading="lazy"
+          decoding="async"
+          className="h-6 w-auto shrink-0"
+        />
+      </span>
       <span className="flex items-center gap-2 font-semibold text-[#5B6470]">
         Réalisé par
         <DatariumLogo />
