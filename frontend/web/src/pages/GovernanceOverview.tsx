@@ -572,7 +572,15 @@ export function GovernanceOverview() {
               loading={modelLoading}
               detailHref={detailHref}
             />
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-[16%] bg-gradient-to-r from-[#F4F7F2] via-[#F4F7F2]/80 to-transparent" />
+            {/* Même règle que sur l'accueil de domaine : ce fondu clair n'a de sens
+                que pour une photo qui remplit son cadre. Sur un visuel détouré il
+                n'adoucit aucun bord et se voit comme un panneau clair posé sur le
+                fond teinté. */}
+            {model.imageMode === "cover" ? (
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-[16%] bg-gradient-to-r from-[#F4F7F2] via-[#F4F7F2]/80 to-transparent" />
+            ) : null}
+            {/* L'ombre au sol reste : c'est une ombre portée floue qui suit le sujet,
+                pas un fond ni un cadre. */}
             <div className="pointer-events-none absolute inset-x-[10%] bottom-0 h-20 rounded-full bg-black/20 blur-3xl" />
           </div>
 

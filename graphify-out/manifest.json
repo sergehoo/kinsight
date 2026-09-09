@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/GovernanceOverview.tsx": {
-    "mtime": 1788923944.0432122,
-    "ast_hash": "d3011b80ff2887a013d8974b5dc38b49",
+    "mtime": 1788942307.9599535,
+    "ast_hash": "409c31438ac248c723a1ec4b9d52eaa5",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/HrDashboard.tsx": {
@@ -1085,8 +1085,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/DomainHome.tsx": {
-    "mtime": 1788876661.4487205,
-    "ast_hash": "ed78afae44cfcb70ca9af8e34bc71ecd",
+    "mtime": 1788942273.0048811,
+    "ast_hash": "f1c11ab98a4b2a3cfd250bf848b36e4e",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/LoginPage.tsx": {

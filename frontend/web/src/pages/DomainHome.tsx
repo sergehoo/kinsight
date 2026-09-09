@@ -266,7 +266,18 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                   ) : spec.illustrationSvg ? (
                     <div className="grid h-full w-full place-items-center opacity-[0.82]" dangerouslySetInnerHTML={{ __html: spec.illustrationSvg }} />
                   ) : null}
-                  <div className="pointer-events-none absolute inset-y-0 left-0 w-[28%] bg-gradient-to-r from-[#F4F7F2] to-transparent" />
+                  {/* Fondu du bord gauche, réservé aux visuels qui REMPLISSENT le cadre.
+                   *
+                   *  Ce calque peint la couleur de la coque (#F4F7F2) en dégradé vers la
+                   *  droite. Sur une photo en `cover`, qui arrive au ras du cadre, il
+                   *  adoucit la coupure franche contre le texte. Sur un PNG DÉTOURÉ il
+                   *  n'y a aucun bord à adoucir : le dégradé se posait alors sur le fond
+                   *  teinté du domaine et s'y voyait comme un panneau clair — le « cadre »
+                   *  qu'on croyait venir des images, alors qu'aucune d'elles n'en portait.
+                   *  Vérifié en le masquant : le rectangle disparaît, l'image reste. */}
+                  {spec.imageMode === "cover" ? (
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-[28%] bg-gradient-to-r from-[#F4F7F2] to-transparent" />
+                  ) : null}
                 </div>
 
                 {/* Sur lg+, le texte s'arrête AVANT la carte vedette : elle ne peut
