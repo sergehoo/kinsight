@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Préflight Odoo RH — ce que l'instance peut RÉELLEMENT alimenter.
 
-    export ODOO_URL="https://rh.kaydan.tech"
-    export ODOO_DB="<nom de la base>"
-    export ODOO_LOGIN="<compte API lecture seule>"
-    export ODOO_API_KEY="$(votre-coffre get odoo_rh_api_key)"
+    # 1. Renseigner le fichier local, qui est ignoré par git :
+    #      infra/airbyte/odoo-hr/.env.odoo
+    # 2. Lancer, depuis la racine du dépôt :
     python3 scripts/odoo_hr_preflight.py
+
+Le script lit `infra/airbyte/odoo-hr/.env.odoo` s'il existe, et l'environnement
+sinon — ce dernier l'emporte. Ce fichier est gitignoré par trois règles ; la clé
+n'a donc aucune raison de transiter par un canal de discussion ni par la ligne
+de commande, où elle serait visible des autres processus.
 
 À exécuter SUR VOTRE INFRA, là où Odoo est joignable. N'écrit rien, ne modifie
 rien : uniquement des lectures.
@@ -38,8 +42,30 @@ Les échantillons de données sont masqués.
 from __future__ import annotations
 
 import os
+import pathlib
 import sys
 import xmlrpc.client
+
+FICHIER_ENV = pathlib.Path(__file__).resolve().parent.parent / "infra" / "airbyte" / "odoo-hr" / ".env.odoo"
+
+
+def _charger_env() -> None:
+    """Charge `.env.odoo` sans écraser l'environnement déjà posé.
+
+    Évite l'incantation `set -a && . ./.env.odoo && set +a`, qui se recopie mal
+    et qu'on oublie. L'environnement explicite reste prioritaire : on peut donc
+    surcharger une valeur du fichier le temps d'un essai.
+    """
+    if not FICHIER_ENV.exists():
+        return
+    for ligne in FICHIER_ENV.read_text().splitlines():
+        ligne = ligne.strip()
+        if not ligne or ligne.startswith("#") or "=" not in ligne:
+            continue
+        cle, _, valeur = ligne.partition("=")
+        cle, valeur = cle.strip(), valeur.split("#", 1)[0].strip().strip('"').strip("'")
+        if cle and valeur and not os.environ.get(cle):
+            os.environ[cle] = valeur
 
 OK, ABS, WARN = "  OK  ", "ABSENT", "ALERTE"
 
@@ -85,6 +111,7 @@ def _cause(exc: Exception) -> str:
 
 
 def main() -> int:
+    _charger_env()
     url = os.environ.get("ODOO_URL", "").rstrip("/")
     db = os.environ.get("ODOO_DB", "")
     login = os.environ.get("ODOO_LOGIN", "")
@@ -92,7 +119,9 @@ def main() -> int:
     manquantes = [k for k, v in {"ODOO_URL": url, "ODOO_DB": db,
                                  "ODOO_LOGIN": login, "ODOO_API_KEY": api_key}.items() if not v]
     if manquantes:
-        print(f"✗ Variables d'environnement manquantes : {', '.join(manquantes)}")
+        print(f"✗ Paramètres manquants : {', '.join(manquantes)}")
+        print(f"  Renseignez-les dans {FICHIER_ENV}")
+        print("  (fichier ignoré par git ; modèle à côté : env.odoo.example)")
         return 2
 
     try:
