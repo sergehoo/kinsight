@@ -8,6 +8,9 @@ from .views import (
     DataSourceViewSet,
     FieldMappingViewSet,
     ShieldAttendanceSeriesView,
+    OdooHealthView,
+    OdooHrKpiView,
+    OdooReferenceView,
     ShieldHealthView,
     ShieldHrKpiView,
     ShieldOverviewView,
@@ -36,5 +39,8 @@ urlpatterns = router.urls + [
     path("shield/security/", ShieldSecurityView.as_view(), name="shield-security"),
     path("shield/overview/", ShieldOverviewView.as_view(), name="shield-overview"),
     path("shield/health/", ShieldHealthView.as_view(), name="shield-health"),
+    path("odoo/hr-kpi/", OdooHrKpiView.as_view(), name="odoo-hr-kpi"),
+    path("odoo/reference/", OdooReferenceView.as_view(), name="odoo-reference"),
+    path("odoo/health/", OdooHealthView.as_view(), name="odoo-health"),
     path("webhook/<slug:slug>/", WebhookReceiver.as_view(), name="integration-webhook"),
 ]

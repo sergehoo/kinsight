@@ -186,20 +186,37 @@ class ShieldHrKpiTest(APITestCase):
         self.assertTrue(all(k["value"] is None for k in data["kpis"]))
 
 
-class OdooHrSkeletonTest(APITestCase):
-    """Squelette Odoo : jamais de donnée, état explicite uniquement."""
+class OdooEtatsGouvernesTest(APITestCase):
+    """Le connecteur Odoo ne rend jamais de donnée sans source connectée.
 
-    def test_not_configured_without_source(self):
-        data = odoo.fetch_hr_reference()
-        self.assertEqual(data["status"], "not_configured")
-        self.assertEqual(data["records"], [])
+    Ces tests remplacent ceux du squelette, qui attendaient `not_configured` et
+    `not_implemented` : ces états disaient « le connecteur n'existe pas ». Il
+    existe maintenant, et le vocabulaire redevient celui du reste de
+    l'application — `disconnected` quand la source n'est pas raccordée.
+    """
 
-    def test_not_implemented_with_source(self):
-        DataSource.objects.create(name="Odoo RH", slug="odoo-hr", source_type="odoo_hr", status="connected")
+    def test_sans_source_declaree_rien_nest_rendu(self):
         data = odoo.fetch_hr_reference()
-        self.assertEqual(data["status"], "not_implemented")
+        self.assertEqual(data["status"], "disconnected")
         self.assertEqual(data["records"], [])
         self.assertIn("hr.employee", data["models"])
+
+    def test_une_source_declaree_mais_non_connectee_reste_deconnectee(self):
+        DataSource.objects.create(name="Odoo RH", slug="odoo-hr", source_type="odoo_hr")
+        data = odoo.fetch_hr_reference()
+        self.assertEqual(data["status"], "disconnected")
+        self.assertEqual(data["records"], [])
+
+    def test_une_source_connectee_sans_url_reste_deconnectee(self):
+        """Le statut « connecté » posé à la main ne suffit pas : sans URL, sans
+        base et sans clé, aucune lecture n'est possible — et le dire vaut mieux
+        que de rendre une erreur de transport."""
+        DataSource.objects.create(name="Odoo RH", slug="odoo-hr",
+                                  source_type="odoo_hr", status="connected")
+        data = odoo.fetch_hr_kpis()
+        self.assertEqual(data["status"], "disconnected")
+        self.assertTrue(all(k["value"] is None for k in data["kpis"]))
+        self.assertIn("URL", data["detail"] + " " + str(data.get("kpis")[0].get("detail", "")))
 
 
 class ShieldClientTest(TestCase):
@@ -1964,3 +1981,221 @@ class SerieDateeEndpointTest(APITestCase):
                                            email="ls@k.co", role="READER", is_group_scope=True)
         self.client.force_authenticate(lecteur)
         self.assertEqual(self.client.get(f"{self.URL}?date_from=2026-04-01").status_code, 403)
+
+
+class OdooConnecteurTest(TestCase):
+    """Le connecteur Odoo réel : ce qu'il rend quand l'instance répond, et quand elle refuse.
+
+    Le transport est bouchonné au niveau du client : ces tests portent sur la
+    NORMALISATION — quels états sont rendus, quelles valeurs, et ce qui arrive
+    quand une partie seulement de l'instance répond.
+    """
+
+    def setUp(self):
+        from .models import AuthMethod, ConnectorCredential, CredentialKind, DataConnector
+
+        self.source = DataSource.objects.create(
+            name="Odoo RH", slug="odoo-hr", source_type="odoo_hr",
+            target_module="rh", status="connected", is_active=True)
+        self.connecteur = DataConnector.objects.create(
+            source=self.source, base_url="https://rh.kaydan.tech",
+            auth_method=AuthMethod.API_KEY,
+            config={"database": "kaydan_rh", "login": "api@kaydan.tech"})
+        cred = ConnectorCredential.objects.create(
+            connector=self.connecteur, kind=CredentialKind.API_KEY)
+        cred.set_secret("cle-api-tres-secrete")
+        cred.save()
+
+    def _client(self, *, comptes=None, champs=None, lignes=None, uid=7):
+        """Un client Odoo bouchonné, qui répond ce qu'on lui dit et lève le reste."""
+        from .odoo_client import OdooError
+
+        comptes = comptes or {}
+        champs = champs or {}
+        lignes = lignes or {}
+
+        class Bouchon:
+            appels = 0
+
+            def uid(_s):
+                if uid is None:
+                    raise OdooError("auth", "Odoo refuse ces identifiants pour cette base.")
+                return uid
+
+            def compter(_s, modele, domaine=None):
+                if modele not in comptes:
+                    raise OdooError("absent", "Modèle absent de cette instance : le module "
+                                              "correspondant n'est pas installé.")
+                valeur = comptes[modele]
+                if callable(valeur):
+                    return valeur(domaine)
+                return valeur
+
+            def champs_de(_s, modele):
+                if modele not in champs:
+                    raise OdooError("absent", "Modèle absent de cette instance.")
+                return champs[modele]
+
+            def lire(_s, modele, champs_demandes, domaine=None, limite=200, ordre=None):
+                return lignes.get(modele, [])[:limite]
+
+        return Bouchon()
+
+    def test_un_module_absent_ne_prive_pas_les_autres_cartes(self):
+        """C'est la garantie centrale : la paie n'est pas installée sur tous les
+        Odoo, et son absence doit retirer SA carte, pas l'écran entier."""
+        client = self._client(
+            comptes={"hr.employee": lambda d: 120 if d == [["active", "=", True]] else 8,
+                     "hr.department": 6},   # ni hr.job ni res.company
+            champs={"hr.employee": {"department_id": {"type": "many2one"}}},
+            lignes={"hr.employee": [{"department_id": [1, "Opérations"]}] * 120})
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            data = odoo.fetch_hr_kpis()
+
+        par_cle = {k["key"]: k for k in data["kpis"]}
+        self.assertEqual(par_cle["effectif_total"]["value"], 120)
+        self.assertEqual(par_cle["effectif_total"]["status"], "connected")
+        self.assertEqual(par_cle["departements"]["value"], 6)
+        # Modèle absent → `disconnected` et non `error` : ce n'est pas une panne,
+        # c'est un module non installé, et le motif le dit.
+        self.assertEqual(par_cle["metiers"]["status"], "disconnected")
+        self.assertIn("module", par_cle["metiers"]["detail"])
+        self.assertIsNone(par_cle["metiers"]["value"])
+        # L'écran reste utile : partiellement alimenté, et il l'annonce.
+        self.assertEqual(data["status"], "partial")
+
+    def test_des_identifiants_refuses_ne_rendent_aucune_valeur(self):
+        client = self._client(uid=None)
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            data = odoo.fetch_hr_kpis()
+        self.assertEqual(data["status"], "error")
+        self.assertEqual(data["cause"], "auth")
+        self.assertTrue(all(k["value"] is None for k in data["kpis"]))
+
+    def test_la_repartition_par_departement_compte_et_avoue_les_non_affectes(self):
+        client = self._client(
+            comptes={"hr.employee": 5, "hr.department": 2, "hr.job": 3, "res.company": 1},
+            champs={"hr.employee": {"department_id": {"type": "many2one"}},
+                    "hr.job": {"no_of_recruitment": {"type": "integer"}}},
+            lignes={"hr.employee": [
+                {"department_id": [1, "Opérations"]},
+                {"department_id": [1, "Opérations"]},
+                {"department_id": [2, "Finance"]},
+                {"department_id": False},      # employé sans département
+                {"department_id": False},
+            ], "hr.job": [{"no_of_recruitment": 2}, {"no_of_recruitment": 3}]})
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            data = odoo.fetch_hr_kpis()
+
+        rep = data["by_department"]
+        self.assertEqual(rep["status"], "connected")
+        self.assertEqual(rep["rows"], [{"department": "Opérations", "headcount": 2},
+                                       {"department": "Finance", "headcount": 1}])
+        # Les employés sans département sont COMPTÉS À PART, jamais répartis :
+        # les affecter au hasard fabriquerait un effectif par département faux.
+        self.assertEqual(rep["unassigned"], 2)
+        par_cle = {k["key"]: k for k in data["kpis"]}
+        self.assertEqual(par_cle["postes_ouverts"]["value"], 5)
+
+    def test_un_champ_absent_de_linstance_ne_fait_pas_tomber_lappel(self):
+        """`no_of_recruitment` est standard mais un module tiers peut le retirer.
+        Le demander quand même ferait échouer TOUT l'appel, donc tout l'écran."""
+        client = self._client(
+            comptes={"hr.employee": 10, "hr.department": 1, "hr.job": 2, "res.company": 1},
+            champs={"hr.employee": {"department_id": {"type": "many2one"}},
+                    "hr.job": {"name": {"type": "char"}}})   # pas de no_of_recruitment
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            data = odoo.fetch_hr_kpis()
+        poste = {k["key"]: k for k in data["kpis"]}["postes_ouverts"]
+        self.assertEqual(poste["status"], "disconnected")
+        self.assertIsNone(poste["value"])
+        self.assertIn("no_of_recruitment", poste["detail"])
+
+    def test_un_taux_indeterminable_reste_none_jamais_zero(self):
+        """Aucun employé : la part de sortis n'a pas de valeur. L'afficher à 0 %
+        annoncerait une rétention parfaite sur un effectif inexistant."""
+        client = self._client(comptes={"hr.employee": 0, "hr.department": 0,
+                                       "hr.job": 0, "res.company": 1},
+                              champs={"hr.employee": {"department_id": {"type": "many2one"}}})
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            data = odoo.fetch_hr_kpis()
+        self.assertIsNone({k["key"]: k for k in data["kpis"]}["taux_rotation_sortis"]["value"])
+
+    def test_la_cle_api_ne_figure_dans_aucune_reponse(self):
+        client = self._client(comptes={"hr.employee": 3, "hr.department": 1,
+                                       "hr.job": 1, "res.company": 1},
+                              champs={"hr.employee": {"department_id": {"type": "many2one"}}})
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            rendu = json.dumps(odoo.fetch_hr_kpis(), ensure_ascii=False, default=str)
+            rendu += json.dumps(odoo.fetch_hr_reference(), ensure_ascii=False, default=str)
+        self.assertNotIn("cle-api-tres-secrete", rendu)
+
+    def test_le_referentiel_dit_quels_modeles_existent_et_leur_volume(self):
+        client = self._client(comptes={"hr.employee": 120, "hr.department": 6,
+                                       "hr.job": 14, "res.company": 3})
+        with patch("apps.integrations.odoo.build_client", return_value=client):
+            data = odoo.fetch_hr_reference()
+        par_modele = {l["model"]: l for l in data["records"]}
+        self.assertEqual(par_modele["hr.employee"]["count"], 120)
+        self.assertTrue(par_modele["hr.employee"]["present"])
+        # Les modèles non installés sont NOMMÉS absents, avec leur motif.
+        self.assertFalse(par_modele["hr.payslip"]["present"])
+        self.assertIn("module", par_modele["hr.payslip"]["detail"])
+        self.assertEqual(data["status"], "partial")
+
+    def test_la_cle_la_plus_recente_est_employee(self):
+        """Même piège que pour Shield : en prenant la plus ancienne, toute
+        rotation de secret restait sans effet et Odoo refusait la connexion."""
+        from .models import ConnectorCredential, CredentialKind
+
+        ancienne = ConnectorCredential.objects.filter(
+            connector=self.connecteur, kind=CredentialKind.API_KEY).first()
+        ancienne.set_secret("cle-neuve")
+        ancienne.save()
+        self.assertEqual(odoo._cle_api(self.connecteur), "cle-neuve")
+
+
+class OdooRbacTest(APITestCase):
+    """Les endpoints Odoo servent la MÊME donnée RH que Shield et le mart.
+
+    La leçon est déjà payée : les endpoints Shield ont un temps servi les
+    effectifs du Groupe à un READER que `/governance/hr/kpi/` refusait en 403.
+    Deux portes sur la même donnée, une seule verrouillée. On vérifie ici que la
+    troisième porte naît fermée.
+    """
+
+    def setUp(self):
+        self.lecteur = User.objects.create_user(username="lecteur-odoo", password="x",
+                                                email="lo@k.co", role="READER", is_group_scope=True)
+        self.drh = User.objects.create_user(username="drh-odoo", password="x",
+                                            email="do@k.co", role="DRH", is_group_scope=True)
+        self.admin = User.objects.create_user(username="admin-odoo", password="x",
+                                              email="ao@k.co", role="ADMIN_INTEGRATION",
+                                              is_group_scope=True)
+
+    def _get(self, utilisateur, chemin):
+        self.client.force_authenticate(utilisateur)
+        return self.client.get(chemin)
+
+    def test_un_lecteur_ne_passe_pas_par_odoo_pour_lire_le_rh(self):
+        self.assertEqual(self._get(self.lecteur, "/api/v1/integrations/odoo/hr-kpi/").status_code, 403)
+
+    def test_le_drh_conserve_son_acces(self):
+        """Fermer la porte ne doit pas fermer celle des ayants droit."""
+        self.assertEqual(self._get(self.drh, "/api/v1/integrations/odoo/hr-kpi/").status_code, 200)
+
+    def test_le_referentiel_est_reserve_aux_administrateurs_dintegration(self):
+        """C'est un outil de diagnostic du raccordement, pas un écran de pilotage."""
+        self.assertEqual(self._get(self.drh, "/api/v1/integrations/odoo/reference/").status_code, 403)
+        self.assertEqual(self._get(self.admin, "/api/v1/integrations/odoo/reference/").status_code, 200)
+
+    def test_la_sante_du_connecteur_reste_lisible_par_tous(self):
+        """Aucune donnée métier : un décideur doit pouvoir voir si sa source répond."""
+        self.assertEqual(self._get(self.lecteur, "/api/v1/integrations/odoo/health/").status_code, 200)
+
+    def test_une_lecture_odoo_est_tracee(self):
+        AccessLog.objects.all().delete()
+        self._get(self.drh, "/api/v1/integrations/odoo/hr-kpi/")
+        trace = AccessLog.objects.filter(action="odoo.hr_kpi").first()
+        self.assertIsNotNone(trace, "aucune trace pour une lecture Odoo")
+        self.assertEqual(trace.subsidiary_scope, ["*"])

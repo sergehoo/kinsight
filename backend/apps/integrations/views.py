@@ -48,6 +48,7 @@ from .shield import (
     fetch_security_kpis,
     shield_health,
 )
+from .odoo import fetch_hr_kpis as fetch_odoo_hr_kpis, fetch_hr_reference, odoo_health
 from .shield_rules import FENETRES_JOURS, MAX_JOURS
 
 # Au-delà de ce délai sans test, une source « connectée » est considérée périmée.
@@ -216,6 +217,54 @@ class ShieldOverviewView(APIView):
             return _refus_de_domaine("overview")
         _audit_shield(request, "shield.overview")
         return Response(fetch_overview_kpis())
+
+
+class OdooHrKpiView(APIView):
+    """KPIs RH normalisés depuis Odoo (backend → normalisation → API).
+
+    Même porte de domaine que la voie Shield : sans elle, ce chemin servirait les
+    effectifs du Groupe à un rôle à qui `/governance/hr/kpi/` les refuse — deux
+    portes sur la même donnée, une seule verrouillée. C'est l'erreur qui avait
+    déjà été commise sur Shield ; on ne la refait pas.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if not can_access_domain(request.user, "capital-humain"):
+            return _refus_de_domaine("capital-humain")
+        charge = fetch_odoo_hr_kpis()
+        _audit_shield(request, "odoo.hr_kpi")
+        return Response(charge)
+
+
+class OdooReferenceView(APIView):
+    """Ce que l'instance Odoo contient : modèles présents et volumes.
+
+    Aucune donnée nominative — des présences et des comptes. Réservé aux
+    administrateurs d'intégration : c'est un outil de diagnostic du raccordement,
+    pas un écran de pilotage.
+    """
+
+    permission_classes = [IsAuthenticated, IsIntegrationAdmin]
+
+    def get(self, request):
+        charge = fetch_hr_reference()
+        _audit(request, "integration.odoo.reference", None, {"status": charge.get("status")})
+        return Response(charge)
+
+
+class OdooHealthView(APIView):
+    """Santé du connecteur Odoo, lisible par tout utilisateur authentifié.
+
+    Aucune donnée métier : un décideur doit pouvoir savoir si la source qui
+    alimente son tableau de bord répond, sans accéder au centre de connecteurs.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(odoo_health())
 
 
 class ShieldHealthView(APIView):
