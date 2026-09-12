@@ -59,10 +59,32 @@ body {
   animation: ki-sync-pulse 1.4s ease-in-out infinite;
 }
 
+/* ── Fond de la page de connexion ─────────────────────────────────────────
+   `stroke-dashoffset` fait DÉFILER des tirets le long d'un tracé : c'est le
+   flux de données, obtenu sans canvas, sans boucle JavaScript et sans image.
+   Une SEULE keyframe pour tout le fond : cette page s'ouvre tous les matins, et
+   un scintillement y deviendrait vite insupportable. */
+@keyframes ki-login-flux {
+  to {
+    stroke-dashoffset: -290;
+  }
+}
+
+.ki-login-flux {
+  animation: ki-login-flux linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ki-shimmer,
-  .ki-sync-dot {
+  .ki-sync-dot,
+  .ki-login-flux {
     animation: none;
+  }
+  /* Sans mouvement, les tirets resteraient une ligne hachée peu lisible : on
+     rend le trait plein. Le schéma reste une image composée, pas un vide. */
+  .ki-login-flux {
+    stroke-dasharray: none;
+    stroke-opacity: 0.3;
   }
 }
 

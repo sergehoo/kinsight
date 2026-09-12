@@ -1055,8 +1055,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/auth.ts": {
-    "mtime": 1782584235.534236,
-    "ast_hash": "1426853b2097a63b77fecba74cc3d962",
+    "mtime": 1789203198.3566234,
+    "ast_hash": "c36ed9fe30ff97ec3e08e0c19a9b974d",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/integrations.ts": {
@@ -1090,8 +1090,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/LoginPage.tsx": {
-    "mtime": 1788655669.637566,
-    "ast_hash": "78cfa96be4ae71a6ed1c82c34dc6554e",
+    "mtime": 1789203793.719232,
+    "ast_hash": "75bbf663bd7743023ac57766cd2a75a9",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModuleHome.tsx": {
@@ -1960,8 +1960,8 @@
     "semantic_hash": ""
   },
   "frontend/web/public/assets/logistique.png": {
-    "mtime": 1788906495.5555558,
-    "ast_hash": "ff88073b81b15984072ae98f58b5e952",
+    "mtime": 1789203891.426058,
+    "ast_hash": "d8b6b4e3c971ca255568e8919c2f4e0c",
     "semantic_hash": ""
   },
   "frontend/web/public/assets/logo_kaydanG_B.png": {
@@ -2010,13 +2010,13 @@
     "semantic_hash": ""
   },
   "frontend/web/public/assets/opt/operations-logistique-640.webp": {
-    "mtime": 1788923273.3295162,
-    "ast_hash": "c0646c8446ec2f49f5827c8e8b923d27",
+    "mtime": 1789203893.5755882,
+    "ast_hash": "f90aee133bece9dfec15c118759d33f8",
     "semantic_hash": ""
   },
   "frontend/web/public/assets/opt/operations-logistique-900.webp": {
-    "mtime": 1788923274.0436199,
-    "ast_hash": "4e9be7462d612e86f6d85e54d19f296a",
+    "mtime": 1789203894.1827812,
+    "ast_hash": "af45f1c1232e69d79c9971887f8c8195",
     "semantic_hash": ""
   },
   "frontend/web/public/assets/opt/overview-cible-1024.webp": {
@@ -2047,6 +2047,11 @@
   "frontend/web/public/assets/vision.png": {
     "mtime": 1788885798.0,
     "ast_hash": "bb6760c724c1dd1d74088b8cebefec08",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/components/chrome/LoginBackdrop.tsx": {
+    "mtime": 1789203766.8153768,
+    "ast_hash": "97cf7a85efbfe5faf8cddcfeddfeccfc",
     "semantic_hash": ""
   }
 }

@@ -42,19 +42,54 @@ export async function fetchMe(): Promise<MeProfile> {
   return me;
 }
 
-/** Connexion : obtient le JWT puis charge le profil. Lève si identifiants invalides. */
-export async function login(username: string, password: string): Promise<MeProfile> {
-  const res = await fetch(`${API_BASE}/auth/token/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ username, password }),
-  });
-  if (!res.ok) {
-    throw new Error(res.status === 401 ? "Identifiant ou mot de passe incorrect." : `Connexion impossible (${res.status}).`);
+/** Échec de connexion portant le code HTTP, pour que l'écran dise la vraie cause.
+ *
+ *  Sans le code, la page ne pouvait distinguer un mot de passe erroné d'un
+ *  serveur injoignable et affichait le même message pour les deux — celui qui
+ *  fait ressaisir un mot de passe pourtant juste. `etape` distingue en outre le
+ *  refus d'identifiants de l'échec de lecture du profil, qui n'appellent pas le
+ *  même geste.
+ */
+export class LoginError extends Error {
+  constructor(
+    readonly statut: number | null,
+    readonly etape: "jeton" | "profil" | "reseau",
+    message: string,
+  ) {
+    super(message);
+    this.name = "LoginError";
   }
+}
+
+/** Connexion : obtient le JWT puis charge le profil. Lève une `LoginError`. */
+export async function login(username: string, password: string): Promise<MeProfile> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/auth/token/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+  } catch {
+    // `fetch` ne rejette que sur un échec de transport : ni serveur, ni DNS, ni
+    // réseau. Ce n'est pas un refus d'identifiants et ne doit pas se lire ainsi.
+    throw new LoginError(null, "reseau", "Serveur injoignable.");
+  }
+  if (!res.ok) throw new LoginError(res.status, "jeton", `Connexion refusée (${res.status}).`);
+
   const { access, refresh } = (await res.json()) as { access: string; refresh?: string };
   setSession(access, refresh);
-  return fetchMe();
+
+  try {
+    return await fetchMe();
+  } catch {
+    // Le jeton est valide mais le profil n'a pas pu être lu : sans permissions ni
+    // rôle, l'application afficherait un cockpit vide en se croyant connectée.
+    // On repart d'un état propre plutôt que de laisser cette moitié de session.
+    clearSession();
+    throw new LoginError(null, "profil",
+      "Identifiants acceptés, mais le profil n'a pas pu être chargé. Session annulée.");
+  }
 }
 
 export function logout(): void {

@@ -160,7 +160,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_admin_access",
-      "community": 2,
+      "community": 298,
       "norm_label": "admin_access.py"
     },
     {
@@ -170,7 +170,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "commands_admin_access_command",
-      "community": 2,
+      "community": 298,
       "norm_label": "command"
     },
     {
@@ -180,7 +180,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "basecommand",
-      "community": 2,
+      "community": 298,
       "norm_label": "basecommand"
     },
     {
@@ -190,7 +190,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "commands_admin_access_command_add_arguments",
-      "community": 2,
+      "community": 298,
       "norm_label": ".add_arguments()"
     },
     {
@@ -200,7 +200,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "commands_admin_access_command_ligne",
-      "community": 2,
+      "community": 298,
       "norm_label": "._ligne()"
     },
     {
@@ -210,7 +210,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "commands_admin_access_command_handle",
-      "community": 2,
+      "community": 298,
       "norm_label": ".handle()"
     },
     {
@@ -220,7 +220,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "commands_admin_access_command_accorder",
-      "community": 2,
+      "community": 298,
       "norm_label": "._accorder()"
     },
     {
@@ -230,7 +230,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "commands_admin_access_command_verdict",
-      "community": 2,
+      "community": 298,
       "norm_label": "._verdict()"
     },
     {
@@ -240,7 +240,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_admin_access_rationale_1",
-      "community": 2,
+      "community": 298,
       "norm_label": "pourquoi ce compte n'entre-t-il pas dans l'admin django ?      docker compose ex"
     },
     {
@@ -990,7 +990,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "ai_copilot_admin_conversationadmin_get_queryset",
-      "community": 61,
+      "community": 265,
       "norm_label": ".get_queryset()"
     },
     {
@@ -1600,7 +1600,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "ai_copilot_providers_groundedfacts",
-      "community": 79,
+      "community": 269,
       "norm_label": "groundedfacts"
     },
     {
@@ -1670,7 +1670,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "ai_copilot_providers_offlinegroundedprovider_complete",
-      "community": 79,
+      "community": 269,
       "norm_label": ".complete()"
     },
     {
@@ -1830,7 +1830,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "ai_copilot_providers_rationale_28",
-      "community": 79,
+      "community": 269,
       "norm_label": "faits ancres (sortie de semantic.grounding.answer) servant de base factuelle."
     },
     {
@@ -2100,7 +2100,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_tests_toolrbacapprovaltest_setup",
-      "community": 63,
+      "community": 101,
       "norm_label": ".setup()"
     },
     {
@@ -2580,7 +2580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_tools",
-      "community": 299,
+      "community": 63,
       "norm_label": "tools.py"
     },
     {
@@ -2610,7 +2610,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool",
-      "community": 299,
+      "community": 101,
       "norm_label": "tool"
     },
     {
@@ -2620,7 +2620,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_needs_approval",
-      "community": 299,
+      "community": 101,
       "norm_label": ".needs_approval()"
     },
     {
@@ -2630,7 +2630,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_confirmations",
-      "community": 299,
+      "community": 101,
       "norm_label": ".confirmations()"
     },
     {
@@ -2640,7 +2640,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai_copilot_tools_can_use",
-      "community": 299,
+      "community": 63,
       "norm_label": "can_use()"
     },
     {
@@ -2650,7 +2650,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry",
-      "community": 299,
+      "community": 101,
       "norm_label": "toolregistry"
     },
     {
@@ -2660,7 +2660,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_init",
-      "community": 299,
+      "community": 101,
       "norm_label": ".__init__()"
     },
     {
@@ -2670,7 +2670,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_register",
-      "community": 299,
+      "community": 101,
       "norm_label": ".register()"
     },
     {
@@ -2680,7 +2680,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_get",
-      "community": 299,
+      "community": 63,
       "norm_label": ".get()"
     },
     {
@@ -2690,7 +2690,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_all",
-      "community": 299,
+      "community": 101,
       "norm_label": ".all()"
     },
     {
@@ -2700,7 +2700,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "ai_copilot_tools_toolregistry_allowed_for",
-      "community": 299,
+      "community": 101,
       "norm_label": ".allowed_for()"
     },
     {
@@ -2730,7 +2730,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ai_copilot_tools_permissionawaretoolexecutor_init",
-      "community": 299,
+      "community": 101,
       "norm_label": ".__init__()"
     },
     {
@@ -2760,7 +2760,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "ai_copilot_tools_actionapprovalservice_init",
-      "community": 299,
+      "community": 101,
       "norm_label": ".__init__()"
     },
     {
@@ -2790,7 +2790,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_explain_kpi",
-      "community": 299,
+      "community": 63,
       "norm_label": "_tool_explain_kpi()"
     },
     {
@@ -2800,7 +2800,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_group_score",
-      "community": 299,
+      "community": 63,
       "norm_label": "_tool_group_score()"
     },
     {
@@ -2810,7 +2810,7 @@
       "source_location": "L236",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_run_connector_sync",
-      "community": 299,
+      "community": 63,
       "norm_label": "_tool_run_connector_sync()"
     },
     {
@@ -2820,7 +2820,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_generate_report",
-      "community": 299,
+      "community": 92,
       "norm_label": "_tool_generate_report()"
     },
     {
@@ -2830,7 +2830,7 @@
       "source_location": "L266",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_delete_connector",
-      "community": 299,
+      "community": 63,
       "norm_label": "_tool_delete_connector()"
     },
     {
@@ -2840,7 +2840,7 @@
       "source_location": "L278",
       "_origin": "ast",
       "id": "ai_copilot_tools_tool_send_report_email",
-      "community": 299,
+      "community": 63,
       "norm_label": "_tool_send_report_email()"
     },
     {
@@ -2850,7 +2850,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "ai_copilot_tools_build_default_registry",
-      "community": 299,
+      "community": 101,
       "norm_label": "build_default_registry()"
     },
     {
@@ -2860,7 +2860,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_1",
-      "community": 299,
+      "community": 63,
       "norm_label": "outils controles du copilot : registre declaratif + executeur conscient des perm"
     },
     {
@@ -2890,7 +2890,7 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_237",
-      "community": 299,
+      "community": 63,
       "norm_label": "lance une synchronisation d'un connecteur (ecriture sensible \u2014 passe par approba"
     },
     {
@@ -2900,7 +2900,7 @@
       "source_location": "L248",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_248",
-      "community": 299,
+      "community": 92,
       "norm_label": "genere la synthese de gouvernance groupe + indique les exports disponibles (lect"
     },
     {
@@ -2910,7 +2910,7 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_267",
-      "community": 299,
+      "community": 63,
       "norm_label": "supprime un connecteur (destructif \u2014 double validation)."
     },
     {
@@ -2920,7 +2920,7 @@
       "source_location": "L279",
       "_origin": "ast",
       "id": "ai_copilot_tools_rationale_279",
-      "community": 299,
+      "community": 63,
       "norm_label": "envoie un rapport par email (destructif/sortant \u2014 double validation).      phase"
     },
     {
@@ -2940,7 +2940,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_value_resolver",
-      "community": 269,
+      "community": 18,
       "norm_label": "value_resolver.py"
     },
     {
@@ -2950,7 +2950,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "ai_copilot_value_resolver_build_value_lookup",
-      "community": 269,
+      "community": 18,
       "norm_label": "build_value_lookup()"
     },
     {
@@ -2960,7 +2960,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ai_copilot_value_resolver_rationale_1",
-      "community": 269,
+      "community": 18,
       "norm_label": "resolution metrique \u2192 valeur reelle du mart (binding, phase 6).  fournit le `val"
     },
     {
@@ -3420,7 +3420,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "audit_middleware_oublier_les_resolutions",
-      "community": 212,
+      "community": 263,
       "norm_label": "oublier_les_resolutions()"
     },
     {
@@ -3460,7 +3460,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "audit_middleware_trustedproxymiddleware",
-      "community": 263,
+      "community": 305,
       "norm_label": "trustedproxymiddleware"
     },
     {
@@ -3470,7 +3470,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "audit_middleware_trustedproxymiddleware_init",
-      "community": 263,
+      "community": 305,
       "norm_label": ".__init__()"
     },
     {
@@ -3550,7 +3550,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "audit_middleware_rationale_115",
-      "community": 212,
+      "community": 263,
       "norm_label": "vide le cache. utile aux tests, et apres un changement de configuration."
     },
     {
@@ -3580,7 +3580,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "audit_middleware_rationale_156",
-      "community": 263,
+      "community": 305,
       "norm_label": "pose `request.client_ip` et `request.via_trusted_proxy`, et neutralise les     e"
     },
     {
@@ -3700,7 +3700,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "audit_tests_originederequetetest_setup",
-      "community": 212,
+      "community": 263,
       "norm_label": ".setup()"
     },
     {
@@ -3710,7 +3710,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "audit_tests_originederequetetest_teardown",
-      "community": 212,
+      "community": 263,
       "norm_label": ".teardown()"
     },
     {
@@ -3960,7 +3960,7 @@
       "source_location": "L245",
       "_origin": "ast",
       "id": "audit_tests_proxydoctortest_teardown",
-      "community": 212,
+      "community": 263,
       "norm_label": ".teardown()"
     },
     {
@@ -4220,7 +4220,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_bindings",
-      "community": 116,
+      "community": 64,
       "norm_label": "bindings.py"
     },
     {
@@ -4230,7 +4230,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "governance_bindings_hr_binding",
-      "community": 116,
+      "community": 64,
       "norm_label": "hr_binding()"
     },
     {
@@ -4240,7 +4240,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_bindings_rationale_1",
-      "community": 116,
+      "community": 64,
       "norm_label": "registre des liaisons module \u2194 mart (gabarit de branchement des donnees reelles)"
     },
     {
@@ -4420,7 +4420,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "governance_gateway_martgateway_fetch_hr_kpi",
-      "community": 81,
+      "community": 4,
       "norm_label": ".fetch_hr_kpi()"
     },
     {
@@ -4600,7 +4600,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "governance_gateway_rationale_58",
-      "community": 81,
+      "community": 4,
       "norm_label": "lit les lignes de `mart.hr_kpi` (maille filiale \u00d7 departement \u00d7 mois)."
     },
     {
@@ -4650,7 +4650,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_module_views",
-      "community": 116,
+      "community": 64,
       "norm_label": "module_views.py"
     },
     {
@@ -4690,7 +4690,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "governance_module_views_dims_avg",
-      "community": 116,
+      "community": 64,
       "norm_label": "_dims_avg()"
     },
     {
@@ -4700,7 +4700,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "governance_module_views_aggregate_score",
-      "community": 116,
+      "community": 92,
       "norm_label": "aggregate_score()"
     },
     {
@@ -4710,7 +4710,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "governance_module_views_domain_rows",
-      "community": 116,
+      "community": 64,
       "norm_label": "_domain_rows()"
     },
     {
@@ -4720,7 +4720,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "governance_module_views_domain_score_fn",
-      "community": 116,
+      "community": 259,
       "norm_label": "_domain_score_fn()"
     },
     {
@@ -4730,7 +4730,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "governance_module_views_build_group_report",
-      "community": 116,
+      "community": 92,
       "norm_label": "build_group_report()"
     },
     {
@@ -4880,7 +4880,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_module_views_rationale_1",
-      "community": 116,
+      "community": 64,
       "norm_label": "endpoint generique de donnees par module (gabarit data reelle).  get /api/v1/gov"
     },
     {
@@ -4890,7 +4890,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "governance_module_views_rationale_57",
-      "community": 116,
+      "community": 64,
       "norm_label": "moyenne par dimension sur un ensemble de lignes (month, sub, dim, score)."
     },
     {
@@ -4900,7 +4900,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "governance_module_views_rationale_65",
-      "community": 116,
+      "community": 92,
       "norm_label": "agregation commune des scores (hr & domaines).      `all_rows` : lignes (month,"
     },
     {
@@ -4910,7 +4910,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "governance_module_views_rationale_90",
-      "community": 116,
+      "community": 64,
       "norm_label": "lignes de score brutes d'un domaine : rh via mart.hr_score, autres via mart.doma"
     },
     {
@@ -4920,7 +4920,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "governance_module_views_rationale_95",
-      "community": 116,
+      "community": 259,
       "norm_label": "fonction de score global d'un domaine (ponderations propres au domaine)."
     },
     {
@@ -4930,7 +4930,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "governance_module_views_rationale_102",
-      "community": 116,
+      "community": 92,
       "norm_label": "indice de gouvernance groupe consolide (reutilise par l'api et l'export).      a"
     },
     {
@@ -5010,7 +5010,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "governance_services_period_from_quarter",
-      "community": 262,
+      "community": 92,
       "norm_label": "period_from_quarter()"
     },
     {
@@ -5020,7 +5020,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "governance_services_hr_kpi_summary",
-      "community": 4,
+      "community": 92,
       "norm_label": "hr_kpi_summary()"
     },
     {
@@ -5090,7 +5090,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "any",
-      "community": 73,
+      "community": 265,
       "norm_label": "any"
     },
     {
@@ -5140,7 +5140,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "governance_services_rationale_24",
-      "community": 262,
+      "community": 92,
       "norm_label": "construit la periode [start, end[ d'un trimestre civil."
     },
     {
@@ -5150,7 +5150,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "governance_services_rationale_35",
-      "community": 4,
+      "community": 92,
       "norm_label": "synthese rh filtree par perimetre, sur la periode demandee.      nb : le turnove"
     },
     {
@@ -5230,7 +5230,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "governance_tests_governanceapitest_setup",
-      "community": 30,
+      "community": 9,
       "norm_label": ".setup()"
     },
     {
@@ -5350,7 +5350,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest",
-      "community": 67,
+      "community": 30,
       "norm_label": "hrscoreapitest"
     },
     {
@@ -5370,7 +5370,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_teardown",
-      "community": 67,
+      "community": 30,
       "norm_label": ".teardown()"
     },
     {
@@ -5380,7 +5380,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_score_global_pondere_et_renormalise",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_score_global_pondere_et_renormalise()"
     },
     {
@@ -5390,7 +5390,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_score_par_filiale",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_score_par_filiale()"
     },
     {
@@ -5400,7 +5400,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_trend_inclut_les_mois_hors_periode",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_trend_inclut_les_mois_hors_periode()"
     },
     {
@@ -5410,7 +5410,7 @@
       "source_location": "L220",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_filtre_filiale_query_param",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_filtre_filiale_query_param()"
     },
     {
@@ -5420,7 +5420,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_perimetre_restreint",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_perimetre_restreint()"
     },
     {
@@ -5430,7 +5430,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_gouverne_si_aucune_donnee",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_gouverne_si_aucune_donnee()"
     },
     {
@@ -5440,7 +5440,7 @@
       "source_location": "L244",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_score_journalise",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_score_journalise()"
     },
     {
@@ -5450,7 +5450,7 @@
       "source_location": "L251",
       "_origin": "ast",
       "id": "governance_tests_hrscoreapitest_test_filiale_hors_perimetre_ne_fuit_pas",
-      "community": 67,
+      "community": 30,
       "norm_label": ".test_filiale_hors_perimetre_ne_fuit_pas()"
     },
     {
@@ -5570,7 +5570,7 @@
       "source_location": "L362",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest",
-      "community": 30,
+      "community": 306,
       "norm_label": "groupscoreapitest"
     },
     {
@@ -5590,7 +5590,7 @@
       "source_location": "L382",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_teardown",
-      "community": 30,
+      "community": 306,
       "norm_label": ".teardown()"
     },
     {
@@ -5600,7 +5600,7 @@
       "source_location": "L385",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_indice_consolide_pondere_et_renormalise",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_indice_consolide_pondere_et_renormalise()"
     },
     {
@@ -5610,7 +5610,7 @@
       "source_location": "L399",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_indice_par_filiale",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_indice_par_filiale()"
     },
     {
@@ -5620,7 +5620,7 @@
       "source_location": "L408",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_gouverne_si_aucune_donnee",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_gouverne_si_aucune_donnee()"
     },
     {
@@ -5630,7 +5630,7 @@
       "source_location": "L418",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_journalise",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_journalise()"
     },
     {
@@ -5640,7 +5640,7 @@
       "source_location": "L425",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_xlsx",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_export_xlsx()"
     },
     {
@@ -5650,7 +5650,7 @@
       "source_location": "L433",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_pdf",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_export_pdf()"
     },
     {
@@ -5660,7 +5660,7 @@
       "source_location": "L440",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_format_inconnu_400",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_export_format_inconnu_400()"
     },
     {
@@ -5670,7 +5670,7 @@
       "source_location": "L445",
       "_origin": "ast",
       "id": "governance_tests_groupscoreapitest_test_export_journalise",
-      "community": 30,
+      "community": 306,
       "norm_label": ".test_export_journalise()"
     },
     {
@@ -5740,7 +5740,7 @@
       "source_location": "L502",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest",
-      "community": 71,
+      "community": 308,
       "norm_label": "rbacdomainenforcementtest"
     },
     {
@@ -5750,7 +5750,7 @@
       "source_location": "L505",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_setup",
-      "community": 71,
+      "community": 308,
       "norm_label": ".setup()"
     },
     {
@@ -5760,7 +5760,7 @@
       "source_location": "L515",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_teardown",
-      "community": 71,
+      "community": 308,
       "norm_label": ".teardown()"
     },
     {
@@ -5770,7 +5770,7 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_refuse_domaine_finance",
-      "community": 71,
+      "community": 308,
       "norm_label": ".test_drh_refuse_domaine_finance()"
     },
     {
@@ -5780,7 +5780,7 @@
       "source_location": "L522",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_autorise_son_domaine_hr",
-      "community": 71,
+      "community": 308,
       "norm_label": ".test_drh_autorise_son_domaine_hr()"
     },
     {
@@ -5790,7 +5790,7 @@
       "source_location": "L526",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_drh_refuse_groupe_consolide",
-      "community": 71,
+      "community": 308,
       "norm_label": ".test_drh_refuse_groupe_consolide()"
     },
     {
@@ -5800,7 +5800,7 @@
       "source_location": "L531",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_reader_refuse_hr_kpi",
-      "community": 71,
+      "community": 308,
       "norm_label": ".test_reader_refuse_hr_kpi()"
     },
     {
@@ -5810,7 +5810,7 @@
       "source_location": "L536",
       "_origin": "ast",
       "id": "governance_tests_rbacdomainenforcementtest_test_reader_autorise_groupe",
-      "community": 71,
+      "community": 308,
       "norm_label": ".test_reader_autorise_groupe()"
     },
     {
@@ -6150,7 +6150,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "governance_tests_rationale_176",
-      "community": 67,
+      "community": 30,
       "norm_label": "human capital score : ponderation renormalisee, perimetre, periode, gouverne n/d"
     },
     {
@@ -6170,7 +6170,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "governance_tests_rationale_363",
-      "community": 30,
+      "community": 306,
       "norm_label": "indice de gouvernance groupe : agregation ponderee des scores de domaine."
     },
     {
@@ -6190,7 +6190,7 @@
       "source_location": "L503",
       "_origin": "ast",
       "id": "governance_tests_rationale_503",
-      "community": 71,
+      "community": 308,
       "norm_label": "frontiere de securite : la rbac par domaine est appliquee cote backend (pas que"
     },
     {
@@ -6320,7 +6320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views",
-      "community": 262,
+      "community": 81,
       "norm_label": "views.py"
     },
     {
@@ -6400,7 +6400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "governance_views_rationale_1",
-      "community": 262,
+      "community": 81,
       "norm_label": "api governance (drf). lecture seule, filtree par perimetre, journalisee."
     },
     {
@@ -7270,7 +7270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_shield_smoke",
-      "community": 2,
+      "community": 298,
       "norm_label": "shield_smoke.py"
     },
     {
@@ -7280,7 +7280,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "commands_shield_smoke_command",
-      "community": 2,
+      "community": 298,
       "norm_label": "command"
     },
     {
@@ -7290,7 +7290,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "commands_shield_smoke_command_handle",
-      "community": 2,
+      "community": 298,
       "norm_label": ".handle()"
     },
     {
@@ -7300,7 +7300,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "commands_shield_smoke_rationale_1",
-      "community": 2,
+      "community": 298,
       "norm_label": "smoke test kaydan shield \u2014 peu d'appels, avant toute serie lourde.      python m"
     },
     {
@@ -7460,7 +7460,7 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "integrations_models_dataconnector",
-      "community": 69,
+      "community": 10,
       "norm_label": "dataconnector"
     },
     {
@@ -7470,7 +7470,7 @@
       "source_location": "L165",
       "_origin": "ast",
       "id": "integrations_models_dataconnector_str",
-      "community": 69,
+      "community": 10,
       "norm_label": ".__str__()"
     },
     {
@@ -7580,7 +7580,7 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "integrations_models_synclog",
-      "community": 10,
+      "community": 69,
       "norm_label": "synclog"
     },
     {
@@ -7690,7 +7690,7 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "integrations_models_rationale_146",
-      "community": 69,
+      "community": 10,
       "norm_label": "configuration de connexion d'une source (1-1)."
     },
     {
@@ -7760,7 +7760,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "integrations_odoo_get_odoo_source",
-      "community": 236,
+      "community": 290,
       "norm_label": "get_odoo_source()"
     },
     {
@@ -7780,7 +7780,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "integrations_odoo_fetch_hr_reference",
-      "community": 236,
+      "community": 290,
       "norm_label": "fetch_hr_reference()"
     },
     {
@@ -7800,7 +7800,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "integrations_odoo_rationale_46",
-      "community": 236,
+      "community": 290,
       "norm_label": "etat gouverne du referentiel rh odoo. ne renvoie jamais de donnees.      `not_co"
     },
     {
@@ -8140,7 +8140,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "integrations_services_qualifier_exception",
-      "community": 278,
+      "community": 290,
       "norm_label": "_qualifier_exception()"
     },
     {
@@ -8160,7 +8160,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "integrations_services_network_probe",
-      "community": 278,
+      "community": 290,
       "norm_label": "network_probe()"
     },
     {
@@ -8220,7 +8220,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "integrations_services_rationale_78",
-      "community": 278,
+      "community": 290,
       "norm_label": "nomme la cause reelle. \u00ab injoignable \u00bb ne dit pas s'il faut corriger un     cert"
     },
     {
@@ -8240,7 +8240,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "integrations_services_rationale_113",
-      "community": 278,
+      "community": 290,
       "norm_label": "sonde reseau reelle. \u00ab connectee \u00bb exige une reponse valide, pas une reponse."
     },
     {
@@ -8300,7 +8300,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "integrations_shield_pick_secret",
-      "community": 73,
+      "community": 290,
       "norm_label": "_pick_secret()"
     },
     {
@@ -8310,7 +8310,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "integrations_shield_auth_headers",
-      "community": 73,
+      "community": 290,
       "norm_label": "_auth_headers()"
     },
     {
@@ -8430,7 +8430,7 @@
       "source_location": "L371",
       "_origin": "ast",
       "id": "integrations_shield_collect_flag",
-      "community": 73,
+      "community": 309,
       "norm_label": "_collect_flag()"
     },
     {
@@ -8440,7 +8440,7 @@
       "source_location": "L395",
       "_origin": "ast",
       "id": "integrations_shield_oldest_reliable",
-      "community": 73,
+      "community": 309,
       "norm_label": "_oldest_reliable()"
     },
     {
@@ -8450,7 +8450,7 @@
       "source_location": "L409",
       "_origin": "ast",
       "id": "integrations_shield_collect_period",
-      "community": 73,
+      "community": 309,
       "norm_label": "collect_period()"
     },
     {
@@ -8570,7 +8570,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "integrations_shield_rationale_52",
-      "community": 73,
+      "community": 290,
       "norm_label": "selectionne le credential porteur du secret, de facon deterministe.      `creden"
     },
     {
@@ -8580,7 +8580,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "integrations_shield_rationale_73",
-      "community": 73,
+      "community": 290,
       "norm_label": "construit les en-tetes d'auth depuis le connecteur (secrets chiffres) ou l'env."
     },
     {
@@ -8650,7 +8650,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "integrations_shield_rationale_372",
-      "community": 73,
+      "community": 309,
       "norm_label": "tous les enregistrements de la periode portant `flag`, du plus recent au plus an"
     },
     {
@@ -8660,7 +8660,7 @@
       "source_location": "L396",
       "_origin": "ast",
       "id": "integrations_shield_rationale_396",
-      "community": 73,
+      "community": 309,
       "norm_label": "date a partir de laquelle les comptages sont fiables.      si la collecte a ete"
     },
     {
@@ -8670,7 +8670,7 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "integrations_shield_rationale_410",
-      "community": 73,
+      "community": 309,
       "norm_label": "les trois jeux d'enregistrements de la periode, avec leur fiabilite."
     },
     {
@@ -9060,7 +9060,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_client",
-      "community": 265,
+      "community": 293,
       "norm_label": "shield_client.py"
     },
     {
@@ -9080,7 +9080,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror",
-      "community": 265,
+      "community": 91,
       "norm_label": "shielderror"
     },
     {
@@ -9090,7 +9090,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror_init",
-      "community": 265,
+      "community": 293,
       "norm_label": ".__init__()"
     },
     {
@@ -9100,7 +9100,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "integrations_shield_client_shielderror_str",
-      "community": 265,
+      "community": 91,
       "norm_label": ".__str__()"
     },
     {
@@ -9110,7 +9110,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache",
-      "community": 265,
+      "community": 293,
       "norm_label": "_ttlcache"
     },
     {
@@ -9120,7 +9120,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_init",
-      "community": 265,
+      "community": 293,
       "norm_label": ".__init__()"
     },
     {
@@ -9140,7 +9140,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_set",
-      "community": 265,
+      "community": 293,
       "norm_label": ".set()"
     },
     {
@@ -9150,7 +9150,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "integrations_shield_client_ttlcache_clear",
-      "community": 265,
+      "community": 293,
       "norm_label": ".clear()"
     },
     {
@@ -9160,7 +9160,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics",
-      "community": 265,
+      "community": 293,
       "norm_label": "shieldmetrics"
     },
     {
@@ -9170,7 +9170,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics_init",
-      "community": 265,
+      "community": 293,
       "norm_label": ".__init__()"
     },
     {
@@ -9190,7 +9190,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldmetrics_as_dict",
-      "community": 265,
+      "community": 293,
       "norm_label": ".as_dict()"
     },
     {
@@ -9210,7 +9210,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldclient_init",
-      "community": 265,
+      "community": 293,
       "norm_label": ".__init__()"
     },
     {
@@ -9310,7 +9310,7 @@
       "source_location": "L377",
       "_origin": "ast",
       "id": "integrations_shield_client_shieldclient_clear_cache",
-      "community": 265,
+      "community": 293,
       "norm_label": ".clear_cache()"
     },
     {
@@ -9320,7 +9320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_1",
-      "community": 265,
+      "community": 293,
       "norm_label": "client http kaydan shield : transport, erreurs, pagination, cache.  separe de la"
     },
     {
@@ -9340,7 +9340,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_50",
-      "community": 265,
+      "community": 91,
       "norm_label": "echec d'appel qualifie par sa cause, pas seulement par son message.      `kind`"
     },
     {
@@ -9350,7 +9350,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_72",
-      "community": 265,
+      "community": 293,
       "norm_label": "cache memoire court, protege par un verrou (django sert en multi-thread)."
     },
     {
@@ -9360,7 +9360,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "integrations_shield_client_rationale_100",
-      "community": 265,
+      "community": 293,
       "norm_label": "compteurs d'usage d'un client. aucun jeton, aucune donnee personnelle :     uniq"
     },
     {
@@ -9430,7 +9430,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints",
-      "community": 73,
+      "community": 312,
       "norm_label": "shield_endpoints.py"
     },
     {
@@ -9440,7 +9440,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "integrations_shield_endpoints_rationale_1",
-      "community": 73,
+      "community": 312,
       "norm_label": "chemins kaydan shield reellement documentes (swagger `/api/docs/`).  un seul end"
     },
     {
@@ -9650,7 +9650,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "integrations_tests_encryptiontest",
-      "community": 278,
+      "community": 236,
       "norm_label": "encryptiontest"
     },
     {
@@ -10220,7 +10220,7 @@
       "source_location": "L508",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest",
-      "community": 303,
+      "community": 236,
       "norm_label": "shieldrulestest"
     },
     {
@@ -10230,7 +10230,7 @@
       "source_location": "L511",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest_test_taux_presence",
-      "community": 303,
+      "community": 236,
       "norm_label": ".test_taux_presence()"
     },
     {
@@ -10240,7 +10240,7 @@
       "source_location": "L515",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest_test_taux_indeterminable_sans_effectif",
-      "community": 303,
+      "community": 236,
       "norm_label": ".test_taux_indeterminable_sans_effectif()"
     },
     {
@@ -10250,7 +10250,7 @@
       "source_location": "L521",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest_test_part_retards_rapportee_aux_presents",
-      "community": 303,
+      "community": 236,
       "norm_label": ".test_part_retards_rapportee_aux_presents()"
     },
     {
@@ -10260,7 +10260,7 @@
       "source_location": "L525",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest_test_baisse_exige_assez_de_jours",
-      "community": 303,
+      "community": 236,
       "norm_label": ".test_baisse_exige_assez_de_jours()"
     },
     {
@@ -10270,7 +10270,7 @@
       "source_location": "L530",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest_test_baisse_detectee_et_chiffree",
-      "community": 303,
+      "community": 236,
       "norm_label": ".test_baisse_detectee_et_chiffree()"
     },
     {
@@ -10280,7 +10280,7 @@
       "source_location": "L539",
       "_origin": "ast",
       "id": "integrations_tests_shieldrulestest_test_pas_de_constat_sans_ecart",
-      "community": 303,
+      "community": 236,
       "norm_label": ".test_pas_de_constat_sans_ecart()"
     },
     {
@@ -10430,7 +10430,7 @@
       "source_location": "L675",
       "_origin": "ast",
       "id": "integrations_tests_shieldaggregationtest",
-      "community": 236,
+      "community": 91,
       "norm_label": "shieldaggregationtest"
     },
     {
@@ -10880,7 +10880,7 @@
       "source_location": "L1167",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest",
-      "community": 91,
+      "community": 301,
       "norm_label": "sondeconnexiontest"
     },
     {
@@ -10890,7 +10890,7 @@
       "source_location": "L1176",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_setup",
-      "community": 91,
+      "community": 301,
       "norm_label": ".setup()"
     },
     {
@@ -10910,7 +10910,7 @@
       "source_location": "L1193",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_404_nest_pas_un_succes",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_404_nest_pas_un_succes()"
     },
     {
@@ -10920,7 +10920,7 @@
       "source_location": "L1201",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_401_distingue_du_404",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_401_distingue_du_404()"
     },
     {
@@ -10930,7 +10930,7 @@
       "source_location": "L1210",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_403_qualifie_en_permissions",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_403_qualifie_en_permissions()"
     },
     {
@@ -10940,7 +10940,7 @@
       "source_location": "L1217",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_500_impute_la_panne_a_la_source",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_500_impute_la_panne_a_la_source()"
     },
     {
@@ -10950,7 +10950,7 @@
       "source_location": "L1224",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_2xx_seul_vaut_succes",
-      "community": 11,
+      "community": 112,
       "norm_label": ".test_2xx_seul_vaut_succes()"
     },
     {
@@ -10960,7 +10960,7 @@
       "source_location": "L1234",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_causes_reseau_nommees_une_par_une",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_causes_reseau_nommees_une_par_une()"
     },
     {
@@ -10970,7 +10970,7 @@
       "source_location": "L1249",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_404_laisse_la_source_en_erreur_et_bloque_la_synchro",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_404_laisse_la_source_en_erreur_et_bloque_la_synchro()"
     },
     {
@@ -10990,7 +10990,7 @@
       "source_location": "L1276",
       "_origin": "ast",
       "id": "integrations_tests_sondeconnexiontest_test_probe0_ne_declare_jamais_connectee",
-      "community": 91,
+      "community": 301,
       "norm_label": ".test_probe0_ne_declare_jamais_connectee()"
     },
     {
@@ -11010,7 +11010,7 @@
       "source_location": "L1294",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest",
-      "community": 236,
+      "community": 266,
       "norm_label": "echecsshieldqualifiestest"
     },
     {
@@ -11020,7 +11020,7 @@
       "source_location": "L1305",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_setup",
-      "community": 236,
+      "community": 266,
       "norm_label": ".setup()"
     },
     {
@@ -11030,7 +11030,7 @@
       "source_location": "L1320",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_tester",
-      "community": 236,
+      "community": 266,
       "norm_label": "._tester()"
     },
     {
@@ -11040,7 +11040,7 @@
       "source_location": "L1324",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_test_aucune_reponse_shield_ne_devient_un_5xx",
-      "community": 236,
+      "community": 266,
       "norm_label": ".test_aucune_reponse_shield_ne_devient_un_5xx()"
     },
     {
@@ -11050,7 +11050,7 @@
       "source_location": "L1342",
       "_origin": "ast",
       "id": "integrations_tests_echecsshieldqualifiestest_test_le_secret_ne_fuit_ni_dans_la_reponse_ni_dans_les_journaux",
-      "community": 236,
+      "community": 266,
       "norm_label": ".test_le_secret_ne_fuit_ni_dans_la_reponse_ni_dans_les_journaux()"
     },
     {
@@ -11180,7 +11180,7 @@
       "source_location": "L1451",
       "_origin": "ast",
       "id": "integrations_tests_secretillisibletest_test_secret_indechiffrable_donne_un_verdict_et_non_un_500",
-      "community": 299,
+      "community": 63,
       "norm_label": ".test_secret_indechiffrable_donne_un_verdict_et_non_un_500()"
     },
     {
@@ -11250,7 +11250,7 @@
       "source_location": "L1515",
       "_origin": "ast",
       "id": "integrations_tests_sondesansendpointtest",
-      "community": 236,
+      "community": 266,
       "norm_label": "sondesansendpointtest"
     },
     {
@@ -11260,7 +11260,7 @@
       "source_location": "L1524",
       "_origin": "ast",
       "id": "integrations_tests_sondesansendpointtest_setup",
-      "community": 236,
+      "community": 266,
       "norm_label": ".setup()"
     },
     {
@@ -11270,7 +11270,7 @@
       "source_location": "L1536",
       "_origin": "ast",
       "id": "integrations_tests_sondesansendpointtest_tester",
-      "community": 236,
+      "community": 266,
       "norm_label": "._tester()"
     },
     {
@@ -11280,7 +11280,7 @@
       "source_location": "L1541",
       "_origin": "ast",
       "id": "integrations_tests_sondesansendpointtest_test_sans_endpoint_le_message_indique_le_geste_a_faire",
-      "community": 236,
+      "community": 266,
       "norm_label": ".test_sans_endpoint_le_message_indique_le_geste_a_faire()"
     },
     {
@@ -11290,7 +11290,7 @@
       "source_location": "L1546",
       "_origin": "ast",
       "id": "integrations_tests_sondesansendpointtest_test_avec_un_endpoint_declare_le_message_reste_factuel",
-      "community": 236,
+      "community": 266,
       "norm_label": ".test_avec_un_endpoint_declare_le_message_reste_factuel()"
     },
     {
@@ -11390,7 +11390,7 @@
       "source_location": "L1655",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest",
-      "community": 236,
+      "community": 67,
       "norm_label": "shieldrbactest"
     },
     {
@@ -11400,7 +11400,7 @@
       "source_location": "L1668",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_setup",
-      "community": 236,
+      "community": 67,
       "norm_label": ".setup()"
     },
     {
@@ -11410,7 +11410,7 @@
       "source_location": "L1677",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_get",
-      "community": 291,
+      "community": 67,
       "norm_label": "._get()"
     },
     {
@@ -11420,7 +11420,7 @@
       "source_location": "L1681",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_un_lecteur_ne_passe_plus_par_shield_pour_lire_le_rh",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_un_lecteur_ne_passe_plus_par_shield_pour_lire_le_rh()"
     },
     {
@@ -11430,7 +11430,7 @@
       "source_location": "L1687",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_le_drh_conserve_son_acces",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_le_drh_conserve_son_acces()"
     },
     {
@@ -11440,7 +11440,7 @@
       "source_location": "L1693",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_la_securite_shield_exige_le_domaine_risques",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_la_securite_shield_exige_le_domaine_risques()"
     },
     {
@@ -11450,7 +11450,7 @@
       "source_location": "L1699",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_lapercu_groupe_exige_le_domaine_overview",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_lapercu_groupe_exige_le_domaine_overview()"
     },
     {
@@ -11460,7 +11460,7 @@
       "source_location": "L1705",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_la_sante_du_connecteur_reste_lisible_par_tous",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_la_sante_du_connecteur_reste_lisible_par_tous()"
     },
     {
@@ -11470,7 +11470,7 @@
       "source_location": "L1710",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_un_perimetre_restreint_ne_recoit_pas_la_liste_des_sites",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_un_perimetre_restreint_ne_recoit_pas_la_liste_des_sites()"
     },
     {
@@ -11480,7 +11480,7 @@
       "source_location": "L1730",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_une_lecture_shield_est_desormais_tracee",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_une_lecture_shield_est_desormais_tracee()"
     },
     {
@@ -11490,7 +11490,7 @@
       "source_location": "L1739",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_un_perimetre_restreint_ne_recoit_pas_les_alertes_nominatives_de_site",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_un_perimetre_restreint_ne_recoit_pas_les_alertes_nominatives_de_site()"
     },
     {
@@ -11500,7 +11500,7 @@
       "source_location": "L1778",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_les_constats_de_portee_groupe_survivent_a_la_restriction",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_les_constats_de_portee_groupe_survivent_a_la_restriction()"
     },
     {
@@ -11510,7 +11510,7 @@
       "source_location": "L1803",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_lapercu_groupe_ne_sert_plus_la_presence_du_jour",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_lapercu_groupe_ne_sert_plus_la_presence_du_jour()"
     },
     {
@@ -11520,7 +11520,7 @@
       "source_location": "L1819",
       "_origin": "ast",
       "id": "integrations_tests_shieldrbactest_test_la_presence_du_jour_reste_servie_au_cockpit_rh",
-      "community": 291,
+      "community": 67,
       "norm_label": ".test_la_presence_du_jour_reste_servie_au_cockpit_rh()"
     },
     {
@@ -11850,7 +11850,7 @@
       "source_location": "L509",
       "_origin": "ast",
       "id": "integrations_tests_rationale_509",
-      "community": 303,
+      "community": 236,
       "norm_label": "formules centralisees : ce qui distingue \u00ab zero \u00bb de \u00ab indeterminable \u00bb."
     },
     {
@@ -11860,7 +11860,7 @@
       "source_location": "L516",
       "_origin": "ast",
       "id": "integrations_tests_rationale_516",
-      "community": 303,
+      "community": 236,
       "norm_label": "personne d'attendu : le taux n'existe pas, il ne vaut pas 0 %."
     },
     {
@@ -11930,7 +11930,7 @@
       "source_location": "L676",
       "_origin": "ast",
       "id": "integrations_tests_rationale_676",
-      "community": 236,
+      "community": 91,
       "norm_label": "by_site et by_kind derives de la meme collecte : plus d'appels par site."
     },
     {
@@ -12080,7 +12080,7 @@
       "source_location": "L1168",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1168",
-      "community": 91,
+      "community": 301,
       "norm_label": "une source n'est \u00ab connectee \u00bb qu'apres une reponse valide.      avant, `network"
     },
     {
@@ -12090,7 +12090,7 @@
       "source_location": "L1202",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1202",
-      "community": 91,
+      "community": 301,
       "norm_label": "un 401 prouve qu'une api repond et refuse le jeton \u2014 ce n'est pas la         mem"
     },
     {
@@ -12100,7 +12100,7 @@
       "source_location": "L1235",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1235",
-      "community": 91,
+      "community": 301,
       "norm_label": "\u00ab injoignable \u00bb ne dit pas s'il faut corriger un certificat ou un dns."
     },
     {
@@ -12130,7 +12130,7 @@
       "source_location": "L1295",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1295",
-      "community": 236,
+      "community": 266,
       "norm_label": "un refus de shield n'est pas une panne de k-insight.      le symptome de product"
     },
     {
@@ -12250,7 +12250,7 @@
       "source_location": "L1516",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1516",
-      "community": 236,
+      "community": 266,
       "norm_label": "un 404 sur la racine d'une api n'est pas une mauvaise url de base.      cas vu e"
     },
     {
@@ -12260,7 +12260,7 @@
       "source_location": "L1547",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1547",
-      "community": 236,
+      "community": 266,
       "norm_label": "la, le chemin est en cause : pas de conseil hors sujet."
     },
     {
@@ -12320,7 +12320,7 @@
       "source_location": "L1656",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1656",
-      "community": 236,
+      "community": 67,
       "norm_label": "deux portes sur la meme donnee, une seule etait verrouillee.      les endpoints"
     },
     {
@@ -12330,7 +12330,7 @@
       "source_location": "L1682",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1682",
-      "community": 291,
+      "community": 67,
       "norm_label": "le contournement exact qui existait : 403 sur le mart, 200 sur shield."
     },
     {
@@ -12340,7 +12340,7 @@
       "source_location": "L1688",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1688",
-      "community": 291,
+      "community": 67,
       "norm_label": "fermer la porte ne doit pas fermer celle des ayants droit."
     },
     {
@@ -12350,7 +12350,7 @@
       "source_location": "L1706",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1706",
-      "community": 291,
+      "community": 67,
       "norm_label": "aucune donnee metier : un decideur doit pouvoir voir si sa source repond."
     },
     {
@@ -12360,7 +12360,7 @@
       "source_location": "L1711",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1711",
-      "community": 291,
+      "community": 67,
       "norm_label": "la source ne rattache pas ses sites aux filiales : filtrer serait inventer,"
     },
     {
@@ -12370,7 +12370,7 @@
       "source_location": "L1731",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1731",
-      "community": 291,
+      "community": 67,
       "norm_label": "c'etait la seule voie servant des donnees reelles, et la seule sans trace."
     },
     {
@@ -12380,7 +12380,7 @@
       "source_location": "L1740",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1740",
-      "community": 291,
+      "community": 67,
       "norm_label": "la porte fermee sur `by_site` restait ouverte sur `insights`.          `evaluer_"
     },
     {
@@ -12390,7 +12390,7 @@
       "source_location": "L1779",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1779",
-      "community": 291,
+      "community": 67,
       "norm_label": "retirer les alertes de site ne doit pas rendre l'ecran muet.          un taux de"
     },
     {
@@ -12400,7 +12400,7 @@
       "source_location": "L1804",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1804",
-      "community": 291,
+      "community": 67,
       "norm_label": "le meme chiffre ne peut pas etre 403 par une porte et 200 par l'autre."
     },
     {
@@ -12410,7 +12410,7 @@
       "source_location": "L1820",
       "_origin": "ast",
       "id": "integrations_tests_rationale_1820",
-      "community": 291,
+      "community": 67,
       "norm_label": "fermer la mauvaise porte ne doit pas fermer la bonne."
     },
     {
@@ -13120,7 +13120,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "integrations_tests_auth_jwt_factice",
-      "community": 11,
+      "community": 284,
       "norm_label": "jwt_factice()"
     },
     {
@@ -13170,7 +13170,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "integrations_tests_auth_socleshield_recharger",
-      "community": 11,
+      "community": 65,
       "norm_label": "._recharger()"
     },
     {
@@ -13180,7 +13180,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest",
-      "community": 65,
+      "community": 284,
       "norm_label": "echeancedujetontest"
     },
     {
@@ -13190,7 +13190,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest_test_lecheance_est_lue_dans_le_claim_exp",
-      "community": 11,
+      "community": 284,
       "norm_label": ".test_lecheance_est_lue_dans_le_claim_exp()"
     },
     {
@@ -13200,7 +13200,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest_test_un_jeton_opaque_rend_une_echeance_inconnue",
-      "community": 65,
+      "community": 284,
       "norm_label": ".test_un_jeton_opaque_rend_une_echeance_inconnue()"
     },
     {
@@ -13210,7 +13210,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "integrations_tests_auth_echeancedujetontest_test_un_jwt_sans_exp_rend_une_echeance_inconnue",
-      "community": 65,
+      "community": 284,
       "norm_label": ".test_un_jwt_sans_exp_rend_une_echeance_inconnue()"
     },
     {
@@ -13220,7 +13220,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest",
-      "community": 65,
+      "community": 284,
       "norm_label": "jetonutilisabletest"
     },
     {
@@ -13230,7 +13230,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest_test_un_access_valide_est_employe_tel_quel",
-      "community": 11,
+      "community": 284,
       "norm_label": ".test_un_access_valide_est_employe_tel_quel()"
     },
     {
@@ -13240,7 +13240,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest_test_un_access_expire_nest_pas_employe",
-      "community": 11,
+      "community": 284,
       "norm_label": ".test_un_access_expire_nest_pas_employe()"
     },
     {
@@ -13250,7 +13250,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest_test_un_access_proche_de_lexpiration_est_deja_ecarte",
-      "community": 11,
+      "community": 284,
       "norm_label": ".test_un_access_proche_de_lexpiration_est_deja_ecarte()"
     },
     {
@@ -13260,7 +13260,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "integrations_tests_auth_jetonutilisabletest_test_sans_access_il_ny_a_rien_a_employer",
-      "community": 65,
+      "community": 284,
       "norm_label": ".test_sans_access_il_ny_a_rien_a_employer()"
     },
     {
@@ -13270,7 +13270,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest",
-      "community": 11,
+      "community": 297,
       "norm_label": "renouvellementtest"
     },
     {
@@ -13280,7 +13280,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_reponse",
-      "community": 11,
+      "community": 297,
       "norm_label": "._reponse()"
     },
     {
@@ -13290,7 +13290,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_un_renouvellement_reussi_persiste_les_deux_jetons",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_un_renouvellement_reussi_persiste_les_deux_jetons()"
     },
     {
@@ -13300,7 +13300,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_lurl_appelee_est_celle_documentee",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_lurl_appelee_est_celle_documentee()"
     },
     {
@@ -13310,7 +13310,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_une_base_sans_prefixe_donne_la_meme_url",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_une_base_sans_prefixe_donne_la_meme_url()"
     },
     {
@@ -13320,7 +13320,7 @@
       "source_location": "L163",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_un_refresh_refuse_demande_une_reauthentification",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_un_refresh_refuse_demande_une_reauthentification()"
     },
     {
@@ -13330,7 +13330,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_un_quota_de_renouvellement_est_dit_comme_tel",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_un_quota_de_renouvellement_est_dit_comme_tel()"
     },
     {
@@ -13340,7 +13340,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_sans_refresh_le_message_dit_quoi_faire",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_sans_refresh_le_message_dit_quoi_faire()"
     },
     {
@@ -13350,7 +13350,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "integrations_tests_auth_renouvellementtest_test_une_reponse_sans_access_est_refusee",
-      "community": 11,
+      "community": 297,
       "norm_label": ".test_une_reponse_sans_access_est_refusee()"
     },
     {
@@ -13370,7 +13370,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "integrations_tests_auth_concurrencetest_test_deux_appels_simultanes_ne_produisent_quun_renouvellement",
-      "community": 11,
+      "community": 284,
       "norm_label": ".test_deux_appels_simultanes_ne_produisent_quun_renouvellement()"
     },
     {
@@ -13520,7 +13520,7 @@
       "source_location": "L421",
       "_origin": "ast",
       "id": "integrations_tests_auth_entetesdesessiontest_test_les_entetes_portent_le_jeton_de_session",
-      "community": 11,
+      "community": 65,
       "norm_label": ".test_les_entetes_portent_le_jeton_de_session()"
     },
     {
@@ -13530,7 +13530,7 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "integrations_tests_auth_entetesdesessiontest_test_un_access_expire_declenche_le_renouvellement_a_la_construction",
-      "community": 11,
+      "community": 65,
       "norm_label": ".test_un_access_expire_declenche_le_renouvellement_a_la_construction()"
     },
     {
@@ -13550,7 +13550,7 @@
       "source_location": "L455",
       "_origin": "ast",
       "id": "integrations_tests_auth_entetesdesessiontest_test_le_client_construit_sait_se_reauthentifier",
-      "community": 11,
+      "community": 65,
       "norm_label": ".test_le_client_construit_sait_se_reauthentifier()"
     },
     {
@@ -13730,7 +13730,7 @@
       "source_location": "L649",
       "_origin": "ast",
       "id": "integrations_tests_auth_endpointreauthtest_test_un_access_sans_refresh_est_refuse_en_400",
-      "community": 1,
+      "community": 284,
       "norm_label": ".test_un_access_sans_refresh_est_refuse_en_400()"
     },
     {
@@ -13890,7 +13890,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_32",
-      "community": 11,
+      "community": 284,
       "norm_label": "un jwt de forme reelle, dont seul le claim `exp` nous interesse.      non signe"
     },
     {
@@ -13900,7 +13900,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_68",
-      "community": 65,
+      "community": 284,
       "norm_label": "savoir quand renouveler, sans que l'api ne le dise."
     },
     {
@@ -13910,7 +13910,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_77",
-      "community": 65,
+      "community": 284,
       "norm_label": "plutot que d'inventer une duree de vie : inconnue, et c'est shield qui         t"
     },
     {
@@ -13920,7 +13920,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_96",
-      "community": 11,
+      "community": 284,
       "norm_label": "renouveler avant l'echeance evite un 401 pendant le vol d'une requete,         d"
     },
     {
@@ -13930,7 +13930,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_106",
-      "community": 11,
+      "community": 297,
       "norm_label": "le c\u0153ur : la session se prolonge, et la rotation est respectee."
     },
     {
@@ -13940,7 +13940,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_122",
-      "community": 11,
+      "community": 297,
       "norm_label": "la reponse documentee porte un nouveau refresh : le jeter condamnerait le"
     },
     {
@@ -13950,7 +13950,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_142",
-      "community": 11,
+      "community": 297,
       "norm_label": "aucun chemin invente : c'est celui du schema live."
     },
     {
@@ -13960,7 +13960,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_164",
-      "community": 11,
+      "community": 297,
       "norm_label": "401/403 sur le renouvellement : le refresh est expire ou revoque. aucune"
     },
     {
@@ -13970,7 +13970,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_177",
-      "community": 11,
+      "community": 297,
       "norm_label": "shield documente que le renouvellement a sa propre cadence : insister         ag"
     },
     {
@@ -13990,7 +13990,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_209",
-      "community": 11,
+      "community": 284,
       "norm_label": "la base est neutralisee ici, a dessein.          sqlite verrouille la table entr"
     },
     {
@@ -14060,7 +14060,7 @@
       "source_location": "L428",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_428",
-      "community": 11,
+      "community": 65,
       "norm_label": "c'est ce qui rend la session permanente : le renouvellement se fait avant"
     },
     {
@@ -14140,7 +14140,7 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "integrations_tests_auth_rationale_650",
-      "community": 1,
+      "community": 284,
       "norm_label": "c'est exactement le probleme qu'on supprime : une session sans recours."
     },
     {
@@ -15341,7 +15341,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "valueerror",
-      "community": 299,
+      "community": 63,
       "norm_label": "valueerror"
     },
     {
@@ -17901,7 +17901,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "api_governance_usealerts",
-      "community": 8,
+      "community": 277,
       "norm_label": "usealerts()"
     },
     {
@@ -17921,7 +17921,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "api_governance_downloadgroupexport",
-      "community": 8,
+      "community": 292,
       "norm_label": "downloadgroupexport()"
     },
     {
@@ -17941,7 +17941,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "api_governance_usehrkpi",
-      "community": 100,
+      "community": 276,
       "norm_label": "usehrkpi()"
     },
     {
@@ -17991,7 +17991,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "api_governance_usegroupscore",
-      "community": 8,
+      "community": 80,
       "norm_label": "usegroupscore()"
     },
     {
@@ -18011,7 +18011,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_globalfilters",
-      "community": 267,
+      "community": 276,
       "norm_label": "globalfilters.tsx"
     },
     {
@@ -18021,7 +18021,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_globalfilters_years",
-      "community": 267,
+      "community": 276,
       "norm_label": "years"
     },
     {
@@ -18031,7 +18031,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_globalfilters_quarters",
-      "community": 267,
+      "community": 276,
       "norm_label": "quarters"
     },
     {
@@ -18041,7 +18041,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_globalfilters_select",
-      "community": 267,
+      "community": 276,
       "norm_label": "select()"
     },
     {
@@ -18051,7 +18051,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "components_globalfilters_globalfilters",
-      "community": 267,
+      "community": 276,
       "norm_label": "globalfilters()"
     },
     {
@@ -18061,7 +18061,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_kpicard",
-      "community": 66,
+      "community": 303,
       "norm_label": "kpicard.tsx"
     },
     {
@@ -18071,7 +18071,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_kpicard_kpicardprops",
-      "community": 66,
+      "community": 303,
       "norm_label": "kpicardprops"
     },
     {
@@ -18081,7 +18081,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "components_kpicard_tonering",
-      "community": 66,
+      "community": 303,
       "norm_label": "tonering"
     },
     {
@@ -18091,7 +18091,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_kpicard_kpicard",
-      "community": 66,
+      "community": 303,
       "norm_label": "kpicard()"
     },
     {
@@ -18101,7 +18101,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart",
-      "community": 66,
+      "community": 276,
       "norm_label": "payrollbysubsidiarychart.tsx"
     },
     {
@@ -18111,7 +18111,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_props",
-      "community": 66,
+      "community": 276,
       "norm_label": "props"
     },
     {
@@ -18121,7 +18121,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_subsidiary_labels",
-      "community": 66,
+      "community": 276,
       "norm_label": "subsidiary_labels"
     },
     {
@@ -18131,7 +18131,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_payrollbysubsidiarychart_payrollbysubsidiarychart",
-      "community": 66,
+      "community": 276,
       "norm_label": "payrollbysubsidiarychart()"
     },
     {
@@ -18201,7 +18201,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "charts_base_chartframeprops",
-      "community": 104,
+      "community": 86,
       "norm_label": "chartframeprops"
     },
     {
@@ -18241,7 +18241,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "charts_index_commonprops",
-      "community": 104,
+      "community": 86,
       "norm_label": "commonprops"
     },
     {
@@ -18465,6 +18465,56 @@
       "norm_label": "heroimage()"
     },
     {
+      "label": "LoginBackdrop.tsx",
+      "file_type": "code",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "chrome_loginbackdrop",
+      "community": 129,
+      "norm_label": "loginbackdrop.tsx"
+    },
+    {
+      "label": "ETATS",
+      "file_type": "code",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "chrome_loginbackdrop_etats",
+      "community": 129,
+      "norm_label": "etats"
+    },
+    {
+      "label": "SOURCES",
+      "file_type": "code",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "chrome_loginbackdrop_sources",
+      "community": 129,
+      "norm_label": "sources"
+    },
+    {
+      "label": "SORTIES",
+      "file_type": "code",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "chrome_loginbackdrop_sorties",
+      "community": 129,
+      "norm_label": "sorties"
+    },
+    {
+      "label": "LoginBackdrop()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "chrome_loginbackdrop_loginbackdrop",
+      "community": 129,
+      "norm_label": "loginbackdrop()"
+    },
+    {
       "label": "PageShell.tsx",
       "file_type": "code",
       "source_file": "frontend/web/src/components/chrome/PageShell.tsx",
@@ -18511,7 +18561,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "chrome_siderail_siderail",
-      "community": 277,
+      "community": 80,
       "norm_label": "siderail()"
     },
     {
@@ -18581,7 +18631,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "chrome_usermenu_usermenu",
-      "community": 292,
+      "community": 277,
       "norm_label": "usermenu()"
     },
     {
@@ -18671,7 +18721,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icons",
-      "community": 66,
+      "community": 307,
       "norm_label": "icons.tsx"
     },
     {
@@ -18681,7 +18731,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_icons_iconprops",
-      "community": 66,
+      "community": 307,
       "norm_label": "iconprops"
     },
     {
@@ -18691,7 +18741,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_icons_base",
-      "community": 66,
+      "community": 307,
       "norm_label": "base()"
     },
     {
@@ -18701,7 +18751,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_icons_iconusers",
-      "community": 66,
+      "community": 307,
       "norm_label": "iconusers()"
     },
     {
@@ -18711,7 +18761,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "components_icons_iconwallet",
-      "community": 66,
+      "community": 307,
       "norm_label": "iconwallet()"
     },
     {
@@ -18721,7 +18771,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_icons_iconarrowdownright",
-      "community": 66,
+      "community": 307,
       "norm_label": "iconarrowdownright()"
     },
     {
@@ -18731,7 +18781,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "components_icons_icontrend",
-      "community": 66,
+      "community": 307,
       "norm_label": "icontrend()"
     },
     {
@@ -18741,7 +18791,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "components_icons_iconshield",
-      "community": 66,
+      "community": 307,
       "norm_label": "iconshield()"
     },
     {
@@ -18851,7 +18901,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_dashboardlayout",
-      "community": 138,
+      "community": 12,
       "norm_label": "dashboardlayout.tsx"
     },
     {
@@ -18861,7 +18911,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "navigation_dashboardlayout_dashboardlayoutprops",
-      "community": 138,
+      "community": 12,
       "norm_label": "dashboardlayoutprops"
     },
     {
@@ -18871,7 +18921,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "navigation_dashboardlayout_pages_reelles",
-      "community": 138,
+      "community": 12,
       "norm_label": "pages_reelles"
     },
     {
@@ -18881,7 +18931,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "navigation_dashboardlayout_dashboardlayout",
-      "community": 138,
+      "community": 12,
       "norm_label": "dashboardlayout()"
     },
     {
@@ -18931,7 +18981,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters",
-      "community": 267,
+      "community": 16,
       "norm_label": "globaldashboardfilters.tsx"
     },
     {
@@ -18941,7 +18991,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_filtertrigger",
-      "community": 267,
+      "community": 16,
       "norm_label": "filtertrigger()"
     },
     {
@@ -18951,7 +19001,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_periodfilter",
-      "community": 267,
+      "community": 16,
       "norm_label": "periodfilter()"
     },
     {
@@ -18961,7 +19011,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_subsidiaryfilter",
-      "community": 267,
+      "community": 16,
       "norm_label": "subsidiaryfilter()"
     },
     {
@@ -18971,7 +19021,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_motifs",
-      "community": 267,
+      "community": 16,
       "norm_label": "motifs"
     },
     {
@@ -18981,7 +19031,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "navigation_globaldashboardfilters_filtreindisponible",
-      "community": 267,
+      "community": 16,
       "norm_label": "filtreindisponible()"
     },
     {
@@ -19051,7 +19101,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "navigation_requireauth",
-      "community": 292,
+      "community": 66,
       "norm_label": "requireauth.tsx"
     },
     {
@@ -19061,7 +19111,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "navigation_requireauth_requireauth",
-      "community": 292,
+      "community": 66,
       "norm_label": "requireauth()"
     },
     {
@@ -19071,7 +19121,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "navigation_requireauth_rootredirect",
-      "community": 292,
+      "community": 66,
       "norm_label": "rootredirect()"
     },
     {
@@ -19151,7 +19201,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_alertspanel",
-      "community": 8,
+      "community": 277,
       "norm_label": "alertspanel.tsx"
     },
     {
@@ -19161,7 +19211,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "overview_alertspanel_sev",
-      "community": 8,
+      "community": 277,
       "norm_label": "sev"
     },
     {
@@ -19171,7 +19221,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "overview_alertspanel_severitychip",
-      "community": 8,
+      "community": 277,
       "norm_label": "severitychip()"
     },
     {
@@ -19181,7 +19231,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_alertspanel_alertrow",
-      "community": 8,
+      "community": 277,
       "norm_label": "alertrow()"
     },
     {
@@ -19191,7 +19241,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "overview_alertspanel_alertspanel",
-      "community": 8,
+      "community": 277,
       "norm_label": "alertspanel()"
     },
     {
@@ -19541,7 +19591,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex",
-      "community": 8,
+      "community": 80,
       "norm_label": "groupgovernanceindex.tsx"
     },
     {
@@ -19551,7 +19601,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_domain_href",
-      "community": 8,
+      "community": 80,
       "norm_label": "domain_href"
     },
     {
@@ -19561,7 +19611,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_domain_color",
-      "community": 8,
+      "community": 80,
       "norm_label": "domain_color"
     },
     {
@@ -19571,7 +19621,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_fmt",
-      "community": 8,
+      "community": 80,
       "norm_label": "fmt()"
     },
     {
@@ -19581,7 +19631,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_barwidth",
-      "community": 8,
+      "community": 80,
       "norm_label": "barwidth()"
     },
     {
@@ -19591,7 +19641,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_trendinfo",
-      "community": 8,
+      "community": 80,
       "norm_label": "trendinfo()"
     },
     {
@@ -19601,7 +19651,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "overview_groupgovernanceindex_groupgovernanceindex",
-      "community": 8,
+      "community": 80,
       "norm_label": "groupgovernanceindex()"
     },
     {
@@ -19731,7 +19781,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_saleshistogram",
-      "community": 66,
+      "community": 242,
       "norm_label": "saleshistogram.tsx"
     },
     {
@@ -19741,7 +19791,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "overview_saleshistogram_saleshistogramprops",
-      "community": 66,
+      "community": 242,
       "norm_label": "saleshistogramprops"
     },
     {
@@ -19751,7 +19801,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "overview_saleshistogram_fallback",
-      "community": 66,
+      "community": 242,
       "norm_label": "fallback"
     },
     {
@@ -19761,7 +19811,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "overview_saleshistogram_share_colors",
-      "community": 66,
+      "community": 242,
       "norm_label": "share_colors"
     },
     {
@@ -19771,7 +19821,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "overview_saleshistogram_makerng",
-      "community": 66,
+      "community": 242,
       "norm_label": "makerng()"
     },
     {
@@ -19781,7 +19831,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "overview_saleshistogram_buildspectrum",
-      "community": 66,
+      "community": 242,
       "norm_label": "buildspectrum()"
     },
     {
@@ -19791,7 +19841,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "overview_saleshistogram_gridlines",
-      "community": 66,
+      "community": 242,
       "norm_label": "gridlines()"
     },
     {
@@ -19801,7 +19851,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "overview_saleshistogram_saleshistogram",
-      "community": 66,
+      "community": 242,
       "norm_label": "saleshistogram()"
     },
     {
@@ -19811,7 +19861,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "overview_shieldhrkpis",
-      "community": 74,
+      "community": 104,
       "norm_label": "shieldhrkpis.tsx"
     },
     {
@@ -19821,7 +19871,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "overview_shieldhrkpis_placeholders",
-      "community": 74,
+      "community": 104,
       "norm_label": "placeholders"
     },
     {
@@ -19831,7 +19881,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "overview_shieldhrkpis_grid",
-      "community": 74,
+      "community": 104,
       "norm_label": "grid()"
     },
     {
@@ -19841,7 +19891,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "overview_shieldhrkpis_shieldhrkpis",
-      "community": 74,
+      "community": 104,
       "norm_label": "shieldhrkpis()"
     },
     {
@@ -19981,7 +20031,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "overview_icons_arrowupright",
-      "community": 8,
+      "community": 80,
       "norm_label": "arrowupright()"
     },
     {
@@ -20251,7 +20301,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_card",
-      "community": 66,
+      "community": 303,
       "norm_label": "card.tsx"
     },
     {
@@ -20261,7 +20311,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "ui_card_card",
-      "community": 66,
+      "community": 303,
       "norm_label": "card()"
     },
     {
@@ -20271,7 +20321,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "ui_card_cardheader",
-      "community": 66,
+      "community": 303,
       "norm_label": "cardheader()"
     },
     {
@@ -20281,7 +20331,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "ui_card_cardtitle",
-      "community": 66,
+      "community": 303,
       "norm_label": "cardtitle()"
     },
     {
@@ -20291,7 +20341,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "ui_card_cardcontent",
-      "community": 66,
+      "community": 303,
       "norm_label": "cardcontent()"
     },
     {
@@ -20361,7 +20411,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "ui_insight_decisioninsight",
-      "community": 138,
+      "community": 78,
       "norm_label": "decisioninsight"
     },
     {
@@ -20511,7 +20561,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "ui_kit_statebadge",
-      "community": 74,
+      "community": 104,
       "norm_label": "statebadge()"
     },
     {
@@ -20871,7 +20921,7 @@
       "source_location": "L194",
       "_origin": "ast",
       "id": "config_domainmetrics_mergemetrics",
-      "community": 100,
+      "community": 88,
       "norm_label": "mergemetrics()"
     },
     {
@@ -21161,7 +21211,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "layouts_applayout",
-      "community": 66,
+      "community": 307,
       "norm_label": "applayout.tsx"
     },
     {
@@ -21171,7 +21221,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "layouts_applayout_nav",
-      "community": 66,
+      "community": 307,
       "norm_label": "nav"
     },
     {
@@ -21491,7 +21541,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_auth_isauthenticated",
-      "community": 292,
+      "community": 66,
       "norm_label": "isauthenticated()"
     },
     {
@@ -21501,7 +21551,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_auth_getstoreduser",
-      "community": 292,
+      "community": 66,
       "norm_label": "getstoreduser()"
     },
     {
@@ -21515,10 +21565,30 @@
       "norm_label": "fetchme()"
     },
     {
+      "label": "LoginError",
+      "file_type": "code",
+      "source_file": "frontend/web/src/lib/auth.ts",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "lib_auth_loginerror",
+      "community": 292,
+      "norm_label": "loginerror"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/lib/auth.ts",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "lib_auth_loginerror_constructor",
+      "community": 292,
+      "norm_label": ".constructor()"
+    },
+    {
       "label": "login()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/auth.ts",
-      "source_location": "L46",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "lib_auth_login",
       "community": 292,
@@ -21528,7 +21598,7 @@
       "label": "logout()",
       "file_type": "code",
       "source_file": "frontend/web/src/lib/auth.ts",
-      "source_location": "L60",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "lib_auth_logout",
       "community": 292,
@@ -21541,7 +21611,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format",
-      "community": 66,
+      "community": 276,
       "norm_label": "format.ts"
     },
     {
@@ -21551,7 +21621,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "lib_format_xof",
-      "community": 66,
+      "community": 276,
       "norm_label": "xof"
     },
     {
@@ -21561,7 +21631,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_format_formatxof",
-      "community": 66,
+      "community": 276,
       "norm_label": "formatxof()"
     },
     {
@@ -21571,7 +21641,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_format_compact",
-      "community": 66,
+      "community": 276,
       "norm_label": "compact"
     },
     {
@@ -21581,7 +21651,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_format_formatcompact",
-      "community": 66,
+      "community": 242,
       "norm_label": "formatcompact()"
     },
     {
@@ -21591,7 +21661,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "lib_format_formatint",
-      "community": 66,
+      "community": 276,
       "norm_label": "formatint()"
     },
     {
@@ -21601,7 +21671,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_format_formatsigned",
-      "community": 66,
+      "community": 276,
       "norm_label": "formatsigned()"
     },
     {
@@ -21891,7 +21961,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_kmetric_datalevel",
-      "community": 138,
+      "community": 78,
       "norm_label": "datalevel"
     },
     {
@@ -21911,7 +21981,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "lib_kmetric_kseriespoint",
-      "community": 138,
+      "community": 78,
       "norm_label": "kseriespoint"
     },
     {
@@ -21921,7 +21991,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "lib_kmetric_kbreakdownitem",
-      "community": 104,
+      "community": 78,
       "norm_label": "kbreakdownitem"
     },
     {
@@ -22511,7 +22581,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldhrquery",
-      "community": 104,
+      "community": 138,
       "norm_label": "shieldhrquery"
     },
     {
@@ -22521,7 +22591,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "lib_shieldhr_useshieldhrkpis",
-      "community": 74,
+      "community": 104,
       "norm_label": "useshieldhrkpis()"
     },
     {
@@ -22571,7 +22641,7 @@
       "source_location": "L194",
       "_origin": "ast",
       "id": "lib_shieldhr_shieldseriesquery",
-      "community": 104,
+      "community": 138,
       "norm_label": "shieldseriesquery"
     },
     {
@@ -22611,7 +22681,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "lib_shieldhr_useshieldattendanceseries",
-      "community": 138,
+      "community": 100,
       "norm_label": "useshieldattendanceseries()"
     },
     {
@@ -22651,7 +22721,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "lib_subsidiaries_usesubsidiaries",
-      "community": 267,
+      "community": 16,
       "norm_label": "usesubsidiaries()"
     },
     {
@@ -22691,7 +22761,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_utils",
-      "community": 66,
+      "community": 303,
       "norm_label": "utils.ts"
     },
     {
@@ -22701,7 +22771,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_utils_cn",
-      "community": 66,
+      "community": 303,
       "norm_label": "cn()"
     },
     {
@@ -22921,7 +22991,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "pages_domainhome_periodmenu",
-      "community": 267,
+      "community": 80,
       "norm_label": "periodmenu()"
     },
     {
@@ -22931,7 +23001,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "pages_domainhome_actionsmenu",
-      "community": 267,
+      "community": 80,
       "norm_label": "actionsmenu()"
     },
     {
@@ -22951,7 +23021,7 @@
       "source_location": "L165",
       "_origin": "ast",
       "id": "pages_domainhome_valeurvedette",
-      "community": 66,
+      "community": 104,
       "norm_label": "valeurvedette()"
     },
     {
@@ -22961,7 +23031,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "pages_domainhome_domainhome",
-      "community": 80,
+      "community": 16,
       "norm_label": "domainhome()"
     },
     {
@@ -23101,7 +23171,7 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "pages_governanceoverview_periodmenu",
-      "community": 267,
+      "community": 80,
       "norm_label": "periodmenu()"
     },
     {
@@ -23141,7 +23211,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_hrdashboard",
-      "community": 66,
+      "community": 276,
       "norm_label": "hrdashboard.tsx"
     },
     {
@@ -23151,7 +23221,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "pages_hrdashboard_periodlabel",
-      "community": 66,
+      "community": 276,
       "norm_label": "periodlabel()"
     },
     {
@@ -23161,7 +23231,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "pages_hrdashboard_hrdashboard",
-      "community": 66,
+      "community": 276,
       "norm_label": "hrdashboard()"
     },
     {
@@ -23171,7 +23241,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "pages_hrdashboard_skeletongrid",
-      "community": 66,
+      "community": 276,
       "norm_label": "skeletongrid()"
     },
     {
@@ -23181,17 +23251,37 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_loginpage",
-      "community": 277,
+      "community": 129,
       "norm_label": "loginpage.tsx"
+    },
+    {
+      "label": "destinationSure()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "pages_loginpage_destinationsure",
+      "community": 129,
+      "norm_label": "destinationsure()"
+    },
+    {
+      "label": "messageDErreur()",
+      "file_type": "code",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "pages_loginpage_messagederreur",
+      "community": 129,
+      "norm_label": "messagederreur()"
     },
     {
       "label": "LoginPage()",
       "file_type": "code",
       "source_file": "frontend/web/src/pages/LoginPage.tsx",
-      "source_location": "L9",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "pages_loginpage_loginpage",
-      "community": 277,
+      "community": 129,
       "norm_label": "loginpage()"
     },
     {
@@ -23251,7 +23341,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "pages_modulepage_isunavailable",
-      "community": 66,
+      "community": 12,
       "norm_label": "isunavailable()"
     },
     {
@@ -23301,7 +23391,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "pages_modulepage_kpicard",
-      "community": 66,
+      "community": 12,
       "norm_label": "kpicard()"
     },
     {
@@ -23801,7 +23891,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "integrations_integrationslist_sourcerow",
-      "community": 74,
+      "community": 19,
       "norm_label": "sourcerow()"
     },
     {
@@ -23881,7 +23971,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "pwa_usenetwork_useonlinestatus",
-      "community": 74,
+      "community": 129,
       "norm_label": "useonlinestatus()"
     },
     {
@@ -23951,7 +24041,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "store_filters",
-      "community": 267,
+      "community": 80,
       "norm_label": "filters.ts"
     },
     {
@@ -23961,7 +24051,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "store_filters_filtersstate",
-      "community": 267,
+      "community": 80,
       "norm_label": "filtersstate"
     },
     {
@@ -23971,7 +24061,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "store_filters_usefilters",
-      "community": 267,
+      "community": 80,
       "norm_label": "usefilters"
     },
     {
@@ -23981,7 +24071,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "store_filters_bornesdutrimestre",
-      "community": 267,
+      "community": 80,
       "norm_label": "bornesdutrimestre()"
     },
     {
@@ -23991,7 +24081,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "store_filters_iso",
-      "community": 267,
+      "community": 80,
       "norm_label": "iso()"
     },
     {
@@ -24001,7 +24091,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "store_filters_libelleperiode",
-      "community": 267,
+      "community": 138,
       "norm_label": "libelleperiode()"
     },
     {
@@ -24241,7 +24331,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "types_governance_governancescoreresponse",
-      "community": 5,
+      "community": 8,
       "norm_label": "governancescoreresponse"
     },
     {
@@ -24251,7 +24341,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "types_governance_groupscoreresponse",
-      "community": 8,
+      "community": 80,
       "norm_label": "groupscoreresponse"
     },
     {
@@ -26669,7 +26759,7 @@
       "source_location": "L2005",
       "_origin": "ast",
       "id": "docs_changelog_6_24_1",
-      "community": 298,
+      "community": 62,
       "norm_label": "6.24.1"
     },
     {
@@ -26679,7 +26769,7 @@
       "source_location": "L2007",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2007",
-      "community": 298,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -26719,7 +26809,7 @@
       "source_location": "L2026",
       "_origin": "ast",
       "id": "docs_changelog_6_23_1",
-      "community": 62,
+      "community": 311,
       "norm_label": "6.23.1"
     },
     {
@@ -26729,7 +26819,7 @@
       "source_location": "L2028",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2028",
-      "community": 62,
+      "community": 311,
       "norm_label": "patch changes"
     },
     {
@@ -27119,7 +27209,7 @@
       "source_location": "L2322",
       "_origin": "ast",
       "id": "docs_changelog_6_14_2",
-      "community": 297,
+      "community": 62,
       "norm_label": "6.14.2"
     },
     {
@@ -27129,7 +27219,7 @@
       "source_location": "L2324",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2324",
-      "community": 297,
+      "community": 62,
       "norm_label": "patch changes"
     },
     {
@@ -27259,7 +27349,7 @@
       "source_location": "L2400",
       "_origin": "ast",
       "id": "docs_changelog_6_11_2",
-      "community": 62,
+      "community": 310,
       "norm_label": "6.11.2"
     },
     {
@@ -27269,7 +27359,7 @@
       "source_location": "L2402",
       "_origin": "ast",
       "id": "docs_changelog_patch_changes_2402",
-      "community": 62,
+      "community": 310,
       "norm_label": "patch changes"
     },
     {
@@ -85314,6 +85404,68 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "chrome_loginbackdrop",
+      "target": "chrome_loginbackdrop_etats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "chrome_loginbackdrop",
+      "target": "chrome_loginbackdrop_loginbackdrop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "chrome_loginbackdrop",
+      "target": "chrome_loginbackdrop_sorties",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/components/chrome/LoginBackdrop.tsx",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "chrome_loginbackdrop",
+      "target": "chrome_loginbackdrop_sources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "chrome_loginbackdrop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "chrome_loginbackdrop_loginbackdrop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/components/chrome/PageShell.tsx",
       "source_location": "L21",
       "weight": 1.0,
@@ -95653,6 +95805,17 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/web/src/lib/auth.ts",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "lib_auth_login",
+      "target": "lib_api_clearsession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/lib/auth.ts",
       "source_location": "L61",
       "weight": 1.0,
       "source": "lib_auth_logout",
@@ -95823,6 +95986,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/lib/auth.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "lib_auth",
+      "target": "lib_auth_loginerror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/lib/auth.ts",
       "source_location": "L60",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -95888,6 +96061,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "pages_loginpage_loginpage",
+      "target": "lib_auth_isauthenticated"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "frontend/web/src/lib/auth.ts",
       "source_location": "L41",
       "weight": 1.0,
@@ -95904,6 +96088,27 @@
       "confidence_score": 1.0,
       "source": "lib_auth_login",
       "target": "lib_auth_fetchme"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/lib/auth.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "lib_auth_loginerror",
+      "target": "lib_auth_loginerror_constructor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "lib_auth_loginerror",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -99677,11 +99882,75 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "pages_loginpage_destinationsure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
       "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "pages_loginpage",
       "target": "pages_loginpage_loginpage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "pages_loginpage_messagederreur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "pwa_usenetwork",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "pages_loginpage",
+      "target": "pwa_usenetwork_useonlinestatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "pages_loginpage_loginpage",
+      "target": "pages_loginpage_destinationsure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/web/src/pages/LoginPage.tsx",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "pages_loginpage_loginpage",
+      "target": "pwa_usenetwork_useonlinestatus"
     },
     {
       "relation": "contains",
@@ -110215,5 +110484,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "dd521d33a8b0c973dde880db56d0030d30cc7a00"
+  "built_at_commit": "707a768c1047e27641da359d4f35ec0e4856eb1f"
 }
