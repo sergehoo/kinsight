@@ -872,13 +872,13 @@ const CAUSES: Record<string, string> = {
   certificats_invalides: "le certificat TLS de Shield n'a pas pu être vérifié depuis le serveur",
   access_absent_de_la_reponse: "Shield a répondu sans jeton d'accès",
   reponse_illisible: "la réponse de Shield était illisible",
+  identifiants_refuses: "Shield a refusé le compte de service (adresse, mot de passe ou compte désactivé)",
+  mfa_requis: "Shield exige une seconde étape (MFA) sur ce compte",
 };
 
 function causeLisible(cause: string) {
   if (CAUSES[cause]) return CAUSES[cause];
   if (cause.startsWith("reseau_")) return "Shield était injoignable depuis le serveur";
-  if (cause === "mfa_requis") return "Shield exige une seconde étape (MFA) sur ce compte";
-  if (cause === "access_absent_de_la_reponse") return "Shield a répondu sans jeton d'accès";
   if (cause.startsWith("http_")) return `Shield a répondu ${cause.slice(5)}`;
   return cause;
 }
@@ -894,7 +894,7 @@ function raisonSansRenouvellement(auth: SessionAuth) {
     return "Shield exige une seconde étape (MFA) sur ce compte : le mot de passe est bon, mais aucun automatisme ne peut franchir un MFA — c'est son rôle. Rien n'a été enregistré.";
   }
   if (auth.compte_de_service_refuse) {
-    return "Compte de service refusé par Shield : adresse, mot de passe, ou compte désactivé. C'est le seul cas qui exige encore une intervention.";
+    return "Compte de service refusé par Shield : adresse, mot de passe, ou compte désactivé. La liaison ne se rétablira pas seule tant que ce compte n'est pas corrigé.";
   }
   if (auth.cause_dernier_echec === "refresh_refuse") {
     return "Renouvellement automatique interrompu : le jeton de renouvellement enregistré est refusé par Shield. Enregistrez un compte de service pour que la session se rétablisse seule.";

@@ -1127,3 +1127,240 @@ class MasqueDesSecretsTest(SocleShield):
         self.assertNotIn(secret, rendu)
         self.assertNotIn(secret[-4:], rendu, "la queue du mot de passe part dans la réponse")
         self.assertIn('"masked": "••••••••"', rendu)
+
+
+class CorrectifsDeValidationTest(SocleShield):
+    """Les défauts trouvés en validant cf22197 — chacun observé ou prouvé par le code."""
+
+    _reponse = LiaisonPermanenteTest._reponse
+    _poser_compte = LiaisonPermanenteTest._poser_compte
+
+    def test_un_refresh_refuse_en_400_declenche_la_bascule(self):
+        """Mesuré en direct : Shield refuse des identifiants en 400, pas en 401.
+        Avant, un refresh mort refusé en 400 sortait en `http_400` et le compte
+        de service n'était jamais sollicité — la liaison « permanente » ne tenait
+        pas dans le seul cas pour lequel elle existe."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+        neuf = jwt_factice(dans=timedelta(hours=4))
+        appels = []
+
+        def repondre(requete, timeout=None):
+            appels.append(requete.full_url)
+            if requete.full_url.endswith("/auth/token/refresh/"):
+                raise urllib.error.HTTPError("u", 400, "refus", {}, None)
+            return self._reponse({"access": neuf, "refresh": "refresh-neuf"})
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            ok, message = shield_auth.renouveler(self.connecteur, force=True)
+
+        self.assertTrue(ok, message)
+        self.assertTrue(any(u.endswith("/auth/login/") for u in appels),
+                        "la bascule vers la connexion n'a pas eu lieu")
+
+    def test_un_depot_manuel_verifie_leve_la_condamnation(self):
+        """Régression introduite par le drapeau `refresh_condamne` lui-même : un
+        couple neuf, éprouvé auprès de Shield, laissait la fiche « non
+        renouvelable » à vie."""
+        self._memoriser_condamnation()
+        neuf = jwt_factice(dans=timedelta(hours=4))
+        shield_auth.deposer_couple(self.connecteur, acces=neuf, refresh="refresh-neuf")
+
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertTrue(etat["renouvellement_automatique"])
+        self.assertEqual(etat["etat"], "valide")
+
+    def _memoriser_condamnation(self):
+        config = dict(self.connecteur.config or {})
+        config["shield_auth"] = {"refresh_condamne": True, "cause_dernier_echec": "refresh_refuse"}
+        self.connecteur.config = config
+        self.connecteur.save(update_fields=["config"])
+
+
+class DepotDirectDuMotDePasseShieldTest(TestCase):
+    """Le mot de passe Shield ne passe QUE par la voie qui l'éprouve."""
+
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        from rest_framework.test import APIClient
+
+        self.client = APIClient()
+        admin = get_user_model().objects.create_superuser("admin.test", "a@b.c", "mdp-admin-test")
+        self.client.force_authenticate(admin)
+        self.shield = DataSource.objects.create(
+            name="Kaydan Shield", slug="kaydan-shield",
+            source_type=SourceType.KAYDAN_SHIELD, target_module="rh")
+        self.conn_shield = DataConnector.objects.create(
+            source=self.shield, base_url=BASE_SHIELD, auth_method="bearer")
+        self.odoo = DataSource.objects.create(
+            name="Odoo RH", slug="odoo-rh", source_type=SourceType.ODOO_HR, target_module="rh")
+        self.conn_odoo = DataConnector.objects.create(
+            source=self.odoo, base_url="https://rh.kaydan.tech", auth_method="basic")
+
+    def _poster(self, connecteur, kind, secret="nimporte-quoi"):
+        return self.client.post("/api/v1/integrations/credentials/", {
+            "connector": str(connecteur.id), "kind": kind, "secret": secret,
+        }, format="json")
+
+    def test_un_mot_de_passe_shield_est_refuse_sur_le_point_d_acces_generique(self):
+        reponse = self._poster(self.conn_shield, CredentialKind.PASSWORD)
+        self.assertEqual(reponse.status_code, 400, reponse.content)
+        self.assertFalse(ConnectorCredential.objects.filter(
+            connector=self.conn_shield, kind=CredentialKind.PASSWORD).exists())
+        # Et la fiche ne peut donc pas annoncer une liaison permanente non éprouvée.
+        self.assertFalse(shield_auth.etat_auth(self.conn_shield)["liaison_permanente"])
+
+    def test_un_jeton_shield_reste_deposable(self):
+        """On ne ferme que le mot de passe : le reste du point d'accès est intact."""
+        reponse = self._poster(self.conn_shield, CredentialKind.API_TOKEN)
+        self.assertIn(reponse.status_code, (200, 201), reponse.content)
+
+    def test_un_mot_de_passe_odoo_reste_deposable(self):
+        """Odoo n'a pas de voie vérifiée équivalente : la fermer le casserait."""
+        reponse = self._poster(self.conn_odoo, CredentialKind.PASSWORD)
+        self.assertIn(reponse.status_code, (200, 201), reponse.content)
+
+
+class DefiAvecJetonIntermediaireTest(SocleShield):
+    """Un défi DÉCLARÉ l'emporte sur tout jeton présent dans la même réponse."""
+
+    _reponse = LiaisonPermanenteTest._reponse
+
+    def _enregistrer(self, charge):
+        ConnectorCredential.objects.filter(connector=self.connecteur).delete()
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse(charge)):
+            return shield_auth.enregistrer_le_compte_de_service(
+                self.connecteur, email="service@kaydan.tech", mot_de_passe="mdp")
+
+    def test_un_jeton_intermediaire_accompagne_d_un_defi_n_est_pas_une_session(self):
+        """Forme courante d'un flux MFA : un jeton d'attente + le défi. La
+        première version prenait ce jeton pour une session et enregistrait le
+        compte comme liaison permanente."""
+        for charge in ({"token": "jeton-d-attente", "mfa_required": True},
+                       {"access": "jeton-d-attente", "otp_required": True}):
+            with self.subTest(charge=charge):
+                ok, cause, _ = self._enregistrer(charge)
+                self.assertFalse(ok)
+                self.assertEqual(cause, "mfa_requis")
+                self.assertFalse(ConnectorCredential.objects.filter(
+                    connector=self.connecteur, kind=CredentialKind.PASSWORD).exists())
+
+    def test_un_mfa_simplement_informatif_ne_bloque_pas_une_vraie_session(self):
+        """Des jetons réels + `mfa_enabled: false` : ce n'est pas un défi."""
+        neuf = jwt_factice(dans=timedelta(hours=4))
+        ok, cause, _ = self._enregistrer({"access": neuf, "refresh": "r", "mfa_enabled": False})
+        self.assertTrue(ok, cause)
+
+    def test_un_corps_qui_n_est_pas_un_objet_n_explose_pas_en_500(self):
+        for charge in (["access", "x"], "ok", 42):
+            with self.subTest(charge=charge):
+                ok, cause, _ = self._enregistrer(charge)
+                self.assertFalse(ok)
+                self.assertEqual(cause, "reponse_illisible")
+
+
+class VerdictDuCompteDurableTest(SocleShield):
+    """Un compte refusé ne redevient pas « permanent » parce qu'un jeton a tourné."""
+
+    _reponse = LiaisonPermanenteTest._reponse
+    _poser_compte = LiaisonPermanenteTest._poser_compte
+
+    def test_un_renouvellement_reussi_n_efface_pas_le_refus_du_compte(self):
+        self._poser_compte()
+        # 1. Le compte de service est refusé lors d'une reconnexion.
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=urllib.error.HTTPError("u", 400, "refus", {}, None)):
+            shield_auth.reconnecter(self.connecteur)
+        self.assertFalse(shield_auth.etat_auth(self.connecteur)["liaison_permanente"])
+
+        # 2. Plus tard, un refresh encore vivant tourne normalement.
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-vivant")
+        neuf = jwt_factice(dans=timedelta(hours=4))
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse({"access": neuf, "refresh": "r2"})):
+            ok, _ = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertTrue(ok)
+
+        # 3. Le compte n'a PAS été revérifié : il ne doit pas redevenir permanent.
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertTrue(etat["compte_de_service_refuse"])
+        self.assertFalse(etat["liaison_permanente"])
+
+    def test_une_reconnexion_reussie_leve_le_verdict(self):
+        self._poser_compte()
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=urllib.error.HTTPError("u", 400, "refus", {}, None)):
+            shield_auth.reconnecter(self.connecteur)
+        neuf = jwt_factice(dans=timedelta(hours=4))
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse({"access": neuf, "refresh": "r"})):
+            ok, _ = shield_auth.reconnecter(self.connecteur)
+        self.assertTrue(ok)
+        self.assertTrue(shield_auth.etat_auth(self.connecteur)["liaison_permanente"])
+
+    def test_un_reseau_coupe_ne_condamne_pas_le_compte(self):
+        self._poser_compte()
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=urllib.error.URLError(OSError("dns"))):
+            shield_auth.reconnecter(self.connecteur)
+        self.assertFalse(shield_auth.etat_auth(self.connecteur)["compte_de_service_refuse"])
+
+    def test_l_etat_ne_dechiffre_pas_le_mot_de_passe(self):
+        self._poser_compte()
+        with patch("apps.integrations.models.decrypt", side_effect=AssertionError("déchiffré")) as d:
+            # Les autres secrets éventuels ne sont pas en cause : seul le mot de
+            # passe nous intéresse, et il n'y a que lui ici.
+            ConnectorCredential.objects.filter(connector=self.connecteur).exclude(
+                kind=CredentialKind.PASSWORD).delete()
+            shield_auth.etat_auth(self.connecteur)
+        d.assert_not_called()
+
+
+class SansSessionApresCoupTest(SocleShield):
+    """Constat critique retenu par la vérification adversariale (0/3 réfutation)."""
+
+    _reponse = LiaisonPermanenteTest._reponse
+    _poser_compte = LiaisonPermanenteTest._poser_compte
+
+    def _reconnecter_avec(self, charge):
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse(charge)):
+            return shield_auth.reconnecter(self.connecteur)
+
+    def test_une_reponse_sans_jeton_apres_coup_retire_la_permanence(self):
+        """Compte enregistré, puis Shield répond 200 sans jeton sous une forme non
+        reconnue. Avant : liaison_permanente=true au-dessus d'un échec répété."""
+        self._poser_compte()
+        for charge in ({}, {"statut": "en_attente"}):
+            with self.subTest(charge=charge):
+                ok, _ = self._reconnecter_avec(charge)
+                self.assertFalse(ok)
+                etat = shield_auth.etat_auth(self.connecteur)
+                self.assertFalse(etat["liaison_permanente"])
+
+    def test_un_defi_redige_en_francais_est_reconnu(self):
+        self._poser_compte()
+        self._reconnecter_avec({"detail": "Un code de vérification vous a été envoyé"})
+        self.assertTrue(shield_auth.etat_auth(self.connecteur)["mfa_requis"])
+
+    def test_un_refresh_condamne_n_est_pas_represente(self):
+        """Il coûterait un appel de quota pour reconfirmer un refus connu."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+        config = dict(self.connecteur.config)
+        config["shield_auth"] = {"refresh_condamne": True}
+        self.connecteur.config = config
+        self.connecteur.save(update_fields=["config"])
+        neuf = jwt_factice(dans=timedelta(hours=4))
+        appels = []
+
+        def repondre(requete, timeout=None):
+            appels.append(requete.full_url)
+            return self._reponse({"access": neuf, "refresh": "r"})
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            ok, _ = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertTrue(ok)
+        self.assertFalse(any(u.endswith("/auth/token/refresh/") for u in appels),
+                         "le refresh condamné a été représenté à Shield")

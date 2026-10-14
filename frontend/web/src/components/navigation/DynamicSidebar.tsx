@@ -13,6 +13,7 @@ import {
   visibleSidebarItems,
 } from "@/config/modules.config";
 import { Help, Home, Logout } from "@/components/overview/icons";
+import { clearSession } from "@/lib/api";
 import { getCurrentPermissions } from "@/lib/permissions";
 import { EASE_OUT } from "@/lib/motion";
 import { useNavigationStore } from "@/state/navigationStore";
@@ -84,13 +85,17 @@ export function DynamicSidebar() {
     navigate(getDefaultItemHref(next, permissions));
   };
 
+  // Ce bouton n'effaçait QUE le jeton d'accès. Il laissait derrière lui le jeton
+  // de renouvellement, le profil, les permissions et les réponses d'API en
+  // cache — lisibles par le suivant sur un poste partagé. Et depuis que le
+  // client renouvelle en silence, c'était devenu pire qu'une fuite : le premier
+  // appel qui suivait la « déconnexion » présentait le jeton de renouvellement
+  // resté en place et ROUVRAIT la session. `clearSession` efface tout, caches
+  // compris, et /login remplace / pour ne pas repasser par la redirection de
+  // rôle avec un profil à moitié effacé.
   const logout = () => {
-    try {
-      localStorage.removeItem("k-insight-token");
-    } catch {
-      /* stockage indisponible : ignore */
-    }
-    navigate("/");
+    void clearSession();
+    navigate("/login", { replace: true });
   };
 
   return (

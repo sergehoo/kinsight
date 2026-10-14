@@ -6,13 +6,22 @@ export const TOKEN_KEY = "k-insight-token";
 export const REFRESH_KEY = "k-insight-refresh";
 export const USER_KEY = "k-insight-user";
 
-/** Token courant : JWT de l'utilisateur connecté (localStorage), repli sur l'env en dev. */
+/** Token courant : JWT de l'utilisateur connecté (localStorage), repli sur l'env en dev.
+ *
+ *  Le repli est confiné au DÉVELOPPEMENT. `VITE_API_TOKEN` est câblé en argument
+ *  de build jusque dans les compose de production : renseigné un jour dans
+ *  Dokploy, il aurait été inscrit EN CLAIR dans le bundle public, et toute
+ *  requête serait restée authentifiée après la déconnexion — `clearSession`
+ *  vide le stockage, pas le code. `import.meta.env.DEV` vaut le littéral `false`
+ *  en production : la branche et la chaîne disparaissent du bundle.
+ */
 export function getToken(): string | undefined {
   if (typeof window !== "undefined") {
     const t = window.localStorage.getItem(TOKEN_KEY);
     if (t) return t;
   }
-  return import.meta.env.VITE_API_TOKEN as string | undefined;
+  if (import.meta.env.DEV) return import.meta.env.VITE_API_TOKEN as string | undefined;
+  return undefined;
 }
 
 export function setSession(access: string, refresh?: string): void {
@@ -35,12 +44,16 @@ export async function purgeApiCaches(): Promise<void> {
   }
 }
 
-/** Efface toute trace de session (token + profil + permissions + caches API). */
-export function clearSession(): void {
+/** Efface toute trace de session (token + profil + permissions + caches API).
+ *
+ *  Rend la promesse de la purge : un appelant qui recharge la page juste après
+ *  doit l'ATTENDRE, sinon le déchargement peut interrompre la suppression et
+ *  laisser des réponses authentifiées dans le Cache Storage. */
+export function clearSession(): Promise<void> {
   for (const k of [TOKEN_KEY, REFRESH_KEY, USER_KEY, "k-insight-permissions", "k-insight-role"]) {
     window.localStorage.removeItem(k);
   }
-  void purgeApiCaches();
+  return purgeApiCaches();
 }
 
 function authHeaders(extra?: Record<string, string>): Record<string, string> {
@@ -52,9 +65,13 @@ function authHeaders(extra?: Record<string, string>): Record<string, string> {
 
 /** Sur 401 définitif : session expirée/invalide → on nettoie et on renvoie vers /login. */
 function on401(): void {
-  clearSession();
+  // Les jetons sont effacés immédiatement (synchrone) ; la redirection, elle,
+  // attend la purge des caches : `location.assign` décharge la page, et une
+  // suppression du Cache Storage en cours peut ne pas y survivre.
+  const purge = clearSession();
   if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-    window.location.assign(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+    const cible = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+    void purge.finally(() => window.location.assign(cible));
   }
 }
 
@@ -109,7 +126,12 @@ async function renouvelerLaSession(): Promise<IssueRenouvellement> {
     if (!res.ok) return { refus: true };
 
     const data = (await res.json().catch(() => null)) as { access?: string; refresh?: string } | null;
-    if (!data?.access) return { refus: true };
+    // Un 200 au corps illisible n'est PAS un refus : le serveur a accepté le
+    // jeton puis quelque chose s'est mal passé en chemin — proxy qui tronque,
+    // réponse coupée. Le classer en refus déconnectait sur une anomalie de
+    // plateforme, alors que la session est probablement intacte.
+    if (!data) return { reseau: true };
+    if (!data.access) return { refus: true };
     // La rotation est active : la réponse porte un jeton de renouvellement neuf
     // qu'il faut enregistrer, sinon la session mourrait quand même à l'échéance
     // du premier.
@@ -161,7 +183,11 @@ export async function renouvelerSiProche(margeSecondes = 120): Promise<void> {
   const fin = expirationDuJeton(token);
   if (fin === null) return;
   if (fin - Date.now() / 1000 > margeSecondes) return;
-  await renouvelerLaSession();
+  const issue = await renouvelerLaSession();
+  // Ignorer le refus laissait l'utilisateur devant un écran qui se croit
+  // connecté : rien ne se passait jusqu'à ce qu'une requête prenne un 401. On
+  // tranche tout de suite, au moment où l'on vient justement de l'apprendre.
+  if ("refus" in issue) on401();
 }
 
 /** Date d'expiration portée par un JWT, en secondes epoch.

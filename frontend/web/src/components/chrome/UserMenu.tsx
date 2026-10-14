@@ -39,7 +39,7 @@ export function UserMenu() {
         : "Périmètre à confirmer";
 
   const doLogout = () => {
-    logout();
+    void logout();
     navigate("/login", { replace: true });
   };
 

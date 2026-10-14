@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import (
     ConnectorCredential,
+    CredentialKind,
     ConnectorEndpoint,
     DataConnector,
     DataSource,
@@ -35,6 +36,35 @@ class ConnectorCredentialSerializer(serializers.ModelSerializer):
         d'écriture — admin, commandes, futurs endpoints.
         """
         return []
+
+    def validate(self, attrs):
+        """Un mot de passe Shield ne s'enregistre QUE par la voie qui l'éprouve.
+
+        Ce point d'accès écrit n'importe quel secret sans rien vérifier — c'est
+        son rôle pour un jeton ou une clé. Mais pour Shield, un mot de passe
+        stocké suffit à faire annoncer « liaison permanente » par la fiche. Le
+        déposer ici contournait donc toute la discipline de
+        `enregistrer_le_compte_de_service` : un compte faux, ou protégé par MFA,
+        aurait été affiché en vert et la collecte serait tombée en silence au
+        premier renouvellement.
+
+        Limité à Shield à dessein : d'autres connecteurs (Odoo, notamment)
+        reçoivent légitimement un mot de passe par ce chemin, et n'ont pas de
+        voie vérifiée équivalente.
+        """
+        kind = attrs.get("kind") or getattr(self.instance, "kind", None)
+        connector = attrs.get("connector") or getattr(self.instance, "connector", None)
+        if (
+            kind == CredentialKind.PASSWORD
+            and connector is not None
+            and connector.source.source_type == SourceType.KAYDAN_SHIELD
+        ):
+            raise serializers.ValidationError({
+                "kind": ("Le mot de passe du compte de service Shield ne se dépose pas ici : "
+                         "utilisez « Rétablir la session » sur la fiche de la source, qui "
+                         "l'éprouve auprès de Shield avant de l'enregistrer."),
+            })
+        return attrs
 
     def create(self, validated):
         """Dépose un secret, en REMPLAÇANT celui du même type s'il existe.

@@ -51,13 +51,13 @@ export interface SessionAuth {
   derniere_authentification: string | null;
   dernier_echec: string | null;
   cause_dernier_echec: string | null;
-  /** Un compte de service est enregistré : la session peut se rétablir SEULE,
-   *  sans qu'on recolle de jetons. C'est ce qui distingue une liaison permanente
-   *  d'une chaîne de renouvellement, laquelle meurt à la première inactivité
-   *  plus longue que la durée de vie du jeton de renouvellement. */
+  /** Un compte de service est ENREGISTRÉ — rien de plus. Il a été éprouvé
+   *  auprès de Shield au moment du dépôt, mais sa seule présence ne prouve pas
+   *  que la session se rétablira : c'est `liaison_permanente` qui le dit, en
+   *  tenant compte des refus et du MFA survenus depuis. */
   compte_de_service?: boolean;
-  /** Shield a refusé ce compte : la liaison redevient mortelle, et il faut une
-   *  intervention humaine — c'est le seul cas qui le justifie encore. */
+  /** Shield a refusé ce compte lors d'une reconnexion. Verdict durable : seule
+   *  une connexion réussie le lève, pas un simple renouvellement de jeton. */
   compte_de_service_refuse?: boolean;
   /** Shield accepte le compte mais exige une seconde étape. Ce n'est PAS un
    *  refus d'identifiants — le mot de passe est bon — et aucune ressaisie n'y

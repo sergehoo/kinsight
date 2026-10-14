@@ -86,12 +86,15 @@ export async function login(username: string, password: string): Promise<MeProfi
     // Le jeton est valide mais le profil n'a pas pu être lu : sans permissions ni
     // rôle, l'application afficherait un cockpit vide en se croyant connectée.
     // On repart d'un état propre plutôt que de laisser cette moitié de session.
-    clearSession();
+    void clearSession();
     throw new LoginError(null, "profil",
       "Identifiants acceptés, mais le profil n'a pas pu être chargé. Session annulée.");
   }
 }
 
-export function logout(): void {
-  clearSession();
+/** Rend la promesse de purge : la navigation SPA qui suit ne décharge pas la
+ *  page, la purge se poursuit donc d'elle-même — mais un appelant qui
+ *  rechargerait doit pouvoir l'attendre. */
+export function logout(): Promise<void> {
+  return clearSession();
 }
