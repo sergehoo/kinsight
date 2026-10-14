@@ -59,6 +59,16 @@ logger = logging.getLogger(__name__)
 # Chemin documenté du renouvellement.
 CHEMIN_REFRESH = "/api/v1/auth/token/refresh/"
 
+# Chemin de CONNEXION, et le contrat que la documentation taisait.
+#
+# Le schéma OpenAPI déclare ce chemin sans aucun corps — ni requête, ni réponse —
+# ce qui avait fait écarter cette voie : on ne devine pas une charge utile. Mais
+# l'API, elle, répond. Un POST vide rend :
+#     {"email": ["Ce champ est obligatoire."], "password": ["Ce champ est obligatoire."]}
+# Le contrat est donc `email` + `password`, établi par l'interrogation du service
+# et non par supposition.
+CHEMIN_LOGIN = "/api/v1/auth/login/"
+
 # On renouvelle AVANT l'expiration : un jeton qui expire pendant le vol d'une
 # requête produirait un 401 évitable, et donc un aller-retour de plus.
 MARGE_AVANT_EXPIRATION = 120  # secondes
@@ -119,6 +129,63 @@ def _secret(connector, kind: str) -> str:
         return ""
 
 
+def identifiants_de_service(connector) -> tuple[str, str]:
+    """(adresse, mot de passe) du compte de service, ou ("", "").
+
+    L'adresse vit dans `config` — ce n'est pas un secret et la fiche doit pouvoir
+    l'afficher pour qu'on sache QUEL compte porte la liaison. Le mot de passe vit
+    dans les identifiants chiffrés, et n'en ressort jamais.
+    """
+    email = str((connector.config or {}).get("service_email") or "")
+    return email, _secret(connector, CredentialKind.PASSWORD)
+
+
+def reconnecter(connector) -> tuple[bool, str]:
+    """Rétablit la session par identifiants. C'est le filet qui rend la liaison permanente.
+
+    Appelé quand la chaîne de jetons est rompue — refresh expiré, révoqué, ou
+    jamais déposé. Sans ce filet, la seule issue était qu'un humain recolle un
+    couple de jetons à la main, ce qui condamnait la liaison à mourir à chaque
+    période d'inactivité un peu longue.
+    """
+    email, mot_de_passe = identifiants_de_service(connector)
+    if not (email and mot_de_passe):
+        return False, ("Aucun compte de service enregistré : la session ne peut pas se "
+                       "rétablir seule. Déposez une adresse et un mot de passe de service "
+                       "sur la fiche de la source.")
+    base = connector.base_url or ""
+    if not base:
+        return False, "URL de base absente : impossible d'appeler la connexion."
+
+    ok, cause, charge = _appel_login(base, email, mot_de_passe)
+    if not ok:
+        _memoriser(connector, dernier_echec=dj_timezone.now().isoformat(),
+                   cause_dernier_echec=cause)
+        _tracer(connector, succes=False, cause=f"login:{cause}")
+        return False, _explication(cause)
+
+    acces = charge.get("access") or charge.get("token") or ""
+    refresh = charge.get("refresh") or ""
+    if not acces:
+        _memoriser(connector, dernier_echec=dj_timezone.now().isoformat(),
+                   cause_dernier_echec="access_absent_de_la_reponse")
+        _tracer(connector, succes=False, cause="login:access_absent")
+        return False, "Shield a accepté la connexion sans renvoyer de jeton d'accès."
+
+    _deposer(connector, CredentialKind.API_TOKEN, acces, "Jeton d'accès Shield (auto)")
+    if refresh:
+        _deposer(connector, CredentialKind.OAUTH_REFRESH, refresh,
+                 "Jeton de renouvellement Shield (auto)")
+    echeance = echeance_du_jeton(acces)
+    _memoriser(connector,
+               derniere_authentification=dj_timezone.now().isoformat(),
+               derniere_reconnexion=dj_timezone.now().isoformat(),
+               expire_le=echeance.isoformat() if echeance else None,
+               dernier_echec=None, cause_dernier_echec=None)
+    _tracer(connector, succes=True, cause="login")
+    return True, "Session Shield rétablie par le compte de service."
+
+
 def _deposer(connector, kind: str, valeur: str, libelle: str) -> None:
     """Écrit un secret en REMPLAÇANT celui du même type (contrainte d'unicité)."""
     cred, _ = ConnectorCredential.objects.get_or_create(connector=connector, kind=kind)
@@ -139,12 +206,23 @@ def etat_auth(connector) -> dict:
     echeance = echeance_du_jeton(acces) if acces else None
     memo = (connector.config or {}).get("shield_auth") or {}
 
+    # Le compte de service change la nature de la liaison : tant qu'il répond, la
+    # session se rétablit seule, même après des semaines d'inactivité. Un refresh
+    # mort cesse d'être terminal.
+    email_service, mdp_service = identifiants_de_service(connector)
+    compte_de_service = bool(email_service and mdp_service)
+    compte_refuse = memo.get("cause_dernier_echec") == "identifiants_refuses"
+
     # Un refresh que Shield vient de refuser est encore « présent » en base, mais il
     # est mort : le présenter comme renouvelable ferait attendre un renouvellement
     # qui ne viendra jamais. On tient compte de ce qu'on a appris.
     refresh_condamne = memo.get("cause_dernier_echec") == "refresh_refuse"
 
-    if refresh_condamne or not renouvelable:
+    # Un compte de service qui répond encore rend la liaison récupérable, quoi
+    # qu'il advienne des jetons.
+    recuperable = compte_de_service and not compte_refuse
+
+    if (refresh_condamne or not renouvelable) and not recuperable:
         # Sans recours possible, seul un access encore valide sauve la session.
         expire = echeance is not None and echeance <= dj_timezone.now()
         etat = "auth_required" if (not acces or expire) else "valide"
@@ -162,8 +240,15 @@ def etat_auth(connector) -> dict:
         "expiration_connue": echeance is not None,
         # « Automatique » suppose un refresh vivant : un refresh refusé ne renouvelle
         # plus rien, l'annoncer actif serait une fausse promesse.
-        "renouvellement_automatique": renouvelable and not refresh_condamne,
+        "renouvellement_automatique": (renouvelable and not refresh_condamne) or recuperable,
         "refresh_present": renouvelable,
+        # Ce que l'écran doit pouvoir dire : la liaison tient-elle toute seule,
+        # et par quel moyen ?
+        "compte_de_service": compte_de_service,
+        "compte_de_service_refuse": compte_refuse,
+        "liaison_permanente": recuperable,
+        "service_email": email_service,
+        "derniere_reconnexion": memo.get("derniere_reconnexion"),
         "derniere_authentification": memo.get("derniere_authentification"),
         "dernier_echec": memo.get("dernier_echec"),
         "cause_dernier_echec": memo.get("cause_dernier_echec"),
@@ -184,6 +269,53 @@ def jeton_utilisable(connector) -> str:
 
 
 # ── Renouvellement ───────────────────────────────────────────────────────────
+
+
+def _origine(base_url: str) -> str:
+    """L'URL saisie finit par /api/v1 ; les chemins d'auth le portent déjà."""
+    origine = base_url.rstrip("/")
+    return origine[: -len("/api/v1")] if origine.endswith("/api/v1") else origine
+
+
+def _poster(url: str, charge: dict) -> tuple[bool, str, dict]:
+    """POST JSON, avec les mêmes causes qualifiées partout."""
+    corps = json.dumps(charge).encode()
+    requete = urllib.request.Request(
+        url, data=corps, method="POST",
+        headers={"Content-Type": "application/json", "Accept": "application/json",
+                 "User-Agent": "k-insight"},
+    )
+    try:
+        with urllib.request.urlopen(requete, timeout=DELAI_REFRESH) as reponse:  # noqa: S310
+            return True, "", json.loads(reponse.read().decode("utf-8") or "{}")
+    except urllib.error.HTTPError as exc:
+        if exc.code in (400, 401, 403):
+            return False, "identifiants_refuses" if url.endswith(CHEMIN_LOGIN) else "refresh_refuse", {}
+        if exc.code == 429:
+            return False, "quota_refresh", {}
+        return False, f"http_{exc.code}", {}
+    except (TimeoutError, urllib.error.URLError) as exc:
+        raison = getattr(exc, "reason", exc)
+        if isinstance(raison, ssl.SSLCertVerificationError):
+            return False, "certificats_invalides", {}
+        return False, f"reseau_{type(raison).__name__}", {}
+    except json.JSONDecodeError:
+        return False, "reponse_illisible", {}
+
+
+def _appel_login(base_url: str, email: str, mot_de_passe: str) -> tuple[bool, str, dict]:
+    """Connexion par identifiants. C'est ce qui rend la liaison PERMANENTE.
+
+    Le renouvellement par jeton est une chaîne mortelle : la rotation est active
+    chez Shield, et il suffit que l'application reste inactive plus longtemps que
+    la durée de vie du refresh pour que la chaîne casse définitivement. C'est
+    exactement ce qui s'est produit — jeton déposé le 21/09, chaîne rompue, et
+    plus aucun moyen de repartir sans qu'un humain recolle un couple à la main.
+
+    Avec un compte de service, la session se rétablit seule.
+    """
+    return _poster(_origine(base_url) + CHEMIN_LOGIN,
+                   {"email": email, "password": mot_de_passe})
 
 
 def _appel_refresh(base_url: str, refresh: str) -> tuple[bool, str, dict]:
@@ -243,11 +375,15 @@ def renouveler(connector, *, force: bool = False) -> tuple[bool, str]:
 
         refresh = _secret(connector, CredentialKind.OAUTH_REFRESH)
         if not refresh:
+            # Pas de jeton à renouveler : si un compte de service existe, on se
+            # connecte plutôt que de réclamer un collage manuel.
+            if all(identifiants_de_service(connector)):
+                return reconnecter(connector)
             _memoriser(connector, dernier_echec=dj_timezone.now().isoformat(),
                        cause_dernier_echec="refresh_absent")
             return False, ("Aucun jeton de renouvellement enregistré : la session ne peut pas "
-                           "se prolonger seule. Déposez le couple access + refresh sur la fiche "
-                           "de la source.")
+                           "se prolonger seule. Déposez un compte de service, ou un couple "
+                           "access + refresh, sur la fiche de la source.")
 
         base = connector.base_url or ""
         if not base:
@@ -257,6 +393,18 @@ def renouveler(connector, *, force: bool = False) -> tuple[bool, str]:
 
         ok, cause, charge = _appel_refresh(base, refresh)
         if not ok:
+            # LE FILET. Un refresh refusé était jusqu'ici terminal : la fiche
+            # passait en « réauthentification requise » et attendait un humain.
+            # Avec un compte de service, on repart par la connexion — c'est ce
+            # qui transforme une chaîne mortelle en liaison permanente.
+            #
+            # Seul un REFUS déclenche le filet. Un quota dépassé ou un réseau
+            # coupé ne sont pas des refus : se reconnecter alors gaspillerait une
+            # tentative de connexion sur une panne passagère, et pourrait faire
+            # verrouiller le compte.
+            if cause == "refresh_refuse" and all(identifiants_de_service(connector)):
+                _tracer(connector, succes=False, cause="refresh_refuse_bascule_login")
+                return reconnecter(connector)
             _memoriser(connector, dernier_echec=dj_timezone.now().isoformat(),
                        cause_dernier_echec=cause)
             _tracer(connector, succes=False, cause=cause)
@@ -306,8 +454,11 @@ def _explication(cause: str) -> str:
                           "sans multiplier les tentatives, elles aggravent la limite."),
         "reponse_illisible": "Réponse de renouvellement illisible.",
         "base_absente": "URL de base absente : impossible d'appeler le renouvellement.",
-        "refresh_absent": ("Aucun jeton de renouvellement enregistré : déposez le couple "
-                           "access + refresh."),
+        "refresh_absent": ("Aucun jeton de renouvellement enregistré : déposez un compte de "
+                           "service, ou un couple access + refresh."),
+        "identifiants_refuses": ("Shield refuse le compte de service : adresse ou mot de passe "
+                                 "incorrect, ou compte désactivé. La liaison ne peut plus se "
+                                 "rétablir seule tant que ce compte n'est pas corrigé."),
         "certificats_invalides": ("Certificat TLS de Shield non vérifiable : le magasin de "
                                   "certificats de l'environnement est absent ou incomplet. "
                                   "Le défaut est chez nous, pas chez Shield."),
@@ -422,6 +573,55 @@ def verifier_et_deposer(connector, *, acces: str, refresh: str) -> tuple[bool, s
     return True, "", "Session Shield rétablie et vérifiée auprès de Shield."
 
 
+def enregistrer_le_compte_de_service(connector, *, email: str, mot_de_passe: str) -> tuple[bool, str, str]:
+    """Éprouve le compte AUPRÈS DE SHIELD avant de l'écrire.
+
+    Même discipline que pour le dépôt d'un couple de jetons, et pour la même
+    raison : écrire d'abord ferait annoncer « liaison permanente » à une fiche
+    dont le compte est faux, et le refus n'apparaîtrait qu'au premier appel
+    métier. On se connecte donc pour de vrai ; les jetons rapportés par cette
+    connexion sont ceux qu'on garde, vivants par construction.
+
+    Sur refus, RIEN n'est écrit : une frappe malheureuse ne doit pas détruire un
+    compte de service qui fonctionnait.
+    """
+    base = connector.base_url or ""
+    if not base:
+        return False, "base_absente", ("URL de base absente : impossible de vérifier le compte "
+                                       "auprès de Shield.")
+
+    ok, cause, charge = _appel_login(base, email, mot_de_passe)
+    if not ok:
+        _tracer(connector, succes=False, cause=f"compte_service_refuse:{cause}")
+        return False, cause, _explication(cause)
+
+    acces = charge.get("access") or charge.get("token") or ""
+    if not acces:
+        _tracer(connector, succes=False, cause="compte_service:access_absent")
+        return False, "access_absent_de_la_reponse", ("Shield a accepté la connexion mais n'a "
+                                                      "renvoyé aucun jeton d'accès : rien n'a été "
+                                                      "enregistré.")
+
+    config = dict(connector.config or {})
+    config["service_email"] = email
+    connector.config = config
+    connector.save(update_fields=["config", "updated_at"])
+    _deposer(connector, CredentialKind.PASSWORD, mot_de_passe, "Mot de passe du compte de service Shield")
+    _deposer(connector, CredentialKind.API_TOKEN, acces, "Jeton d'accès Shield (auto)")
+    if charge.get("refresh"):
+        _deposer(connector, CredentialKind.OAUTH_REFRESH, charge["refresh"],
+                 "Jeton de renouvellement Shield (auto)")
+    echeance = echeance_du_jeton(acces)
+    _memoriser(connector,
+               derniere_authentification=dj_timezone.now().isoformat(),
+               derniere_reconnexion=dj_timezone.now().isoformat(),
+               expire_le=echeance.isoformat() if echeance else None,
+               dernier_echec=None, cause_dernier_echec=None)
+    _tracer(connector, succes=True, cause="compte_service_enregistre")
+    return True, "", ("Compte de service vérifié et enregistré : la liaison se rétablira "
+                      "désormais seule.")
+
+
 def statut_http(cause: str, *, ok: bool) -> int:
     """Le code HTTP qui dit la vérité sur un échec d'authentification.
 
@@ -443,6 +643,8 @@ def statut_http(cause: str, *, ok: bool) -> int:
         return 401
     if cause == "quota_refresh":
         return 429
+    if cause == "identifiants_refuses":
+        return 401   # Shield a refusé le compte lui-même.
     if cause in ("refresh_absent", "base_absente"):
         return 409  # Rien à renouveler : état de la source, pas refus de Shield.
     if cause.startswith("reseau_") or cause == "certificats_invalides":

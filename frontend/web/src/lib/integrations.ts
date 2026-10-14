@@ -11,14 +11,7 @@ import type {
   SyncLogItem,
 } from "@/types/integrations";
 
-import { API_BASE as BASE, getToken } from "@/lib/api";
-
-function headers(): Record<string, string> {
-  const h: Record<string, string> = { "Content-Type": "application/json", Accept: "application/json" };
-  const token = getToken();
-  if (token) h.Authorization = `Bearer ${token}`;
-  return h;
-}
+import { fetchAuthentifie } from "@/lib/api";
 
 /** Erreur d'API porteuse de son code HTTP : un 403 (« pas le droit de voir »)
  *  ne doit pas être présenté comme un 500 (« la source est en panne »). */
@@ -35,7 +28,15 @@ export class ApiError extends Error {
 }
 
 async function req<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { method, headers: headers(), body: body ? JSON.stringify(body) : undefined });
+  // Passe par `fetchAuthentifie` : ces écrans prenaient un « API 401 » brut à
+  // l'expiration de l'accès, là où le reste de l'application renouvelle en
+  // silence. La page des intégrations est justement celle qu'on ouvre quand une
+  // session a lâché — elle ne peut pas être la seule à ne pas se rétablir.
+  const res = await fetchAuthentifie(
+    path,
+    { method, body: body ? JSON.stringify(body) : undefined },
+    { "Content-Type": "application/json" },
+  );
   if (!res.ok) {
     // Un 400 de DRF porte le détail par champ : le perdre obligerait l'utilisateur
     // à deviner quel champ est refusé.
@@ -158,11 +159,21 @@ export function useTestConnection() {
 export function useReauthenticate() {
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: ({ sourceId, access, refresh }: { sourceId: string; access?: string; refresh?: string }) =>
+    mutationFn: ({ sourceId, access, refresh, serviceEmail, servicePassword }: {
+      sourceId: string;
+      access?: string;
+      refresh?: string;
+      serviceEmail?: string;
+      servicePassword?: string;
+    }) =>
       req<{ ok: boolean; message: string; auth: SessionAuth }>(
         "POST",
         `/integrations/sources/${sourceId}/reauthenticate/`,
-        access || refresh ? { access, refresh } : {},
+        serviceEmail || servicePassword
+          ? { service_email: serviceEmail, service_password: servicePassword }
+          : access || refresh
+            ? { access, refresh }
+            : {},
       ),
     // `onSettled` et non `onSuccess` : un échec change l'état de la session tout
     // autant qu'une réussite. Quand Shield refuse le renouvellement, le backend

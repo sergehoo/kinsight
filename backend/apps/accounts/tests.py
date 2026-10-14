@@ -191,3 +191,76 @@ class SubsidiariesApiTest(TestCase):
         self.kre.save(update_fields=["name"])
         noms = {f["code"]: f["name"] for f in self._get(self.dg).json()["results"]}
         self.assertEqual(noms["KRE"], "K-Express Côte d'Ivoire")
+
+
+class DureeDeSessionTest(TestCase):
+    """Ce qui fait qu'une session tient — ou qu'on redemande le mot de passe.
+
+    Ces assertions ne vérifient pas du code maison : elles épinglent un RÉGLAGE,
+    et c'est volontaire. Le défaut vécu en production n'était pas un bug mais un
+    `SIMPLE_JWT` qui se contentait d'un accès de 12 h sans rotation, au-delà
+    duquel l'utilisateur retombait sur l'écran de connexion. Un réglage ne laisse
+    pas de trace quand il change ; ce test en laisse une.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.mdp = "MotDePasseDeTest!2026"
+        self.utilisateur = User.objects.create_user(username="session.test", password=self.mdp)
+
+    def _couple(self):
+        reponse = self.client.post(
+            "/api/v1/auth/token/",
+            {"username": "session.test", "password": self.mdp},
+            format="json",
+        )
+        self.assertEqual(reponse.status_code, 200, reponse.content)
+        return reponse.json()
+
+    def test_la_connexion_rend_bien_un_jeton_de_renouvellement(self):
+        # Sans lui, le navigateur n'a RIEN à présenter à l'expiration de l'accès :
+        # c'est la racine de « il faut à chaque fois s'authentifier ».
+        couple = self._couple()
+        self.assertIn("access", couple)
+        self.assertTrue(couple.get("refresh"), "aucun jeton de renouvellement émis")
+
+    def test_le_renouvellement_rend_un_jeton_neuf_donc_la_session_ne_meurt_pas(self):
+        # La rotation est ce qui rend la liaison durable : chaque renouvellement
+        # repousse l'échéance. Sans elle, la session meurt à date fixe quoi qu'on
+        # fasse, et l'utilisateur ressaisit son mot de passe chaque semaine.
+        premier = self._couple()
+        reponse = self.client.post(
+            "/api/v1/auth/token/refresh/", {"refresh": premier["refresh"]}, format="json"
+        )
+        self.assertEqual(reponse.status_code, 200, reponse.content)
+        renouvele = reponse.json()
+        self.assertIn("access", renouvele)
+        self.assertNotEqual(
+            renouvele.get("refresh"), premier["refresh"],
+            "le renouvellement rend le même jeton : la rotation est désactivée",
+        )
+
+    def test_un_renouvellement_refuse_se_distingue_d_une_panne(self):
+        # 401 et non 500 : le navigateur s'appuie sur ce code pour décider entre
+        # « retourner à la connexion » et « ne rien effacer, c'est le réseau ».
+        reponse = self.client.post(
+            "/api/v1/auth/token/refresh/", {"refresh": "pas-un-jeton"}, format="json"
+        )
+        self.assertEqual(reponse.status_code, 401)
+
+    def test_l_acces_reste_court_puisqu_il_se_renouvelle_seul(self):
+        # Un accès long n'achète plus de confort une fois le renouvellement
+        # silencieux en place : il n'achète que de l'exposition, car rien ne
+        # permet de le révoquer avant son terme.
+        from datetime import timedelta
+
+        from django.conf import settings
+
+        self.assertLessEqual(
+            settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"], timedelta(hours=2),
+            "accès trop long pour un jeton non révocable",
+        )
+        self.assertGreaterEqual(
+            settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"], timedelta(days=7),
+            "renouvellement trop court : une semaine d'absence rouvrirait l'écran de connexion",
+        )

@@ -182,9 +182,36 @@ if os.environ.get("DJANGO_SECURE_COOKIES", "0") == "1":
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-# JWT (simplejwt). Durée de vie d'accès allongée en dev pour le confort ;
-# à resserrer en prod (15 min + refresh).
-SIMPLE_JWT = {"ACCESS_TOKEN_LIFETIME": timedelta(hours=12)}
+# JWT (simplejwt).
+#
+# Jusqu'ici : un accès de 12 h, un renouvellement d'un jour (le défaut), et un
+# front qui n'appelait JAMAIS /auth/token/refresh/. Conséquence vécue en
+# production : au bout de douze heures, le premier appel prenait un 401 et
+# l'utilisateur retombait sur l'écran de connexion. « Il faut à chaque fois
+# s'authentifier » ne décrivait pas une panne, mais ce réglage.
+#
+# Désormais l'accès est court — il est renouvelé en silence, donc sa longueur
+# n'achète plus de confort, seulement de l'exposition : un jeton volé reste
+# utilisable jusqu'à son terme et rien ne permet de le révoquer. Le jeton de
+# renouvellement, lui, est long ET tournant : chaque renouvellement en rend un
+# neuf, si bien qu'un poste utilisé au moins une fois par semaine ne redemande
+# jamais le mot de passe.
+#
+# BLACKLIST_AFTER_ROTATION reste à False, ce qui est un ARBITRAGE et non un
+# oubli. L'activer tuerait l'ancien jeton à l'instant de la rotation ; mais si
+# la réponse se perd en route — réseau coupé juste après l'écriture — le
+# navigateur garde un jeton désormais mort et l'utilisateur est déconnecté sans
+# recours. C'est précisément le symptôme qu'on corrige ici. Le prix de ce choix :
+# un jeton de renouvellement dérobé reste valide jusqu'à son expiration. Le jour
+# où la révocation immédiate devient nécessaire, il faudra installer
+# `rest_framework_simplejwt.token_blacklist`, migrer, et purger
+# périodiquement (`manage.py flushexpiredtokens`).
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": False,
+}
 
 LANGUAGE_CODE = "fr-fr"
 TIME_ZONE = "UTC"

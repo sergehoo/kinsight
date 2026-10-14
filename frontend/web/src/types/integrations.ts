@@ -51,6 +51,18 @@ export interface SessionAuth {
   derniere_authentification: string | null;
   dernier_echec: string | null;
   cause_dernier_echec: string | null;
+  /** Un compte de service est enregistré : la session peut se rétablir SEULE,
+   *  sans qu'on recolle de jetons. C'est ce qui distingue une liaison permanente
+   *  d'une chaîne de renouvellement, laquelle meurt à la première inactivité
+   *  plus longue que la durée de vie du jeton de renouvellement. */
+  compte_de_service?: boolean;
+  /** Shield a refusé ce compte : la liaison redevient mortelle, et il faut une
+   *  intervention humaine — c'est le seul cas qui le justifie encore. */
+  compte_de_service_refuse?: boolean;
+  liaison_permanente?: boolean;
+  /** L'adresse du compte, jamais son mot de passe. */
+  service_email?: string;
+  derniere_reconnexion?: string | null;
 }
 
 export interface DataConnector {

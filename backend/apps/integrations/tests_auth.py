@@ -786,3 +786,149 @@ class EtatSansAccessTest(SocleShield):
         etat = shield_auth.etat_auth(self.connecteur)
         self.assertEqual(etat["etat"], "valide")
         self.assertTrue(etat["renouvellement_automatique"])
+
+
+class LiaisonPermanenteTest(SocleShield):
+    """Le filet : quand la chaîne de jetons casse, la session se rétablit seule.
+
+    C'est la correction du défaut observé en production — jeton déposé le 21/09,
+    expiré trente minutes plus tard, refresh refusé vingt-trois jours après, et
+    plus aucune issue sans qu'un humain recolle un couple à la main.
+    """
+
+    def _reponse(self, charge: dict):
+        class _Flux:
+            def read(_s):
+                return json.dumps(charge).encode()
+
+            def __enter__(_s):
+                return _s
+
+            def __exit__(_s, *a):
+                return False
+
+        return _Flux()
+
+    def _poser_compte(self, email="service@kaydan.tech", mdp="mdp-de-service"):
+        config = dict(self.connecteur.config or {})
+        config["service_email"] = email
+        self.connecteur.config = config
+        self.connecteur.save(update_fields=["config"])
+        self._deposer(CredentialKind.PASSWORD, mdp)
+
+    def test_un_refresh_refuse_bascule_sur_la_connexion_au_lieu_de_bloquer(self):
+        """Le cœur du correctif. Avant, ce cas était terminal."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+        neuf = jwt_factice(dans=timedelta(hours=4))
+
+        appels = []
+
+        def repondre(requete, timeout=None):
+            appels.append(requete.full_url)
+            if requete.full_url.endswith("/auth/token/refresh/"):
+                raise urllib.error.HTTPError("u", 401, "refus", {}, None)
+            return self._reponse({"access": neuf, "refresh": "refresh-neuf"})
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            ok, message = shield_auth.renouveler(self.connecteur, force=True)
+
+        self.assertTrue(ok, message)
+        self.assertIn("rétablie", message)
+        # Les DEUX appels ont eu lieu, dans cet ordre : on tente le renouvellement
+        # d'abord, la connexion seulement en dernier recours.
+        self.assertTrue(appels[0].endswith("/auth/token/refresh/"))
+        self.assertTrue(appels[1].endswith("/auth/login/"))
+        self._recharger()
+        self.assertEqual(
+            self.connecteur.credentials.get(kind=CredentialKind.API_TOKEN).secret, neuf)
+
+    def test_sans_compte_de_service_le_refus_reste_terminal(self):
+        """Contre-épreuve : sans filet, le comportement d'avant est préservé."""
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+        erreur = urllib.error.HTTPError("u", 401, "refus", {}, None)
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=erreur):
+            ok, message = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertFalse(ok)
+        self.assertIn("réauthentification", message.lower())
+
+    def test_un_quota_ne_declenche_PAS_la_reconnexion(self):
+        """Un 429 n'est pas un refus. Se reconnecter alors gaspillerait une
+        tentative sur une panne passagère et pourrait faire verrouiller le compte."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "r")
+        appels = []
+
+        def repondre(requete, timeout=None):
+            appels.append(requete.full_url)
+            raise urllib.error.HTTPError("u", 429, "trop", {}, None)
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            ok, _ = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertFalse(ok)
+        self.assertEqual(len(appels), 1, "aucune connexion ne doit suivre un quota")
+
+    def test_sans_refresh_du_tout_la_connexion_prend_le_relais(self):
+        self._poser_compte()
+        neuf = jwt_factice(dans=timedelta(hours=2))
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   return_value=self._reponse({"access": neuf, "refresh": "r"})):
+            ok, message = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertTrue(ok, message)
+
+    def test_letat_annonce_une_liaison_permanente(self):
+        """L'écran doit pouvoir dire que la liaison tient seule, et par quel moyen."""
+        self._poser_compte()
+        self._deposer(CredentialKind.API_TOKEN, jwt_factice(dans=timedelta(hours=1)))
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertTrue(etat["liaison_permanente"])
+        self.assertTrue(etat["compte_de_service"])
+        self.assertTrue(etat["renouvellement_automatique"])
+        self.assertEqual(etat["service_email"], "service@kaydan.tech")
+
+    def test_un_refresh_mort_ne_reclame_plus_dhumain_si_un_compte_existe(self):
+        """Exactement l'écran de la capture : access expiré ET refresh condamné.
+        Avec un compte de service, ce n'est plus « réauthentification requise »."""
+        self._poser_compte()
+        self._deposer(CredentialKind.API_TOKEN, jwt_factice(dans=timedelta(minutes=-5)))
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+        shield_auth._memoriser(self.connecteur, cause_dernier_echec="refresh_refuse")
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertNotEqual(etat["etat"], "auth_required")
+        self.assertEqual(etat["etat"], "renouvelable")
+
+    def test_un_compte_refuse_redevient_terminal_et_le_dit(self):
+        """Si Shield refuse le compte lui-même, plus rien ne peut se rétablir
+        seul : l'écran doit réclamer une intervention, sans fausse promesse."""
+        self._poser_compte()
+        self._deposer(CredentialKind.API_TOKEN, jwt_factice(dans=timedelta(minutes=-5)))
+        shield_auth._memoriser(self.connecteur, cause_dernier_echec="identifiants_refuses")
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertEqual(etat["etat"], "auth_required")
+        self.assertFalse(etat["liaison_permanente"])
+        self.assertTrue(etat["compte_de_service_refuse"])
+
+    def test_le_mot_de_passe_ne_figure_dans_aucun_etat_ni_aucune_trace(self):
+        self._poser_compte(mdp="mot-de-passe-tres-secret")
+        AccessLog.objects.all().delete()
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   return_value=self._reponse({"access": jwt_factice(dans=timedelta(hours=1))})):
+            shield_auth.reconnecter(self.connecteur)
+        rendu = json.dumps(shield_auth.etat_auth(self.connecteur), ensure_ascii=False)
+        rendu += json.dumps([t.payload for t in AccessLog.objects.all()], ensure_ascii=False)
+        self.assertNotIn("mot-de-passe-tres-secret", rendu)
+
+    def test_un_compte_refuse_nefface_pas_celui_qui_fonctionnait(self):
+        """Éprouvé avant écriture : une frappe malheureuse ne doit pas détruire
+        une liaison qui marchait."""
+        self._poser_compte(email="bon@kaydan.tech", mdp="bon-mdp")
+        erreur = urllib.error.HTTPError("u", 401, "refus", {}, None)
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=erreur):
+            ok, cause, message = shield_auth.enregistrer_le_compte_de_service(
+                self.connecteur, email="faux@kaydan.tech", mot_de_passe="faux")
+        self.assertFalse(ok)
+        self.assertEqual(cause, "identifiants_refuses")
+        self._recharger()
+        self.assertEqual(self.connecteur.config.get("service_email"), "bon@kaydan.tech")
+        self.assertEqual(
+            self.connecteur.credentials.get(kind=CredentialKind.PASSWORD).secret, "bon-mdp")

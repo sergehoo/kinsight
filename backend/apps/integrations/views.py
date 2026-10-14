@@ -365,6 +365,31 @@ class DataSourceViewSet(viewsets.ModelViewSet):
         if connector is None:
             return Response({"detail": "Connecteur absent."}, status=http_status.HTTP_400_BAD_REQUEST)
 
+        # ── Compte de service : la voie qui rend la liaison PERMANENTE ──────
+        #
+        # Un couple de jetons meurt : la rotation est active chez Shield, et il
+        # suffit d'une inactivité plus longue que la durée de vie du refresh pour
+        # que la chaîne casse sans retour. Un compte de service, lui, permet à la
+        # session de se rétablir seule, indéfiniment.
+        email = (request.data.get("service_email") or "").strip()
+        mot_de_passe = request.data.get("service_password") or ""
+        if email or mot_de_passe:
+            if not (email and mot_de_passe):
+                return Response(
+                    {"detail": "Fournissez l'adresse ET le mot de passe du compte de service."},
+                    status=http_status.HTTP_400_BAD_REQUEST,
+                )
+            ok, cause, message = shield_auth.enregistrer_le_compte_de_service(
+                connector, email=email, mot_de_passe=mot_de_passe
+            )
+            # L'adresse est tracée, jamais le mot de passe : savoir QUEL compte
+            # porte la liaison est utile à l'audit, le secret ne l'est pas.
+            _audit(request, "integration.shield.compte_service", source,
+                   {"ok": ok, "email": email, **({"cause": cause} if cause else {})})
+            return Response({"ok": ok, "message": message,
+                             "auth": shield_auth.etat_auth(connector)},
+                            status=shield_auth.statut_http(cause, ok=ok))
+
         acces = (request.data.get("access") or "").strip()
         refresh = (request.data.get("refresh") or "").strip()
         if acces or refresh:

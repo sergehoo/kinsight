@@ -888,8 +888,11 @@ function raisonSansRenouvellement(auth: SessionAuth) {
   if (!auth.refresh_present) {
     return "Renouvellement automatique inactif : sans jeton de renouvellement, la session expirera sans recours.";
   }
+  if (auth.compte_de_service_refuse) {
+    return "Compte de service refusé par Shield : adresse, mot de passe, ou compte désactivé. C'est le seul cas qui exige encore une intervention.";
+  }
   if (auth.cause_dernier_echec === "refresh_refuse") {
-    return "Renouvellement automatique interrompu : le jeton de renouvellement enregistré est refusé par Shield. Il faut recoller un couple neuf.";
+    return "Renouvellement automatique interrompu : le jeton de renouvellement enregistré est refusé par Shield. Enregistrez un compte de service pour que la session se rétablisse seule.";
   }
   return "Renouvellement automatique indisponible pour le moment — voir la cause ci-dessous.";
 }
@@ -922,9 +925,11 @@ function SessionShield({ auth, statutSource }: { auth: SessionAuth; statutSource
       <p className="text-[13.5px] font-semibold text-[#2C3132]">{expire}</p>
 
       <p className="text-[12.5px] font-medium" style={{ color: auth.renouvellement_automatique ? "#0F6E56" : "#854F0B" }}>
-        {auth.renouvellement_automatique
-          ? "Renouvellement automatique actif — aucun jeton à recoller à l'expiration."
-          : raisonSansRenouvellement(auth)}
+        {auth.liaison_permanente
+          ? "Liaison permanente : un compte de service est enregistré, la session se rétablit seule même après une longue inactivité."
+          : auth.renouvellement_automatique
+            ? "Renouvellement automatique actif — mais la chaîne de jetons meurt si elle reste inutilisée plus longtemps que le jeton de renouvellement. Un compte de service la rendrait permanente."
+            : raisonSansRenouvellement(auth)}
       </p>
 
       <dl className="grid gap-x-6 gap-y-1 text-[12.5px] sm:grid-cols-2">
@@ -935,6 +940,14 @@ function SessionShield({ auth, statutSource }: { auth: SessionAuth; statutSource
         <div className="flex justify-between gap-3">
           <dt className="text-[#8A9291]">Jeton de renouvellement</dt>
           <dd className="font-semibold text-[#2C3132]">{auth.refresh_present ? "enregistré" : "absent"}</dd>
+        </div>
+        {/* L'adresse du compte, jamais son mot de passe : savoir QUEL compte
+            porte la liaison est utile ; le secret ne l'est pas. */}
+        <div className="flex justify-between gap-3">
+          <dt className="text-[#8A9291]">Compte de service</dt>
+          <dd className="font-semibold text-[#2C3132]">
+            {auth.compte_de_service ? auth.service_email || "enregistré" : "aucun"}
+          </dd>
         </div>
       </dl>
 
@@ -947,12 +960,18 @@ function SessionShield({ auth, statutSource }: { auth: SessionAuth; statutSource
   );
 }
 
-/** Dépôt d'un couple de jetons.
+/** Rétablir la session : par compte de service, ou par couple de jetons.
  *
- *  Les deux champs sont de type `password` et jamais préremplis ; leur valeur ne
- *  vit que dans l'état de ce composant, et disparaît à la fermeture. Rien n'est
- *  écrit en `localStorage`, `sessionStorage` ni dans le cache de l'application —
- *  un jeton copié dans le navigateur y survivrait à toutes les rotations.
+ *  DEUX VOIES, ET UNE SEULE EST DURABLE. Un couple de jetons meurt : la rotation
+ *  est active chez Shield, et il suffit que l'application reste inutilisée plus
+ *  longtemps que la durée de vie du jeton de renouvellement pour que la chaîne
+ *  casse sans retour. C'est exactement ce qui s'est produit en production. Le
+ *  compte de service, lui, permet à la session de se rétablir seule
+ *  indéfiniment : il est donc présenté en premier, et par défaut.
+ *
+ *  Tous les champs secrets sont de type `password`, jamais préremplis, et leur
+ *  valeur ne vit que dans l'état de ce composant — rien en `localStorage`,
+ *  `sessionStorage` ni dans le cache de l'application.
  */
 function ModaleReauth({ sourceId, onFerme, onSucces }: {
   sourceId: string;
@@ -960,12 +979,16 @@ function ModaleReauth({ sourceId, onFerme, onSucces }: {
   onSucces: (message: string) => void;
 }) {
   const reauth = useReauthenticate();
+  const [voie, setVoie] = React.useState<"service" | "jetons">("service");
+  const [email, setEmail] = React.useState("");
+  const [motDePasse, setMotDePasse] = React.useState("");
   const [acces, setAcces] = React.useState("");
   const [refresh, setRefresh] = React.useState("");
 
   const oublier = () => {
     setAcces("");
     setRefresh("");
+    setMotDePasse("");
   };
 
   const fermer = () => {
@@ -973,13 +996,17 @@ function ModaleReauth({ sourceId, onFerme, onSucces }: {
     onFerme();
   };
 
-  const complet = acces.trim().length > 0 && refresh.trim().length > 0;
+  const complet = voie === "service"
+    ? email.trim().length > 0 && motDePasse.length > 0
+    : acces.trim().length > 0 && refresh.trim().length > 0;
 
   const envoyer = (e: React.FormEvent) => {
     e.preventDefault();
     if (!complet) return;
     reauth.mutate(
-      { sourceId, access: acces.trim(), refresh: refresh.trim() },
+      voie === "service"
+        ? { sourceId, serviceEmail: email.trim(), servicePassword: motDePasse }
+        : { sourceId, access: acces.trim(), refresh: refresh.trim() },
       {
         onSuccess: (r) => {
           // Le secret quitte la mémoire dès que le backend l'a chiffré.
@@ -998,35 +1025,79 @@ function ModaleReauth({ sourceId, onFerme, onSucces }: {
   // portail la sort de cette hiérarchie : le voile couvre à nouveau la page.
   return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4"
-         role="dialog" aria-modal="true" aria-label="Réauthentifier Kaydan Shield">
+         role="dialog" aria-modal="true" aria-label="Rétablir la session Kaydan Shield">
       <form onSubmit={envoyer} className="grid w-full max-w-[560px] gap-4 rounded-[24px] bg-[#F7F9F6] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.3)]">
         <div>
-          <h2 className="text-[19px] font-bold text-[#16191A]">Réauthentifier Kaydan Shield</h2>
+          <h2 className="text-[19px] font-bold text-[#16191A]">Rétablir la session Kaydan Shield</h2>
           <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#6E7A78]">
-            Collez le couple obtenu auprès de Shield. Les deux jetons sont nécessaires :
-            un jeton d'accès seul redonnerait une session qui expire sans recours — exactement
-            ce que le renouvellement automatique évite.
+            Deux voies, une seule est durable. Un compte de service rend la liaison
+            permanente : à chaque refus de renouvellement, le backend se reconnecte seul.
+            Un couple de jetons, lui, finit toujours par mourir.
           </p>
         </div>
 
-        <div>
-          <label className={labelCls} htmlFor="reauth-access">Jeton d'accès (access)</label>
-          <input id="reauth-access" className={field} type="password" autoComplete="off"
-                 value={acces} onChange={(e) => setAcces(e.target.value)} required autoFocus
-                 placeholder="Collez le jeton d'accès" />
-        </div>
-        <div>
-          <label className={labelCls} htmlFor="reauth-refresh">Jeton de renouvellement (refresh)</label>
-          <input id="reauth-refresh" className={field} type="password" autoComplete="off"
-                 value={refresh} onChange={(e) => setRefresh(e.target.value)} required
-                 placeholder="Collez le jeton de renouvellement" />
+        <div className="flex gap-2" role="tablist" aria-label="Voie de réauthentification">
+          {([
+            ["service", "Compte de service", "permanent"],
+            ["jetons", "Couple de jetons", "temporaire"],
+          ] as const).map(([cle, titre, note]) => (
+            <button key={cle} type="button" role="tab" aria-selected={voie === cle}
+                    onClick={() => setVoie(cle)}
+                    className={`flex-1 rounded-[14px] border px-4 py-3 text-left transition ${
+                      voie === cle
+                        ? "border-[#0B0B0C] bg-white shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
+                        : "border-[#DDE2E0] bg-white/50 hover:bg-white/80"
+                    }`}>
+              <span className="block text-[13.5px] font-bold text-[#16191A]">{titre}</span>
+              <span className={`block text-[11.5px] font-semibold ${
+                cle === "service" ? "text-[#2F7D5B]" : "text-[#8A7A3D]"
+              }`}>{note}</span>
+            </button>
+          ))}
         </div>
 
-        <p className="text-[11.5px] leading-relaxed text-[#6E7A78]">
-          Les jetons partent directement au backend, y sont chiffrés au repos et ne sont jamais
-          réaffichés. Ils ne sont écrits ni dans le navigateur, ni dans les journaux, ni dans le
-          cache de l'application.
-        </p>
+        {voie === "service" ? (
+          <>
+            <div>
+              <label className={labelCls} htmlFor="reauth-email">Adresse du compte de service</label>
+              <input id="reauth-email" className={field} type="email" autoComplete="off"
+                     value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus
+                     placeholder="service-kinsight@…" />
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="reauth-password">Mot de passe</label>
+              <input id="reauth-password" className={field} type="password" autoComplete="new-password"
+                     value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} required
+                     placeholder="Jamais réaffiché" />
+            </div>
+            <p className="text-[11.5px] leading-relaxed text-[#6E7A78]">
+              Le couple est <strong>vérifié auprès de Shield avant d&apos;être enregistré</strong> : s&apos;il est
+              refusé, rien n&apos;est écrit et le compte qui fonctionnait reste en place. Le mot de passe
+              est chiffré au repos, jamais réaffiché, et ne figure dans aucun journal ni aucun état.
+              Utilisez un compte dédié à l&apos;intégration, pas un compte nominatif.
+            </p>
+          </>
+        ) : (
+          <>
+            <div>
+              <label className={labelCls} htmlFor="reauth-access">Jeton d&apos;accès (access)</label>
+              <input id="reauth-access" className={field} type="password" autoComplete="off"
+                     value={acces} onChange={(e) => setAcces(e.target.value)} required autoFocus
+                     placeholder="Collez le jeton d'accès" />
+            </div>
+            <div>
+              <label className={labelCls} htmlFor="reauth-refresh">Jeton de renouvellement (refresh)</label>
+              <input id="reauth-refresh" className={field} type="password" autoComplete="off"
+                     value={refresh} onChange={(e) => setRefresh(e.target.value)} required
+                     placeholder="Collez le jeton de renouvellement" />
+            </div>
+            <p className="text-[11.5px] leading-relaxed text-[#6E7A78]">
+              Les deux jetons sont nécessaires : un jeton d&apos;accès seul redonnerait une session qui
+              expire sans recours. Cette voie <strong>ne rétablit rien d&apos;elle-même</strong> — quand le
+              jeton de renouvellement expirera à son tour, il faudra revenir ici.
+            </p>
+          </>
+        )}
 
         {reauth.isError ? <IntegrationsError error={reauth.error} /> : null}
         {reauth.data && !reauth.data.ok ? (
@@ -1036,7 +1107,9 @@ function ModaleReauth({ sourceId, onFerme, onSucces }: {
         <div className="flex flex-wrap gap-3">
           <button type="submit" disabled={!complet || reauth.isPending}
                   className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-40">
-            {reauth.isPending ? "Dépôt en cours…" : "Déposer la session"}
+            {reauth.isPending
+              ? (voie === "service" ? "Vérification auprès de Shield…" : "Dépôt en cours…")
+              : (voie === "service" ? "Établir la liaison permanente" : "Déposer la session")}
           </button>
           <button type="button" onClick={fermer}
                   className="rounded-full border border-[#DDE2E0] bg-white/70 px-6 py-3 text-[14px] font-bold text-[#3A3E3E]">
@@ -1139,9 +1212,13 @@ function ConfigureForm({ id }: { id: string }) {
               {reauthAuto.isPending ? "Renouvellement…" : "Renouveler la session"}
             </button>
           ) : null}
+          {/* Tant qu'aucun compte de service n'est enregistré, l'action utile n'est
+              pas « réauthentifier » — qui ne ferait que repousser l'échéance — mais
+              rendre la liaison permanente. Le libellé le dit, sinon personne ne
+              devine que la boîte de dialogue propose désormais cette voie. */}
           {auth && !reauthNecessaire ? (
             <button type="button" onClick={() => { setAvis(null); setModaleOuverte(true); }} className={btnGhost}>
-              Réauthentifier
+              {auth.liaison_permanente ? "Réauthentifier" : "Rendre la liaison permanente"}
             </button>
           ) : null}
           <button type="button" onClick={() => toggle.mutate(source.id)} disabled={toggle.isPending} className={btnGhost}>
