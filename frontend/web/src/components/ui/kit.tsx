@@ -175,6 +175,14 @@ export interface MetricCardProps {
   unavailableNote?: string;
 }
 
+/** Un nombre affiché à la française — virgule décimale, espace fine des milliers.
+ *  `String(81.8)` donnait « 81.8 » sur un cockpit tout en français ; une chaîne
+ *  déjà formatée par l'appelant est laissée telle quelle. */
+const FORMAT_FR = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
+function valeurFr(value: string | number): string {
+  return typeof value === "number" ? FORMAT_FR.format(value) : value;
+}
+
 export function MetricCard(props: MetricCardProps) {
   const {
     title, value, unit, trend, trendUp, comparison,
@@ -202,7 +210,7 @@ export function MetricCard(props: MetricCardProps) {
         ) : (
           <div className="flex items-end gap-1.5">
             <span className="text-[clamp(24px,5vw,34px)] font-extrabold leading-none text-[#16191A]">
-              {hasValue ? <AnimatedNumber value={String(value)} /> : meta.placeholder}
+              {hasValue ? <AnimatedNumber value={valeurFr(value)} /> : meta.placeholder}
             </span>
             {unit && hasValue ? <span className="pb-0.5 text-[12px] font-bold text-[#9AA09D]">{unit}</span> : null}
           </div>

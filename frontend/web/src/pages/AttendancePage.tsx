@@ -1,443 +1,352 @@
-/** Attendance & Presence — branchée sur Kaydan Shield, pas sur un mart absent.
+/** Attendance & Presence — Kaydan Shield, live ET historisé.
  *
- *  CE QUE CETTE PAGE REMPLACE. Elle était rendue par `ModulePage`, c'est-à-dire
- *  par le catalogue statique de `lib/modules.tsx` : douze cartes à `value: "N/D"`
- *  écrites en dur, adossées à `mart.hr_attendance_kpi` — une table qui n'existe
- *  nulle part dans le dépôt (ni dbt, ni DDL, ni seed, ni source Airbyte). La page
- *  n'attendait donc pas une panne : elle attendait une source qui n'a jamais été
- *  modélisée, et rien n'aurait pu l'allumer.
+ *  DEUX TEMPS, DEUX BLOCS, ET LA PAGE LE DIT.
+ *    - La PÉRIODE (filtres du cockpit : trimestre, année, 7/30/90 j, dates) vient
+ *      de l'historique K-Insight : chaque journée close de Shield y est déposée
+ *      chaque nuit. Le site et le type de personnel s'y appliquent ; la
+ *      comparaison à la période précédente et à N-1 aussi.
+ *    - AUJOURD'HUI est live : la journée n'est pas close, elle n'est pas encore
+ *      dans l'historique. Ces cartes sont datées et ne suivent pas la période.
  *
- *  Pendant ce temps, Shield sert la présence réelle depuis le backend. Les huit
- *  premiers indicateurs ci-dessous sont mesurés ou calculés à partir de mesures
- *  réelles ; la série journalière est réelle aussi, trous compris.
+ *  Une seule requête sert les deux (module `hr-attendance`, résolu par le
+ *  registre canonique) ; les courbes et le classement des sites lisent
+ *  l'historique ; les ventilations du jour et les constats, la charge Shield
+ *  partagée. Aucun chiffre n'est inventé : un indicateur sans source reste N/D
+ *  avec son motif, un jour non mesuré laisse un trou dans la courbe.
  *
- *  LES QUATRE INDICATEURS SANS SOURCE RESTENT AFFICHÉS. Départs anticipés, heures
- *  travaillées, heures supplémentaires et pointages RFID n'ont AUCUNE source
- *  aujourd'hui — ni chez Shield, ni au mart, ni chez Airbyte. Les retirer
- *  effacerait la question ; on les garde en `disconnected` avec leur motif, et le
- *  compteur « N/12 alimentés » rend l'écart lisible plutôt que muet. C'est le
- *  contraire d'une page vide : c'est une page qui dit ce qu'elle sait et ce
- *  qu'elle ne sait pas.
- *
- *  PÉRIMÈTRE. Les compteurs de Shield sont des agrégats Groupe : la source ne
- *  rattache pas ses sites aux filiales, donc rien ici n'est filtrable par
- *  filiale sans inventer ce rattachement — et le backend retire la répartition
- *  par site (et les alertes qui nomment un site) hors périmètre Groupe. La page
- *  le dit au lieu de le laisser deviner.
+ *  PÉRIMÈTRE. Shield ne rattache pas ses sites aux filiales : ses chiffres sont
+ *  des chiffres Groupe. Un périmètre restreint, ou un filtre filiale, rend les
+ *  cartes N/D avec ce motif — jamais le total Groupe sous l'étiquette filiale.
  */
 import * as React from "react";
 
-import { BreakdownChart, TrendChart } from "@/components/charts";
+import { useHrHistory, useModuleData } from "@/api/governance";
+import { BreakdownChart, ComparisonChart, TrendChart } from "@/components/charts";
 import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
 import { CheckCircle } from "@/components/overview/icons";
-import {
-  MetricCard,
-  ResponsiveGrid,
-  SignalCard,
-  StateBadge,
-  type DataState,
-} from "@/components/ui/kit";
+import { MetricCard, ResponsiveGrid, SignalCard, StateBadge, type DataState } from "@/components/ui/kit";
+import { ecartAffiche } from "@/lib/ecarts";
 import {
   shieldAttendanceRateBreakdown,
   shieldBreakdownStatus,
+  shieldInsights,
   shieldPresenceBreakdown,
   shieldPresenceByKind,
-  shieldSeriesHeadcount,
-  shieldSeriesInsights,
-  shieldSeriesPoints,
 } from "@/lib/adapters/shield";
-import {
-  SERIES_WINDOWS,
-  useShieldAttendanceSeries,
-  useShieldHrKpis,
-  type SeriesWindow,
-  type ShieldHrQuery,
-  type ShieldKpi,
-  type ShieldSeriesQuery,
-} from "@/lib/shieldHr";
+import type { KBreakdownItem, KSeriesPoint } from "@/lib/kmetric";
+import { useShieldHrKpis } from "@/lib/shieldHr";
 import { useOnlineStatus } from "@/pwa/useNetwork";
-import { bornesDuTrimestre, libellePeriode, trimestreEnCoursOuFutur, useFilters } from "@/store/filters";
+import { libelleFiltrePeriode, parametresFiltres, useFilters } from "@/store/filters";
+import type { ModuleDataValue } from "@/types/governance";
 
 const SOURCE = "Kaydan Shield";
 const ACCENT = "#FF8735";
+const MODULE = "hr-attendance";
 
-/** Les douze libellés de la page, et ce qui les alimente RÉELLEMENT.
- *
- *  `cle` renvoie à une clé servie par `/integrations/shield/hr-kpi/`. `motif`
- *  n'est renseigné que pour les indicateurs sans source : c'est la phrase que la
- *  carte affiche à la place d'un chiffre, et elle nomme la cause plutôt que de
- *  laisser croire à une panne passagère.
- */
-const INDICATEURS: Array<{ titre: string; cle?: ShieldKpi["key"]; motif?: string }> = [
-  { titre: "Présents", cle: "presents" },
-  { titre: "Absents", cle: "absents" },
-  { titre: "Retards", cle: "retards" },
-  { titre: "Taux de présence", cle: "taux_presence" },
-  { titre: "Taux d'absence du jour", cle: "taux_absence_jour" },
-  { titre: "Taux de ponctualité", cle: "taux_ponctualite" },
-  { titre: "Effectif total", cle: "effectif_total" },
-  { titre: "Sites", cle: "sites" },
-  {
-    titre: "Départs anticipés",
-    motif: "Aucune source : Shield ne compte que présents, absents et retards.",
-  },
-  {
-    titre: "Heures travaillées",
-    motif: "Aucune source : exigerait les pointages horaires (Odoo hr.attendance, non raccordé).",
-  },
-  {
-    titre: "Heures supplémentaires",
-    motif: "Aucune source : dépend des heures travaillées, elles-mêmes non collectées.",
-  },
-  {
-    titre: "Pointages RFID",
-    motif: "Source existante (événements d'accès) mais mesure non définie : un franchissement de porte n'est pas une déclaration de présence.",
-  },
+/** Cartes de PÉRIODE : ce que l'historique sait agréger (règle du registre). */
+const CARTES_PERIODE: Array<{ libelle: string; titre: string; unite?: string }> = [
+  { libelle: "Taux de présence", titre: "Taux de présence", unite: "%" },
+  { libelle: "Présents", titre: "Présents · moyenne / jour" },
+  { libelle: "Absents", titre: "Absents · moyenne / jour" },
+  { libelle: "Retards", titre: "Retards · moyenne / jour" },
+  { libelle: "Taux de ponctualité", titre: "Taux de ponctualité", unite: "%" },
+  { libelle: "Taux d'absence", titre: "Taux d'absence", unite: "%" },
 ];
 
-/** L'état d'une requête Shield, dit dans le vocabulaire gouverné du kit.
- *
- *  `stale` avant `payload.status` : une donnée servie par le cache hors ligne est
- *  réelle mais datée, et l'annoncer « connectée » serait la présenter comme
- *  fraîche.
- */
-function etatDeLaRequete(
-  requete: { isLoading: boolean; isError: boolean; data?: ShieldHrQuery | ShieldSeriesQuery },
-  enLigne: boolean,
-): DataState {
-  if (requete.isLoading) return "connecting";
-  if (requete.isError || !requete.data) return enLigne ? "error" : "offline";
-  if (requete.data.stale) return "stale";
-  return requete.data.payload.status;
+/** Cartes du JOUR : la mesure live, sous les mêmes filtres quand Shield le permet. */
+const CARTES_JOUR: Array<{ libelle: string; titre: string; unite?: string }> = [
+  { libelle: "Présents", titre: "Présents" },
+  { libelle: "Absents", titre: "Absents" },
+  { libelle: "Retards", titre: "Retards" },
+  { libelle: "Taux de présence", titre: "Taux de présence", unite: "%" },
+  { libelle: "Effectif total", titre: "Effectif déclaré" },
+  { libelle: "Employés présents", titre: "Employés présents" },
+  { libelle: "Ouvriers présents", titre: "Ouvriers présents" },
+];
+
+/** Sans source : déclarés pour que l'écart au cockpit cible reste lisible. */
+const SANS_SOURCE = ["Taux d'absentéisme", "Heures travaillées", "Heures supplémentaires",
+  "Départs anticipés", "Pointages RFID"];
+
+function etatCarte(valeur: number | null | undefined, statut: string | undefined, chargement: boolean): DataState {
+  if (chargement) return "connecting";
+  if (valeur !== null && valeur !== undefined) return "connected";
+  if (statut === "error") return "error";
+  return "disconnected";
 }
 
-function Bandeau({
-  alimentes,
-  total,
-  etat,
-  source,
-  detail,
-}: {
-  alimentes: number;
-  total: number;
-  etat: DataState;
-  source: string;
-  detail?: string;
+function nombre(v: number | null | undefined): number | null {
+  if (v === null || v === undefined) return null;
+  return Math.round(v * 10) / 10;
+}
+
+function jourCourt(iso: string): string {
+  const [, m, j] = iso.split("-");
+  return `${j}/${m}`;
+}
+
+function CarteDePeriode({ carte, valeur, chargement }: {
+  carte: (typeof CARTES_PERIODE)[number];
+  valeur?: ModuleDataValue;
+  chargement: boolean;
 }) {
+  const ecart = valeur ? ecartAffiche(valeur.metric_id, valeur.precedente ?? undefined) : null;
+  const couverture = valeur?.periode?.couverture;
   return (
-    <div className="rounded-[26px] px-6 py-5" style={{ ...glass, background: "rgba(255,255,255,0.54)" }}>
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#E8F5EF] text-[#1E9B69]">
-          <CheckCircle width={18} height={18} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-[15px] font-semibold text-[#171A1A]">Contrat de données gouverné</h3>
-            <StateBadge state={etat} />
-            <span className="rounded-full bg-[#F1F4F2] px-2.5 py-0.5 text-[11px] font-bold text-[#586061]">
-              {alimentes}/{total} indicateurs alimentés
-            </span>
-          </div>
-          {/* La phrase change à zéro : « les indicateurs alimentés viennent de
-              Kaydan Shield » sous un compteur 0/12 se lit comme une promesse
-              démentie deux lignes plus bas. C'est l'état de la production tant
-              qu'aucun jeton Shield n'est déposé — donc la phrase la plus lue. */}
-          <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-[#697071]">
-            {alimentes === 0 ? (
-              <>
-                Aucun indicateur n'est alimenté pour l'instant, et aucun chiffre n'est inventé pour
-                combler le vide. La source <span className="font-bold text-[#252A2B]">{source}</span>{" "}
-                doit être raccordée et testée dans le centre de connecteurs.
-              </>
-            ) : (
-              <>
-                Aucun chiffre n'est inventé. Les indicateurs alimentés viennent de{" "}
-                <span className="font-bold text-[#252A2B]">{source}</span>, via le backend K-Insight —
-                jamais de Shield en direct. Les autres restent sans valeur et disent pourquoi.
-              </>
-            )}
-          </p>
-          {detail ? (
-            <p className="mt-1.5 text-[12.5px] font-semibold leading-relaxed text-[#8C6D1F]">{detail}</p>
-          ) : null}
-          <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-[#8C9391]">
-            Mesures agrégées au périmètre Groupe : la source ne rattache pas ses sites aux filiales, un
-            filtrage par filiale serait une invention. Les filtres de la barre ci-dessus ne s'appliquent
-            donc pas à ces indicateurs.
-          </p>
-        </div>
-      </div>
-    </div>
+    <MetricCard
+      title={carte.titre}
+      value={nombre(valeur?.value)}
+      unit={carte.unite}
+      state={etatCarte(valeur?.value, valeur?.status, chargement)}
+      trend={ecart?.texte}
+      trendUp={ecart?.favorable}
+      comparison={couverture ? `${couverture.jours_mesures}/${couverture.jours} j mesurés` : undefined}
+      source={valeur?.source_label}
+      scope={valeur?.periode?.libelle}
+      unavailableNote={valeur?.value === null || valeur?.value === undefined ? valeur?.reason : undefined}
+      accent={ACCENT}
+    />
+  );
+}
+
+function CarteDuJour({ carte, valeur, chargement }: {
+  carte: (typeof CARTES_JOUR)[number];
+  valeur?: ModuleDataValue;
+  chargement: boolean;
+}) {
+  const live = valeur?.aujourd_hui;
+  return (
+    <MetricCard
+      title={carte.titre}
+      value={nombre(live?.value)}
+      unit={carte.unite}
+      state={etatCarte(live?.value, live?.status, chargement)}
+      source={valeur?.source_label}
+      updatedAt={live?.as_of ?? undefined}
+      scope="Aujourd'hui · live"
+      unavailableNote={live?.value === null || live?.value === undefined ? (live?.reason ?? undefined) : undefined}
+      accent={ACCENT}
+    />
   );
 }
 
 export function AttendancePage() {
   const enLigne = useOnlineStatus();
-  const { year, quarter } = useFilters();
+  const filtres = useFilters();
+  const parametres = parametresFiltres(filtres).toString();
+  const sansDimension = parametresFiltres({ ...filtres, site: "", personnel: "", departement: "" }).toString();
 
-  // Deux façons de cadrer la série, et l'écran doit dire laquelle est active :
-  // la fenêtre glissante (7 ou 30 derniers jours) ou la PÉRIODE choisie dans la
-  // barre de filtres. Le trimestre était jusqu'ici décoratif sur cette page ;
-  // il produit désormais de vraies bornes, envoyées au serveur.
-  const [cadrage, setCadrage] = React.useState<"glissant" | "periode">("glissant");
-  const [fenetre, setFenetre] = React.useState<SeriesWindow>(30);
-  const bornes = React.useMemo(() => bornesDuTrimestre(year, quarter), [year, quarter]);
+  const module = useModuleData(MODULE, parametres);
+  const valeurs = module.data?.values ?? {};
+  const chargement = module.isLoading;
 
+  // Courbes : l'historique, sous TOUS les filtres (site ou type compris).
+  const taux = useHrHistory("hr.taux_presence_jour", parametres, "compare=n-1");
+  const presents = useHrHistory("hr.presents_jour", parametres, "compare=aucune");
+  const absents = useHrHistory("hr.absents_jour", parametres, "compare=aucune");
+  const retards = useHrHistory("hr.retards_jour", parametres, "compare=aucune");
+  // Classements : la période sans dimension, ventilée par site puis par type.
+  const parSite = useHrHistory("hr.taux_presence_jour", sansDimension, "compare=aucune&ventilation=site");
+  const parType = useHrHistory("hr.presents_jour", sansDimension, "compare=aucune&ventilation=type");
+
+  // Le live par site / type et les constats du jour : la charge Shield partagée.
   const kpis = useShieldHrKpis();
-  const serie = useShieldAttendanceSeries(fenetre, cadrage === "periode" ? bornes : undefined);
-
-  const etatKpis = etatDeLaRequete(kpis, enLigne);
-  const etatSerie = etatDeLaRequete(serie, enLigne);
-
-  const parCle = React.useMemo(() => {
-    const map = new Map<string, ShieldKpi>();
-    for (const kpi of kpis.data?.payload.kpis ?? []) map.set(kpi.key, kpi);
-    return map;
-  }, [kpis.data]);
-
-  // « Alimenté » veut dire : une valeur réellement obtenue. Une carte en attente
-  // ou en erreur ne compte pas — sinon le compteur annoncerait une couverture
-  // que la page n'a pas.
-  const cartes = INDICATEURS.map((indicateur) => {
-    const kpi = indicateur.cle ? parCle.get(indicateur.cle) : undefined;
-    const etat: DataState = indicateur.cle
-      ? etatKpis === "connecting"
-        ? "connecting"
-        : (kpi?.status ?? (etatKpis === "connected" ? "partial" : etatKpis))
-      : "disconnected";
-    return { ...indicateur, kpi, etat };
-  });
-  const alimentes = cartes.filter((c) => c.kpi?.value !== null && c.kpi?.value !== undefined
-    && (c.etat === "connected" || c.etat === "stale")).length;
-
-  const points = shieldSeriesPoints(serie.data);
-  const effectifs = shieldSeriesHeadcount(serie.data);
-  const constats = shieldSeriesInsights(serie.data);
-  const joursMesures = serie.data?.payload.measured_days;
-  const joursTotal = serie.data?.payload.points.length;
-  // Les bornes que le SERVEUR a employées, pas celles demandées : c'est la seule
-  // façon de voir qu'une période a été ramenée (trimestre en cours, borne de 92
-  // jours) au lieu de croire qu'elle a été couverte.
-  const bornesServies = serie.data?.payload.date_from && serie.data?.payload.date_to
-    ? `${serie.data.payload.date_from} → ${serie.data.payload.date_to}`
-    : null;
-
-  // Trois ventilations que le backend sert DÉJÀ et que rien ne consommait :
-  // employés/ouvriers parmi les présents du jour (`by_kind`, filtre `holder_kind`
-  // réel), présents par site et taux par site (`by_site`). Aucune ne coûte un
-  // appel de plus : elles sortent de la collecte du jour déjà faite.
-  const parType = shieldPresenceByKind(kpis.data);
-  const presentsParSite = shieldPresenceBreakdown(kpis.data);
-  const tauxParSite = shieldAttendanceRateBreakdown(kpis.data);
-  const etatRepartition = shieldBreakdownStatus(kpis.data);
-  // Le backend retire les lignes de site hors périmètre Groupe et dit pourquoi.
+  const constats = shieldInsights(kpis.data);
   const restrictionSite = kpis.data?.payload.by_site?.restriction;
+
+  const etatSerie: DataState = taux.isLoading ? "connecting" : taux.isError ? (enLigne ? "error" : "offline")
+    : taux.data?.status === "disconnected" ? "disconnected"
+      : taux.data?.points.some((p) => p.value !== null) ? "connected" : "disconnected";
+  const motifSerie = taux.data?.reason
+    ?? (taux.data?.historique_depuis
+      ? `Aucune journée mesurée sur la période ; l'historique commence le ${jourCourt(taux.data.historique_depuis)}.`
+      : "Historique en cours de constitution : aucune journée encore collectée.");
+
+  const pointsTaux: KSeriesPoint[] = (taux.data?.points ?? []).map((p) => ({ label: jourCourt(p.date), value: nombre(p.value) }));
+  const absentsParJour = new Map((absents.data?.points ?? []).map((p) => [p.date, p.value]));
+  const pointsPresents: KSeriesPoint[] = (presents.data?.points ?? []).map((p) => ({
+    label: jourCourt(p.date), value: p.value, compare: absentsParJour.get(p.date) ?? null,
+  }));
+  const pointsRetards: KSeriesPoint[] = (retards.data?.points ?? []).map((p) => ({ label: jourCourt(p.date), value: p.value }));
+
+  const classementSites: KBreakdownItem[] = (parSite.data?.ventilation ?? []).map((l) => ({
+    key: l.code, label: l.libelle || l.code, value: nombre(l.value),
+  }));
+  const repartitionType: KBreakdownItem[] = (parType.data?.ventilation ?? []).map((l) => ({
+    key: l.code, label: l.libelle || l.code, value: nombre(l.value),
+  }));
+  const n1 = taux.data?.comparaisons?.n_1;
+  const ecartN1 = ecartAffiche("hr.taux_presence_jour", n1, "N-1");
+
+  const alimentees = CARTES_PERIODE.filter((c) => valeurs[c.libelle]?.value !== null
+    && valeurs[c.libelle]?.value !== undefined).length;
+  const etatModule: DataState = module.isLoading ? "connecting" : module.isError ? (enLigne ? "error" : "offline")
+    : alimentees ? (alimentees === CARTES_PERIODE.length ? "connected" : "partial") : "disconnected";
 
   return (
     <PageShell
       title="Attendance & Presence"
-      subtitle="Présents, absents, retards et ponctualité, mesurés par Kaydan Shield (contrôle d'accès RFID)."
+      subtitle="Présence, absences, retards et ponctualité mesurés par Kaydan Shield — sur la période choisie, et aujourd'hui en direct."
       icon={<CheckCircle width={22} height={22} />}
       accent={ACCENT}
     >
       <div className="space-y-8">
-        <Bandeau
-          alimentes={alimentes}
-          total={INDICATEURS.length}
-          etat={etatKpis}
-          source={kpis.data?.payload.source ?? SOURCE}
-          detail={kpis.data?.payload.detail}
-        />
+        <div className="rounded-[26px] px-6 py-5" style={{ ...glass, background: "rgba(255,255,255,0.54)" }}>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-[15px] font-semibold text-[#171A1A]">Contrat de données gouverné</h3>
+            <StateBadge state={etatModule} />
+            <span className="rounded-full bg-[#F1F4F2] px-2.5 py-0.5 text-[11px] font-bold text-[#586061]">
+              {alimentees}/{CARTES_PERIODE.length} indicateurs de période alimentés
+            </span>
+          </div>
+          <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-[#697071]">
+            La période vient de l&apos;historique K-Insight, où chaque journée close de{" "}
+            <span className="font-bold text-[#252A2B]">{SOURCE}</span> est déposée chaque nuit : la période, le site
+            et le type de personnel s&apos;y appliquent. « Aujourd&apos;hui » est live et daté. Aucun chiffre n&apos;est
+            inventé ; un indicateur sans source dit pourquoi.
+          </p>
+          <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-[#8C9391]">
+            Shield ne rattache pas ses sites aux filiales : ses chiffres sont des chiffres Groupe, et un filtre
+            filiale rend ces indicateurs N/D plutôt que d&apos;y afficher le total Groupe.
+          </p>
+        </div>
 
         <section>
-          {/* « Aujourd'hui » est écrit, avec sa date. Ces compteurs viennent de
-              `/attendance/summary/today/`, qui n'accepte AUCUN filtre : ni la
-              période, ni le site, ni le type de personne ne peuvent les changer.
-              Laisser croire que le sélecteur de trimestre agit dessus serait le
-              mensonge le plus facile de cette page. */}
           <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <h2 className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
-              Indicateurs du jour — aujourd'hui{" "}
+              Période — {module.data?.period?.label ?? libelleFiltrePeriode(filtres)}
+            </h2>
+            {module.data?.period ? (
+              <span className="text-[11.5px] font-semibold text-[#9AA09D]">
+                du {jourCourt(module.data.period.start)} au {jourCourt(module.data.period.end)} · jusqu&apos;à la veille
+              </span>
+            ) : null}
+          </div>
+          <ResponsiveGrid min={232}>
+            {CARTES_PERIODE.map((carte) => (
+              <CarteDePeriode key={carte.libelle} carte={carte} valeur={valeurs[carte.libelle]} chargement={chargement} />
+            ))}
+          </ResponsiveGrid>
+        </section>
+
+        <section>
+          <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
+              Aujourd&apos;hui —{" "}
               {new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
             </h2>
             <span className="text-[11.5px] font-semibold text-[#9AA09D]">
-              instantané non historisé — le filtre de période ne s'y applique pas
+              live — la journée n&apos;est pas close, le filtre de période ne s&apos;y applique pas
             </span>
           </div>
           <ResponsiveGrid min={232}>
-            {cartes.map((carte) => (
-              <MetricCard
-                key={carte.titre}
-                title={carte.titre}
-                value={carte.kpi?.value ?? null}
-                unit={carte.kpi?.unit}
-                state={carte.etat}
-                // Pas de provenance ni de fraîcheur sur un indicateur sans source :
-                // « à l'instant » sous une carte vide daterait une mesure qui n'existe
-                // pas, et nommer une source serait pire encore.
-                source={carte.motif ? undefined : (kpis.data?.payload.source ?? SOURCE)}
-                updatedAt={carte.motif ? undefined : kpis.data?.payload.updated_at}
-                scope={carte.motif ? undefined : "Périmètre Groupe"}
-                unavailableNote={carte.motif}
-                accent={ACCENT}
-              />
+            {CARTES_JOUR.map((carte) => (
+              <CarteDuJour key={carte.libelle} carte={carte} valeur={valeurs[carte.libelle]} chargement={chargement} />
             ))}
           </ResponsiveGrid>
-
-          {/* La liste des motifs sous la grille a été retirée : chaque carte porte
-              désormais le sien via `unavailableNote`, et le répéter en dessous
-              faisait lire deux fois la même phrase. */}
         </section>
 
         <section>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
-                Évolution journalière
-              </h2>
-              {bornesServies ? (
-                <p className="mt-1 text-[12px] font-semibold text-[#586061]">
-                  Période lue : {bornesServies}
-                  {cadrage === "periode" && trimestreEnCoursOuFutur(year, quarter)
-                    ? " — trimestre en cours, la borne haute s'arrête à aujourd'hui."
-                    : ""}
-                </p>
-              ) : null}
-              {joursMesures !== undefined && joursTotal ? (
+              <h2 className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">Évolution sur la période</h2>
+              {taux.data?.valeur ? (
                 <p className="mt-1 text-[12px] font-semibold text-[#8C9391]">
-                  {joursMesures} jour(s) mesuré(s) sur {joursTotal}
-                  {joursMesures < joursTotal
-                    ? " — les jours non mesurés laissent un trou dans la courbe, ils ne sont pas comptés à zéro."
-                    : ""}
+                  {taux.data.valeur.couverture.jours_mesures} jour(s) mesuré(s) sur {taux.data.valeur.couverture.jours}
+                  {taux.data.valeur.couverture.jours_mesures < taux.data.valeur.couverture.jours
+                    ? " — un jour non mesuré laisse un trou, il n'est pas compté à zéro." : ""}
                 </p>
               ) : null}
             </div>
-            <div className="flex items-center gap-1.5 rounded-full p-1" style={glass}>
-              {SERIES_WINDOWS.map((jours) => (
-                <button
-                  key={jours}
-                  type="button"
-                  onClick={() => { setCadrage("glissant"); setFenetre(jours); }}
-                  aria-pressed={cadrage === "glissant" && fenetre === jours}
-                  className="rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-colors"
-                  style={cadrage === "glissant" && fenetre === jours
-                    ? { background: "#0B0B0C", color: "#fff" }
-                    : { color: "#52595A" }}
-                >
-                  {jours} jours
-                </button>
-              ))}
-              {/* Le trimestre de la barre de filtres, ici rendu effectif. */}
-              <button
-                type="button"
-                onClick={() => setCadrage("periode")}
-                aria-pressed={cadrage === "periode"}
-                className="rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-colors"
-                style={cadrage === "periode" ? { background: "#0B0B0C", color: "#fff" } : { color: "#52595A" }}
-              >
-                {libellePeriode(year, quarter)}
-              </button>
-            </div>
+            {ecartN1 ? (
+              <span className="rounded-full px-3 py-1.5 text-[12px] font-bold" style={{ ...glass, color: ecartN1.favorable ? "#1E8A6E" : "#D92B55" }}>
+                Taux de présence : {ecartN1.texte}
+              </span>
+            ) : null}
           </div>
-
-          {serie.data?.payload.detail ? (
-            <p className="mb-3 text-[12.5px] font-semibold text-[#8C6D1F]">{serie.data.payload.detail}</p>
-          ) : null}
-
           <div className="grid gap-5 xl:grid-cols-2">
             <div className="rounded-[26px] p-5" style={glass}>
-              <TrendChart
-                series={points}
-                label="Taux de présence"
-                unit="%"
-                state={etatSerie}
-                source={serie.data?.payload.source ?? SOURCE}
-                emptyMessage="Aucun jour mesuré sur cette fenêtre."
-              />
+              <TrendChart series={pointsTaux} label="Taux de présence" unit="%" state={etatSerie}
+                          source={SOURCE} emptyMessage={motifSerie} />
             </div>
             <div className="rounded-[26px] p-5" style={glass}>
-              <TrendChart
-                series={effectifs}
-                label="Présents"
-                state={etatSerie}
-                source={serie.data?.payload.source ?? SOURCE}
-                emptyMessage="Aucun jour mesuré sur cette fenêtre."
-              />
+              <ComparisonChart series={pointsPresents} label="Présents" compareLabel="Absents" state={etatSerie}
+                               source={SOURCE} emptyMessage={motifSerie} />
+            </div>
+            <div className="rounded-[26px] p-5 xl:col-span-2" style={glass}>
+              <TrendChart series={pointsRetards} label="Retards" state={etatSerie}
+                          source={SOURCE} emptyMessage={motifSerie} height={200} />
             </div>
           </div>
         </section>
 
         <section>
           <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
-            Ventilation du jour
+            Sites et personnels sur la période
           </h2>
+          <div className="grid gap-5 xl:grid-cols-2">
+            <div className="rounded-[26px] p-5" style={glass}>
+              <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Taux de présence par site — du plus au moins performant</p>
+              <BreakdownChart items={classementSites} unit="%"
+                              state={parSite.isLoading ? "connecting" : classementSites.some((i) => i.value !== null) ? "connected" : "disconnected"}
+                              source={SOURCE}
+                              emptyMessage={parSite.data?.reason ?? "Aucun site mesuré sur la période."} />
+            </div>
+            <div className="rounded-[26px] p-5" style={glass}>
+              <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Présents par type · moyenne / jour</p>
+              <BreakdownChart items={repartitionType}
+                              state={parType.isLoading ? "connecting" : repartitionType.some((i) => i.value !== null) ? "connected" : "disconnected"}
+                              source={SOURCE}
+                              emptyMessage={parType.data?.reason ?? "Aucune ventilation par type mesurée sur la période."} />
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">Ventilation du jour</h2>
           <div className="grid gap-5 xl:grid-cols-3">
-            {/* Employés / ouvriers : le seul découpage de personnes que Shield
-                expose réellement, via le filtre `holder_kind` de la présence. */}
             <div className="rounded-[26px] p-5" style={glass}>
               <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Présents par type</p>
-              <BreakdownChart
-                items={parType}
-                state={kpis.data?.payload.by_kind?.status ?? etatKpis}
-                source={kpis.data?.payload.source ?? SOURCE}
-                emptyMessage="Ventilation employés / ouvriers non servie aujourd'hui."
-              />
+              <BreakdownChart items={shieldPresenceByKind(kpis.data)}
+                              state={kpis.data?.payload.by_kind?.status ?? (kpis.isLoading ? "connecting" : "disconnected")}
+                              source={SOURCE} emptyMessage="Ventilation employés / ouvriers non servie aujourd'hui." />
             </div>
             <div className="rounded-[26px] p-5" style={glass}>
               <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Présents par site</p>
-              <BreakdownChart
-                items={presentsParSite}
-                state={etatRepartition}
-                source={kpis.data?.payload.source ?? SOURCE}
-                emptyMessage={restrictionSite ?? "Aucun site actif publié par la source."}
-              />
+              <BreakdownChart items={shieldPresenceBreakdown(kpis.data)} state={shieldBreakdownStatus(kpis.data)}
+                              source={SOURCE} emptyMessage={restrictionSite ?? "Aucun site actif publié par la source."} />
             </div>
             <div className="rounded-[26px] p-5" style={glass}>
               <p className="mb-2 text-[12.5px] font-bold text-[#2C3132]">Taux de présence par site</p>
-              <BreakdownChart
-                items={tauxParSite}
-                unit="%"
-                state={etatRepartition}
-                source={kpis.data?.payload.source ?? SOURCE}
-                emptyMessage={restrictionSite ?? "Aucun site actif publié par la source."}
-              />
+              <BreakdownChart items={shieldAttendanceRateBreakdown(kpis.data)} unit="%" state={shieldBreakdownStatus(kpis.data)}
+                              source={SOURCE} emptyMessage={restrictionSite ?? "Aucun site actif publié par la source."} />
             </div>
           </div>
-
-          {/* Le motif de restriction est affiché même quand les graphes sont vides :
-              un périmètre restreint doit savoir que la donnée existe et pourquoi
-              elle ne lui est pas servie, plutôt que de croire la source muette. */}
-          {restrictionSite ? (
-            <p className="mt-3 text-[12px] font-medium leading-relaxed text-[#8C6D1F]">{restrictionSite}</p>
-          ) : null}
-          {kpis.data?.payload.by_site?.detail ? (
-            <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-[#8C9391]">
-              {kpis.data.payload.by_site.detail}
-            </p>
-          ) : null}
         </section>
 
         {constats.length ? (
           <section>
-            <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
-              Constats
-            </h2>
+            <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">Constats du jour</h2>
             <ResponsiveGrid min={300}>
               {constats.map((constat) => (
-                <SignalCard
-                  key={constat.id}
-                  severity={constat.severity}
-                  title={constat.title}
-                  description={constat.finding}
-                  source={constat.sourceLabel}
-                  detectedAt={constat.detectedAt}
-                  action={constat.action}
-                />
+                <SignalCard key={constat.id} severity={constat.severity} title={constat.title}
+                            description={constat.finding} source={constat.sourceLabel}
+                            detectedAt={constat.detectedAt} action={constat.action} />
               ))}
             </ResponsiveGrid>
           </section>
         ) : null}
+
+        <section>
+          <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">Sans source aujourd&apos;hui</h2>
+          <ResponsiveGrid min={232}>
+            {SANS_SOURCE.map((libelle) => (
+              <MetricCard key={libelle} title={libelle} value={null} state="disconnected"
+                          unavailableNote={valeurs[libelle]?.reason ?? "Aucune source ne sert cet indicateur."} accent={ACCENT} />
+            ))}
+          </ResponsiveGrid>
+        </section>
       </div>
     </PageShell>
   );

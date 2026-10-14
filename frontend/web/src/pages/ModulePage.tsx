@@ -27,6 +27,7 @@ import {
   RH_SOURCES,
 } from "@/lib/modules";
 import type { ModuleDataValue } from "@/types/governance";
+import { ecartAffiche } from "@/lib/ecarts";
 
 const EMPTY_TEXT = "En attente Data Warehouse";
 const AXIS_LABEL_STYLE = { color: "#8A9291", fontSize: 11, fontWeight: 700 };
@@ -269,34 +270,11 @@ function provenance(real: ModuleDataValue): string {
   return real.instant ? `${source} · aujourd'hui` : source;
 }
 
-/** Métriques dont la HAUSSE est une dégradation : leur écart positif se lit en
- *  rouge. Sans cette liste, « +12 absents » s'affichait en vert, comme un progrès. */
-const HAUSSE_DEFAVORABLE = new Set([
-  "hr.absents_jour", "hr.retards_jour", "hr.taux_absence_jour",
-  "hr.absenteisme_mensuel", "hr.turnover", "hr.sorties", "hr.heures_supplementaires",
-]);
-
-/** L'écart à la période précédente, dit dans l'unité qui convient : en points
- *  pour un taux, en valeur et en % pour un volume. Rien si l'une des deux manque. */
-function ecartAffiche(real: ModuleDataValue): { texte: string; favorable: boolean } | null {
-  const c = real.precedente;
-  if (!c || c.ecart === null || c.ecart === undefined) return null;
-  if (c.ecart === 0) return { texte: "stable vs période préc.", favorable: true };
-  const nombre = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
-  const signe = c.ecart > 0 ? "+" : "−";
-  const abs = nombre.format(Math.abs(c.ecart));
-  const pct = c.ecart_pct !== null && c.ecart_pct !== undefined ? ` (${signe}${nombre.format(Math.abs(c.ecart_pct))} %)` : "";
-  const texte = c.unite_ecart === "pts" ? `${signe}${abs} pt${Math.abs(c.ecart) >= 2 ? "s" : ""} vs période préc.`
-    : `${signe}${abs}${pct} vs période préc.`;
-  const defavorable = HAUSSE_DEFAVORABLE.has(real.metric_id ?? "");
-  return { texte, favorable: defavorable ? c.ecart < 0 : c.ecart > 0 };
-}
-
 function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values?: Record<string, ModuleDataValue> }) {
   const real = values?.[kpi.label];
   const realValue = valeurAffichee(real);
   const live = real?.aujourd_hui ? valeurAffichee({ ...real, value: real.aujourd_hui.value }) : null;
-  const ecart = real ? ecartAffiche(real) : null;
+  const ecart = real ? ecartAffiche(real.metric_id, real.precedente ?? undefined) : null;
   // Une carte résolue par le registre mais sans valeur porte un MOTIF : on le
   // montre à la place du « mart à connecter » générique.
   const motif = real && realValue === null ? real.reason || "Aucune donnée servie." : null;

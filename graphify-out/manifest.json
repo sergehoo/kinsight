@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/api/governance.ts": {
-    "mtime": 1792020724.9632533,
-    "ast_hash": "9366cfb7db2615390f708e2c47578333",
+    "mtime": 1792021106.6143646,
+    "ast_hash": "5b10000345f50d398ad4c0cd9cde80cb",
     "semantic_hash": ""
   },
   "frontend/web/src/components/GlobalFilters.tsx": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/governance.ts": {
-    "mtime": 1792020752.1833854,
-    "ast_hash": "090f38a8edef5e50e0e0377cf5a9a466",
+    "mtime": 1792021220.49216,
+    "ast_hash": "b1473274af7bd1587ca34a0bcd38ddb2",
     "semantic_hash": ""
   },
   "frontend/web/src/vite-env.d.ts": {
@@ -615,8 +615,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulePage.tsx": {
-    "mtime": 1792020915.4356349,
-    "ast_hash": "3945a68ce5199876633b7e6135118a2a",
+    "mtime": 1792021147.7559178,
+    "ast_hash": "a2f88af96cda7e4feaefd9f831788693",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulesHome.tsx": {
@@ -895,8 +895,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/charts/index.tsx": {
-    "mtime": 1788658480.554303,
-    "ast_hash": "5ce6d5dcb3c525ccad7ff6bee91debd7",
+    "mtime": 1792021303.6462874,
+    "ast_hash": "c669c5b456f4389ea9c4e6151e67b51e",
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/BrandFooter.tsx": {
@@ -1015,8 +1015,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/ui/kit.tsx": {
-    "mtime": 1788866927.2385519,
-    "ast_hash": "cc9d560f6376e03e7f1e2d46da1d43d0",
+    "mtime": 1792021266.202599,
+    "ast_hash": "aabc2ae7fa9a9912333b8c0756824525",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainHeroes.generated.ts": {
@@ -1890,8 +1890,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/AttendancePage.tsx": {
-    "mtime": 1788876084.308199,
-    "ast_hash": "48638dae41f5eb8948ff00433099c8fa",
+    "mtime": 1792021283.0331662,
+    "ast_hash": "c5d3260214e7cd19c9b20628e144d684",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/subsidiaries.ts": {
@@ -2075,8 +2075,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/hr_registry.py": {
-    "mtime": 1792019695.866538,
-    "ast_hash": "ecc45ae98282c6ce37bd6d88ca769d4e",
+    "mtime": 1792021131.2094474,
+    "ast_hash": "aaa822c0dee94db84f4ea917a286abab",
     "semantic_hash": ""
   },
   "backend/apps/governance/hr_sources.py": {
@@ -2162,6 +2162,11 @@
   "frontend/web/src/components/navigation/PeriodePicker.tsx": {
     "mtime": 1792020724.962392,
     "ast_hash": "7fa201dc852d1e2186f0b1579400aee0",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/lib/ecarts.ts": {
+    "mtime": 1792021147.7326348,
+    "ast_hash": "c68ca741f252ba9d2a4e03144f252179",
     "semantic_hash": ""
   }
 }

@@ -200,7 +200,9 @@ export interface ModuleDataResponse {
   key: string;
   available: boolean;
   source: string | null;
-  period?: { start: string; end: string };
+  /** Période réellement lue (bornes jusqu'à la veille) et son libellé. `null`
+   *  quand la période demandée n'a pas encore commencé. */
+  period?: { start: string; end: string; label?: string } | null;
   scope?: "GROUP" | string[];
   values: Record<string, ModuleDataValue>;
   series: ModuleDataSeries[];

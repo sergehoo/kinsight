@@ -196,6 +196,10 @@ LIAISONS: dict[str, dict[str, str]] = {
         "Retards": "hr.retards_jour",
         "Taux de présence": "hr.taux_presence_jour",
         "Taux de ponctualité": "hr.taux_ponctualite_jour",
+        "Taux d'absence": "hr.taux_absence_jour",
+        "Effectif total": "hr.effectif_total",
+        "Employés présents": "hr.presents_employes_jour",
+        "Ouvriers présents": "hr.presents_ouvriers_jour",
         # Le libellé dit « absentéisme » : on le lie à la métrique mensuelle, sans
         # source, plutôt qu'au taux du jour — qui afficherait un chiffre réel sous
         # une définition fausse.

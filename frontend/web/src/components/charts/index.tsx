@@ -103,7 +103,9 @@ export function ComparisonChart({
   const points = series ?? [];
   const option = React.useMemo<EChartsOption>(
     () => ({
-      grid: BASE_GRID,
+      // La légende vit en bas : la grille doit lui réserver sa ligne, sinon elle
+      // recouvre les libellés de l'axe des dates.
+      grid: { ...BASE_GRID, bottom: 30 },
       legend: { bottom: 0, itemWidth: 14, itemHeight: 8, textStyle: { ...AXIS_LABEL, fontSize: 11 } },
       tooltip: { ...BASE_TOOLTIP, valueFormatter: (v) => (v === null ? "N/D" : `${v}${unit ? ` ${unit}` : ""}`) },
       xAxis: {

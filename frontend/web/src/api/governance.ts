@@ -137,3 +137,39 @@ export function useHrDimensions(enabled = true) {
     queryFn: () => apiGet<HrDimensions>("/governance/hr/dimensions/"),
   });
 }
+
+/** Une métrique RH sur la période filtrée (`/governance/hr/history/`). */
+export interface HrHistory {
+  metric_id: string;
+  label: string;
+  definition: string;
+  unit: string;
+  format: string;
+  source: string;
+  regle: string;
+  status: string;
+  reason?: string;
+  periode?: { debut: string; fin: string; libelle: string; jusqu_a: string };
+  valeur?: { value: number | null; status: string; couverture: { jours: number; jours_mesures: number } };
+  points: { date: string; value: number | null; status: string }[];
+  comparaisons?: {
+    precedente?: { value: number | null; ecart: number | null; ecart_pct: number | null; unite_ecart: "pts" | "abs" | null; debut?: string; fin?: string };
+    n_1?: { value: number | null; ecart: number | null; ecart_pct: number | null; unite_ecart: "pts" | "abs" | null; debut?: string; fin?: string };
+  };
+  ventilation?: { code: string; libelle: string; value: number | null; couverture: { jours: number; jours_mesures: number } }[] | null;
+  aujourd_hui?: { value: number | null; status: string; reason?: string | null; date: string } | null;
+  historique_depuis?: string | null;
+}
+
+/** Historique d'une métrique sous les filtres du cockpit. `extra` ajoute des
+ *  paramètres propres à l'appel (ventilation par site, par type…). Lecture en
+ *  base seulement : aucun appel Shield ni Odoo n'est déclenché. */
+export function useHrHistory(metricId: string, filtres: string, extra = "") {
+  const query = `metric=${encodeURIComponent(metricId)}&${filtres}${extra ? `&${extra}` : ""}`;
+  return useQuery<HrHistory>({
+    queryKey: ["hr-history", query],
+    enabled: !USE_MOCK,
+    staleTime: 5 * 60_000,
+    queryFn: () => apiGet<HrHistory>(`/governance/hr/history/?${query}`),
+  });
+}
