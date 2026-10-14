@@ -167,10 +167,15 @@ def reconnecter(connector) -> tuple[bool, str]:
     acces = charge.get("access") or charge.get("token") or ""
     refresh = charge.get("refresh") or ""
     if not acces:
+        # Un défi de seconde étape n'appelle pas le même geste qu'une réponse
+        # vide : l'un se corrige auprès de l'équipe Shield, l'autre est une
+        # anomalie de plateforme. Les confondre enverrait l'opérateur ressaisir
+        # un mot de passe pourtant juste.
+        cause = "mfa_requis" if _defi_de_seconde_etape(charge) else "access_absent_de_la_reponse"
         _memoriser(connector, dernier_echec=dj_timezone.now().isoformat(),
-                   cause_dernier_echec="access_absent_de_la_reponse")
-        _tracer(connector, succes=False, cause="login:access_absent")
-        return False, "Shield a accepté la connexion sans renvoyer de jeton d'accès."
+                   cause_dernier_echec=cause)
+        _tracer(connector, succes=False, cause=f"login:{cause}")
+        return False, _explication(cause)
 
     _deposer(connector, CredentialKind.API_TOKEN, acces, "Jeton d'accès Shield (auto)")
     if refresh:
@@ -181,7 +186,8 @@ def reconnecter(connector) -> tuple[bool, str]:
                derniere_authentification=dj_timezone.now().isoformat(),
                derniere_reconnexion=dj_timezone.now().isoformat(),
                expire_le=echeance.isoformat() if echeance else None,
-               dernier_echec=None, cause_dernier_echec=None)
+               dernier_echec=None, cause_dernier_echec=None,
+               refresh_condamne=not refresh)
     _tracer(connector, succes=True, cause="login")
     return True, "Session Shield rétablie par le compte de service."
 
@@ -211,16 +217,25 @@ def etat_auth(connector) -> dict:
     # mort cesse d'être terminal.
     email_service, mdp_service = identifiants_de_service(connector)
     compte_de_service = bool(email_service and mdp_service)
-    compte_refuse = memo.get("cause_dernier_echec") == "identifiants_refuses"
+    cause = memo.get("cause_dernier_echec")
+    # Un compte protégé par MFA n'est pas « refusé » — son mot de passe est bon —
+    # mais il ne rétablit plus rien. Le cas se produit APRÈS coup : le compte
+    # s'enregistre quand il est exempté, puis l'équipe sécurité active le MFA et
+    # la liaison cesse d'être permanente sans qu'une seule ligne de code change.
+    # La fiche doit alors cesser de le promettre.
+    mfa_requis = cause == "mfa_requis"
+    compte_refuse = cause == "identifiants_refuses"
 
     # Un refresh que Shield vient de refuser est encore « présent » en base, mais il
     # est mort : le présenter comme renouvelable ferait attendre un renouvellement
     # qui ne viendra jamais. On tient compte de ce qu'on a appris.
-    refresh_condamne = memo.get("cause_dernier_echec") == "refresh_refuse"
+    # Le drapeau durable d'abord ; la cause ensuite, pour les connecteurs dont
+    # l'état a été écrit avant l'existence du drapeau.
+    refresh_condamne = bool(memo.get("refresh_condamne")) or cause == "refresh_refuse"
 
     # Un compte de service qui répond encore rend la liaison récupérable, quoi
-    # qu'il advienne des jetons.
-    recuperable = compte_de_service and not compte_refuse
+    # qu'il advienne des jetons. Un compte sous MFA, lui, ne répond plus seul.
+    recuperable = compte_de_service and not compte_refuse and not mfa_requis
 
     if (refresh_condamne or not renouvelable) and not recuperable:
         # Sans recours possible, seul un access encore valide sauve la session.
@@ -246,6 +261,10 @@ def etat_auth(connector) -> dict:
         # et par quel moyen ?
         "compte_de_service": compte_de_service,
         "compte_de_service_refuse": compte_refuse,
+        # Exposé séparément : l'écran doit pouvoir dire « ce n'est pas votre mot
+        # de passe, c'est le MFA » et nommer le geste qui débloque, au lieu de
+        # faire ressaisir des identifiants justes.
+        "mfa_requis": mfa_requis,
         "liaison_permanente": recuperable,
         "service_email": email_service,
         "derniere_reconnexion": memo.get("derniere_reconnexion"),
@@ -303,6 +322,48 @@ def _poster(url: str, charge: dict) -> tuple[bool, str, dict]:
         return False, "reponse_illisible", {}
 
 
+# Vocabulaire des défis de seconde étape, pour les RECONNAÎTRE — pas pour les
+# franchir. Shield ayant depuis verrouillé son schéma OpenAPI derrière
+# l'authentification, son contrat de succès n'est PAS connu : on ne sait pas si
+# un compte protégé répondrait `mfa_required`, `otp_required` ou autre chose.
+# Cette liste couvre les formes usuelles ; elle ne prétend pas être le contrat de
+# Shield, et c'est pourquoi les DEUX issues — défi reconnu ou simplement aucun
+# jeton — refusent l'enregistrement. Se tromper ici ne peut donc pas ouvrir une
+# liaison qui n'existe pas, seulement rendre le message moins précis.
+_MOTS_DU_DEFI = (
+    "mfa", "otp", "2fa", "two_factor", "twofactor", "second_factor",
+    "challenge", "verification_required", "double facteur",
+)
+
+
+def _defi_de_seconde_etape(charge: dict) -> bool:
+    """Shield a-t-il accepté le mot de passe tout en exigeant une étape de plus ?
+
+    On ne tente RIEN pour franchir ce défi : pas de code à saisir, pas de second
+    appel, aucun contournement. Un compte protégé par MFA ne peut pas servir de
+    liaison permanente — c'est le but même du MFA — et le prétendre serait à la
+    fois faux et dangereux. La seule issue correcte est de demander à l'équipe
+    Shield un compte technique exempté, ou une clé d'API `integration` avec son
+    en-tête officiellement documenté.
+    """
+    if not isinstance(charge, dict):
+        return False
+    for cle, valeur in charge.items():
+        texte = str(cle).lower()
+        if any(mot in texte for mot in _MOTS_DU_DEFI):
+            # `{"mfa_required": false}` n'est pas un défi : c'est son absence.
+            if valeur not in (False, None, "", 0, [], {}):
+                return True
+        # Le défi peut aussi n'être qu'un message : {"detail": "OTP requis"}.
+        if isinstance(valeur, str) and any(mot in valeur.lower() for mot in _MOTS_DU_DEFI):
+            return True
+        if isinstance(valeur, list) and any(
+            isinstance(v, str) and any(mot in v.lower() for mot in _MOTS_DU_DEFI) for v in valeur
+        ):
+            return True
+    return False
+
+
 def _appel_login(base_url: str, email: str, mot_de_passe: str) -> tuple[bool, str, dict]:
     """Connexion par identifiants. C'est ce qui rend la liaison PERMANENTE.
 
@@ -354,6 +415,10 @@ def _appel_refresh(base_url: str, refresh: str) -> tuple[bool, str, dict]:
         return False, "reponse_illisible", {}
 
 
+def _memo(connector) -> dict:
+    return (connector.config or {}).get("shield_auth") or {}
+
+
 def _memoriser(connector, **champs) -> None:
     config = dict(connector.config or {})
     config["shield_auth"] = {**(config.get("shield_auth") or {}), **champs}
@@ -403,6 +468,14 @@ def renouveler(connector, *, force: bool = False) -> tuple[bool, str]:
             # tentative de connexion sur une panne passagère, et pourrait faire
             # verrouiller le compte.
             if cause == "refresh_refuse" and all(identifiants_de_service(connector)):
+                # On INSCRIT la mort du refresh avant de basculer. Sans cette
+                # ligne, `reconnecter` écrasait `cause_dernier_echec` avec sa
+                # propre cause et le refus du refresh était oublié : si la
+                # connexion échouait à son tour (MFA, par exemple), la fiche
+                # reannonçait « renouvellement automatique » en s'appuyant sur un
+                # refresh que Shield venait de refuser. Un drapeau dédié survit à
+                # la cause suivante.
+                _memoriser(connector, refresh_condamne=True)
                 _tracer(connector, succes=False, cause="refresh_refuse_bascule_login")
                 return reconnecter(connector)
             _memoriser(connector, dernier_echec=dj_timezone.now().isoformat(),
@@ -432,6 +505,9 @@ def renouveler(connector, *, force: bool = False) -> tuple[bool, str]:
             expire_le=echeance.isoformat() if echeance else None,
             dernier_echec=None,
             cause_dernier_echec=None,
+            # Un refresh neuf lève la condamnation du précédent : sans cela, la
+            # fiche resterait marquée « non renouvelable » à vie.
+            refresh_condamne=not nouveau_refresh and _memo(connector).get("refresh_condamne", False),
         )
         _tracer(connector, succes=True, cause="")
         return True, "Session Shield renouvelée."
@@ -459,6 +535,13 @@ def _explication(cause: str) -> str:
         "identifiants_refuses": ("Shield refuse le compte de service : adresse ou mot de passe "
                                  "incorrect, ou compte désactivé. La liaison ne peut plus se "
                                  "rétablir seule tant que ce compte n'est pas corrigé."),
+        "mfa_requis": ("Shield accepte ce compte mais exige une seconde étape (MFA) : il ne "
+                       "peut donc pas servir de liaison permanente, et rien n'a été enregistré. "
+                       "Demandez à l'équipe Shield un compte technique exempté de MFA, ou une "
+                       "clé d'API de portée « integration » avec son en-tête documenté."),
+        "access_absent_de_la_reponse": ("Shield a accepté la connexion sans renvoyer de jeton "
+                                        "d'accès : rien n'a été enregistré. Réponse inattendue "
+                                        "de la plateforme, à signaler à l'équipe Shield."),
         "certificats_invalides": ("Certificat TLS de Shield non vérifiable : le magasin de "
                                   "certificats de l'environnement est absent ou incomplet. "
                                   "Le défaut est chez nous, pas chez Shield."),
@@ -597,10 +680,13 @@ def enregistrer_le_compte_de_service(connector, *, email: str, mot_de_passe: str
 
     acces = charge.get("access") or charge.get("token") or ""
     if not acces:
-        _tracer(connector, succes=False, cause="compte_service:access_absent")
-        return False, "access_absent_de_la_reponse", ("Shield a accepté la connexion mais n'a "
-                                                      "renvoyé aucun jeton d'accès : rien n'a été "
-                                                      "enregistré.")
+        # RIEN n'est écrit, dans les deux cas. Enregistrer un compte protégé par
+        # MFA reviendrait à promettre une liaison permanente que Shield refusera
+        # à chaque reconnexion — la fiche afficherait du vert et la collecte
+        # tomberait en silence.
+        cause = "mfa_requis" if _defi_de_seconde_etape(charge) else "access_absent_de_la_reponse"
+        _tracer(connector, succes=False, cause=f"compte_service:{cause}")
+        return False, cause, _explication(cause)
 
     config = dict(connector.config or {})
     config["service_email"] = email
@@ -616,7 +702,8 @@ def enregistrer_le_compte_de_service(connector, *, email: str, mot_de_passe: str
                derniere_authentification=dj_timezone.now().isoformat(),
                derniere_reconnexion=dj_timezone.now().isoformat(),
                expire_le=echeance.isoformat() if echeance else None,
-               dernier_echec=None, cause_dernier_echec=None)
+               dernier_echec=None, cause_dernier_echec=None,
+               refresh_condamne=not charge.get("refresh"))
     _tracer(connector, succes=True, cause="compte_service_enregistre")
     return True, "", ("Compte de service vérifié et enregistré : la liaison se rétablira "
                       "désormais seule.")
@@ -645,8 +732,11 @@ def statut_http(cause: str, *, ok: bool) -> int:
         return 429
     if cause == "identifiants_refuses":
         return 401   # Shield a refusé le compte lui-même.
-    if cause in ("refresh_absent", "base_absente"):
-        return 409  # Rien à renouveler : état de la source, pas refus de Shield.
+    if cause in ("refresh_absent", "base_absente", "mfa_requis", "access_absent_de_la_reponse"):
+        # 409 et non 401 : le mot de passe n'est PAS en cause. Rendre 401 ferait
+        # ressaisir des identifiants pourtant justes, alors que seul un changement
+        # de compte — côté Shield — peut débloquer la situation.
+        return 409
     if cause.startswith("reseau_") or cause == "certificats_invalides":
         return 503  # Shield injoignable : ni refus, ni erreur de saisie.
     return 502  # Shield a répondu autre chose que prévu.

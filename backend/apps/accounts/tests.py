@@ -264,3 +264,36 @@ class DureeDeSessionTest(TestCase):
             settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"], timedelta(days=7),
             "renouvellement trop court : une semaine d'absence rouvrirait l'écran de connexion",
         )
+
+
+    def test_un_compte_supprime_rend_401_et_non_500(self):
+        """Le défaut que le branchement du renouvellement a rendu atteignable.
+
+        `TokenRefreshSerializer` de simplejwt résout l'utilisateur avec un
+        `objects.get()` nu. Compte parti, jeton encore dans un navigateur ouvert :
+        l'exception remontait en 500 avec un traceback de 18 Ko. Le client traite
+        un 5xx comme une panne passagère — il ne déconnectait donc pas, et l'onglet
+        restait bloqué en rejouant l'appel indéfiniment.
+
+        Observé en vrai, pas supposé : chaque onglet ouvert produisait une ligne
+        `POST /api/v1/auth/token/refresh/ 500 18599`.
+        """
+        refresh = self._couple()["refresh"]
+        self.utilisateur.delete()
+
+        reponse = self.client.post(
+            "/api/v1/auth/token/refresh/", {"refresh": refresh}, format="json"
+        )
+        self.assertEqual(reponse.status_code, 401, reponse.content)
+        # Et surtout : pas d'énumération de comptes dans la réponse.
+        self.assertNotIn("session.test", reponse.content.decode())
+
+    def test_un_compte_desactive_rend_401(self):
+        refresh = self._couple()["refresh"]
+        self.utilisateur.is_active = False
+        self.utilisateur.save(update_fields=["is_active"])
+
+        reponse = self.client.post(
+            "/api/v1/auth/token/refresh/", {"refresh": refresh}, format="json"
+        )
+        self.assertEqual(reponse.status_code, 401, reponse.content)

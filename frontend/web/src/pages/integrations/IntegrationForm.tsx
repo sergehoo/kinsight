@@ -877,6 +877,8 @@ const CAUSES: Record<string, string> = {
 function causeLisible(cause: string) {
   if (CAUSES[cause]) return CAUSES[cause];
   if (cause.startsWith("reseau_")) return "Shield était injoignable depuis le serveur";
+  if (cause === "mfa_requis") return "Shield exige une seconde étape (MFA) sur ce compte";
+  if (cause === "access_absent_de_la_reponse") return "Shield a répondu sans jeton d'accès";
   if (cause.startsWith("http_")) return `Shield a répondu ${cause.slice(5)}`;
   return cause;
 }
@@ -887,6 +889,9 @@ function causeLisible(cause: string) {
 function raisonSansRenouvellement(auth: SessionAuth) {
   if (!auth.refresh_present) {
     return "Renouvellement automatique inactif : sans jeton de renouvellement, la session expirera sans recours.";
+  }
+  if (auth.mfa_requis) {
+    return "Shield exige une seconde étape (MFA) sur ce compte : le mot de passe est bon, mais aucun automatisme ne peut franchir un MFA — c'est son rôle. Rien n'a été enregistré.";
   }
   if (auth.compte_de_service_refuse) {
     return "Compte de service refusé par Shield : adresse, mot de passe, ou compte désactivé. C'est le seul cas qui exige encore une intervention.";
@@ -950,6 +955,28 @@ function SessionShield({ auth, statutSource }: { auth: SessionAuth; statutSource
           </dd>
         </div>
       </dl>
+
+      {/* Le MFA n'appelle pas le geste habituel. Laisser l'écran afficher un
+          simple « échec » enverrait l'opérateur ressaisir un mot de passe
+          pourtant juste, indéfiniment. On nomme donc ce qu'il faut demander, et
+          à qui — c'est la seule issue, et elle n'est pas de notre côté. */}
+      {auth.mfa_requis ? (
+        <div className="grid gap-1 rounded-[14px] border border-[#E4C9A0] bg-[#FDF6EA] px-4 py-3">
+          <p className="text-[12.5px] font-bold text-[#7A4F0B]">
+            Ce compte ne peut pas porter une liaison permanente
+          </p>
+          <p className="text-[12px] font-medium leading-relaxed text-[#6B5330]">
+            Shield accepte les identifiants puis demande une seconde étape. Un automatisme
+            ne doit pas franchir un MFA, et K-Insight ne le tentera pas. À demander à
+            l&apos;équipe Shield, au choix :
+          </p>
+          <ul className="ml-4 list-disc text-[12px] font-medium leading-relaxed text-[#6B5330]">
+            <li>un compte technique dédié, exempté de MFA, aux permissions minimales ;</li>
+            <li>ou une clé d&apos;API de portée « integration », avec l&apos;en-tête de
+                présentation officiellement documenté.</li>
+          </ul>
+        </div>
+      ) : null}
 
       {auth.cause_dernier_echec ? (
         <p className="text-[12.5px] font-semibold text-[#A32D2D]">
@@ -1030,9 +1057,11 @@ function ModaleReauth({ sourceId, onFerme, onSucces }: {
         <div>
           <h2 className="text-[19px] font-bold text-[#16191A]">Rétablir la session Kaydan Shield</h2>
           <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#6E7A78]">
-            Deux voies, une seule est durable. Un compte de service rend la liaison
-            permanente : à chaque refus de renouvellement, le backend se reconnecte seul.
-            Un couple de jetons, lui, finit toujours par mourir.
+            Deux voies, une seule peut être durable. Un couple de jetons finit toujours
+            par mourir. Un compte de service permet au backend de se reconnecter seul —
+            à condition que Shield ouvre la session sur le seul mot de passe. Le compte
+            est éprouvé auprès de Shield avant d&apos;être enregistré : s&apos;il exige une
+            seconde étape (MFA), rien n&apos;est écrit et l&apos;écran vous le dira.
           </p>
         </div>
 

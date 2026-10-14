@@ -218,7 +218,24 @@ class ConnectorCredential(TimestampedUUID):
 
     @property
     def masked(self) -> str:
-        return mask(self.secret) if self.secret_ciphertext else ""
+        """Jamais le secret — et pour un MOT DE PASSE, pas même sa queue.
+
+        `mask()` rend « ••••abcd » : les quatre derniers caractères. Pour un
+        jeton ou une clé — longs, aléatoires, souvent plusieurs en concurrence —
+        cette queue sert à reconnaître DE QUEL secret il s'agit, et quatre
+        caractères sur une entropie pareille ne coûtent rien.
+
+        Un mot de passe est l'inverse : court, choisi par un humain, et le seul
+        de son espèce sur le connecteur. Sa queue n'identifie donc rien — le
+        compte est déjà nommé par son adresse, affichée juste à côté — tandis
+        qu'elle réduit matériellement l'espace de recherche de quiconque lit
+        l'écran, la copie d'écran ou la réponse d'API. On ne la rend pas.
+        """
+        if not self.secret_ciphertext:
+            return ""
+        if self.kind == CredentialKind.PASSWORD:
+            return "••••••••"
+        return mask(self.secret)
 
     def __str__(self) -> str:
         return f"{self.get_kind_display()} ({self.connector.source.slug})"

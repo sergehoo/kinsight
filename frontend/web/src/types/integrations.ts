@@ -59,6 +59,12 @@ export interface SessionAuth {
   /** Shield a refusé ce compte : la liaison redevient mortelle, et il faut une
    *  intervention humaine — c'est le seul cas qui le justifie encore. */
   compte_de_service_refuse?: boolean;
+  /** Shield accepte le compte mais exige une seconde étape. Ce n'est PAS un
+   *  refus d'identifiants — le mot de passe est bon — et aucune ressaisie n'y
+   *  changera rien : seul un compte technique exempté, ou une clé d'API de
+   *  portée `integration`, débloque. Distinct de `compte_de_service_refuse`
+   *  précisément pour que l'écran n'envoie pas retaper un mot de passe juste. */
+  mfa_requis?: boolean;
   liaison_permanente?: boolean;
   /** L'adresse du compte, jamais son mot de passe. */
   service_email?: string;

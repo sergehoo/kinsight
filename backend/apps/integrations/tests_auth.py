@@ -932,3 +932,198 @@ class LiaisonPermanenteTest(SocleShield):
         self.assertEqual(self.connecteur.config.get("service_email"), "bon@kaydan.tech")
         self.assertEqual(
             self.connecteur.credentials.get(kind=CredentialKind.PASSWORD).secret, "bon-mdp")
+
+
+class DefiSecondeEtapeTest(SocleShield):
+    """Un compte protégé par MFA ne peut PAS servir de liaison permanente.
+
+    C'est le but même du MFA, et le contourner n'est pas une option. Ce que le
+    code doit faire est donc exactement l'inverse de « se débrouiller » : refuser
+    d'enregistrer, le dire sans ambiguïté, et nommer le geste qui débloque —
+    demander à l'équipe Shield un compte technique exempté, ou une clé d'API de
+    portée `integration`.
+
+    Shield ayant verrouillé son schéma OpenAPI derrière l'authentification, son
+    contrat de succès est INCONNU : ces tests éprouvent donc les formes usuelles
+    d'un défi, et surtout le fait que l'issue inconnue échoue elle aussi fermé.
+    """
+
+    # Hériter de LiaisonPermanenteTest rejouerait TOUS ses tests sous ce nom :
+    # la suite doublerait et chaque échec apparaîtrait deux fois. On emprunte les
+    # deux outils dont on a besoin, rien de plus.
+    _reponse = LiaisonPermanenteTest._reponse
+    _poser_compte = LiaisonPermanenteTest._poser_compte
+
+    FORMES = [
+        {"mfa_required": True},
+        {"otp_required": True},
+        {"requires_2fa": True},
+        {"detail": "Code OTP requis pour ce compte."},
+        {"non_field_errors": ["Vérification en deux étapes nécessaire (MFA)."]},
+        {"challenge": "totp"},
+    ]
+
+    def test_aucune_forme_de_defi_ne_fait_enregistrer_le_compte(self):
+        for charge in self.FORMES:
+            with self.subTest(charge=charge):
+                ConnectorCredential.objects.filter(connector=self.connecteur).delete()
+                with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                           side_effect=lambda r, timeout=None, c=charge: self._reponse(c)):
+                    ok, cause, message = shield_auth.enregistrer_le_compte_de_service(
+                        self.connecteur, email="service@kaydan.tech", mot_de_passe="mdp")
+                self.assertFalse(ok)
+                self.assertEqual(cause, "mfa_requis", f"défi non reconnu : {charge}")
+                self.assertFalse(
+                    ConnectorCredential.objects.filter(
+                        connector=self.connecteur, kind=CredentialKind.PASSWORD).exists(),
+                    "un compte sous MFA a été enregistré comme liaison permanente",
+                )
+
+    def test_le_message_nomme_le_geste_qui_debloque(self):
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse({"mfa_required": True})):
+            _, _, message = shield_auth.enregistrer_le_compte_de_service(
+                self.connecteur, email="service@kaydan.tech", mot_de_passe="mdp")
+        # Un message qui dit seulement « échec » renverrait l'opérateur ressaisir
+        # un mot de passe pourtant juste.
+        self.assertIn("MFA", message)
+        self.assertIn("compte technique", message)
+        self.assertIn("integration", message)
+
+    def test_un_mfa_n_est_pas_un_mauvais_mot_de_passe(self):
+        """409 et non 401 : le mot de passe est bon, c'est le compte qui ne convient pas."""
+        self.assertEqual(shield_auth.statut_http("mfa_requis", ok=False), 409)
+        self.assertEqual(shield_auth.statut_http("identifiants_refuses", ok=False), 401)
+
+    def test_mfa_false_n_est_pas_un_defi(self):
+        """`{"mfa_required": false}` annonce l'ABSENCE de défi. Le lire à l'envers
+        condamnerait une liaison parfaitement saine."""
+        self.assertFalse(shield_auth._defi_de_seconde_etape({"mfa_required": False}))
+        self.assertFalse(shield_auth._defi_de_seconde_etape({"access": "x", "mfa_required": None}))
+        self.assertTrue(shield_auth._defi_de_seconde_etape({"mfa_required": True}))
+
+    def test_une_reponse_sans_jeton_et_sans_defi_echoue_aussi(self):
+        """L'issue INCONNUE doit échouer fermé : c'est elle qui protège du contrat
+        de Shield qu'on ne connaît pas."""
+        ConnectorCredential.objects.filter(connector=self.connecteur).delete()
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse({"statut": "ok"})):
+            ok, cause, _ = shield_auth.enregistrer_le_compte_de_service(
+                self.connecteur, email="service@kaydan.tech", mot_de_passe="mdp")
+        self.assertFalse(ok)
+        self.assertEqual(cause, "access_absent_de_la_reponse")
+        self.assertFalse(ConnectorCredential.objects.filter(connector=self.connecteur).exists())
+
+    def test_un_mfa_active_apres_coup_retire_la_promesse_de_permanence(self):
+        """Le cas réel : le compte s'enregistre, PUIS l'équipe sécurité active le
+        MFA. Aucune ligne de code ne change, et la liaison cesse d'être permanente.
+        La fiche doit cesser de la promettre."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+
+        def repondre(requete, timeout=None):
+            if requete.full_url.endswith("/auth/token/refresh/"):
+                raise urllib.error.HTTPError("u", 401, "refus", {}, None)
+            return self._reponse({"mfa_required": True})
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            ok, _ = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertFalse(ok)
+
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertTrue(etat["mfa_requis"])
+        self.assertFalse(etat["liaison_permanente"], "la fiche promet encore une liaison permanente")
+        # Et surtout : elle ne doit pas non plus promettre le renouvellement
+        # automatique, alors que Shield vient de refuser le refresh.
+        self.assertFalse(etat["renouvellement_automatique"])
+        self.assertEqual(etat["etat"], "auth_required")
+
+    def test_le_refus_du_refresh_survit_a_la_cause_suivante(self):
+        """Le défaut que la cascade révélait : `reconnecter` écrasait
+        `cause_dernier_echec`, et le refus du refresh était oublié — la fiche
+        reannonçait « renouvelable » en s'appuyant sur un jeton mort."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+
+        def repondre(requete, timeout=None):
+            if requete.full_url.endswith("/auth/token/refresh/"):
+                raise urllib.error.HTTPError("u", 401, "refus", {}, None)
+            return self._reponse({"mfa_required": True})
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            shield_auth.renouveler(self.connecteur, force=True)
+
+        memo = (self.connecteur.config or {}).get("shield_auth") or {}
+        self.assertTrue(memo.get("refresh_condamne"))
+
+    def test_une_reconnexion_reussie_leve_la_condamnation(self):
+        """Sans cela, la fiche resterait marquée « non renouvelable » à vie."""
+        self._poser_compte()
+        self._deposer(CredentialKind.OAUTH_REFRESH, "refresh-mort")
+        neuf = jwt_factice(dans=timedelta(hours=4))
+
+        def repondre(requete, timeout=None):
+            if requete.full_url.endswith("/auth/token/refresh/"):
+                raise urllib.error.HTTPError("u", 401, "refus", {}, None)
+            return self._reponse({"access": neuf, "refresh": "refresh-neuf"})
+
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen", side_effect=repondre):
+            ok, _ = shield_auth.renouveler(self.connecteur, force=True)
+        self.assertTrue(ok)
+
+        etat = shield_auth.etat_auth(self.connecteur)
+        self.assertFalse(etat["mfa_requis"])
+        self.assertTrue(etat["liaison_permanente"])
+        self.assertTrue(etat["renouvellement_automatique"])
+
+    def test_le_mot_de_passe_ne_figure_dans_aucun_etat_ni_aucune_trace_apres_un_mfa(self):
+        from apps.audit.models import AccessLog
+
+        secret = "mot-de-passe-tres-reconnaissable-42"
+        with patch("apps.integrations.shield_auth.urllib.request.urlopen",
+                   side_effect=lambda r, timeout=None: self._reponse({"mfa_required": True})):
+            _, _, message = shield_auth.enregistrer_le_compte_de_service(
+                self.connecteur, email="service@kaydan.tech", mot_de_passe=secret)
+
+        self.assertNotIn(secret, message)
+        self.assertNotIn(secret, json.dumps(shield_auth.etat_auth(self.connecteur), ensure_ascii=False))
+        self.assertNotIn(secret, json.dumps(self.connecteur.config, ensure_ascii=False))
+        traces = json.dumps([a.payload for a in AccessLog.objects.all()], ensure_ascii=False)
+        self.assertNotIn(secret, traces)
+
+
+class MasqueDesSecretsTest(SocleShield):
+    """Un mot de passe ne laisse filtrer AUCUN caractère, pas même sa queue."""
+
+    def test_le_mot_de_passe_ne_montre_aucun_caractere(self):
+        self._deposer(CredentialKind.PASSWORD, "MotDePasseDeService2026")
+        cred = ConnectorCredential.objects.get(
+            connector=self.connecteur, kind=CredentialKind.PASSWORD)
+        self.assertEqual(cred.masked, "••••••••")
+        self.assertNotIn("2026", cred.masked)
+
+    def test_un_jeton_garde_sa_queue_pour_rester_identifiable(self):
+        """La queue sert à distinguer deux jetons ; sur une entropie de jeton,
+        quatre caractères ne coûtent rien. On ne la retire donc pas partout."""
+        self._deposer(CredentialKind.API_TOKEN, "jeton-tres-long-et-aleatoire-WXYZ")
+        cred = ConnectorCredential.objects.get(
+            connector=self.connecteur, kind=CredentialKind.API_TOKEN)
+        self.assertEqual(cred.masked, "••••WXYZ")
+
+    def test_l_api_ne_sert_jamais_la_queue_d_un_mot_de_passe(self):
+        """Le vrai risque n'est pas le modèle mais la RÉPONSE : c'est elle qui
+        part dans le navigateur, les copies d'écran et le cache."""
+        from .serializers import DataConnectorSerializer
+
+        # Un secret sans sous-chaîne susceptible d'apparaître ailleurs dans la
+        # charge : la première version cherchait « 2026 », que l'horodatage
+        # `created_at` contenait — le test échouait sur un masque pourtant juste.
+        secret = "zzQuuxGlyphWibble"
+        self._deposer(CredentialKind.PASSWORD, secret)
+        # `default=str` : la charge porte des UUID et des dates, que l'on veut
+        # seulement aplatir en texte pour y chercher le secret.
+        rendu = json.dumps(DataConnectorSerializer(self.connecteur).data,
+                           ensure_ascii=False, default=str)
+        self.assertNotIn(secret, rendu)
+        self.assertNotIn(secret[-4:], rendu, "la queue du mot de passe part dans la réponse")
+        self.assertIn('"masked": "••••••••"', rendu)
