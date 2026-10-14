@@ -3,6 +3,10 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { renouvelerSiProche } from "@/lib/api";
 import { getStoredUser, isAuthenticated } from "@/lib/auth";
+import { ecrireFiltresDansUrl, lireFiltresDepuisUrl, useFilters } from "@/store/filters";
+
+/** Les écrans dont l'adresse porte les filtres : ceux qui affichent des données. */
+const PAGES_FILTREES = /^\/(dashboard|modules|d)\//;
 
 /** Garde de route : redirige vers /login si non authentifié (en conservant la cible).
  *
@@ -31,6 +35,18 @@ export function RequireAuth() {
       window.removeEventListener("focus", auRetour);
     };
   }, [authentifie]);
+
+  // Filtres ↔ adresse. Lus UNE fois (lien partagé, rechargement), puis réécrits à
+  // chaque changement de filtre ET de page : après une navigation, l'adresse doit
+  // dire la vue filtrée qu'elle montre.
+  React.useEffect(() => {
+    lireFiltresDepuisUrl();
+  }, []);
+  React.useEffect(() => {
+    if (!PAGES_FILTREES.test(location.pathname)) return undefined;
+    ecrireFiltresDansUrl(useFilters.getState());
+    return useFilters.subscribe((etat) => ecrireFiltresDansUrl(etat));
+  }, [location.pathname]);
 
   if (!authentifie) {
     return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />;

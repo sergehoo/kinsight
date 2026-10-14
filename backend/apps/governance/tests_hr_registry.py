@@ -107,11 +107,15 @@ class ModuleDataTest(SocleRegistre):
         r = self._module(self.drh_groupe, "hr-executive")
         self.assertEqual(r.status_code, 200, r.content)
         v = r.json()["values"]
-        self.assertEqual(v["Effectif total"]["value"], 812)
+        # La valeur LIVE du jour est dans `aujourd_hui` ; `value` est celle de la
+        # période filtrée (historique), vide tant qu'aucune journée n'est collectée.
+        self.assertEqual(v["Effectif total"]["aujourd_hui"]["value"], 812)
+        self.assertIsNone(v["Effectif total"]["value"])
+        self.assertIn("Historique", v["Effectif total"]["reason"])
         self.assertEqual(v["Effectif total"]["metric_id"], "hr.effectif_total")
         self.assertEqual(v["Effectif total"]["source_label"], "Kaydan Shield")
         self.assertTrue(v["Effectif total"]["instant"])
-        self.assertEqual(v["Employés actifs"]["value"], 120)
+        self.assertEqual(v["Employés actifs"]["aujourd_hui"]["value"], 120)
         self.assertEqual(v["Employés actifs"]["source_label"], "Odoo RH")
 
     def test_n_d_n_est_jamais_zero_et_dit_pourquoi(self):
@@ -125,13 +129,12 @@ class ModuleDataTest(SocleRegistre):
 
     def test_meme_identifiant_meme_nombre_dans_tous_les_modules(self):
         """Un DG voit tous les domaines : la comparaison traverse RH et Immobilier."""
-        exe = self._module(self.dg, "hr-executive").json()["values"]["Effectif total"]
-        ia = self._module(self.dg, "hr-ai").json()["values"]["Effectifs"]
-        self.assertEqual(exe["value"], ia["value"])
-        pres = self._module(self.dg, "hr-attendance").json()["values"]["Présents"]
-        chantier = self._module(self.dg, "chantier-resources").json()["values"]["Présence temps réel"]
-        securite = self._module(self.dg, "security").json()["values"]["Présence"]
-        self.assertEqual({pres["value"], chantier["value"], securite["value"]}, {640})
+        def live(cle, libelle):
+            return self._module(self.dg, cle).json()["values"][libelle]["aujourd_hui"]["value"]
+
+        self.assertEqual(live("hr-executive", "Effectif total"), live("hr-ai", "Effectifs"))
+        self.assertEqual({live("hr-attendance", "Présents"), live("chantier-resources", "Présence temps réel"),
+                          live("security", "Présence")}, {640})
 
     def test_le_module_rh_reste_ferme_au_lecteur(self):
         self.assertEqual(self._module(self.lecteur, "hr-executive").status_code, 403)
@@ -174,7 +177,7 @@ class PerimetreTest(SocleRegistre):
         DataConnector.objects.create(source=odoo_src, base_url="https://rh.kaydan.tech",
                                      config={"company_mapping": {"3": "KRE", "4": "KSH"}})
         v = self._module(self.drh_kre, "hr-executive").json()["values"]["Employés actifs"]
-        self.assertEqual(v["value"], 40)
+        self.assertEqual(v["aujourd_hui"]["value"], 40)
         self.odoo.assert_called_with([3])
 
     def test_les_vues_shield_ne_laissent_plus_passer_les_totaux(self):
@@ -227,8 +230,8 @@ class CachePartageTest(SocleRegistre):
                                              status=SourceStatus.CONNECTED)
         DataConnector.objects.create(source=odoo_src, base_url="https://rh.kaydan.tech",
                                      config={"company_mapping": {"3": "KRE"}})
-        filiale = self._module(self.drh_kre, "hr-executive").json()["values"]["Employés actifs"]["value"]
-        groupe = self._module(self.drh_groupe, "hr-executive").json()["values"]["Employés actifs"]["value"]
+        filiale = self._module(self.drh_kre, "hr-executive").json()["values"]["Employés actifs"]["aujourd_hui"]["value"]
+        groupe = self._module(self.drh_groupe, "hr-executive").json()["values"]["Employés actifs"]["aujourd_hui"]["value"]
         self.assertEqual((filiale, groupe), (40, 120))
 
 

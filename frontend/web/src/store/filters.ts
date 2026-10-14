@@ -1,13 +1,31 @@
 import { create } from "zustand";
 
-/** Filtres globaux du tableau de bord (période + filiale). */
+/** Nature de la période. Les mêmes valeurs que le backend (`governance/filtres.py`). */
+export type ModePeriode = "trimestre" | "annee" | "7j" | "30j" | "90j" | "personnalisee";
+export type TypePersonnel = "" | "employee" | "worker";
+
+/** Filtres globaux du cockpit. Une seule source pour tous les écrans : KPI,
+ *  courbes, tableaux, alertes, IA et exports lisent CE store, et le convertissent
+ *  en paramètres serveur par UNE seule fonction (`parametresFiltres`). */
 interface FiltersState {
+  periode: ModePeriode;
   year: number;
   quarter: number;
+  dateFrom: string;
+  dateTo: string;
   subsidiary: string; // "all" | code filiale (KRE, KSH, MYK…)
+  site: string;       // "" | code de site Shield
+  personnel: TypePersonnel;
+  departement: string; // "" | libellé de département Odoo
+  setPeriode: (periode: ModePeriode) => void;
   setYear: (year: number) => void;
   setQuarter: (quarter: number) => void;
+  setDates: (dateFrom: string, dateTo: string) => void;
   setSubsidiary: (subsidiary: string) => void;
+  setSite: (site: string) => void;
+  setPersonnel: (personnel: TypePersonnel) => void;
+  setDepartement: (departement: string) => void;
+  reinitialiserDimensions: () => void;
 }
 
 /** Valeur du filiale signifiant « pas de restriction supplémentaire ».
@@ -18,14 +36,138 @@ interface FiltersState {
  */
 export const TOUTES_FILIALES = "all";
 
+/** Le trimestre EN COURS. Le défaut figé à « T1 2026 » présentait le premier
+ *  trimestre comme courant en plein quatrième — sur tous les écrans à la fois. */
+export function trimestreCourant(d: Date = new Date()): { year: number; quarter: number } {
+  return { year: d.getFullYear(), quarter: Math.floor(d.getMonth() / 3) + 1 };
+}
+
+/** Années proposées : de la première année de données K-Insight à l'année en
+ *  cours. Écrites en dur, elles s'arrêtaient à 2026 pour toujours. */
+export const PREMIERE_ANNEE = 2024;
+export function anneesDisponibles(d: Date = new Date()): number[] {
+  const annees: number[] = [];
+  for (let a = PREMIERE_ANNEE; a <= d.getFullYear(); a += 1) annees.push(a);
+  return annees;
+}
+
+const courant = trimestreCourant();
+
 export const useFilters = create<FiltersState>((set) => ({
-  year: 2026,
-  quarter: 1,
+  periode: "trimestre",
+  year: courant.year,
+  quarter: courant.quarter,
+  dateFrom: "",
+  dateTo: "",
   subsidiary: TOUTES_FILIALES,
+  site: "",
+  personnel: "",
+  departement: "",
+  setPeriode: (periode) => set({ periode }),
   setYear: (year) => set({ year }),
-  setQuarter: (quarter) => set({ quarter }),
+  setQuarter: (quarter) => set({ quarter, periode: "trimestre" }),
+  setDates: (dateFrom, dateTo) => set({ dateFrom, dateTo, periode: "personnalisee" }),
   setSubsidiary: (subsidiary) => set({ subsidiary }),
+  // Site et type ne se croisent pas dans l'historique : choisir l'un efface l'autre,
+  // plutôt que de laisser l'écran afficher un croisement que le serveur refusera.
+  setSite: (site) => set({ site, personnel: "" }),
+  setPersonnel: (personnel) => set({ personnel, site: "" }),
+  setDepartement: (departement) => set({ departement }),
+  reinitialiserDimensions: () => set({ site: "", personnel: "", departement: "" }),
 }));
+
+type FiltresLus = Pick<FiltersState, "periode" | "year" | "quarter" | "dateFrom" | "dateTo" | "subsidiary"
+  | "site" | "personnel" | "departement">;
+
+/** LES paramètres serveur des filtres — une seule conversion pour tous les appels.
+ *
+ *  Le backend calcule lui-même les bornes de la période (`filtres.py`) : le front
+ *  n'envoie que la NATURE et ses paramètres. C'est ce qui supprime l'écart de
+ *  convention (borne de fin incluse ici, exclue là-bas) que l'inventaire a relevé. */
+export function parametresFiltres(f: FiltresLus): URLSearchParams {
+  const q = new URLSearchParams({ periode: f.periode });
+  if (f.periode === "trimestre" || f.periode === "annee") q.set("year", String(f.year));
+  if (f.periode === "trimestre") q.set("quarter", String(f.quarter));
+  if (f.periode === "personnalisee" && f.dateFrom && f.dateTo) {
+    q.set("date_from", f.dateFrom);
+    q.set("date_to", f.dateTo);
+  }
+  if (f.subsidiary && f.subsidiary !== TOUTES_FILIALES) q.set("subsidiary", f.subsidiary);
+  if (f.site) q.set("site", f.site);
+  if (f.personnel) q.set("type", f.personnel);
+  if (f.departement) q.set("departement", f.departement);
+  return q;
+}
+
+/** La veille, en date LOCALE (sans passer par UTC) : borne haute de toute période. */
+export function hierIso(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return iso(d);
+}
+
+/** Libellé de la période sélectionnée, tel que l'écran l'affiche. */
+export function libelleFiltrePeriode(f: Pick<FiltersState, "periode" | "year" | "quarter" | "dateFrom" | "dateTo">): string {
+  switch (f.periode) {
+    case "7j": return "7 derniers jours";
+    case "30j": return "30 derniers jours";
+    case "90j": return "90 derniers jours";
+    case "annee": return `Année ${f.year}`;
+    case "personnalisee":
+      return f.dateFrom && f.dateTo ? `${frDate(f.dateFrom)} → ${frDate(f.dateTo)}` : "Période personnalisée";
+    default: return `T${f.quarter} ${f.year}`;
+  }
+}
+
+function frDate(isoDate: string): string {
+  const [a, m, j] = isoDate.split("-");
+  return `${j}/${m}/${a}`;
+}
+
+/* ── Synchronisation avec l'URL ────────────────────────────────────────────────
+ *
+ * Les filtres vivent AUSSI dans l'adresse : un lien partagé, un rechargement ou
+ * un export rouvrent exactement la vue filtrée. Lecture une fois au démarrage,
+ * écriture à chaque changement par `replaceState` (pas d'entrée d'historique à
+ * chaque clic). Seuls nos paramètres sont touchés. */
+const CLES_URL: Record<string, keyof FiltresLus> = {
+  periode: "periode", year: "year", quarter: "quarter", date_from: "dateFrom", date_to: "dateTo",
+  subsidiary: "subsidiary", site: "site", type: "personnel", departement: "departement",
+};
+
+export function lireFiltresDepuisUrl(search: string = window.location.search): void {
+  const q = new URLSearchParams(search);
+  const lu: Partial<FiltresLus> = {};
+  const modes: ModePeriode[] = ["trimestre", "annee", "7j", "30j", "90j", "personnalisee"];
+  const periode = q.get("periode") as ModePeriode | null;
+  if (periode && modes.includes(periode)) lu.periode = periode;
+  const annee = Number(q.get("year"));
+  if (Number.isInteger(annee) && annee >= PREMIERE_ANNEE && annee <= new Date().getFullYear()) lu.year = annee;
+  const t = Number(q.get("quarter"));
+  if (Number.isInteger(t) && t >= 1 && t <= 4) lu.quarter = t;
+  const dateIso = /^\d{4}-\d{2}-\d{2}$/;
+  if (dateIso.test(q.get("date_from") ?? "") && dateIso.test(q.get("date_to") ?? "")) {
+    lu.dateFrom = q.get("date_from") as string;
+    lu.dateTo = q.get("date_to") as string;
+  }
+  if (q.get("subsidiary")) lu.subsidiary = q.get("subsidiary") as string;
+  if (q.get("site")) lu.site = q.get("site") as string;
+  const type = q.get("type");
+  if (type === "employee" || type === "worker") lu.personnel = type;
+  if (q.get("departement")) lu.departement = q.get("departement") as string;
+  if (lu.site && lu.personnel) delete lu.personnel; // le serveur refuserait le croisement
+  if (Object.keys(lu).length) useFilters.setState(lu);
+}
+
+export function ecrireFiltresDansUrl(f: FiltresLus): void {
+  const url = new URL(window.location.href);
+  for (const cle of Object.keys(CLES_URL)) url.searchParams.delete(cle);
+  parametresFiltres(f).forEach((valeur, cle) => url.searchParams.set(cle, valeur));
+  const suivante = `${url.pathname}${url.search}${url.hash}`;
+  if (suivante !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+    window.history.replaceState(window.history.state, "", suivante);
+  }
+}
 
 /* ── Période → vraies bornes ───────────────────────────────────────────────── */
 

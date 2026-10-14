@@ -215,7 +215,7 @@ def _tool_explain_kpi(args: dict, user, context: dict) -> dict:
 
     period = context.get("period", {}) if context else {}
     lookup = build_value_lookup(
-        user, int(period.get("year", 2026)), int(period.get("quarter", 1)), (context or {}).get("subsidiary", "all")
+        user, int(period.get("year") or _periode_courante()[0]), int(period.get("quarter") or _periode_courante()[1]), (context or {}).get("subsidiary", "all")
     )
     return answer(CATALOG, str(args.get("query", "")), lookup)
 
@@ -228,7 +228,7 @@ def _tool_group_score(args: dict, user, context: dict) -> dict:
         raise ValueError("Accès au tableau de bord Groupe non autorisé pour votre rôle.")
     period = context.get("period", {}) if context else {}
     report = build_group_report(
-        user, int(period.get("year", 2026)), int(period.get("quarter", 1)), context.get("subsidiary", "all")
+        user, int(period.get("year") or _periode_courante()[0]), int(period.get("quarter") or _periode_courante()[1]), context.get("subsidiary", "all")
     )
     return {"available": report["available"], "global": report["global"], "domains": report["domains"]}
 
@@ -252,7 +252,7 @@ def _tool_generate_report(args: dict, user, context: dict) -> dict:
     if not can_access_domain(user, "overview"):
         raise ValueError("Génération du rapport Groupe non autorisée pour votre rôle.")
     period = context.get("period", {}) if context else {}
-    year, quarter = int(period.get("year", 2026)), int(period.get("quarter", 1))
+    year, quarter = int(period.get("year") or _periode_courante()[0]), int(period.get("quarter") or _periode_courante()[1])
     report = build_group_report(user, year, quarter, (context or {}).get("subsidiary", "all"))
     return {
         "report": report,
@@ -333,3 +333,11 @@ def build_default_registry() -> ToolRegistry:
         required_roles=WRITE_ROLES,
     ))
     return reg
+
+
+def _periode_courante() -> tuple[int, int]:
+    """(année, trimestre) courants : défaut d'une question posée sans période."""
+    from django.utils import timezone
+
+    jour = timezone.localdate()
+    return jour.year, (jour.month - 1) // 3 + 1

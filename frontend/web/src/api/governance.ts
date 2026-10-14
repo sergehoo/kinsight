@@ -108,11 +108,32 @@ export function useGroupScore(year: number, quarter: number, subsidiary = "all")
   });
 }
 
-export function useModuleData(key: string | undefined, year: number, quarter: number, subsidiary = "all") {
-  const sub = subsidiary && subsidiary !== "all" ? `&subsidiary=${subsidiary}` : "";
+/** Données d'un module, sous TOUS les filtres du cockpit.
+ *
+ *  `filtres` est la chaîne produite par `parametresFiltres` : période, filiale,
+ *  site, type, département. La clé de cache la contient entière — deux filtres
+ *  différents ne peuvent pas partager une réponse. */
+export function useModuleData(key: string | undefined, filtres: string) {
   return useQuery<ModuleDataResponse>({
-    queryKey: ["module-data", key, year, quarter, subsidiary],
+    queryKey: ["module-data", key, filtres],
     enabled: Boolean(key) && !USE_MOCK,
-    queryFn: () => apiGet<ModuleDataResponse>(`/governance/module/${key}/?year=${year}&quarter=${quarter}${sub}`),
+    queryFn: () => apiGet<ModuleDataResponse>(`/governance/module/${key}/?${filtres}`),
+  });
+}
+
+/** Options RÉELLES des filtres RH (sites, types, départements mesurés). */
+export interface HrDimensions {
+  site: { code: string; libelle: string }[];
+  type: { code: string; libelle: string }[];
+  departement: { code: string; libelle: string }[];
+  restriction?: string;
+}
+
+export function useHrDimensions(enabled = true) {
+  return useQuery<HrDimensions>({
+    queryKey: ["hr-dimensions"],
+    enabled: enabled && !USE_MOCK,
+    staleTime: 10 * 60_000,
+    queryFn: () => apiGet<HrDimensions>("/governance/hr/dimensions/"),
   });
 }

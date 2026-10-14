@@ -15,7 +15,7 @@ import { ArrowUpRight, CheckCircle, TriDown, TriUp } from "@/components/overview
 import { EASE_OUT } from "@/lib/motion";
 import { useModuleData } from "@/api/governance";
 import { formatInt, formatXof } from "@/lib/format";
-import { useFilters } from "@/store/filters";
+import { parametresFiltres, useFilters } from "@/store/filters";
 import {
   getModule,
   type ModuleChart,
@@ -262,12 +262,41 @@ function valeurAffichee(real: ModuleDataValue | undefined): string | null {
  *  Remplace le « Donnée EDW » écrit en dur, qui s'affichait quelle que soit la source. */
 function provenance(real: ModuleDataValue): string {
   const source = real.source_label || "Source";
+  // Le chiffre principal est celui de la PÉRIODE quand elle existe : dire
+  // « aujourd'hui » à côté contredirait le libellé de période. « Aujourd'hui »
+  // n'appartient qu'à la pastille live.
+  if (real.periode?.libelle) return `${source} · ${real.periode.libelle}`;
   return real.instant ? `${source} · aujourd'hui` : source;
+}
+
+/** Métriques dont la HAUSSE est une dégradation : leur écart positif se lit en
+ *  rouge. Sans cette liste, « +12 absents » s'affichait en vert, comme un progrès. */
+const HAUSSE_DEFAVORABLE = new Set([
+  "hr.absents_jour", "hr.retards_jour", "hr.taux_absence_jour",
+  "hr.absenteisme_mensuel", "hr.turnover", "hr.sorties", "hr.heures_supplementaires",
+]);
+
+/** L'écart à la période précédente, dit dans l'unité qui convient : en points
+ *  pour un taux, en valeur et en % pour un volume. Rien si l'une des deux manque. */
+function ecartAffiche(real: ModuleDataValue): { texte: string; favorable: boolean } | null {
+  const c = real.precedente;
+  if (!c || c.ecart === null || c.ecart === undefined) return null;
+  if (c.ecart === 0) return { texte: "stable vs période préc.", favorable: true };
+  const nombre = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
+  const signe = c.ecart > 0 ? "+" : "−";
+  const abs = nombre.format(Math.abs(c.ecart));
+  const pct = c.ecart_pct !== null && c.ecart_pct !== undefined ? ` (${signe}${nombre.format(Math.abs(c.ecart_pct))} %)` : "";
+  const texte = c.unite_ecart === "pts" ? `${signe}${abs} pt${Math.abs(c.ecart) >= 2 ? "s" : ""} vs période préc.`
+    : `${signe}${abs}${pct} vs période préc.`;
+  const defavorable = HAUSSE_DEFAVORABLE.has(real.metric_id ?? "");
+  return { texte, favorable: defavorable ? c.ecart < 0 : c.ecart > 0 };
 }
 
 function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values?: Record<string, ModuleDataValue> }) {
   const real = values?.[kpi.label];
   const realValue = valeurAffichee(real);
+  const live = real?.aujourd_hui ? valeurAffichee({ ...real, value: real.aujourd_hui.value }) : null;
+  const ecart = real ? ecartAffiche(real) : null;
   // Une carte résolue par le registre mais sans valeur porte un MOTIF : on le
   // montre à la place du « mart à connecter » générique.
   const motif = real && realValue === null ? real.reason || "Aucune donnée servie." : null;
@@ -300,6 +329,18 @@ function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values
         <p className="absolute left-5 right-[92px] top-[82px] line-clamp-2 text-[11px] font-medium leading-[1.25] text-[#8A6E36]" title={motif}>
           {motif}
         </p>
+      ) : ecart ? (
+        <p className="absolute left-5 top-[84px] text-[11px] font-bold" style={{ color: ecart.favorable ? "#1F9E75" : "#C43252" }}>
+          {ecart.texte}
+        </p>
+      ) : null}
+      {/* La mesure du jour, live, à part de la période : elle ne suit pas le
+          filtre de période et le dit. */}
+      {real?.aujourd_hui ? (
+        <span className="absolute bottom-[38px] right-5 rounded-full bg-white/80 px-2 py-0.5 text-[10.5px] font-bold text-[#4A5352]"
+              title={real.aujourd_hui.reason || "Mesure live du jour"}>
+          Aujourd&apos;hui · {live ?? "N/D"}
+        </span>
       ) : null}
       {real?.metric_id || kpi.source ? (
         <span className="absolute bottom-3 left-5 max-w-[165px] truncate text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A9291]"
@@ -537,8 +578,10 @@ interface ModulePageProps {
 export function ModulePage({ moduleKey }: ModulePageProps = {}) {
   const { key } = useParams();
   const resolvedKey = moduleKey ?? key;
-  const { year, quarter, subsidiary } = useFilters();
-  const { data: moduleData } = useModuleData(resolvedKey, year, quarter, subsidiary);
+  const filtres = useFilters();
+  // UNE conversion des filtres en paramètres serveur, partagée par tous les appels.
+  const parametres = parametresFiltres(filtres).toString();
+  const { data: moduleData } = useModuleData(resolvedKey, parametres);
   const module = getModule(resolvedKey);
   if (!module) {
     return <Navigate to="/dashboard" replace />;

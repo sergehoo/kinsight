@@ -188,6 +188,12 @@ export interface ModuleDataValue {
   status?: string;
   reason?: string;
   as_of?: string | null;
+  /** Période réellement lue, et sa couverture en jours mesurés. */
+  periode?: { libelle: string; debut: string; fin: string; couverture?: { jours: number; jours_mesures: number } };
+  /** Écart à la période précédente (points pour un taux). */
+  precedente?: { value: number | null; ecart: number | null; ecart_pct: number | null; unite_ecart: "pts" | "abs" | null };
+  /** Mesure live du jour, sous les mêmes filtres quand la source le permet. */
+  aujourd_hui?: { value: number | null; status?: string; reason?: string | null; as_of?: string | null };
 }
 export interface ModuleDataSeries { name: string; type: string; unit?: string; points: { label: string; value: number }[]; }
 export interface ModuleDataResponse {

@@ -308,8 +308,7 @@ class HistoriqueApiTest(APITestCase):
         for code, p, a in (("1", 50, 50), ("2", 90, 10)):
             _poser("hr.presents_jour", HIER, p, dimension=Dimension.SITE, code=code)
             _poser("hr.absents_jour", HIER, a, dimension=Dimension.SITE, code=code)
-        d = self._get(self.drh, metric="hr.taux_presence_jour", periode="7j", dimension="site",
-                      ventilation=1).json()
+        d = self._get(self.drh, metric="hr.taux_presence_jour", periode="7j", ventilation="site").json()
         self.assertEqual([l["code"] for l in d["ventilation"]], ["2", "1"])
         self.assertEqual(d["ventilation"][0]["value"], 90.0)
 

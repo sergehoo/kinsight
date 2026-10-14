@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .history_views import HrHistoryView
+from .history_views import HrDimensionsView, HrHistoryView
 from .module_views import (
     AiQueryView,
     AlertsView,
@@ -19,6 +19,7 @@ urlpatterns = [
     path("hr/kpi/", HrKpiView.as_view(), name="hr-kpi"),
     path("hr/score/", HrScoreView.as_view(), name="hr-score"),
     path("hr/history/", HrHistoryView.as_view(), name="hr-history"),
+    path("hr/dimensions/", HrDimensionsView.as_view(), name="hr-dimensions"),
     path("score-group/", GroupScoreView.as_view(), name="group-score"),
     path("alerts/", AlertsView.as_view(), name="alerts"),
     path("ai/query/", AiQueryView.as_view(), name="ai-query"),

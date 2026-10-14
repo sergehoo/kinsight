@@ -39,7 +39,11 @@ from apps.audit.models import AccessLog
 
 from .exports import scores_pdf, scores_workbook
 from .gateway import fetch_or_unavailable, get_mart_gateway
-from .hr_registry import liaisons, resoudre
+from django.utils import timezone
+
+from . import filtres as F
+from .hr_registry import REGISTRE, liaisons, resoudre
+from .lecture_rh import valeur_du_jour, valeur_periode
 from .hr_sources import contexte_pour
 from .services import period_from_quarter
 
@@ -168,19 +172,17 @@ MODULE_DOMAINES: dict[str, tuple[str, ...]] = {
 
 
 class ModuleDataView(APIView):
-    """Valeurs réelles d'un module, résolues par IDENTIFIANT de métrique.
+    """Valeurs réelles d'un module, résolues par IDENTIFIANT de métrique, sous filtres.
 
-    Avant : une liaison par libellé vers le mart, seule source envisagée. Sous
-    Dokploy les tables du mart n'existent pas, et la vue répondait 500 ; ailleurs,
-    un mart vide donnait 0 sous l'étiquette « Donnée EDW ». Désormais chaque carte
-    est résolue par le registre canonique (`hr_registry`) depuis Shield ou Odoo,
-    avec sa provenance, sa définition, et un motif quand elle n'a pas de source.
-    Aucune lecture du mart : il n'est plus une condition des écrans RH.
+    Pour chaque carte :
+      - `value` / `status` / `reason` : la valeur de la PÉRIODE filtrée, tirée de
+        l'historique, avec sa couverture et l'écart à la période précédente ;
+      - `aujourd_hui` : la mesure live du jour, sous les mêmes filtres quand la
+        source le permet, marquée comme telle.
+    Un filtre qui ne peut pas s'appliquer à une carte la rend N/D avec son motif :
+    il n'est jamais ignoré au profit du total Groupe.
 
-    Les métriques « du jour » sont live. Elles sont marquées `instant` et ne
-    répondent pas au filtre de période — le dire est la seule façon honnête de
-    servir un instantané sous un sélecteur de trimestre, tant que l'historique
-    n'existe pas.
+    Aucune lecture du mart : il n'est plus une condition des écrans RH (ADR-0009).
     """
 
     def get(self, request, key: str):
@@ -192,35 +194,61 @@ class ModuleDataView(APIView):
             return _forbidden(domaines[0])
 
         try:
-            year = int(request.query_params.get("year", "2026"))
-            quarter = int(request.query_params.get("quarter", "1"))
-        except (TypeError, ValueError):
-            return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
-        if not 1 <= quarter <= 4:
-            return Response({"detail": "'quarter' doit être entre 1 et 4."}, status=status.HTTP_400_BAD_REQUEST)
-
-        period = period_from_quarter(year, quarter)
+            filtres = F.lire(request.query_params, timezone.localdate())
+        except F.FiltreInvalide as refus:
+            if refus.code_http != status.HTTP_200_OK:
+                return Response({"detail": refus.motif}, status=refus.code_http)
+            filtres = None
+            motif_periode = refus.motif
         scope = request.user.scope()
         contexte = contexte_pour(request.user)
-        values = {libelle: resoudre(metric_id, contexte) for libelle, metric_id in lies.items()}
+
+        values = {}
+        for libelle, metric_id in lies.items():
+            live = (valeur_du_jour(metric_id, contexte, filtres) if filtres
+                    else resoudre(metric_id, contexte))
+            carte = {k: v for k, v in live.items() if k not in ("value", "status", "reason", "as_of")}
+            if REGISTRE[metric_id].source not in ("shield", "odoo") or not contexte.peut_voir(REGISTRE[metric_id].domaine):
+                carte.update(value=None, status=live.get("status"), reason=live.get("reason"))
+            elif filtres is None:
+                carte.update(value=None, status="disconnected", reason=motif_periode)
+            else:
+                try:
+                    periode = valeur_periode(request.user, metric_id, filtres)
+                except F.FiltreInvalide as refus:
+                    return Response({"detail": refus.motif}, status=refus.code_http)
+                carte.update(value=periode.get("value"), status=periode.get("status"),
+                             periode={k: periode.get(k) for k in ("libelle", "debut", "fin", "couverture")},
+                             precedente=periode.get("precedente"))
+                if periode.get("value") is None:
+                    # Sans historique ET sans live, c'est la SOURCE qu'il faut
+                    # nommer : « historique en constitution » masquerait la cause.
+                    carte["reason"] = (live.get("reason") if live.get("value") is None and live.get("reason")
+                                       else periode.get("reason"))
+            if REGISTRE[metric_id].instant:
+                carte["aujourd_hui"] = {"value": live.get("value"), "status": live.get("status"),
+                                        "reason": live.get("reason"), "as_of": live.get("as_of")}
+            values[libelle] = carte
 
         AccessLog.record(
             user=request.user,
             action="query_module",
             metric_key=key,
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
-            payload={"year": year, "quarter": quarter,
+            payload={**(filtres.comme_trace() if filtres else {}),
                      "metrics": sorted(set(lies.values()))},
             **audit_source(request),
         )
 
-        servies = [v for v in values.values() if v.get("value") is not None]
+        servies = [v for v in values.values()
+                   if v.get("value") is not None or (v.get("aujourd_hui") or {}).get("value") is not None]
         return Response(
             {
                 "key": key,
                 "available": bool(servies),
                 "source": "registre RH (Shield + Odoo)",
-                "period": {"start": period.start.isoformat(), "end": period.end.isoformat()},
+                "period": ({"start": filtres.periode.debut.isoformat(), "end": filtres.periode.fin.isoformat(),
+                            "label": filtres.libelle} if filtres else None),
                 "scope": "GROUP" if scope.is_group else sorted(scope.subsidiaries),
                 "values": values,
                 "series": [],
@@ -238,8 +266,8 @@ class HrScoreView(APIView):
         if not can_access_domain(request.user, "capital-humain"):
             return _forbidden("capital-humain")
         try:
-            year = int(request.query_params.get("year", "2026"))
-            quarter = int(request.query_params.get("quarter", "1"))
+            year = int(request.query_params.get("year") or timezone.localdate().year)
+            quarter = int(request.query_params.get("quarter") or F.trimestre_courant(timezone.localdate()))
         except (TypeError, ValueError):
             return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -297,8 +325,8 @@ class DomainScoreView(APIView):
         if not can_access_domain(request.user, domain):
             return _forbidden(domain)
         try:
-            year = int(request.query_params.get("year", "2026"))
-            quarter = int(request.query_params.get("quarter", "1"))
+            year = int(request.query_params.get("year") or timezone.localdate().year)
+            quarter = int(request.query_params.get("quarter") or F.trimestre_courant(timezone.localdate()))
         except (TypeError, ValueError):
             return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
         if not 1 <= quarter <= 4:
@@ -365,8 +393,8 @@ class GroupScoreView(APIView):
         if not can_access_domain(request.user, "overview"):
             return _forbidden("overview")
         try:
-            year = int(request.query_params.get("year", "2026"))
-            quarter = int(request.query_params.get("quarter", "1"))
+            year = int(request.query_params.get("year") or timezone.localdate().year)
+            quarter = int(request.query_params.get("quarter") or F.trimestre_courant(timezone.localdate()))
         except (TypeError, ValueError):
             return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
         if not 1 <= quarter <= 4:
@@ -425,8 +453,8 @@ class AlertsView(APIView):
         if not can_access_domain(request.user, "overview"):
             return _forbidden("overview")
         try:
-            year = int(request.query_params.get("year", "2026"))
-            quarter = int(request.query_params.get("quarter", "1"))
+            year = int(request.query_params.get("year") or timezone.localdate().year)
+            quarter = int(request.query_params.get("quarter") or F.trimestre_courant(timezone.localdate()))
         except (TypeError, ValueError):
             return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
         if not 1 <= quarter <= 4:
@@ -502,8 +530,8 @@ class ExportGroupScoreView(APIView):
         if ext not in self._RENDERERS:
             return Response({"detail": "Format non supporté (xlsx, pdf)."}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            year = int(request.query_params.get("year", "2026"))
-            quarter = int(request.query_params.get("quarter", "1"))
+            year = int(request.query_params.get("year") or timezone.localdate().year)
+            quarter = int(request.query_params.get("quarter") or F.trimestre_courant(timezone.localdate()))
         except (TypeError, ValueError):
             return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
         if not 1 <= quarter <= 4:

@@ -1,6 +1,7 @@
-import { useFilters } from "@/store/filters";
+import { anneesDisponibles, useFilters } from "@/store/filters";
 
-const YEARS = [2024, 2025, 2026];
+// Années dynamiques : la liste écrite en dur s'arrêtait à 2026 pour toujours.
+const YEARS = anneesDisponibles();
 const QUARTERS = [1, 2, 3, 4];
 
 function Select({

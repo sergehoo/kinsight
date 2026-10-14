@@ -13,7 +13,8 @@ import { SideRail } from "@/components/chrome/SideRail";
 import { BLACK, FRAME_BG, ORANGE, glass } from "@/components/chrome/theme";
 import { Menu, MenuItem } from "@/components/ui/Menu";
 import { EASE_OUT } from "@/lib/motion";
-import { useFilters } from "@/store/filters";
+import { PeriodePicker } from "@/components/navigation/PeriodePicker";
+import { libelleFiltrePeriode, useFilters } from "@/store/filters";
 import type { DashboardKey, DashboardMetricCard, DashboardSummary } from "@/types/governance";
 
 type DetailMetric = DashboardMetricCard;
@@ -378,13 +379,13 @@ function ChartPanel({
 }
 
 function PeriodMenu({ label }: { label: string }) {
-  const { year, quarter, setYear, setQuarter } = useFilters();
-  const years = [2024, 2025, 2026];
-  const quarters = [1, 2, 3, 4];
+  const filtres = useFilters();
+  // Le sélecteur UNIQUE du cockpit (PeriodePicker) : une seule définition des
+  // périodes, des années et des bornes, partagée par tous les écrans.
   return (
     <Menu
       align="right"
-      width={250}
+      width={280}
       trigger={({ open, toggle }) => (
         <button
           type="button"
@@ -394,43 +395,12 @@ function PeriodMenu({ label }: { label: string }) {
           className="flex h-14 items-center gap-4 rounded-full px-7 text-[16px] font-medium text-[#222]"
           style={glass}
         >
-          {label}
+          {label || libelleFiltrePeriode(filtres)}
           <ChevronDown width={16} height={16} style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform .25s ease" }} />
         </button>
       )}
     >
-      {() => (
-        <div className="p-1">
-          <div className="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-[#8A908D]">Trimestre</div>
-          <div className="mb-2 grid grid-cols-4 gap-1.5">
-            {quarters.map((q) => (
-              <button
-                key={q}
-                type="button"
-                onClick={() => setQuarter(q)}
-                className="rounded-xl py-2 text-[14px] font-semibold transition-colors"
-                style={q === quarter ? { background: ORANGE, color: "#fff" } : { background: "rgba(255,255,255,0.6)", color: "#2A2D2D" }}
-              >
-                T{q}
-              </button>
-            ))}
-          </div>
-          <div className="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-[#8A908D]">Année</div>
-          <div className="grid grid-cols-3 gap-1.5">
-            {years.map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => setYear(y)}
-                className="rounded-xl py-2 text-[14px] font-semibold transition-colors"
-                style={y === year ? { background: BLACK, color: "#fff" } : { background: "rgba(255,255,255,0.6)", color: "#2A2D2D" }}
-              >
-                {y}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {(close) => <PeriodePicker onChoisi={close} />}
     </Menu>
   );
 }

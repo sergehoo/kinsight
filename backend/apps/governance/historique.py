@@ -406,3 +406,11 @@ def comparer(actuelle: dict[str, Any], reference: dict[str, Any], *, est_taux: b
             "ecart_pct": None if est_taux or b == 0 else round((a - b) * 100 / abs(b), 1),
             "debut": reference.get("debut"), "fin": reference.get("fin"),
             "couverture": reference.get("couverture")}
+
+
+def premiere_mesure(metric) -> date | None:
+    """Premier jour mesuré de la métrique OU de ses composantes : c'est la date à
+    partir de laquelle une période peut avoir une valeur, et l'écran la cite."""
+    ids = [metric.id, *metric.numerateur, *metric.denominateur]
+    return (KpiSnapshot.objects.filter(metric_id__in=ids, statut=StatutMesure.MESURE)
+            .order_by("jour").values_list("jour", flat=True).first())

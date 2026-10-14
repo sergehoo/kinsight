@@ -51,7 +51,10 @@ export interface DashboardModuleConfig {
 }
 
 const FILTERS_RE = ["Période", "Filiale", "Programme", "Chantier", "Statut"];
-const FILTERS_HR = ["Période", "Filiale", "Département", "Site", "Métier"];
+// « Personnel » (employés / ouvriers) est un vrai filtre : Shield ventile ses
+// pointages par type. Métier et Collaborateur restent affichés, mais disent
+// pourquoi ils ne filtrent pas encore.
+const FILTERS_HR = ["Période", "Filiale", "Site", "Personnel", "Département", "Métier", "Collaborateur"];
 const FILTERS_FIN = ["Période", "Filiale", "Centre de coût", "Compte", "Devise"];
 const FILTERS_OPS = ["Période", "Filiale", "Site", "Fournisseur", "Statut"];
 const FILTERS_COM = ["Période", "Filiale", "Programme", "Commercial", "Canal"];
