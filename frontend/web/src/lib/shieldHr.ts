@@ -27,6 +27,10 @@ export interface ShieldKpi {
   formula?: string;
   /** Champ d'origine côté Shield — renseigné uniquement pour les mesures. */
   source_field?: string;
+  /** Identifiant canonique du registre RH (`hr.presents_jour`…). */
+  metric_id?: string | null;
+  /** Motif d'un KPI sans valeur — hors périmètre, notamment. */
+  detail?: string;
 }
 
 /** Une ligne de répartition par site, telle que normalisée par le backend.
@@ -73,7 +77,22 @@ export interface ShieldInsight {
   action?: { label: string; to: string };
 }
 
+/** Seuils de décision publiés par le backend (`shield_rules.seuils_publics`). */
+export interface ShieldSeuils {
+  presence_critique: number;
+  presence_surveillance: number;
+  presence_site_critique?: number;
+  absenteisme_eleve?: number;
+  retards_eleves?: number;
+  baisse_inhabituelle?: number;
+  terminaux_hs_critique?: number;
+}
+
 export interface ShieldHrResponse {
+  /** Seuils appliqués par le backend : la seule copie qui fait foi. */
+  seuils?: ShieldSeuils;
+  /** Motif d'une réponse retenue pour un périmètre restreint. */
+  restriction?: string;
   status: DataState;
   source: string;
   detail?: string;

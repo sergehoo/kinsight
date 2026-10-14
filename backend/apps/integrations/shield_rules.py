@@ -16,11 +16,37 @@ from typing import Any
 # ── Seuils ───────────────────────────────────────────────────────────────────
 # Exprimés en pourcentage de présence, sauf mention contraire.
 PRESENCE_CRITIQUE = 70.0        # en dessous : la journée est compromise
+# Zone de surveillance : entre le critique et ce seuil. Elle vivait dans le
+# frontend seul (adapters/shield.ts), ce qui faisait de 85 % un seuil que le
+# backend ignorait — et deux écrans pouvaient donc juger la même journée
+# différemment.
+PRESENCE_SURVEILLANCE = 85.0
 PRESENCE_SITE_CRITIQUE = 50.0   # un site sous ce seuil ne peut pas opérer
 ABSENTEISME_ELEVE = 25.0        # part d'absents jugée anormale
 RETARDS_ELEVES = 15.0           # part de retardataires parmi les présents
 BAISSE_INHABITUELLE = 15.0      # chute, en points, vs la moyenne de la période
 MIN_JOURS_POUR_COMPARER = 5     # en deçà, une moyenne n'a pas de sens
+# Part du parc de terminaux hors service au-delà de laquelle le contrôle d'accès
+# est jugé critique. Écrit en dur dans `shield.security_insights` jusqu'ici.
+TERMINAUX_HS_CRITIQUE = 20.0
+
+
+def seuils_publics() -> dict[str, float]:
+    """Les seuils, tels que les écrans doivent les appliquer.
+
+    Publiés dans la charge plutôt que recopiés côté client : un seuil recopié est
+    un seuil qui divergera. Le frontend n'en garde qu'un repli identique, pour
+    une charge ancienne mise en cache.
+    """
+    return {
+        "presence_critique": PRESENCE_CRITIQUE,
+        "presence_surveillance": PRESENCE_SURVEILLANCE,
+        "presence_site_critique": PRESENCE_SITE_CRITIQUE,
+        "absenteisme_eleve": ABSENTEISME_ELEVE,
+        "retards_eleves": RETARDS_ELEVES,
+        "baisse_inhabituelle": BAISSE_INHABITUELLE,
+        "terminaux_hs_critique": TERMINAUX_HS_CRITIQUE,
+    }
 
 # Fenêtres glissantes proposées pour la série de présence.
 #

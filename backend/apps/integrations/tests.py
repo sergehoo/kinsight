@@ -361,6 +361,22 @@ class ShieldConnectorTest(TestCase):
         self.assertEqual(kpis["taux_presence"]["level"], "computed")
         self.assertTrue(kpis["taux_presence"]["formula"])
 
+    def test_chaque_kpi_porte_son_identifiant_canonique_et_les_seuils(self):
+        """Sur une VRAIE collecte : la fusion côté écran se fait par identifiant, et
+        les seuils qui font foi voyagent avec la charge."""
+        from apps.governance.hr_registry import REGISTRE
+        from . import shield_rules as R
+
+        self._source()
+        with patch.object(ShieldClient, "get_json", side_effect=self._routes()):
+            data = shield.fetch_hr_kpis()
+        kpis = {k["key"]: k for k in data["kpis"]}
+        self.assertEqual(kpis["presents"]["metric_id"], "hr.presents_jour")
+        self.assertEqual(kpis["effectif_total"]["metric_id"], "hr.effectif_total")
+        for k in data["kpis"]:
+            self.assertIn(k["metric_id"], REGISTRE, k["key"])
+        self.assertEqual(data["seuils"], R.seuils_publics())
+
     def test_effectif_employes_par_site_reste_unknown(self):
         """Shield n'expose aucun filtre `site` sur les employés : on ne l'invente pas."""
         self._source()
@@ -1792,12 +1808,20 @@ class ShieldRbacTest(APITestCase):
         # Et la preuve directe : le nom du site n'apparaît nulle part dans la réponse.
         self.assertNotIn("Chantier A", json.dumps(restreint, ensure_ascii=False))
 
-    def test_les_constats_de_portee_groupe_survivent_a_la_restriction(self):
-        """Retirer les alertes de site ne doit pas rendre l'écran muet.
+    def test_les_constats_de_portee_groupe_sont_retenus_mais_expliques(self):
+        """DÉCISION RETOURNÉE, et voici pourquoi.
 
-        Un taux de présence global sous le seuil ne nomme personne : le supprimer
-        remplacerait une fuite par un silence, et le DRH de filiale n'aurait plus
-        aucun signal là où il en a le droit.
+        Ce test affirmait l'inverse : un constat global (« présence 10 % ») ne
+        nommant personne, il devait survivre à la restriction, sans quoi « on
+        remplacerait une fuite par un silence ». La spécification RBAC du cockpit
+        Capital Humain tranche désormais : un RH ou un directeur de filiale voit
+        UNIQUEMENT sa filiale. Or un taux de présence Shield est un taux GROUPE —
+        il agrège les autres filiales. Le servir restait une fuite, simplement non
+        nominative.
+
+        L'inquiétude d'origine reste traitée : la réponse ne se tait pas, elle dit
+        POURQUOI elle ne montre rien (`restriction`), et le signal reviendra le
+        jour où les sites Shield seront rattachés aux filiales.
         """
         from .shield_rules import evaluer_presence_globale
 
@@ -1813,9 +1837,13 @@ class ShieldRbacTest(APITestCase):
         faux = {"status": "connected", "kpis": [], "insights": globaux,
                 "by_site": {"status": "connected", "sites": []}}
         with patch("apps.integrations.views.fetch_hr_kpis", return_value=faux):
+            groupe = self._get(self.drh, "/api/v1/integrations/shield/hr-kpi/").json()
             restreint = self._get(drh_filiale, "/api/v1/integrations/shield/hr-kpi/").json()
 
-        self.assertEqual(len(restreint["insights"]), len(globaux))
+        # Contre-épreuve : le périmètre Groupe, lui, garde ses constats.
+        self.assertEqual(len(groupe["insights"]), len(globaux))
+        self.assertEqual(restreint["insights"], [])
+        self.assertIn("Groupe", restreint["restriction"])
 
     def test_lapercu_groupe_ne_sert_plus_la_presence_du_jour(self):
         """Le même chiffre ne peut pas être 403 par une porte et 200 par l'autre.

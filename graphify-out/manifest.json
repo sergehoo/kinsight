@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/governance.ts": {
-    "mtime": 1788658923.0823362,
-    "ast_hash": "83d377c65fb933c35d749700b19fa51e",
+    "mtime": 1792018777.8562896,
+    "ast_hash": "a9a276462b64052e556c528099aa39a9",
     "semantic_hash": ""
   },
   "frontend/web/src/vite-env.d.ts": {
@@ -610,13 +610,13 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/modules.tsx": {
-    "mtime": 1788866425.18068,
-    "ast_hash": "3cbb02a105a66772812e2b8a3611dc9a",
+    "mtime": 1792019393.2254903,
+    "ast_hash": "d9ea4b0380bcb53062b2e1ff08154e7a",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulePage.tsx": {
-    "mtime": 1788866474.6061535,
-    "ast_hash": "11574eea6063ff7f7e6a9ce3dc6217a2",
+    "mtime": 1792019444.063241,
+    "ast_hash": "dd0e98cdfb96d66c50ba03519331aad6",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulesHome.tsx": {
@@ -740,8 +740,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/module_views.py": {
-    "mtime": 1788797416.563634,
-    "ast_hash": "9f9471e39666aa55a1c768732d4ec49d",
+    "mtime": 1792018484.8504777,
+    "ast_hash": "0006748de61a90183798060c5109eef4",
     "semantic_hash": ""
   },
   "backend/apps/integrations/__init__.py": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo.py": {
-    "mtime": 1792015941.3113325,
-    "ast_hash": "90bfe87ebd3284a5eb8607e824767935",
+    "mtime": 1792019036.6913598,
+    "ast_hash": "eb750828fa3befb1bef7c95c2b65f520",
     "semantic_hash": ""
   },
   "backend/apps/integrations/permissions.py": {
@@ -785,13 +785,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
-    "mtime": 1788875683.4296668,
-    "ast_hash": "f0875e99738fef56bae388f2c3309569",
+    "mtime": 1792019072.2535477,
+    "ast_hash": "33d781d04041f3be099ff8a2c506f99f",
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1792016185.5398357,
-    "ast_hash": "e8f9ff344219c969655dfa63f4ad1ced",
+    "mtime": 1792019218.3551655,
+    "ast_hash": "e09d3c0fd93eb934b9afbc06b17354da",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
@@ -800,8 +800,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1792015983.529274,
-    "ast_hash": "d88ba7d4b5dd462de119e87de5b76083",
+    "mtime": 1792018752.0294173,
+    "ast_hash": "dd5cd84239faab83a48108d8f50fe4ac",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -985,8 +985,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainPanel.tsx": {
-    "mtime": 1788688865.2542794,
-    "ast_hash": "0b696cce09a55d7930f9f831831fcfbb",
+    "mtime": 1792019088.7246022,
+    "ast_hash": "93262ddd621d04b607af8c6bf39d1259",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainScoreCard.tsx": {
@@ -1030,8 +1030,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainMetrics.ts": {
-    "mtime": 1788865998.545562,
-    "ast_hash": "abc8de052e78f152a39fee3ad3eab300",
+    "mtime": 1792019036.7125673,
+    "ast_hash": "eb8b0625683a1de42cb39326c4f6443e",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainTheme.ts": {
@@ -1050,8 +1050,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/adapters/shield.ts": {
-    "mtime": 1788688838.017566,
-    "ast_hash": "5c0aa695aec79d6f1b5fb27500810894",
+    "mtime": 1792019088.7244298,
+    "ast_hash": "30f623531bace51906384aa8f5406f79",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/auth.ts": {
@@ -1075,8 +1075,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/shieldHr.ts": {
-    "mtime": 1788876105.1243365,
-    "ast_hash": "37ed3931ee7c53ec6217c0306e34f3a4",
+    "mtime": 1792019088.7242277,
+    "ast_hash": "37309dc649c77b594afdaf65460b3db4",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/useDomainTheme.ts": {
@@ -1785,8 +1785,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_rules.py": {
-    "mtime": 1788875639.5936697,
-    "ast_hash": "111d2fca8395366234ce30bc6c1c6c94",
+    "mtime": 1792019072.2532673,
+    "ast_hash": "4a116013d152e6474f812d9ab90958d0",
     "semantic_hash": ""
   },
   "backend/apps/integrations/management/__init__.py": {
@@ -2072,6 +2072,26 @@
   "backend/apps/integrations/tests_odoo_session.py": {
     "mtime": 1792016277.8816884,
     "ast_hash": "d90200836bd0f1c65f88316a34ccbee5",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/hr_registry.py": {
+    "mtime": 1792019403.565253,
+    "ast_hash": "da9a29893e865bb778eea8c6a2195910",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/hr_sources.py": {
+    "mtime": 1792018592.4908562,
+    "ast_hash": "61fe11551de885fc6675248442a990af",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/tests_hr_registry.py": {
+    "mtime": 1792019218.3554816,
+    "ast_hash": "c85833b5a7aa1b84b41a83442340d947",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/partage.py": {
+    "mtime": 1792018325.4746861,
+    "ast_hash": "6147ed1d5b552f1ab3cf230a1f6f0be0",
     "semantic_hash": ""
   }
 }

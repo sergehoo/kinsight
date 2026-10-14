@@ -170,7 +170,25 @@ export interface AiAnswer {
   } | null;
 }
 
-export interface ModuleDataValue { value: number; unit: string; format: string; }
+/** Une carte résolue par le registre canonique RH : valeur RÉELLE ou motif.
+ *
+ *  `value` est `null` quand aucune source ne la sert, hors droits ou hors
+ *  périmètre — jamais 0. `reason` dit lequel, et s'affiche tel quel. `instant`
+ *  marque une mesure « aujourd'hui », live, qui ne répond pas au filtre de période. */
+export interface ModuleDataValue {
+  value: number | null;
+  unit: string;
+  format: string;
+  metric_id?: string;
+  label?: string;
+  definition?: string;
+  instant?: boolean;
+  source?: "shield" | "odoo" | "aucune";
+  source_label?: string;
+  status?: string;
+  reason?: string;
+  as_of?: string | null;
+}
 export interface ModuleDataSeries { name: string; type: string; unit?: string; points: { label: string; value: number }[]; }
 export interface ModuleDataResponse {
   key: string;

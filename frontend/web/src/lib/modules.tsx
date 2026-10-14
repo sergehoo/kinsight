@@ -1839,6 +1839,46 @@ export const MODULES: Record<string, ModuleDef> = {
   },
 };
 
+/* ── Capital Humain : provenance réelle, plus de dépendance au Data Warehouse ──
+ *
+ * Les modules RH ont été déclarés quand le mart EDW était la source envisagée :
+ * chaque carte disait « mart à connecter », chaque section « donnée attendue du
+ * Data Warehouse ». L'architecture retenue est Shield + Odoo, sans mart
+ * obligatoire. Le dire module par module aurait réécrit vingt-trois déclarations ;
+ * on le fait ici, une fois, pour toutes les clés `hr-*`.
+ *
+ * Les libellés de cartes ne changent pas : ce sont eux que le backend résout par
+ * identifiant de métrique (`hr_registry.LIAISONS`). Une carte liée reçoit sa
+ * valeur et sa provenance réelles ; une carte non liée affiche N/D et dit qu'aucune
+ * des deux sources ne la sert — ce qui est vrai, là où « mart à connecter » ne
+ * l'était plus. */
+export const RH_SOURCES = "Shield + Odoo";
+const RH_STATUS = "Kaydan Shield + Odoo RH — aucune donnée inventée";
+const RH_SANS_SOURCE = "non servi par Shield ni Odoo";
+
+function versSourcesReelles(def: ModuleDef): ModuleDef {
+  return {
+    ...def,
+    status: RH_STATUS,
+    source: RH_SOURCES,
+    kpis: def.kpis?.map((kpi) => ({ ...kpi, delta: "aucune source", source: RH_SOURCES })),
+    sections: def.sections?.map((section) => ({
+      ...section,
+      source: RH_SOURCES,
+      chart: { ...section.chart, source: RH_SOURCES },
+      rows: section.rows.map((row) => ({ ...row, detail: `${row.title} · ${RH_SANS_SOURCE}` })),
+    })),
+  };
+}
+
+for (const cle of Object.keys(MODULES)) {
+  if (cle.startsWith("hr-")) MODULES[cle] = versSourcesReelles(MODULES[cle]);
+}
+
+export function estModuleRh(def: ModuleDef): boolean {
+  return def.key.startsWith("hr-");
+}
+
 export const REAL_ESTATE_MODULE_KEYS = [
   "executive",
   "portfolio",

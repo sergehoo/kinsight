@@ -1,7 +1,8 @@
 """Endpoint générique de données par module (gabarit data réelle).
 
 GET /api/v1/governance/module/<key>/?year=&quarter=
-- clé liée (cf. bindings) → valeurs réelles depuis le mart + séries, `available: true`
+- clé liée (cf. `hr_registry.LIAISONS`) → chaque carte résolue par identifiant de
+  métrique depuis Shield ou Odoo, avec provenance, définition et motif d'absence
 - clé non liée → `available: false` (le frontend garde N/D gouverné)
 Filtré par périmètre RBAC, journalisé (audit).
 """
@@ -36,9 +37,10 @@ from k_insight.kpi.hr_mart import (
 from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
-from .bindings import HR_MART_SOURCE, hr_binding
 from .exports import scores_pdf, scores_workbook
 from .gateway import fetch_or_unavailable, get_mart_gateway
+from .hr_registry import liaisons, resoudre
+from .hr_sources import contexte_pour
 from .services import period_from_quarter
 
 
@@ -156,14 +158,38 @@ def build_group_report(user, year: int, quarter: int, sub_param: Optional[str]) 
     }
 
 
+# Domaine(s) d'un module hors Capital Humain qui porte des métriques RH. L'accès au
+# MODULE se décide par l'un de ses domaines ; chaque métrique RH garde ensuite sa
+# propre exigence Capital Humain (`hr_registry.resoudre`).
+MODULE_DOMAINES: dict[str, tuple[str, ...]] = {
+    "chantier-resources": ("immobilier",),
+    "security": ("immobilier", "risques-conformite"),
+}
+
+
 class ModuleDataView(APIView):
+    """Valeurs réelles d'un module, résolues par IDENTIFIANT de métrique.
+
+    Avant : une liaison par libellé vers le mart, seule source envisagée. Sous
+    Dokploy les tables du mart n'existent pas, et la vue répondait 500 ; ailleurs,
+    un mart vide donnait 0 sous l'étiquette « Donnée EDW ». Désormais chaque carte
+    est résolue par le registre canonique (`hr_registry`) depuis Shield ou Odoo,
+    avec sa provenance, sa définition, et un motif quand elle n'a pas de source.
+    Aucune lecture du mart : il n'est plus une condition des écrans RH.
+
+    Les métriques « du jour » sont live. Elles sont marquées `instant` et ne
+    répondent pas au filtre de période — le dire est la seule façon honnête de
+    servir un instantané sous un sélecteur de trimestre, tant que l'historique
+    n'existe pas.
+    """
+
     def get(self, request, key: str):
-        binding = hr_binding(key)
-        if not binding:
+        lies = liaisons(key)
+        if not lies:
             return _governed(key)
-        # Bindings actuels = RH → exige la permission du domaine Capital Humain.
-        if not can_access_domain(request.user, "capital-humain"):
-            return _forbidden("capital-humain")
+        domaines = MODULE_DOMAINES.get(key, ("capital-humain",))
+        if not any(can_access_domain(request.user, d) for d in domaines):
+            return _forbidden(domaines[0])
 
         try:
             year = int(request.query_params.get("year", "2026"))
@@ -175,53 +201,29 @@ class ModuleDataView(APIView):
 
         period = period_from_quarter(year, quarter)
         scope = request.user.scope()
-        rows = get_mart_gateway().fetch_hr_kpi()
-        scoped = filter_by_scope(rows, scope, key=lambda r: r.subsidiary)
-        # Filtre filiale (intersecté avec le périmètre RBAC déjà appliqué).
-        subsidiary = request.query_params.get("subsidiary")
-        if subsidiary and subsidiary != "all":
-            scoped = [r for r in scoped if r.subsidiary == subsidiary]
-
-        entries = total_entries(scoped, period)
-        exits = total_exits(scoped, period)
-        metrics = {
-            "payroll": (total_payroll_mass(scoped, period), "XOF", "currency"),
-            "entries": (entries, "personnes", "int"),
-            "exits": (exits, "personnes", "int"),
-            "net": (entries - exits, "personnes", "int"),
-        }
-        values = {
-            label: {"value": metrics[m][0], "unit": metrics[m][1], "format": metrics[m][2]}
-            for label, m in binding.items()
-            if m in metrics
-        }
-        series = [
-            {
-                "name": "Masse salariale par filiale",
-                "type": "bar",
-                "unit": "XOF",
-                "points": [{"label": code, "value": amount} for code, amount in payroll_by_subsidiary(scoped, period).items()],
-            }
-        ]
+        contexte = contexte_pour(request.user)
+        values = {libelle: resoudre(metric_id, contexte) for libelle, metric_id in lies.items()}
 
         AccessLog.record(
             user=request.user,
             action="query_module",
             metric_key=key,
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
-            payload={"year": year, "quarter": quarter},
+            payload={"year": year, "quarter": quarter,
+                     "metrics": sorted(set(lies.values()))},
             **audit_source(request),
         )
 
+        servies = [v for v in values.values() if v.get("value") is not None]
         return Response(
             {
                 "key": key,
-                "available": True,
-                "source": HR_MART_SOURCE,
+                "available": bool(servies),
+                "source": "registre RH (Shield + Odoo)",
                 "period": {"start": period.start.isoformat(), "end": period.end.isoformat()},
                 "scope": "GROUP" if scope.is_group else sorted(scope.subsidiaries),
                 "values": values,
-                "series": series,
+                "series": [],
             }
         )
 

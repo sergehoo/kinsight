@@ -22,6 +22,9 @@ export const SOURCES = {
   sap: { code: "sap", label: "SAP" },
   edw: { code: "edw", label: "Mart EDW" },
   interne: { code: "api_interne", label: "API métier interne" },
+  // Une métrique déclarée qu'AUCUNE source ne sert. La déclarer quand même rend
+  // l'écart au cockpit cible lisible ; elle n'apparaît pas comme une source.
+  aucune: { code: "aucune", label: "Aucune source" },
 } as const;
 
 type SourceKey = keyof typeof SOURCES;
@@ -85,23 +88,31 @@ const IMMOBILIER: MetricSpec[] = [
 /* ── Capital Humain ────────────────────────────────────────────────────────── */
 // Les six premières sont réellement alimentées par le connecteur Shield.
 const CAPITAL_HUMAIN: MetricSpec[] = [
-  { id: "shield.effectif_total", title: "Effectif total", source: "shield", level: "computed", formula: "employés + ouvriers" },
-  { id: "shield.employes", title: "Employés", source: "shield" },
-  { id: "shield.ouvriers", title: "Ouvriers", source: "shield" },
-  { id: "shield.presents", title: "Présents aujourd'hui", source: "shield" },
-  { id: "shield.absents", title: "Absents", source: "shield" },
-  { id: "shield.retards", title: "Retards", source: "shield" },
-  { id: "shield.taux_presence", title: "Taux de présence", unit: "%", source: "shield", level: "computed", formula: "présents ÷ (présents + absents) × 100" },
-  { id: "rh.absenteisme", title: "Taux d'absentéisme", unit: "%", source: "odoo", level: "computed", formula: "jours d'absence ÷ jours travaillés théoriques × 100" },
-  { id: "rh.turnover", title: "Turnover", unit: "%", source: "odoo", level: "computed", formula: "départs sur la période ÷ effectif moyen × 100" },
-  { id: "hr.masse_salariale", title: "Masse salariale", unit: "XOF", source: "edw" },
-  { id: "hr.entrees", title: "Entrées", source: "edw" },
-  { id: "hr.sorties", title: "Sorties", source: "edw" },
-  { id: "hr.variation_effectif", title: "Variation d'effectif", source: "edw", level: "computed", formula: "entrées − sorties sur la période" },
-  { id: "rh.heures_sup", title: "Heures supplémentaires", unit: "h", source: "shield" },
-  { id: "rh.conges", title: "Congés en cours", unit: "j", source: "odoo" },
-  { id: "rh.recrutements", title: "Recrutements en cours", source: "odoo" },
-  { id: "rh.prestataires", title: "Prestataires", source: "odoo" },
+  // Identifiants CANONIQUES du registre RH backend (`hr_registry`) : ce sont ceux
+  // que Shield et Odoo apposent sur leurs charges, donc ceux sur lesquels la
+  // fusion se fait. Un identifiant propre à cet écran recréerait le doublon.
+  { id: "hr.effectif_total", title: "Effectif total", source: "shield", level: "computed", formula: "employés + ouvriers déclarés dans Shield" },
+  { id: "hr.employes", title: "Employés", source: "shield" },
+  { id: "hr.ouvriers", title: "Ouvriers", source: "shield" },
+  { id: "hr.presents_jour", title: "Présents aujourd'hui", source: "shield" },
+  { id: "hr.absents_jour", title: "Absents aujourd'hui", source: "shield" },
+  { id: "hr.retards_jour", title: "Retards aujourd'hui", source: "shield" },
+  { id: "hr.taux_presence_jour", title: "Taux de présence du jour", unit: "%", source: "shield", level: "computed", formula: "présents ÷ (présents + absents) × 100" },
+  { id: "hr.taux_absence_jour", title: "Taux d'absence du jour", unit: "%", source: "shield", level: "computed", formula: "absents ÷ (présents + absents) × 100" },
+  { id: "hr.taux_ponctualite_jour", title: "Taux de ponctualité du jour", unit: "%", source: "shield", level: "computed", formula: "100 − retards ÷ présents × 100" },
+  { id: "hr.sites", title: "Sites déclarés", source: "shield" },
+  { id: "hr.employes_actifs_odoo", title: "Employés actifs (Odoo)", source: "odoo" },
+  { id: "hr.departements", title: "Départements", source: "odoo" },
+  { id: "hr.postes_a_pourvoir", title: "Postes à pourvoir", source: "odoo", level: "computed", formula: "Σ objectifs de recrutement des postes (hr.job)" },
+  // Sans source dans l'architecture Shield + Odoo : déclarées pour que l'écart
+  // reste visible, jamais attribuées à une source qui ne les sert pas. Les heures
+  // supplémentaires étaient déclarées « Shield » : Shield ne publie aucune durée.
+  { id: "hr.absenteisme_mensuel", title: "Taux d'absentéisme", unit: "%", source: "aucune", level: "computed", formula: "jours d'absence ÷ jours travaillés théoriques × 100" },
+  { id: "hr.turnover", title: "Turnover", unit: "%", source: "aucune", level: "computed", formula: "départs sur la période ÷ effectif moyen × 100" },
+  { id: "hr.masse_salariale", title: "Masse salariale", unit: "XOF", source: "aucune" },
+  { id: "hr.entrees", title: "Entrées", source: "aucune" },
+  { id: "hr.sorties", title: "Sorties", source: "aucune" },
+  { id: "hr.heures_supplementaires", title: "Heures supplémentaires", unit: "h", source: "aucune" },
 ];
 
 /* ── Finance ───────────────────────────────────────────────────────────────── */
@@ -182,6 +193,9 @@ export function sourcesFor(domainId: string): Array<{ code: string; label: strin
   const specs = DOMAIN_METRICS[domainId] ?? [];
   const seen = new Map<string, string>();
   for (const spec of specs) {
+    // « Aucune source » n'est pas une source : la lister dans le panneau des
+    // sources ferait croire à un connecteur de plus.
+    if (spec.source === "aucune") continue;
     const source = SOURCES[spec.source];
     seen.set(source.code, source.label);
   }

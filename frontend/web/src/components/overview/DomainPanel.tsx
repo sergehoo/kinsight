@@ -74,13 +74,17 @@ function useDomainMetrics(domainId: string, seriesWindow: SeriesWindow) {
   const shieldQuery = isRisk ? security : isOverview ? overview : shield;
 
   const live = React.useMemo(() => {
-    if (isHr) return [...shieldKpisToMetrics(shield.data), ...hrMartMetrics(hrKpi.data, `T${quarter} ${year}`)];
-    if (isRisk) return shieldPayloadToMetrics(security.data, "risk", "/dashboard/risques-conformite/alertes-critiques");
+    // Plus de métriques tirées du mart : sous Dokploy il n'existe pas, et son
+    // état d'erreur recouvrait le motif réel des métriques sans source.
+    if (isHr) return shieldKpisToMetrics(shield.data);
+    if (isRisk) return shieldPayloadToMetrics(security.data, "risk", "/dashboard/risques-conformite/alertes");
     if (isOverview) return shieldPayloadToMetrics(overview.data, "groupe");
     return [];
   }, [isHr, isRisk, isOverview, shield.data, security.data, overview.data, hrKpi.data, quarter, year]);
 
-  const breakdown = React.useMemo(() => (isHr ? payrollBreakdown(hrKpi.data) : []), [isHr, hrKpi.data]);
+  // La ventilation de la masse salariale venait du mart : aucune source ne la
+  // sert dans l'architecture Shield + Odoo.
+  const breakdown = React.useMemo(() => [] as ReturnType<typeof payrollBreakdown>, []);
 
   const shieldState: DataState = shieldQuery.isLoading
     ? "connecting"

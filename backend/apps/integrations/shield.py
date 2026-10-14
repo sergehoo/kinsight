@@ -349,11 +349,17 @@ def fetch_hr_kpis() -> dict[str, Any]:
 
     by_kind = _presence_by_kind_from(today_period, date)
 
+    from apps.governance.hr_registry import SHIELD, identifiant
+
+    for kpi in kpis:
+        kpi["metric_id"] = identifiant(SHIELD, kpi["key"])
+
     status = _state_of([e_err, o_err, s_err, sum_err], [employes, ouvriers, sites_count, summary])
     insights = (R.evaluer_presence_globale(present, absent, late, src, date)
                 + R.evaluer_sites(by_site.get("sites", []), src, date))
     return _envelope(status, src, kpis, by_site=by_site, by_kind=by_kind,
-                     insights=insights, api_calls=client.metrics.calls)
+                     insights=insights, api_calls=client.metrics.calls,
+                     seuils=R.seuils_publics())
 
 
 # ── Période de présence : UNE récupération, agrégée localement ────────────────
@@ -667,14 +673,14 @@ def security_insights(kpis: list[dict], source: str) -> list[dict]:
             "finding": f"Kaydan Shield signale {crit} alerte(s) de sévérité critique non traitée(s).",
             "impact": "Risque de fraude ou d'intrusion non couvert.",
             "level": MEASURED, "source": source, "period": "maintenant", "confidence": 1.0,
-            "action": {"label": "Voir les alertes", "to": "/dashboard/risques-conformite/alertes-critiques"},
+            "action": {"label": "Voir les alertes", "to": "/dashboard/risques-conformite/alertes"},
         })
     down, total = _value(kpis, "terminaux_hs"), _value(kpis, "terminaux_total")
     if isinstance(down, int) and isinstance(total, int) and total > 0 and down > 0:
         part = round(down * 100 / total, 1)
         out.append({
             "id": "sec.terminaux_hs",
-            "severity": "critical" if part >= 20 else "warning",
+            "severity": "critical" if part >= R.TERMINAUX_HS_CRITIQUE else "warning",
             "title": f"{down} terminal(aux) hors service",
             "finding": f"{down} terminaux sur {total} ne sont pas opérationnels, soit {part} % du parc.",
             "impact": "Contrôle d'accès dégradé sur les points concernés.",

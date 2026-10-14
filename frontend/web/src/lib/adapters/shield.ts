@@ -8,18 +8,23 @@ import type { DataState } from "@/components/ui/kit";
 import { assertGoverned, type KBreakdownItem, type KMetric, type DataLevel } from "@/lib/kmetric";
 import type { DecisionInsight } from "@/components/ui/insight";
 import type { KSeriesPoint } from "@/lib/kmetric";
-import type { ShieldHrQuery, ShieldKpi, ShieldSeriesQuery } from "@/lib/shieldHr";
+import type { ShieldHrQuery, ShieldKpi, ShieldSeriesQuery, ShieldSeuils } from "@/lib/shieldHr";
 
 const SOURCE = "kaydan_shield";
 const SOURCE_LABEL = "Kaydan Shield";
 
+/** Repli, identique aux seuils du backend, pour une charge ancienne mise en
+ *  cache qui ne les publierait pas encore. La copie qui fait foi est celle de
+ *  la charge : elle vient de `shield_rules`, le seul endroit où on les arbitre. */
+const SEUILS_REPLI: ShieldSeuils = { presence_critique: 70, presence_surveillance: 85 };
+
 /** Sévérité déduite d'une mesure RH, uniquement sur des seuils explicites.
  *  Aucun autre KPI n'en reçoit : inventer une gravité serait aussi faux
  *  qu'inventer une valeur. */
-function severityOf(kpi: ShieldKpi): KMetric["severity"] {
+function severityOf(kpi: ShieldKpi, seuils: ShieldSeuils = SEUILS_REPLI): KMetric["severity"] {
   if (kpi.key !== "taux_presence" || kpi.value === null) return undefined;
-  if (kpi.value < 70) return "critical";
-  if (kpi.value < 85) return "warning";
+  if (kpi.value < seuils.presence_critique) return "critical";
+  if (kpi.value < seuils.presence_surveillance) return "warning";
   return "success";
 }
 
@@ -32,7 +37,9 @@ export function shieldKpisToMetrics(query: ShieldHrQuery | undefined): KMetric[]
     // Une valeur issue du cache reste réelle, mais n'est plus « connected ».
     const status: DataState = stale && kpi.status === "connected" ? "stale" : kpi.status;
     const metric: KMetric = {
-      id: `shield.${kpi.key}`,
+      // Identifiant canonique du registre RH quand la source l'appose : c'est lui
+      // qui fait qu'un même chiffre porte le même nom sur tous les écrans.
+      id: kpi.metric_id ?? `shield.${kpi.key}`,
       title: kpi.title,
       value: kpi.value,
       unit: kpi.unit || undefined,
@@ -40,7 +47,7 @@ export function shieldKpisToMetrics(query: ShieldHrQuery | undefined): KMetric[]
         ? "aujourd'hui"
         : undefined,
       status,
-      severity: severityOf(kpi),
+      severity: severityOf(kpi, payload.seuils),
       source: SOURCE,
       sourceLabel: payload.source || SOURCE_LABEL,
       updatedAt,

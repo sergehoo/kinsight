@@ -115,6 +115,39 @@ def _restreindre_la_repartition(charge: dict, user) -> dict:
     return restreint
 
 
+MOTIF_SHIELD_HORS_PERIMETRE = (
+    "Hors périmètre : Shield ne rattache pas ses sites aux filiales du Groupe. Ses "
+    "totaux sont des totaux Groupe ; les attribuer à votre filiale serait une invention, "
+    "les servir tels quels ferait sortir les chiffres des autres filiales."
+)
+
+
+def _retenir_les_totaux(charge: dict, user) -> dict:
+    """Pour un périmètre restreint, retire TOUTE valeur Shield — pas seulement les sites.
+
+    `_restreindre_la_repartition` retirait la ventilation par site mais laissait
+    passer les totaux : un RH limité à une filiale voyait l'effectif, les présents
+    et les taux de TOUT le Groupe. C'était la même fuite que celle déjà fermée pour
+    les sites, par l'autre porte. Tant qu'aucune correspondance site ↔ filiale
+    n'est établie, un total Shield n'appartient qu'au périmètre Groupe.
+    """
+    if user.scope().is_group:
+        return charge
+    retenue = _restreindre_la_repartition(charge, user)
+    retenue["kpis"] = [
+        {**k, "value": None, "status": "disconnected", "detail": MOTIF_SHIELD_HORS_PERIMETRE}
+        for k in charge.get("kpis") or []
+    ]
+    if isinstance(charge.get("by_kind"), dict):
+        retenue["by_kind"] = {"status": "disconnected", "detail": MOTIF_SHIELD_HORS_PERIMETRE,
+                              "employees": None, "workers": None, "total": None}
+    # Les constats globaux rechiffrent les totaux (« présence 72 % ») : retirés aussi.
+    retenue["insights"] = []
+    retenue["status"] = "disconnected"
+    retenue["restriction"] = MOTIF_SHIELD_HORS_PERIMETRE
+    return retenue
+
+
 class ShieldHrKpiView(APIView):
     """KPIs RH normalisés depuis Kaydan Shield (backend → normalisation → API).
 
@@ -132,7 +165,10 @@ class ShieldHrKpiView(APIView):
     def get(self, request):
         if not can_access_domain(request.user, "capital-humain"):
             return _refus_de_domaine("capital-humain")
-        charge = _restreindre_la_repartition(fetch_hr_kpis(), request.user)
+        from apps.governance.hr_sources import charge_shield_groupe
+
+        # Charge Groupe partagée (une collecte pour tous), restreinte APRÈS.
+        charge = _retenir_les_totaux(charge_shield_groupe(fetch_hr_kpis), request.user)
         _audit_shield(request, "shield.hr_kpi")
         return Response(charge)
 
@@ -181,6 +217,12 @@ class ShieldAttendanceSeriesView(APIView):
 
         debut = self._date(request.query_params.get("date_from"))
         fin = self._date(request.query_params.get("date_to"))
+        if not request.user.scope().is_group:
+            # La série est une série GROUPE : mêmes raisons que pour les totaux.
+            _audit_shield(request, "shield.attendance_series", {"retenue": True})
+            return Response({"status": "disconnected", "points": [], "insights": [],
+                             "days": days, "detail": MOTIF_SHIELD_HORS_PERIMETRE,
+                             "restriction": MOTIF_SHIELD_HORS_PERIMETRE})
         charge = fetch_attendance_series(days, date_from=debut, date_to=fin)
         # La trace porte les bornes RÉELLEMENT employées, pas celles demandées :
         # c'est la période effectivement lue qu'un audit doit pouvoir rejouer.
@@ -204,7 +246,7 @@ class ShieldSecurityView(APIView):
     def get(self, request):
         if not can_access_domain(request.user, "risques-conformite"):
             return _refus_de_domaine("risques-conformite")
-        charge = _restreindre_la_repartition(fetch_security_kpis(), request.user)
+        charge = _retenir_les_totaux(fetch_security_kpis(), request.user)
         _audit_shield(request, "shield.security")
         return Response(charge)
 
@@ -218,7 +260,21 @@ class ShieldOverviewView(APIView):
         if not can_access_domain(request.user, "overview"):
             return _refus_de_domaine("overview")
         _audit_shield(request, "shield.overview")
-        return Response(fetch_overview_kpis())
+        charge = fetch_overview_kpis()
+        if not request.user.scope().is_group:
+            return Response(_retenir_les_totaux(charge, request.user))
+        if not can_access_domain(request.user, "capital-humain"):
+            # L'effectif est une donnée RH. La servir ici sous la seule permission
+            # « vue Groupe » rouvrait la porte que `/shield/hr-kpi/` ferme en 403 —
+            # le contournement déjà corrigé pour les présents, par un autre chemin.
+            charge = dict(charge)
+            charge["kpis"] = [
+                {**k, "value": None, "status": "disconnected",
+                 "detail": "Hors de vos droits : l'effectif relève du domaine Capital Humain."}
+                if k.get("key") == "workforce" else k
+                for k in charge.get("kpis") or []
+            ]
+        return Response(charge)
 
 
 class OdooHrKpiView(APIView):
@@ -235,7 +291,26 @@ class OdooHrKpiView(APIView):
     def get(self, request):
         if not can_access_domain(request.user, "capital-humain"):
             return _refus_de_domaine("capital-humain")
-        charge = fetch_odoo_hr_kpis()
+        from apps.governance.hr_sources import charge_odoo, societes_des_filiales
+
+        scope = request.user.scope()
+        if scope.is_group:
+            charge = charge_odoo(None)
+        else:
+            # Odoo, lui, PEUT être restreint : la correspondance société ↔ filiale
+            # est déclarée. Les lectures sont filtrées sur les sociétés de la
+            # filiale — et sans correspondance, rien n'est servi : « aucune
+            # société déclarée » n'est pas « toutes les sociétés ».
+            societes = societes_des_filiales(frozenset(scope.subsidiaries))
+            if not societes:
+                motif = ("Hors périmètre : aucune société Odoo n'est rattachée à votre "
+                         "filiale. La correspondance se déclare dans le centre de connecteurs.")
+                _audit_shield(request, "odoo.hr_kpi", {"retenue": True})
+                return Response({"status": "disconnected", "source": "Odoo RH", "detail": motif,
+                                 "restriction": motif, "kpis": [],
+                                 "by_department": {"status": "disconnected", "rows": [],
+                                                   "detail": motif}})
+            charge = charge_odoo(societes)
         _audit_shield(request, "odoo.hr_kpi")
         return Response(charge)
 

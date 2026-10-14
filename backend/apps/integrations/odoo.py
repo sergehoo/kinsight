@@ -153,12 +153,18 @@ def _pourcentage(part, total) -> float | None:
 
 
 # ── Lecture RH ───────────────────────────────────────────────────────────────
-def fetch_hr_kpis() -> dict[str, Any]:
+def fetch_hr_kpis(societes: list[int] | None = None) -> dict[str, Any]:
     """KPIs RH normalisés depuis Odoo, chacun portant son propre état.
 
     Chaque compteur est lu indépendamment : un modèle absent — la paie, le
     recrutement — retire SA carte sans emporter les autres. C'est la différence
     entre un écran partiellement alimenté, qui reste utile, et un écran vide.
+
+    `societes` : identifiants `res.company` auxquels restreindre TOUTES les
+    lectures — c'est ainsi qu'un périmètre filiale est appliqué, via la
+    correspondance déclarée société ↔ filiale. `None` = toutes les sociétés,
+    réservé au périmètre Groupe. Une liste vide n'est pas « tout » : l'appelant
+    doit refuser avant d'arriver ici.
     """
     source, bloque = _guard()
     if bloque:
@@ -177,11 +183,17 @@ def fetch_hr_kpis() -> dict[str, Any]:
                           detail=str(exc), cause=exc.kind,
                           by_department={"status": "error", "rows": []})
 
-    actifs, e_actifs = _lecture(lambda: client.compter("hr.employee", [["active", "=", True]]))
-    sortis, e_sortis = _lecture(lambda: client.compter("hr.employee", [["active", "=", False]]))
-    departements, e_dep = _lecture(lambda: client.compter("hr.department"))
-    metiers, e_met = _lecture(lambda: client.compter("hr.job"))
-    societes, e_soc = _lecture(lambda: client.compter("res.company"))
+    # Le filtre société s'ajoute à CHAQUE domaine : oublier un seul compteur
+    # suffirait à rendre un chiffre Groupe sous un intitulé filiale.
+    f = [["company_id", "in", list(societes)]] if societes is not None else []
+    actifs, e_actifs = _lecture(lambda: client.compter("hr.employee", [["active", "=", True], *f]))
+    sortis, e_sortis = _lecture(lambda: client.compter("hr.employee", [["active", "=", False], *f]))
+    departements, e_dep = _lecture(lambda: client.compter("hr.department", f))
+    metiers, e_met = _lecture(lambda: client.compter("hr.job", f))
+    if societes is not None:
+        societes_n, e_soc = len(societes), None
+    else:
+        societes_n, e_soc = _lecture(lambda: client.compter("res.company"))
 
     def etat(err: OdooError | None) -> str:
         # Un modèle absent n'est pas une panne : c'est un module non installé, et
@@ -199,25 +211,31 @@ def fetch_hr_kpis() -> dict[str, Any]:
         _kpi("employes_inactifs", sortis, etat(e_sortis), motif(e_sortis)),
         _kpi("departements", departements, etat(e_dep), motif(e_dep)),
         _kpi("metiers", metiers, etat(e_met), motif(e_met)),
-        _kpi("societes", societes, etat(e_soc), motif(e_soc)),
-        _kpi("postes_ouverts", *_postes_ouverts(client)),
+        _kpi("societes", societes_n, etat(e_soc), motif(e_soc)),
+        _kpi("postes_ouverts", *_postes_ouverts(client, f)),
         _kpi("taux_rotation_sortis",
              _pourcentage(sortis, (actifs or 0) + (sortis or 0))
              if e_actifs is None and e_sortis is None else None,
              "connected" if e_actifs is None and e_sortis is None else "disconnected"),
     ]
 
+    from apps.governance.hr_registry import ODOO, identifiant
+
+    for kpi in kpis:
+        kpi["metric_id"] = identifiant(ODOO, kpi["key"])
+
     erreurs = [e_actifs, e_sortis, e_dep, e_met, e_soc]
-    valeurs = [actifs, sortis, departements, metiers, societes]
+    valeurs = [actifs, sortis, departements, metiers, societes_n]
     obtenues = sum(1 for v, e in zip(valeurs, erreurs) if e is None and v is not None)
     status = "connected" if obtenues == len(valeurs) else ("partial" if obtenues else "error")
 
     return _enveloppe(status, nom, kpis,
-                      by_department=_repartition_par_departement(client),
-                      api_calls=client.appels)
+                      by_department=_repartition_par_departement(client, f),
+                      api_calls=client.appels,
+                      **({"societes_filtrees": list(societes)} if societes is not None else {}))
 
 
-def _postes_ouverts(client: ClientOdoo) -> tuple[Any, str, str]:
+def _postes_ouverts(client: ClientOdoo, filtre: list | None = None) -> tuple[Any, str, str]:
     """Postes à pourvoir, SI le champ existe sur cette instance.
 
     `no_of_recruitment` est standard sur `hr.job`, mais un module tiers peut
@@ -230,14 +248,14 @@ def _postes_ouverts(client: ClientOdoo) -> tuple[Any, str, str]:
         return None, ("disconnected" if exc.kind in ("absent", "droits") else "error"), str(exc)
     if "no_of_recruitment" not in champs:
         return None, "disconnected", "Champ `no_of_recruitment` absent de hr.job sur cette instance."
-    lignes, err = _lecture(lambda: client.lire("hr.job", ["no_of_recruitment"], limite=500))
+    lignes, err = _lecture(lambda: client.lire("hr.job", ["no_of_recruitment"], filtre or [], limite=500))
     if err is not None:
         return None, ("disconnected" if err.kind in ("absent", "droits") else "error"), str(err)
     total = sum(int(l.get("no_of_recruitment") or 0) for l in lignes)
     return total, "connected", ""
 
 
-def _repartition_par_departement(client: ClientOdoo) -> dict[str, Any]:
+def _repartition_par_departement(client: ClientOdoo, filtre: list | None = None) -> dict[str, Any]:
     """Effectif par département, agrégé LOCALEMENT.
 
     On lit les employés avec leur `department_id` puis on compte ici, plutôt que
@@ -256,7 +274,7 @@ def _repartition_par_departement(client: ClientOdoo) -> dict[str, Any]:
                 "rows": []}
 
     lignes, err = _lecture(lambda: client.lire(
-        "hr.employee", ["department_id"], [["active", "=", True]], limite=MAX_EMPLOYES))
+        "hr.employee", ["department_id"], [["active", "=", True], *(filtre or [])], limite=MAX_EMPLOYES))
     if err is not None:
         return {"status": "disconnected" if err.kind in ("absent", "droits") else "error",
                 "detail": str(err), "rows": []}

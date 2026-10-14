@@ -23,7 +23,10 @@ import {
   type ModuleKpi,
   type ModuleRow,
   type ModuleSection,
+  estModuleRh,
+  RH_SOURCES,
 } from "@/lib/modules";
+import type { ModuleDataValue } from "@/types/governance";
 
 const EMPTY_TEXT = "En attente Data Warehouse";
 const AXIS_LABEL_STYLE = { color: "#8A9291", fontSize: 11, fontWeight: 700 };
@@ -73,7 +76,9 @@ function emptyGraphic(source: string): NonNullable<EChartsOption["graphic"]> {
           left: -118,
           top: -16,
           style: {
-            text: EMPTY_TEXT,
+            // Un graphe RH n'attend plus le Data Warehouse : il attend une série
+            // que ni Shield ni Odoo ne servent encore pour cette vue.
+            text: source === RH_SOURCES ? "Aucune série servie" : EMPTY_TEXT,
             fill: "#222829",
             font: "700 13px Manrope, sans-serif",
           },
@@ -109,7 +114,7 @@ function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
       borderColor: "rgba(255,255,255,0.85)",
       textStyle: { color: "#1D2222", fontFamily: "Manrope" },
       extraCssText: "box-shadow:0 18px 40px rgba(31,35,38,.12);border-radius:14px;",
-      formatter: () => "Aucune donnée servie par le mart.",
+      formatter: () => (chart.source === RH_SOURCES ? "Aucune série servie par Shield ni Odoo." : "Aucune donnée servie par le mart."),
     },
     graphic: emptyGraphic(chart.source),
   };
@@ -244,16 +249,29 @@ function commonChartOption(chart: ModuleChart, accent: string): EChartsOption {
   };
 }
 
-function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values?: Record<string, { value: number; unit: string; format: string }> }) {
+function valeurAffichee(real: ModuleDataValue | undefined): string | null {
+  // `null` reste `null` : formater une absence donnait « 0 F CFA » et un ton vert.
+  if (!real || real.value === null || real.value === undefined) return null;
+  if (real.format === "currency") return formatXof(real.value);
+  if (real.format === "pct") return `${new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 }).format(real.value)} %`;
+  if (real.format === "int") return formatInt(real.value);
+  return String(real.value);
+}
+
+/** La provenance DITE : la source réelle, et « aujourd'hui » pour une mesure live.
+ *  Remplace le « Donnée EDW » écrit en dur, qui s'affichait quelle que soit la source. */
+function provenance(real: ModuleDataValue): string {
+  const source = real.source_label || "Source";
+  return real.instant ? `${source} · aujourd'hui` : source;
+}
+
+function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values?: Record<string, ModuleDataValue> }) {
   const real = values?.[kpi.label];
-  const realValue = real
-    ? real.format === "currency"
-      ? formatXof(real.value)
-      : real.format === "int"
-        ? formatInt(real.value)
-        : String(real.value)
-    : null;
-  const unavailable = !realValue && isUnavailable(kpi.value);
+  const realValue = valeurAffichee(real);
+  // Une carte résolue par le registre mais sans valeur porte un MOTIF : on le
+  // montre à la place du « mart à connecter » générique.
+  const motif = real && realValue === null ? real.reason || "Aucune donnée servie." : null;
+  const unavailable = !realValue && (Boolean(motif) || isUnavailable(kpi.value));
   return (
     <motion.article
       className="relative h-[168px] overflow-hidden rounded-[30px] p-5"
@@ -269,13 +287,24 @@ function KpiCard({ kpi, index, values }: { kpi: ModuleKpi; index: number; values
         className="absolute left-5 top-[64px] inline-flex items-center gap-1.5 text-[12px] font-bold"
         style={{ color: realValue ? "#1F9E75" : unavailable ? "#C43252" : kpi.up ? "#202526" : "#C43252" }}
       >
-        {realValue ? "Donnée EDW" : kpi.delta}
+        {realValue && real ? provenance(real) : motif ? "Non disponible" : kpi.delta}
         {realValue || unavailable ? null : kpi.up ? <TriUp width={10} height={10} /> : <TriDown width={10} height={10} />}
       </span>
-      <AnimatedNumber value={realValue ?? kpi.value} className="absolute bottom-8 left-5 text-[32px] font-semibold leading-none text-black" />
-      {kpi.source ? (
-        <span className="absolute bottom-3 left-5 max-w-[165px] truncate text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A9291]">
-          {kpi.source}
+      {/* Avec un motif, le « N/D » se fait plus petit : le motif EST l'information
+          utile de la carte, et à 32 px le chiffre absent le recouvrait. */}
+      <AnimatedNumber
+        value={realValue ?? (motif ? "N/D" : kpi.value)}
+        className={`absolute bottom-8 left-5 font-semibold leading-none text-black ${motif ? "text-[22px]" : "text-[32px]"}`}
+      />
+      {motif ? (
+        <p className="absolute left-5 right-[92px] top-[82px] line-clamp-2 text-[11px] font-medium leading-[1.25] text-[#8A6E36]" title={motif}>
+          {motif}
+        </p>
+      ) : null}
+      {real?.metric_id || kpi.source ? (
+        <span className="absolute bottom-3 left-5 max-w-[165px] truncate text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A9291]"
+              title={real?.definition || undefined}>
+          {real?.metric_id || kpi.source}
         </span>
       ) : null}
       <div className="absolute -bottom-[24px] right-[-46px] h-[126px] w-[204px]" style={{ opacity: unavailable ? 0.5 : 0.95 }}>
@@ -394,10 +423,20 @@ function DataContract({ module }: { module: ModuleDef }) {
         </span>
         <div className="min-w-0 flex-1">
           <h3 className="text-[15px] font-semibold text-[#171A1A]">Contrat de données gouverné</h3>
-          <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#697071]">
-            Aucune donnée chiffrée n'est inventée. Les KPI, graphiques et analyses s'activent uniquement quand la
-            source <span className="font-bold text-[#252A2B]">{module.source}</span> est matérialisée dans le Data Warehouse.
-          </p>
+          {estModuleRh(module) ? (
+            <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#697071]">
+              Aucune donnée chiffrée n'est inventée. Les cartes sont alimentées par{" "}
+              <span className="font-bold text-[#252A2B]">Kaydan Shield</span> et{" "}
+              <span className="font-bold text-[#252A2B]">Odoo RH</span>, avec leur provenance ; une mesure
+              « aujourd'hui » est live et ne suit pas le filtre de période. Une carte sans source affiche N/D et
+              dit pourquoi.
+            </p>
+          ) : (
+            <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#697071]">
+              Aucune donnée chiffrée n'est inventée. Les KPI, graphiques et analyses s'activent uniquement quand la
+              source <span className="font-bold text-[#252A2B]">{module.source}</span> est matérialisée dans le Data Warehouse.
+            </p>
+          )}
         </div>
       </div>
     </motion.div>
@@ -448,7 +487,7 @@ function AiGuardrail({ module }: { module: ModuleDef }) {
   );
 }
 
-function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<string, { value: number; unit: string; format: string }> }) {
+function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<string, ModuleDataValue> }) {
   const hasKpis = Boolean(module.kpis?.length);
   const isAlerts = module.key === "alerts" || module.key === "hr-alerts";
   const isAi = module.kind === "ai";
