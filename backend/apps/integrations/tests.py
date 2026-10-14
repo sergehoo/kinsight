@@ -2152,7 +2152,9 @@ class OdooConnecteurTest(TestCase):
             connector=self.connecteur, kind=CredentialKind.API_KEY).first()
         ancienne.set_secret("cle-neuve")
         ancienne.save()
-        self.assertEqual(odoo._cle_api(self.connecteur), "cle-neuve")
+        from .odoo_session import cle_api
+
+        self.assertEqual(cle_api(self.connecteur), "cle-neuve")
 
 
 class OdooRbacTest(APITestCase):

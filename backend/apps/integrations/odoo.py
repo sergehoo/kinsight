@@ -33,8 +33,9 @@ from typing import Any
 
 from django.utils import timezone
 
-from .models import CredentialKind, DataSource, SourceStatus, SourceType
+from .models import DataSource, SourceStatus, SourceType
 from .odoo_client import ClientOdoo, OdooError
+from .odoo_session import client_pour, etat_odoo
 
 ODOO_SOURCE_SLUG = "odoo-hr"
 
@@ -87,39 +88,18 @@ def get_odoo_source() -> DataSource | None:
     )
 
 
-def _cle_api(connector) -> str:
-    """La clé API déposée sur le connecteur, la plus récente d'abord.
-
-    Même tri descendant que pour Shield, et pour la même raison apprise à ses
-    dépens : en prenant la plus ancienne, toute rotation de secret restait sans
-    effet et la source répondait « refusé » quelle que soit la clé fraîchement
-    saisie.
-    """
-    for kind in (CredentialKind.API_KEY, CredentialKind.API_TOKEN, CredentialKind.PASSWORD):
-        cred = connector.credentials.filter(kind=kind).order_by("-created_at").first()
-        if cred is not None and cred.is_set:
-            try:
-                return cred.secret
-            except Exception:  # noqa: BLE001 — clé de chiffrement changée
-                return ""
-    return ""
-
-
 def build_client(source: DataSource) -> ClientOdoo:
-    """Client prêt à lire, monté depuis la configuration du connecteur.
+    """Client prêt à lire, branché sur la session PARTAGÉE de ces identifiants.
 
-    La base et le login vivent dans `connector.config` — ce ne sont pas des
-    secrets — et la clé API dans les identifiants chiffrés. Séparer les deux
-    permet de montrer la configuration à l'écran sans jamais exposer la clé.
+    La première version montait un client autonome à chaque requête : son uid
+    mourait avec lui, et chaque écran se réauthentifiait autant de fois qu'il
+    avait de cartes. Les identifiants — base, compte, clé — sont lus chiffrés
+    par `odoo_session`, qui garde l'uid et le renouvelle seul.
     """
     connector = getattr(source, "connector", None)
-    config = (getattr(connector, "config", None) or {}) if connector else {}
-    return ClientOdoo(
-        url=(getattr(connector, "base_url", "") or ""),
-        base=str(config.get("database") or config.get("db") or ""),
-        login=str(config.get("login") or config.get("username") or ""),
-        cle=_cle_api(connector) if connector else "",
-    )
+    if connector is None:
+        return ClientOdoo(url="", base="", login="", cle="")
+    return client_pour(connector)
 
 
 def _guard():
@@ -355,18 +335,32 @@ def fetch_hr_reference() -> dict[str, Any]:
 
 
 def odoo_health() -> dict[str, Any]:
-    """Santé du connecteur, pour l'écran d'administration. Aucune donnée métier."""
+    """Santé du connecteur, lisible par tout utilisateur authentifié.
+
+    Ne renvoie NI le nom de la base NI le compte, même masqué : ce point d'accès
+    n'est pas réservé aux administrateurs. L'état vient de la dernière
+    vérification réelle ; l'uid est obtenu par la session partagée, donc sans
+    réauthentification tant qu'il est valide.
+    """
     source, bloque = _guard()
     if bloque:
-        return {"status": "disconnected", "source": bloque["source"], "detail": bloque["detail"]}
+        source_brute = get_odoo_source()
+        etat = etat_odoo(source_brute.connector) if source_brute is not None and getattr(
+            source_brute, "connector", None) is not None else None
+        return {"status": (etat or {}).get("etat") or "disconnected",
+                "source": bloque["source"], "detail": bloque["detail"]}
     client = build_client(source)
     debut = timezone.now()
     try:
-        uid = client.uid()
+        client.uid()
     except OdooError as exc:
-        return {"status": "auth_required" if exc.kind in ("auth", "config") else "error",
+        return {"status": "auth_required" if exc.kind in ("auth", "config", "base") else "error",
                 "source": source.name or "Odoo RH", "detail": str(exc), "cause": exc.kind}
     latence = int((timezone.now() - debut).total_seconds() * 1000)
-    return {"status": "connected", "source": source.name or "Odoo RH",
-            "detail": "Authentification Odoo acceptée.", "uid_present": bool(uid),
+    etat = etat_odoo(source.connector)
+    return {"status": "stale" if etat["etat"] == "stale" else "connected",
+            "source": source.name or "Odoo RH",
+            "detail": "Session Odoo active.", "version": etat.get("version") or "",
+            "derniere_verification": etat.get("derniere_verification"),
+            "reconnexion_automatique": etat.get("reconnexion_automatique"),
             "latency_ms": latence}

@@ -5,6 +5,8 @@ import type {
   DataSource,
   FieldMapping,
   HealthResponse,
+  OdooAuth,
+  OdooCompanies,
   SyncErrorItem,
   SyncJob,
   SessionAuth,
@@ -182,6 +184,50 @@ export function useReauthenticate() {
     // l'expiration » juste au-dessus du refus.
     onSettled: invalidate,
   });
+}
+
+/** Enregistre le compte technique Odoo — le backend l'ÉPROUVE avant d'écrire.
+ *
+ *  Le secret ne vit que dans ce corps de requête : ni storage, ni journal, ni
+ *  réponse. Un refus rend un 4xx ; on le laisse remonter en `ApiError`, dont
+ *  `details.message` porte l'explication du backend. */
+export function useOdooAccount() {
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ sourceId, url, database, login, secret }: {
+      sourceId: string; url: string; database: string; login: string; secret: string;
+    }) =>
+      req<{ ok: boolean; message: string; odoo_auth: OdooAuth }>(
+        "POST", `/integrations/sources/${sourceId}/odoo-account/`, { url, database, login, secret }),
+    onSettled: invalidate,
+  });
+}
+
+export function useOdooCompanies(enabled: boolean) {
+  return useQuery<OdooCompanies>({
+    queryKey: ["integrations", "odoo", "companies"],
+    enabled,
+    queryFn: () => req<OdooCompanies>("GET", "/integrations/odoo/companies/"),
+    retry: retryHorsRefus,
+  });
+}
+
+export function useSaveOdooMapping() {
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (mapping: Record<string, string>) =>
+      req<{ mapping: Record<string, string> }>("PUT", "/integrations/odoo/companies/", { mapping }),
+    onSuccess: invalidate,
+  });
+}
+
+/** Le message qu'un refus du backend porte dans son corps, s'il y en a un. */
+export function messageDuRefus(erreur: unknown): string | undefined {
+  if (erreur instanceof ApiError && erreur.details) {
+    const m = (erreur.details as Record<string, unknown>).message ?? (erreur.details as Record<string, unknown>).detail;
+    if (typeof m === "string") return m;
+  }
+  return undefined;
 }
 
 export function useSyncNow() {

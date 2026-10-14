@@ -1,4 +1,4 @@
-"""Client XML-RPC Odoo : transport, erreurs, session.
+"""Client JSON-RPC Odoo : transport et erreurs qualifiées.
 
 Séparé de la normalisation métier (`odoo.py`) pour la même raison que le client
 Shield : la distinction entre « Odoo a dit non » et « Odoo n'a pas répondu »
@@ -6,26 +6,33 @@ détermine l'état affiché à l'écran. Un refus de droits n'est pas une panne,
 délai dépassé n'est pas une absence de donnée, et confondre les deux produit des
 tableaux de bord qui mentent.
 
-POURQUOI XML-RPC ET NON JSON-RPC. Les deux répondent sur l'instance (vérifié sur
-rh.kaydan.tech, Odoo 18.0). XML-RPC est retenu parce qu'il est dans la
-bibliothèque standard — `xmlrpc.client` — là où JSON-RPC demanderait de
-réimplémenter l'enveloppe, la gestion des fautes et le typage des dates. Aucune
-dépendance ajoutée, moins de code à se tromper.
+POURQUOI JSON-RPC, APRÈS UNE PREMIÈRE VERSION EN XML-RPC. Les deux répondent sur
+rh.kaydan.tech (Odoo 18.0), et XML-RPC avait été retenu pour sa présence dans la
+bibliothèque standard. Mais une faute XML-RPC n'est qu'une chaîne : refus
+d'identifiants, droits manquants et base inexistante ne s'y distinguaient qu'en
+cherchant des mots dans un traceback. JSON-RPC rend la CLASSE de l'exception —
+`data.name = "odoo.exceptions.AccessDenied"` — et c'est exactement ce qui sépare
+« réauthentifier » de « ne surtout pas réauthentifier ». Le transport reste en
+bibliothèque standard (`urllib` + `json`) : aucune dépendance ajoutée.
 
-LA SESSION ODOO N'EST PAS UN JETON. `authenticate(db, login, clé)` rend un `uid`
-entier, et chaque appel ultérieur repasse la CLÉ, pas un jeton de session. Il n'y
-a donc rien à rafraîchir : on met l'uid en cache pour éviter un aller-retour par
-requête, et on le redemande si Odoo le refuse.
+LA SESSION ODOO N'EST PAS UN JETON. `common.authenticate(db, login, clé, {})`
+rend un `uid` entier, et chaque `object.execute_kw` repasse la CLÉ, pas un jeton.
+Il n'y a rien à rafraîchir : la permanence vient du compte technique et de sa clé
+stockée chiffrée. La gestion de l'uid — cache, réauthentification, single-flight
+— vit dans `odoo_session`.
 """
 
 from __future__ import annotations
 
+import itertools
+import json
 import logging
 import socket
 import ssl
 import threading
 import time
-import xmlrpc.client
+import urllib.error
+import urllib.request
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -49,6 +56,7 @@ class OdooError(Exception):
       reseau      → hôte injoignable, TLS invalide
       protocole   → réponse illisible ou inattendue
       config      → il manque une information de connexion (base, login, clé)
+      base        → la base nommée n'existe pas sur le serveur
     """
 
     def __init__(self, kind: str, message: str):
@@ -56,16 +64,25 @@ class OdooError(Exception):
         self.kind = kind
 
 
+_identifiants_rpc = itertools.count(1)
+
+
 class ClientOdoo:
     """Lecture seule sur une instance Odoo. N'écrit jamais, n'appelle que `search_read`,
-    `search_count` et `fields_get`.
+    `search_count`, `fields_get`, `read` et `search`.
 
     La clé API est gardée en mémoire le temps de l'appel et ne sort jamais d'ici :
     ni journal, ni message d'erreur, ni réponse d'API.
+
+    `session` : un `odoo_session.SessionOdoo` partagé. Sans lui, le client garde
+    un uid local — c'était le seul mode de la première version, et il ne servait
+    à rien : `build_client` créant un client par requête, l'uid mourait avec lui
+    et chaque requête web se réauthentifiait.
     """
 
     def __init__(self, url: str, base: str, login: str, cle: str,
-                 delai: int = DELAI_DEFAUT, max_tentatives: int = MAX_TENTATIVES):
+                 delai: int = DELAI_DEFAUT, max_tentatives: int = MAX_TENTATIVES,
+                 session=None):
         self.url = (url or "").rstrip("/")
         self.base = base or ""
         self.login = login or ""
@@ -73,110 +90,173 @@ class ClientOdoo:
         self.delai = delai
         self.max_tentatives = max_tentatives
         self.appels = 0
+        self.session = session
         self._uid: int | None = None
         self._uid_expire = 0.0
         self._verrou = threading.Lock()
 
-    # ── Connexion ───────────────────────────────────────────────────────────
+    # ── Transport ───────────────────────────────────────────────────────────
 
-    def _proxy(self, service: str) -> xmlrpc.client.ServerProxy:
-        # `allow_none` : Odoo renvoie `False` là où d'autres renvoient null, mais
-        # certains champs vides remontent bien en None et casseraient le marshalling.
-        return xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/{service}",
-                                         allow_none=True)
-
-    def uid(self) -> int:
-        """L'identifiant de session, mis en cache. Lève `OdooError` si refusé."""
-        with self._verrou:
-            if self._uid and time.monotonic() < self._uid_expire:
-                return self._uid
-            manquants = [n for n, v in (("base", self.base), ("login", self.login),
-                                        ("clé API", self._cle), ("URL", self.url)) if not v]
-            if manquants:
-                raise OdooError("config", f"Connexion Odoo incomplète : {', '.join(manquants)}.")
-            uid = self._appeler_brut(lambda: self._proxy("common").authenticate(
-                self.base, self.login, self._cle, {}))
-            if not uid:
-                # Odoo ne distingue pas un mauvais login d'une mauvaise clé, et
-                # c'est tant mieux : le message ne doit pas aider à deviner lequel.
-                raise OdooError("auth", "Odoo refuse ces identifiants pour cette base.")
-            self._uid = int(uid)
-            self._uid_expire = time.monotonic() + TTL_SESSION
-            return self._uid
-
-    def oublier_la_session(self) -> None:
-        with self._verrou:
-            self._uid = None
-            self._uid_expire = 0.0
-
-    # ── Appels ──────────────────────────────────────────────────────────────
+    def _rpc(self, service: str, methode: str, *args):
+        """Un appel `POST /jsonrpc`. Rend `result`, ou lève une `OdooError` qualifiée."""
+        corps = json.dumps({
+            "jsonrpc": "2.0", "method": "call", "id": next(_identifiants_rpc),
+            "params": {"service": service, "method": methode, "args": list(args)},
+        }).encode()
+        requete = urllib.request.Request(
+            f"{self.url}/jsonrpc", data=corps, method="POST",
+            headers={"Content-Type": "application/json", "Accept": "application/json",
+                     "User-Agent": "k-insight"},
+        )
+        with urllib.request.urlopen(requete, timeout=self.delai) as reponse:  # noqa: S310
+            try:
+                charge = json.loads(reponse.read().decode("utf-8"))
+            except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+                raise OdooError("protocole", "Réponse Odoo illisible (JSON attendu).") from exc
+        if not isinstance(charge, dict):
+            raise OdooError("protocole", "Réponse Odoo inattendue (objet JSON attendu).")
+        if charge.get("error"):
+            raise self._traduire_erreur(charge["error"])
+        return charge.get("result")
 
     def _appeler_brut(self, fonction):
-        """Exécute un appel XML-RPC en traduisant toute panne en `OdooError`."""
+        """Exécute un appel en traduisant toute panne de TRANSPORT en `OdooError`.
+
+        Une erreur rendue PAR Odoo est une réponse : on ne la réessaie pas. Seules
+        les pannes de transport ont droit à une reprise, et une seule.
+        """
         derniere: OdooError | None = None
         for tentative in range(self.max_tentatives):
             self.appels += 1
             try:
                 return fonction()
-            except xmlrpc.client.Fault as exc:
-                # Une faute Odoo est une réponse, pas une panne : on ne réessaie pas.
-                raise self._traduire_faute(exc) from exc
-            except socket.timeout as exc:
+            except OdooError:
+                raise
+            except (socket.timeout, TimeoutError) as exc:
                 derniere = OdooError("timeout", f"Odoo n'a pas répondu en {self.delai} s.")
                 derniere.__cause__ = exc
-            except ssl.SSLCertVerificationError as exc:
-                # Symptôme cryptique, cause banale — même diagnostic que pour Shield :
-                # c'est le magasin de certificats de NOTRE environnement qui manque.
-                raise OdooError("reseau", "Certificat TLS d'Odoo non vérifiable : le magasin "
-                                          "de certificats de l'environnement est absent ou "
-                                          "incomplet.") from exc
-            except (xmlrpc.client.ProtocolError, xmlrpc.client.ResponseError) as exc:
-                derniere = OdooError("protocole", f"Réponse Odoo inattendue : {exc}")
+            except urllib.error.HTTPError as exc:
+                # /jsonrpc répond 200 même pour une erreur applicative : un code
+                # HTTP d'erreur vient donc du serveur frontal (proxy, maintenance).
+                if exc.code in (502, 503, 504):
+                    derniere = OdooError("reseau", f"Odoo indisponible (HTTP {exc.code}).")
+                    derniere.__cause__ = exc
+                else:
+                    raise OdooError("protocole", f"Odoo a répondu HTTP {exc.code} sur /jsonrpc : "
+                                                 "point d'accès désactivé ou URL erronée.") from exc
+            except urllib.error.URLError as exc:
+                raison = getattr(exc, "reason", exc)
+                if isinstance(raison, ssl.SSLCertVerificationError):
+                    # Symptôme cryptique, cause banale — même diagnostic que pour
+                    # Shield : c'est le magasin de certificats de NOTRE environnement.
+                    raise OdooError("reseau", "Certificat TLS d'Odoo non vérifiable : le magasin "
+                                              "de certificats de l'environnement est absent ou "
+                                              "incomplet.") from exc
+                if isinstance(raison, (socket.timeout, TimeoutError)):
+                    derniere = OdooError("timeout", f"Odoo n'a pas répondu en {self.delai} s.")
+                else:
+                    derniere = OdooError("reseau", f"Odoo injoignable ({type(raison).__name__}).")
                 derniere.__cause__ = exc
             except (OSError, ConnectionError) as exc:
-                derniere = OdooError("reseau", f"Odoo injoignable : {exc}")
+                derniere = OdooError("reseau", f"Odoo injoignable ({type(exc).__name__}).")
                 derniere.__cause__ = exc
             if tentative + 1 < self.max_tentatives:
                 time.sleep(ATTENTE_REPRISE)
         raise derniere or OdooError("reseau", "Odoo injoignable.")
 
     @staticmethod
-    def _traduire_faute(exc: xmlrpc.client.Fault) -> OdooError:
-        """Qualifie une faute Odoo à partir de son texte.
+    def _traduire_erreur(erreur: dict) -> OdooError:
+        """Qualifie une erreur Odoo par la CLASSE de son exception.
 
-        Odoo renvoie toutes ses erreurs applicatives dans un `Fault` unique dont
-        seul le message distingue un refus de droits d'un modèle absent. On lit
-        donc le texte — à défaut de code — mais on ne le RECOPIE pas vers l'écran :
-        il contient l'arborescence du serveur et l'adresse de sa base.
+        JSON-RPC rend `data.name` (« odoo.exceptions.AccessDenied ») : on décide sur
+        ce nom, et on ne retombe sur le texte que pour les exceptions Python
+        génériques. Le message et le traceback d'Odoo ne sont JAMAIS recopiés vers
+        l'écran : ils contiennent l'arborescence du serveur et l'adresse de sa base.
         """
-        texte = str(exc.faultString or "")
-        if "AccessDenied" in texte or "Access denied" in texte:
+        data = erreur.get("data") if isinstance(erreur, dict) else None
+        data = data if isinstance(data, dict) else {}
+        nom = str(data.get("name") or "")
+        texte = f"{data.get('message') or ''} {erreur.get('message') or ''}"
+        if nom.endswith("AccessDenied"):
             return OdooError("auth", "Odoo refuse ces identifiants pour cette base.")
-        if "AccessError" in texte or "not allowed" in texte:
+        if nom.endswith("AccessError"):
             return OdooError("droits", "Le compte Odoo n'a pas accès à cette donnée.")
-        if "Object" in texte and "doesn't exist" in texte:
+        if "does not exist" in texte and "database" in texte.lower():
+            return OdooError("base", "Cette base Odoo n'existe pas sur le serveur.")
+        if nom.endswith("KeyError") or ("Object" in texte and "doesn't exist" in texte):
             return OdooError("absent", "Modèle absent de cette instance : le module "
                                        "correspondant n'est pas installé.")
-        if "does not exist" in texte and "database" in texte:
-            return OdooError("config", "Cette base Odoo n'existe pas sur le serveur.")
-        # Message générique : on ne renvoie PAS le traceback d'Odoo à l'écran.
-        logger.warning("Faute Odoo non qualifiée : %s", texte[:400])
+        logger.warning("Erreur Odoo non qualifiée : %s", nom or "(sans nom)")
         return OdooError("protocole", "Odoo a répondu par une erreur inattendue.")
 
+    # ── Connexion ───────────────────────────────────────────────────────────
+
+    def version(self) -> dict:
+        """`common.version` : joignabilité et version, SANS authentification."""
+        resultat = self._appeler_brut(lambda: self._rpc("common", "version"))
+        return resultat if isinstance(resultat, dict) else {}
+
+    def authentifier(self) -> int:
+        """`common.authenticate` brut, sans cache. Rend l'uid ou lève `OdooError`."""
+        manquants = [n for n, v in (("base", self.base), ("login", self.login),
+                                    ("clé API", self._cle), ("URL", self.url)) if not v]
+        if manquants:
+            raise OdooError("config", f"Connexion Odoo incomplète : {', '.join(manquants)}.")
+        uid = self._appeler_brut(lambda: self._rpc(
+            "common", "authenticate", self.base, self.login, self._cle, {}))
+        # Odoo rend `False` pour un mauvais login, une mauvaise clé ou un compte
+        # désactivé — sans dire lequel, et c'est tant mieux : le message ne doit
+        # pas aider à deviner.
+        if not isinstance(uid, int) or isinstance(uid, bool) or uid <= 0:
+            raise OdooError("auth", "Odoo refuse ces identifiants pour cette base.")
+        return uid
+
+    def uid(self) -> int:
+        """L'identifiant de session, mis en cache. Lève `OdooError` si refusé."""
+        if self.session is not None:
+            return self.session.uid(self)
+        with self._verrou:
+            if self._uid and time.monotonic() < self._uid_expire:
+                return self._uid
+            self._uid = self.authentifier()
+            self._uid_expire = time.monotonic() + TTL_SESSION
+            return self._uid
+
+    def oublier_la_session(self, uid: int | None = None) -> None:
+        if self.session is not None:
+            self.session.invalider(uid)
+            return
+        with self._verrou:
+            self._uid = None
+            self._uid_expire = 0.0
+
+    # ── Appels ──────────────────────────────────────────────────────────────
+
     def executer(self, modele: str, methode: str, args: list, options: dict | None = None):
-        """`execute_kw` en lecture seule. Toute autre méthode est refusée ici."""
+        """`execute_kw` en lecture seule. Toute autre méthode est refusée ici.
+
+        Sur un refus d'AUTHENTIFICATION — et seulement celui-là — l'uid est
+        jeté, une session neuve est ouverte avec le compte de service, et
+        l'appel est rejoué UNE fois. Pas de boucle : un second refus remonte tel
+        quel. Une panne réseau ne déclenche jamais de réauthentification, qui ne
+        la réparerait pas et consommerait une tentative de connexion pour rien.
+        """
         if methode not in ("search_read", "search_count", "fields_get", "read", "search"):
             raise OdooError("config", f"Méthode « {methode} » interdite : ce client est en lecture seule.")
+
+        def appel(uid: int):
+            return self._appeler_brut(lambda: self._rpc(
+                "object", "execute_kw", self.base, uid, self._cle, modele, methode,
+                args, options or {}))
+
         uid = self.uid()
         try:
-            return self._appeler_brut(lambda: self._proxy("object").execute_kw(
-                self.base, uid, self._cle, modele, methode, args, options or {}))
+            return appel(uid)
         except OdooError as exc:
-            if exc.kind == "auth":
-                # L'uid en cache a pu être invalidé (compte désactivé, clé révoquée) :
-                # on le jette pour que la tentative suivante reparte d'une session neuve.
-                self.oublier_la_session()
-            raise
+            if exc.kind != "auth":
+                raise
+            self.oublier_la_session(uid)
+        return appel(self.uid())
 
     # ── Raccourcis de lecture ───────────────────────────────────────────────
 

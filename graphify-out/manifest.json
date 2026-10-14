@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "backend/config/settings.py": {
-    "mtime": 1792004610.6922212,
-    "ast_hash": "6e71052d9ec9287ac5559de0842fd30b",
+    "mtime": 1792016320.5709279,
+    "ast_hash": "cd955dacb4028a7b8f47833152afd7a6",
     "semantic_hash": ""
   },
   "backend/config/urls.py": {
@@ -760,13 +760,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/models.py": {
-    "mtime": 1792014341.7436945,
-    "ast_hash": "c8fdb14872813c21617474a5f4d95889",
+    "mtime": 1792015927.1553273,
+    "ast_hash": "0c78e431d85b21a58190da6cd789826e",
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo.py": {
-    "mtime": 1789206251.8024313,
-    "ast_hash": "aa1a551fc0a7926ba3a0870317a7f6da",
+    "mtime": 1792015941.3113325,
+    "ast_hash": "90bfe87ebd3284a5eb8607e824767935",
     "semantic_hash": ""
   },
   "backend/apps/integrations/permissions.py": {
@@ -775,13 +775,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/serializers.py": {
-    "mtime": 1792014804.523356,
-    "ast_hash": "9b31d79450e552a55a796f00c2795f62",
+    "mtime": 1792016134.3410969,
+    "ast_hash": "e61fe1f6ee612e3c2e64e19765cbac5e",
     "semantic_hash": ""
   },
   "backend/apps/integrations/services.py": {
-    "mtime": 1788779065.3087213,
-    "ast_hash": "b4ddd7eb72ad1dab7241d32083f62a94",
+    "mtime": 1792016299.889612,
+    "ast_hash": "782995c96c754b8808dd94db0c8fbbf1",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield.py": {
@@ -790,18 +790,18 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/tests.py": {
-    "mtime": 1789206301.125377,
-    "ast_hash": "1fa7fcf32a5bb93b9cab35306cb2072b",
+    "mtime": 1792016185.5398357,
+    "ast_hash": "e8f9ff344219c969655dfa63f4ad1ced",
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
-    "mtime": 1789206280.2984433,
-    "ast_hash": "1c481aaa3a05253c8f73547224d5b53a",
+    "mtime": 1792015973.0148337,
+    "ast_hash": "e33967b7779a49837c73102dae5366d1",
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1792004133.160337,
-    "ast_hash": "da57cd1c544a4fa9f4e8c9c705d6206c",
+    "mtime": 1792015983.529274,
+    "ast_hash": "d88ba7d4b5dd462de119e87de5b76083",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -925,8 +925,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/integrations/parts.tsx": {
-    "mtime": 1788821402.4709077,
-    "ast_hash": "7ab50d2e343059281a6a77c0e0a18692",
+    "mtime": 1792016638.3746192,
+    "ast_hash": "b79e423b3858364c73f4cf62317ee544",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/AppShell.tsx": {
@@ -1060,8 +1060,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/integrations.ts": {
-    "mtime": 1792004667.8508081,
-    "ast_hash": "6431e2c7a886e8173c0b9689b38d5094",
+    "mtime": 1792016033.9468498,
+    "ast_hash": "e288958ce1e68d565bed8dac96c677a0",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/kmetric.ts": {
@@ -1100,8 +1100,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationForm.tsx": {
-    "mtime": 1792015348.5882454,
-    "ast_hash": "5d9ba5926a03db50c2a3b2aceb658eec",
+    "mtime": 1792016729.3930662,
+    "ast_hash": "d14928e72fa28d14b4230b4d0a578a14",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/integrations/IntegrationHealth.tsx": {
@@ -1145,8 +1145,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/integrations.ts": {
-    "mtime": 1792015105.1576574,
-    "ast_hash": "59451ab59870073ea2883853b4019e36",
+    "mtime": 1792016033.9464407,
+    "ast_hash": "f3a64f4b32be1ab42863a77a3b878791",
     "semantic_hash": ""
   },
   "infra/postgres/docker-entrypoint-initdb.d/00-init-k-insight.sh": {
@@ -2055,13 +2055,23 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo_client.py": {
-    "mtime": 1789205998.9401233,
-    "ast_hash": "2beb2f9c665b7329b6049a7dcd7eed9b",
+    "mtime": 1792016299.0887349,
+    "ast_hash": "0a5f3956afac6ae8f8a59f010736f4d3",
     "semantic_hash": ""
   },
   "backend/apps/accounts/jwt_views.py": {
     "mtime": 1792014260.3438132,
     "ast_hash": "9d9bc49cdbd1e34a8a689e7198565c7b",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/odoo_session.py": {
+    "mtime": 1792016298.349894,
+    "ast_hash": "2ee13745e3bfc21644d0180a4de119c3",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/tests_odoo_session.py": {
+    "mtime": 1792016277.8816884,
+    "ast_hash": "d90200836bd0f1c65f88316a34ccbee5",
     "semantic_hash": ""
   }
 }

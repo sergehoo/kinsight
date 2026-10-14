@@ -8,6 +8,7 @@ from .views import (
     DataSourceViewSet,
     FieldMappingViewSet,
     ShieldAttendanceSeriesView,
+    OdooCompaniesView,
     OdooHealthView,
     OdooHrKpiView,
     OdooReferenceView,
@@ -42,5 +43,6 @@ urlpatterns = router.urls + [
     path("odoo/hr-kpi/", OdooHrKpiView.as_view(), name="odoo-hr-kpi"),
     path("odoo/reference/", OdooReferenceView.as_view(), name="odoo-reference"),
     path("odoo/health/", OdooHealthView.as_view(), name="odoo-health"),
+    path("odoo/companies/", OdooCompaniesView.as_view(), name="odoo-companies"),
     path("webhook/<slug:slug>/", WebhookReceiver.as_view(), name="integration-webhook"),
 ]

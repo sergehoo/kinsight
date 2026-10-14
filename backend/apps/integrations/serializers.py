@@ -115,16 +115,53 @@ class DataConnectorSerializer(serializers.ModelSerializer):
     endpoints = ConnectorEndpointSerializer(many=True, read_only=True)
     credentials = ConnectorCredentialSerializer(many=True, read_only=True)
     session_auth = serializers.SerializerMethodField()
+    odoo_auth = serializers.SerializerMethodField()
 
     class Meta:
         model = DataConnector
         fields = [
             "id", "source", "base_url", "auth_method", "headers", "config",
             "last_tested_at", "last_test_ok", "last_test_message", "last_latency_ms",
-            "endpoints", "credentials", "session_auth",
+            "endpoints", "credentials", "session_auth", "odoo_auth",
         ]
         read_only_fields = ["id", "last_tested_at", "last_test_ok", "last_test_message", "last_latency_ms"]
 
+
+    # Clés de `config` qui ne doivent JAMAIS circuler en clair pour Odoo : le
+    # compte technique et tout ce qui ressemblerait à un secret. Une configuration
+    # antérieure les y a peut-être posées ; on ne les renvoie pas, et on refuse
+    # qu'on les y réécrive — la voie est `odoo-account`, qui les chiffre.
+    _CLES_ODOO_PROTEGEES = ("login", "username", "password", "api_key", "secret", "key")
+
+    def _est_odoo(self, obj=None) -> bool:
+        cible = obj if obj is not None else getattr(self, "instance", None)
+        return bool(cible is not None and getattr(cible, "source", None) is not None
+                    and cible.source.source_type == SourceType.ODOO_HR)
+
+    def validate_config(self, valeur):
+        if self._est_odoo() and isinstance(valeur, dict):
+            interdites = sorted(k for k in valeur if k in self._CLES_ODOO_PROTEGEES)
+            if interdites:
+                raise serializers.ValidationError(
+                    f"Ne pas écrire {', '.join(interdites)} dans la configuration d'une source "
+                    f"Odoo : enregistrez le compte de service par « Rendre la liaison "
+                    f"permanente », qui le chiffre après l'avoir éprouvé.")
+        return valeur
+
+    def to_representation(self, obj):
+        donnees = super().to_representation(obj)
+        if self._est_odoo(obj) and isinstance(donnees.get("config"), dict):
+            donnees["config"] = {k: v for k, v in donnees["config"].items()
+                                 if k not in self._CLES_ODOO_PROTEGEES}
+        return donnees
+
+    def get_odoo_auth(self, obj):
+        """État de la liaison Odoo : base, compte MASQUÉ, dates. Jamais la clé."""
+        if obj.source.source_type != SourceType.ODOO_HR:
+            return None
+        from .odoo_session import etat_odoo
+
+        return etat_odoo(obj)
 
     def get_session_auth(self, obj):
         """État de la session Shield : des dates et des états, jamais un jeton.

@@ -110,6 +110,28 @@ EDW_DSN = {
 }
 
 # --- Celery (orchestration : syncs, alertes, automatisations Copilot) ---
+# Cache partagé. Sans lui, Django retombe sur un cache EN MÉMOIRE PAR PROCESSUS :
+# chaque worker gunicorn gardait son propre uid Odoo et s'authentifiait de son
+# côté, et le verrou « une seule authentification à la fois » ne valait que dans
+# un processus. Redis est déjà en production (`REDIS_URL`) pour Celery.
+#
+# Délais d'une seconde : une panne Redis ne doit coûter qu'une seconde, jamais
+# bloquer une requête — le code qui s'en sert (`odoo_session`) retombe alors sur
+# son cache de processus. La base 0 est libre : Celery occupe la 1.
+_REDIS_CACHE = os.environ.get("REDIS_URL", "")
+CACHES = {
+    "default": (
+        {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": _REDIS_CACHE,
+            "KEY_PREFIX": "kinsight",
+            "OPTIONS": {"socket_connect_timeout": 1, "socket_timeout": 1},
+        }
+        if _REDIS_CACHE
+        else {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    )
+}
+
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", os.environ.get("REDIS_URL", "redis://localhost:6379/1"))
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "")
 CELERY_BEAT_SCHEDULE = {

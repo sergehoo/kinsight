@@ -87,11 +87,16 @@ export function IntegrationsError({ error }: { error: unknown }) {
   // — on renverrait l'opérateur se reconnecter alors que sa session est intacte.
   const messageServeur = typeof corps.message === "string" ? corps.message : null;
   const refusShield = "auth" in corps;
+  // Même logique pour Odoo : `odoo_auth` signe une réponse de la voie « compte de
+  // service Odoo ». Sans ce marqueur, un 409 s'affichait « Session Shield non
+  // renouvelable » et conseillait de recoller des jetons Shield — pour une base
+  // Odoo mal nommée.
+  const refusOdoo = "odoo_auth" in corps;
   // `detail` est le message générique de DRF, déjà reformulé au-dessus ; le
   // reproduire tel quel ajouterait une seconde phrase disant la même chose.
   // Seules les erreurs PAR CHAMP (400) valent d'être listées.
   const parChamp = Object.entries(corps).filter(
-    ([champ]) => !["detail", "message", "ok", "auth"].includes(champ),
+    ([champ]) => !["detail", "message", "ok", "auth", "odoo_auth"].includes(champ),
   );
   const details = parChamp.length ? parChamp : null;
 
@@ -166,7 +171,42 @@ export function IntegrationsError({ error }: { error: unknown }) {
       "il n'y a pas à vous reconnecter.",
     geste: "Obtenez un couple access + refresh neuf dans Shield, puis recollez-le.",
   };
-  const known = refusShield && status === 401 ? refusDeJeton : status !== undefined ? cases[status] : undefined;
+  const casOdoo: Record<number, { titre: string; explication: string; geste: string }> = {
+    401: {
+      titre: "Compte Odoo refusé",
+      explication:
+        "Odoo a rejeté le compte de service : identifiant, clé API, ou compte désactivé. " +
+        "Votre session K-Insight, elle, est intacte. Rien n'a été enregistré.",
+      geste: "Vérifiez le compte technique et sa clé API dans Odoo, puis réessayez.",
+    },
+    409: {
+      titre: "Compte Odoo inutilisable en l'état",
+      explication:
+        "Odoo a répondu, mais la base nommée n'existe pas, ou le compte ne peut pas lire les employés. " +
+        "Le mot de passe n'est pas en cause. Le message ci-dessus précise laquelle.",
+      geste: "Corrigez le nom de la base, ou accordez au compte la lecture des modèles RH.",
+    },
+    429: {
+      titre: "Trop d'essais refusés",
+      explication:
+        "Les essais sont suspendus quelques minutes pour ne pas faire verrouiller le compte technique côté Odoo.",
+      geste: "Patientez quelques minutes avant de réessayer.",
+    },
+    502: {
+      titre: "Réponse Odoo inattendue",
+      explication: "Odoo a répondu, mais pas comme prévu. Rien n'a été enregistré.",
+      geste: "Vérifiez l'URL d'Odoo et que /jsonrpc y est actif.",
+    },
+    503: {
+      titre: "Odoo injoignable",
+      explication:
+        "Le serveur K-Insight n'a pas pu joindre Odoo : ce n'est PAS un refus d'identifiants. Rien n'a été enregistré.",
+      geste: "Vérifiez l'URL et la sortie réseau du serveur, puis réessayez.",
+    },
+  };
+  const known = refusOdoo && status !== undefined && casOdoo[status]
+    ? casOdoo[status]
+    : refusShield && status === 401 ? refusDeJeton : status !== undefined ? cases[status] : undefined;
   const cinqCents = status !== undefined && status >= 500;
   const titre = known?.titre ?? (cinqCents ? "Erreur applicative du backend" : "API inaccessible");
   const explication =

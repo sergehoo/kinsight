@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { glass } from "@/components/chrome/theme";
-import type { SessionAuth } from "@/types/integrations";
+import type { OdooAuth, SessionAuth } from "@/types/integrations";
 import { IntegrationsError, IntegrationsShell, StatusBadge } from "@/components/integrations/parts";
 import {
   ApiError,
@@ -19,6 +19,10 @@ import {
   useJobs,
   useLogs,
   useMappings,
+  messageDuRefus,
+  useOdooAccount,
+  useOdooCompanies,
+  useSaveOdooMapping,
   useSource,
   useSyncNow,
   useReauthenticate,
@@ -109,8 +113,9 @@ const TYPE_PRESETS: Record<string, Partial<TypePreset>> = {
     requiresUrl: true,
     requiresDatabase: true,
     credentialKind: "api_key",
-    credentialLabel: "Clé API Odoo",
-    note: "Odoo exige aussi le nom de la base de données : le test échouera sans lui.",
+    credentialLabel: "Clé API / mot de passe",
+    note: "Odoo exige le nom de la base et un compte de service. Préférez un compte technique " +
+      "dédié avec une clé d'API : K-Insight l'utilisera pour rétablir seul la connexion.",
   },
   sap: {
     module: "finance",
@@ -199,6 +204,10 @@ const LIBELLE_ETAPE: Record<Etape, { titre: string; acquis: string }> = {
 
 /** « Échec du test Kaydan Shield » situe la panne mieux que « test de connexion ». */
 function titreEtape(etape: Etape, typeLabel: string) {
+  // Odoo ne dépose pas un secret isolé : il fait éprouver le compte entier, et
+  // n'écrit rien du connecteur avant. « connecteur configuré · enregistrement du
+  // secret » décrirait un chemin qu'il ne prend pas.
+  if (etape === "secret" && typeLabel === "Odoo") return "Source créée · Compte Odoo non vérifié";
   const base = LIBELLE_ETAPE[etape];
   const titre = etape === "test" ? `Échec du test ${typeLabel}` : base.titre;
   return base.acquis ? `${base.acquis} · ${titre}` : titre;
@@ -217,6 +226,7 @@ function CreateForm() {
   const create = useCreateSource();
   const updateConnector = useUpdateConnector();
   const addCredential = useAddCredential();
+  const odooAccount = useOdooAccount();
   const test = useTestConnection();
 
   // Étape 1 — identité de la source.
@@ -233,6 +243,12 @@ function CreateForm() {
   const [auth, setAuth] = React.useState("bearer");
   const [secret, setSecret] = React.useState("");
   const [database, setDatabase] = React.useState("");
+  // Odoo : le compte de service. Absent de la première version de l'assistant —
+  // une source Odoo créée par lui ne pouvait donc JAMAIS s'authentifier.
+  const [login, setLogin] = React.useState("");
+  // Le secret est effacé dès son envoi ; le récapitulatif doit pourtant dire
+  // qu'il a été fourni, sinon il affiche « non » juste après qu'on l'a saisi.
+  const [secretFourni, setSecretFourni] = React.useState(false);
   const [frequency, setFrequency] = React.useState("manual");
   // Le mode démo est un mode DÉGRADÉ : il laisse une source non connectée se
   // comporter comme si elle l'était. Il doit rester une décision explicite,
@@ -252,6 +268,7 @@ function CreateForm() {
 
   const preset = presetPour(sourceType);
   const shield = sourceType === "kaydan_shield";
+  const odoo = sourceType === "odoo_hr";
 
   const changerType = (valeur: string) => {
     const p = presetPour(valeur);
@@ -264,7 +281,9 @@ function CreateForm() {
 
   const codeFinal = code.trim() || preset.slug || slugify(name);
   const etape1Ok = name.trim().length > 0 && codeFinal.length > 0;
-  const etape2Ok = (!preset.requiresUrl || baseUrl.trim().length > 0) && (!preset.requiresDatabase || database.trim().length > 0);
+  const etape2Ok = (!preset.requiresUrl || baseUrl.trim().length > 0)
+    && (!preset.requiresDatabase || database.trim().length > 0)
+    && (!odoo || (login.trim().length > 0 && secret.trim().length > 0));
 
   /** Crée la source, configure le connecteur, dépose le secret, puis teste.
    *
@@ -320,6 +339,26 @@ function CreateForm() {
         cible = { id: source.id, connectorId: source.connector?.id };
         setSourceCreee(cible);
         setCreationAmbigue(false);
+      }
+
+      if (odoo) {
+        // Odoo : base, compte et clé partent ENSEMBLE vers la voie qui les
+        // éprouve (version, authentification, lecture RH) avant de les écrire
+        // chiffrés. Rien n'est posé en clair dans `config`, et un refus laisse
+        // la source sans identifiants plutôt qu'avec des identifiants faux.
+        etape = "secret";
+        setSecretFourni(secret.trim().length > 0);
+        try {
+          await odooAccount.mutateAsync({
+            sourceId: cible.id, url: baseUrl.trim(), database: database.trim(),
+            login: login.trim(), secret: secret.trim(),
+          });
+        } finally {
+          setSecret("");
+        }
+        etape = "test";
+        setVerdict(await test.mutateAsync(cible.id));
+        return;
       }
 
       if (cible.connectorId) {
@@ -459,8 +498,15 @@ function CreateForm() {
               </div>
               {preset.requiresDatabase ? (
                 <div>
-                  <label className={labelCls} htmlFor="cnx-db">Base de données</label>
+                  <label className={labelCls} htmlFor="cnx-db">{odoo ? "Nom de la base" : "Base de données"}</label>
                   <input id="cnx-db" className={field} value={database} onChange={(e) => setDatabase(e.target.value)} placeholder="kaydan_prod" required />
+                </div>
+              ) : null}
+              {odoo ? (
+                <div>
+                  <label className={labelCls} htmlFor="cnx-login">Adresse du compte de service</label>
+                  <input id="cnx-login" className={field} type="email" autoComplete="off" value={login}
+                         onChange={(e) => setLogin(e.target.value)} placeholder="integration@kaydan.tech" required />
                 </div>
               ) : null}
               <div>
@@ -496,7 +542,7 @@ function CreateForm() {
                 ["Module cible", TARGET_MODULES.find(([v]) => v === target)?.[1] ?? target],
                 ["URL de base", baseUrl || "—"],
                 ["Authentification", AUTH_METHODS.find(([v]) => v === auth)?.[1] ?? auth],
-                ["Secret fourni", secret.trim() ? "oui (masqué)" : "non"],
+                ["Secret fourni", secret.trim() || secretFourni ? "oui (masqué)" : "non"],
                 ["Mode démo", demo ? "activé" : "désactivé"],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4 border-b border-[#EDF0EE] pb-2 last:border-0">
@@ -622,7 +668,13 @@ function ApiConfigTab({ source }: { source: any }) {
   const [auth, setAuth] = React.useState(source.connector?.auth_method || "none");
   const [token, setToken] = React.useState("");
   const connectorId = source.connector?.id;
-  const cred = source.connector?.credentials?.[0];
+  // LE jeton d'API, choisi par son type. `credentials[0]` affichait le premier
+  // secret venu : le mot de passe du compte de service Shield, ou la base Odoo,
+  // présentés comme « Token API · défini ».
+  const cred = source.connector?.credentials?.find((c: { kind: string }) => c.kind === "api_token");
+  // Odoo n'a pas de « token » : son compte technique passe par la voie qui
+  // l'éprouve avant de l'écrire. Un champ ici en déposerait un sans vérification.
+  const odoo = source.source_type === "odoo_hr";
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -647,10 +699,17 @@ function ApiConfigTab({ source }: { source: any }) {
             {AUTH_METHODS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </select>
         </div>
-        <div>
-          <label className={labelCls}>Token API {cred?.is_set ? <span className="text-[#0F6E56]">· défini ({cred.masked})</span> : null}</label>
-          <input className={field} type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder={cred?.is_set ? "•••• (laisser vide pour conserver)" : "Coller le token (chiffré en base)"} />
-        </div>
+        {odoo ? (
+          <p className="self-end text-[12px] font-medium leading-relaxed text-[#6E7A78]">
+            Le compte de service Odoo (base, adresse, clé API) se gère par « Modifier le compte de
+            service » sur la fiche : il y est éprouvé auprès d&apos;Odoo avant d&apos;être enregistré.
+          </p>
+        ) : (
+          <div>
+            <label className={labelCls}>Token API {cred?.is_set ? <span className="text-[#0F6E56]">· défini ({cred.masked})</span> : null}</label>
+            <input className={field} type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder={cred?.is_set ? "•••• (laisser vide pour conserver)" : "Coller le token (chiffré en base)"} />
+          </div>
+        )}
       </div>
       <p className="text-[11px] text-[#9AA09D]">Les secrets sont chiffrés au repos et ne sont jamais réaffichés en clair.</p>
       <div className="flex flex-wrap gap-3">
@@ -1151,6 +1210,251 @@ function ModaleReauth({ sourceId, onFerme, onSucces }: {
   );
 }
 
+// ── Odoo : liaison permanente par compte technique ───────────────────────────
+
+const ETAT_ODOO: Record<OdooAuth["etat"], { texte: string; fond: string; couleur: string }> = {
+  connected: { texte: "Connecté", fond: "#E3F2EC", couleur: "#0F6E56" },
+  stale: { texte: "Vérification ancienne", fond: "#FDF3E1", couleur: "#854F0B" },
+  connecting: { texte: "Connexion…", fond: "#EEF1F0", couleur: "#4A5352" },
+  disconnected: { texte: "Jamais vérifiée", fond: "#EEF1F0", couleur: "#4A5352" },
+  auth_required: { texte: "Authentification requise", fond: "#FBE7E7", couleur: "#A32D2D" },
+  error: { texte: "Erreur de liaison", fond: "#FBE7E7", couleur: "#A32D2D" },
+};
+
+const CAUSES_ODOO: Record<string, string> = {
+  auth: "Odoo refuse ce compte : identifiant, clé, ou compte désactivé",
+  base: "la base nommée n'existe pas sur le serveur Odoo",
+  config: "la configuration est incomplète",
+  droits: "le compte s'authentifie mais ne peut pas lire la RH",
+  reseau: "Odoo était injoignable depuis le serveur — ce n'est pas un refus",
+  timeout: "Odoo n'a pas répondu à temps — ce n'est pas un refus",
+  protocole: "Odoo a répondu de façon inattendue",
+};
+
+function SessionOdoo({ auth, derniereSync }: { auth: OdooAuth; derniereSync: string | null }) {
+  const badge = ETAT_ODOO[auth.etat] ?? ETAT_ODOO.disconnected;
+  return (
+    <div className="grid gap-2 rounded-[18px] border border-[#DDE6E2] bg-white/60 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">Liaison Odoo</p>
+        <span className="rounded-full px-3 py-1 text-[12px] font-bold"
+              style={{ background: badge.fond, color: badge.couleur }}>
+          {badge.texte}
+        </span>
+      </div>
+
+      <p className="text-[12.5px] font-medium"
+         style={{ color: auth.reconnexion_automatique ? "#0F6E56" : "#854F0B" }}>
+        {!auth.identifiants_complets
+          ? "Aucun compte de service complet : la connexion ne peut pas se rétablir seule."
+          : auth.reconnexion_automatique
+            ? "Reconnexion automatique ACTIVE : K-Insight rouvre seul la session Odoo avec le compte technique, sans intervention."
+            : "Reconnexion automatique INACTIVE : Odoo a refusé ce compte. Corrigez-le pour qu'elle reprenne."}
+      </p>
+
+      <dl className="grid gap-x-6 gap-y-1 text-[12.5px] sm:grid-cols-2">
+        {([
+          ["Compte de service", auth.compte_de_service || "aucun"],
+          ["Base", auth.base || "—"],
+          ["Version Odoo", auth.version || "—"],
+          ["Dernière authentification", dateCourte(auth.derniere_authentification)],
+          ["Dernière vérification", dateCourte(auth.derniere_verification)],
+          ["Latence", auth.latence_ms != null ? `${auth.latence_ms} ms` : "—"],
+          ["Dernière synchronisation", derniereSync ? dateCourte(derniereSync) : "jamais"],
+        ] as const).map(([terme, valeur]) => (
+          <div key={terme} className="flex justify-between gap-3">
+            <dt className="text-[#8A9291]">{terme}</dt>
+            <dd className="font-semibold text-[#2C3132]">{valeur}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {auth.identifiants_complets && !auth.identifiants_chiffres ? (
+        <p className="text-[12px] font-medium text-[#854F0B]">
+          Base et compte sont encore enregistrés en clair (configuration antérieure). Réenregistrez
+          le compte de service pour qu'ils soient chiffrés.
+        </p>
+      ) : null}
+
+      {auth.cause_dernier_echec ? (
+        <p className="text-[12.5px] font-semibold text-[#A32D2D]">
+          Dernier échec ({dateCourte(auth.dernier_echec)}) : {CAUSES_ODOO[auth.cause_dernier_echec] ?? auth.cause_dernier_echec}.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** Saisie du compte technique Odoo.
+ *
+ *  Le secret ne vit que dans l'état de ce composant : jamais prérempli, effacé
+ *  à la fermeture comme au succès, jamais écrit en storage ni en cache. La base
+ *  et l'URL, elles, sont reprises de la configuration en place pour éviter de
+ *  les retaper — ce ne sont pas des secrets.
+ */
+function ModaleOdoo({ sourceId, urlParDefaut, baseParDefaut, onFerme, onSucces }: {
+  sourceId: string;
+  urlParDefaut: string;
+  baseParDefaut: string;
+  onFerme: () => void;
+  onSucces: (message: string) => void;
+}) {
+  const compte = useOdooAccount();
+  const [url, setUrl] = React.useState(urlParDefaut);
+  const [base, setBase] = React.useState(baseParDefaut);
+  const [login, setLogin] = React.useState("");
+  const [secret, setSecret] = React.useState("");
+
+  const fermer = () => {
+    setSecret("");
+    onFerme();
+  };
+  const complet = [url, base, login, secret].every((v) => v.trim().length > 0);
+
+  const envoyer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!complet) return;
+    compte.mutate(
+      { sourceId, url: url.trim(), database: base.trim(), login: login.trim(), secret },
+      {
+        onSuccess: (r) => {
+          setSecret("");
+          onSucces(r.message);
+          onFerme();
+        },
+        // Un refus garde le formulaire ouvert pour correction — mais sans le
+        // secret, qui ne doit pas survivre à un envoi.
+        onError: () => setSecret(""),
+      },
+    );
+  };
+
+  // Même raison que pour la modale Shield : la fiche porte un `backdrop-filter`
+  // qui ferait d'elle le bloc conteneur d'un `position: fixed`.
+  return createPortal(
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4"
+         role="dialog" aria-modal="true" aria-label="Connexion permanente Odoo">
+      <form onSubmit={envoyer} className="grid w-full max-w-[560px] gap-4 rounded-[24px] bg-[#F7F9F6] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.3)]">
+        <div>
+          <h2 className="text-[19px] font-bold text-[#16191A]">Connexion permanente Odoo</h2>
+          <p className="mt-1 text-[13px] font-medium leading-relaxed text-[#6E7A78]">
+            K-Insight utilisera ce compte technique pour rétablir automatiquement la connexion Odoo.
+          </p>
+        </div>
+
+        <div>
+          <label className={labelCls} htmlFor="odoo-url">URL Odoo</label>
+          <input id="odoo-url" className={field} type="url" value={url}
+                 onChange={(e) => setUrl(e.target.value)} placeholder="https://rh.kaydan.tech" required />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor="odoo-base">Nom de la base</label>
+          <input id="odoo-base" className={field} value={base} autoComplete="off"
+                 onChange={(e) => setBase(e.target.value)} placeholder="kaydan_prod" required />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor="odoo-login">Adresse du compte de service</label>
+          <input id="odoo-login" className={field} type="email" value={login} autoComplete="off"
+                 onChange={(e) => setLogin(e.target.value)} placeholder="integration@kaydan.tech" required autoFocus />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor="odoo-secret">Clé API / mot de passe</label>
+          <input id="odoo-secret" className={field} type="password" value={secret} autoComplete="new-password"
+                 onChange={(e) => setSecret(e.target.value)} placeholder="Jamais réaffiché" required />
+        </div>
+
+        <p className="text-[11.5px] leading-relaxed text-[#6E7A78]">
+          Le compte est <strong>éprouvé avant d&apos;être enregistré</strong> : version d&apos;Odoo,
+          authentification, puis lecture des employés. Au moindre refus, rien n&apos;est écrit et le compte
+          en place continue de servir. Préférez un compte technique dédié, en lecture seule sur les modèles
+          RH, avec une clé d&apos;API plutôt qu&apos;un mot de passe — et jamais un compte nominatif.
+        </p>
+
+        {compte.isError ? (
+          <p className="text-[12.5px] font-semibold text-[#A32D2D]">
+            {messageDuRefus(compte.error) ?? "Enregistrement refusé."}
+          </p>
+        ) : null}
+
+        <div className="flex flex-wrap gap-3">
+          <button type="submit" disabled={!complet || compte.isPending}
+                  className="rounded-full bg-[#0B0B0C] px-6 py-3 text-[14px] font-bold text-white disabled:opacity-40">
+            {compte.isPending ? "Vérification auprès d'Odoo…" : "Établir la connexion permanente"}
+          </button>
+          <button type="button" onClick={fermer}
+                  className="rounded-full border border-[#DDE2E0] bg-white/70 px-6 py-3 text-[14px] font-bold text-[#3A3E3E]">
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>,
+    document.body,
+  );
+}
+
+/** Sociétés Odoo ↔ filiales K-Insight : une correspondance DÉCLARÉE, jamais devinée. */
+function CorrespondanceSocietes() {
+  const { data, isLoading, isError, error } = useOdooCompanies(true);
+  const enregistrer = useSaveOdooMapping();
+  const [brouillon, setBrouillon] = React.useState<Record<string, string> | null>(null);
+
+  if (isError) return <IntegrationsError error={error} />;
+  if (isLoading || !data) return <p className="text-[12.5px] text-[#777C7D]">Lecture des sociétés Odoo…</p>;
+  if (data.status !== "connected") {
+    return <p className="text-[12.5px] font-medium text-[#854F0B]">{data.detail || "Sociétés Odoo indisponibles."}</p>;
+  }
+
+  const courant = brouillon ?? data.mapping;
+  const modifie = brouillon !== null;
+
+  return (
+    <div className="grid gap-3 rounded-[18px] border border-[#DDE6E2] bg-white/60 px-5 py-4">
+      <div>
+        <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#8A9291]">Sociétés Odoo ↔ filiales</p>
+        <p className="mt-1 text-[12px] font-medium text-[#6E7A78]">
+          Lues dans <code>res.company</code>. Rien n&apos;est déduit des noms : une société non rattachée
+          le reste tant qu&apos;un administrateur ne l&apos;a pas déclarée.
+        </p>
+      </div>
+      <table className="w-full text-[12.5px]">
+        <thead>
+          <tr className="text-left text-[#8A9291]">
+            <th className="py-1 font-semibold">Société Odoo</th>
+            <th className="py-1 font-semibold">Filiale K-Insight</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.companies.map((societe) => (
+            <tr key={societe.id} className="border-t border-[#EEF1F0]">
+              <td className="py-1.5 font-semibold text-[#2C3132]">{societe.name} <span className="text-[#8A9291]">#{societe.id}</span></td>
+              <td className="py-1.5">
+                <select className="h-9 rounded-lg border border-[#DDE2E0] bg-white px-2"
+                        value={courant[String(societe.id)] ?? ""}
+                        onChange={(e) => setBrouillon({ ...courant, [String(societe.id)]: e.target.value })}>
+                  <option value="">Non rattachée</option>
+                  {data.subsidiaries.map((code) => <option key={code} value={code}>{code}</option>)}
+                </select>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {data.orphans?.length ? (
+        <p className="text-[12px] font-medium text-[#854F0B]">
+          Correspondances vers des sociétés absentes d&apos;Odoo : {data.orphans.join(", ")}.
+        </p>
+      ) : null}
+      {enregistrer.isError ? <IntegrationsError error={enregistrer.error} /> : null}
+      <div>
+        <button type="button" disabled={!modifie || enregistrer.isPending} className={btnGhost}
+                onClick={() => enregistrer.mutate(courant, { onSuccess: () => setBrouillon(null) })}>
+          {enregistrer.isPending ? "Enregistrement…" : "Enregistrer la correspondance"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ConfigureForm({ id }: { id: string }) {
   const { data: source, isLoading, isError, error } = useSource(id);
   const test = useTestConnection();
@@ -1158,7 +1462,9 @@ function ConfigureForm({ id }: { id: string }) {
   const reauthAuto = useReauthenticate();
   const [tab, setTab] = React.useState("api");
   const [modaleOuverte, setModaleOuverte] = React.useState(false);
+  const [modaleOdoo, setModaleOdoo] = React.useState(false);
   const [avis, setAvis] = React.useState<string | null>(null);
+  const synchroniser = useSyncNow();
 
   if (isError) return <IntegrationsError error={error} />;
   if (isLoading || !source) return <p className="text-[14px] text-[#777C7D]">Chargement…</p>;
@@ -1172,6 +1478,7 @@ function ConfigureForm({ id }: { id: string }) {
   // `auth_required` est le SEUL cas où l'on réclame une intervention : partout
   // ailleurs le renouvellement automatique s'en charge.
   const reauthNecessaire = auth?.etat === "auth_required";
+  const odooAuth = connector?.odoo_auth ?? null;
 
   return (
     <div className="grid gap-5">
@@ -1213,6 +1520,7 @@ function ConfigureForm({ id }: { id: string }) {
         ) : null}
 
         {auth ? <SessionShield auth={auth} statutSource={source.status} /> : null}
+        {odooAuth ? <SessionOdoo auth={odooAuth} derniereSync={source.last_sync_at ?? null} /> : null}
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Quand la session est morte, réauthentifier passe en action principale :
@@ -1250,6 +1558,21 @@ function ConfigureForm({ id }: { id: string }) {
               {auth.liaison_permanente ? "Réauthentifier" : "Rendre la liaison permanente"}
             </button>
           ) : null}
+          {/* Odoo : sans compte complet, l'action principale est de le fournir ;
+              avec, c'est le modifier. Jamais de jeton à recoller : il n'y en a pas. */}
+          {odooAuth ? (
+            <button type="button" onClick={() => { setAvis(null); setModaleOdoo(true); }}
+                    className={odooAuth.identifiants_complets && odooAuth.etat !== "auth_required"
+                      ? btnGhost
+                      : "rounded-full bg-[#0B0B0C] px-5 py-2.5 text-[13px] font-bold text-white"}>
+              {odooAuth.identifiants_complets ? "Modifier le compte de service" : "Rendre la liaison permanente"}
+            </button>
+          ) : null}
+          {odooAuth?.identifiants_complets ? (
+            <button type="button" onClick={() => synchroniser.mutate(source.id)} disabled={synchroniser.isPending} className={btnGhost}>
+              {synchroniser.isPending ? "Synchronisation…" : "Synchroniser"}
+            </button>
+          ) : null}
           <button type="button" onClick={() => toggle.mutate(source.id)} disabled={toggle.isPending} className={btnGhost}>
             {source.is_active ? "Désactiver" : "Activer"}
           </button>
@@ -1263,6 +1586,20 @@ function ConfigureForm({ id }: { id: string }) {
         ) : null}
         {reauthAuto.isError ? <IntegrationsError error={reauthAuto.error} /> : null}
         {test.isError ? <IntegrationsError error={test.error} /> : null}
+
+        {odooAuth && (odooAuth.etat === "connected" || odooAuth.etat === "stale") ? (
+          <CorrespondanceSocietes />
+        ) : null}
+
+        {modaleOdoo ? (
+          <ModaleOdoo
+            sourceId={source.id}
+            urlParDefaut={connector?.base_url || ""}
+            baseParDefaut={odooAuth?.base || ""}
+            onFerme={() => setModaleOdoo(false)}
+            onSucces={(message) => setAvis(message)}
+          />
+        ) : null}
 
         {modaleOuverte ? (
           <ModaleReauth

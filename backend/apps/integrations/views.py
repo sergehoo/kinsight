@@ -20,6 +20,7 @@ from .models import (
     DataSource,
     FieldMapping,
     SourceStatus,
+    SourceType,
     SyncError,
     SyncJob,
     SyncLog,
@@ -49,6 +50,7 @@ from .shield import (
     shield_health,
 )
 from .odoo import fetch_hr_kpis as fetch_odoo_hr_kpis, fetch_hr_reference, odoo_health
+from .odoo_client import OdooError
 from .shield_rules import FENETRES_JOURS, MAX_JOURS
 
 # Au-delà de ce délai sans test, une source « connectée » est considérée périmée.
@@ -254,6 +256,76 @@ class OdooReferenceView(APIView):
         return Response(charge)
 
 
+class OdooCompaniesView(APIView):
+    """Sociétés Odoo RÉELLES et leur correspondance déclarée avec les filiales.
+
+    GET : les sociétés lues dans `res.company`, la correspondance enregistrée, et
+    les codes filiales autorisés. PUT : enregistre une correspondance explicite.
+    Rien n'est déduit des noms — c'est à un humain d'affirmer qu'une société Odoo
+    EST une filiale du Groupe.
+    """
+
+    permission_classes = [IsAuthenticated, IsIntegrationAdmin]
+
+    def _source(self):
+        from .odoo import get_odoo_source
+
+        source = get_odoo_source()
+        if source is None or getattr(source, "connector", None) is None:
+            return None
+        return source
+
+    def get(self, request):
+        from apps.organizations.models import Subsidiary
+
+        from .odoo_session import correspondance_societes, societes_odoo
+
+        source = self._source()
+        codes = list(Subsidiary.objects.order_by("code").values_list("code", flat=True))
+        if source is None:
+            return Response({"status": "disconnected", "companies": [], "mapping": {},
+                             "subsidiaries": codes,
+                             "detail": "Aucune source Odoo RH configurée."})
+        mapping = correspondance_societes(source.connector)
+        try:
+            societes = societes_odoo(source.connector)
+        except OdooError as exc:
+            return Response({"status": "auth_required" if exc.kind in ("auth", "base", "config")
+                             else "error", "companies": [], "mapping": mapping,
+                             "subsidiaries": codes, "detail": str(exc)})
+        connues = {str(s["id"]) for s in societes}
+        return Response({
+            "status": "connected",
+            "companies": [{**s, "subsidiary": mapping.get(str(s["id"]), "")} for s in societes],
+            "mapping": mapping,
+            # Une correspondance vers une société disparue d'Odoo est signalée,
+            # pas effacée : c'est peut-être Odoo qui s'est trompé.
+            "orphans": sorted(k for k in mapping if k not in connues),
+            "subsidiaries": codes,
+        })
+
+    def put(self, request):
+        from apps.organizations.models import Subsidiary
+
+        from .odoo_session import enregistrer_correspondance
+
+        source = self._source()
+        if source is None:
+            return Response({"detail": "Aucune source Odoo RH configurée."},
+                            status=http_status.HTTP_404_NOT_FOUND)
+        mapping = request.data.get("mapping")
+        if not isinstance(mapping, dict):
+            return Response({"detail": "`mapping` doit être un objet {id société : code filiale}."},
+                            status=http_status.HTTP_400_BAD_REQUEST)
+        codes = set(Subsidiary.objects.values_list("code", flat=True))
+        try:
+            propre = enregistrer_correspondance(source.connector, mapping, codes)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=http_status.HTTP_400_BAD_REQUEST)
+        _audit(request, "integration.odoo.correspondance_societes", source, {"mapping": propre})
+        return Response({"mapping": propre})
+
+
 class OdooHealthView(APIView):
     """Santé du connecteur Odoo, lisible par tout utilisateur authentifié.
 
@@ -418,6 +490,44 @@ class DataSourceViewSet(viewsets.ModelViewSet):
         return Response({"ok": ok, "message": message,
                          "auth": shield_auth.etat_auth(connector)},
                         status=shield_auth.statut_http(cause, ok=ok))
+
+    @action(detail=True, methods=["post"], url_path="odoo-account")
+    def odoo_account(self, request, pk=None):
+        """Enregistre le compte technique Odoo — APRÈS l'avoir éprouvé.
+
+        Version, authentification, lecture de hr.employee : les trois preuves sont
+        exigées avant toute écriture. Sur échec, rien n'est écrit et le compte en
+        place continue de servir. Le secret n'apparaît ni dans la réponse, ni dans
+        le journal d'audit ; le login n'y figure que masqué.
+        """
+        source = self.get_object()
+        if source.source_type != SourceType.ODOO_HR:
+            return Response({"detail": "Cette action ne concerne que les sources Odoo RH."},
+                            status=http_status.HTTP_400_BAD_REQUEST)
+        connector = getattr(source, "connector", None)
+        if connector is None:
+            connector = DataConnector.objects.create(source=source)
+
+        from .odoo_session import enregistrer_compte_odoo, etat_odoo, masquer_login
+
+        url = (request.data.get("url") or connector.base_url or "").strip()
+        base = (request.data.get("database") or "").strip()
+        login = (request.data.get("login") or "").strip()
+        cle = request.data.get("secret") or ""
+        ok, cause, message = enregistrer_compte_odoo(
+            connector, url=url, base=base, login=login, cle=cle, user=request.user)
+        _audit(request, "integration.odoo.compte_service", source,
+               {"ok": ok, "compte": masquer_login(login), **({"cause": cause} if cause else {})})
+        connector.refresh_from_db()
+        # 401 : identifiants refusés — 409 : la base nommée n'existe pas, ou le
+        # compte ne lit pas la RH (le mot de passe n'est pas en cause) — 429 :
+        # trop d'essais — 503 : Odoo injoignable, ce qui n'est PAS un refus.
+        statut = 200 if ok else {
+            "auth": 401, "base": 409, "droits": 409, "config": 400, "trop_d_essais": 429,
+            "reseau": 503, "timeout": 503,
+        }.get(cause, 502)
+        return Response({"ok": ok, "message": message, "odoo_auth": etat_odoo(connector)},
+                        status=statut)
 
     @action(detail=True, methods=["post"], url_path="sync-now")
     def sync_now(self, request, pk=None):

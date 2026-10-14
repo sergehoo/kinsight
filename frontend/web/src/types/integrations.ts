@@ -71,6 +71,37 @@ export interface SessionAuth {
   derniere_reconnexion?: string | null;
 }
 
+/** État de la liaison Odoo, tel que le backend accepte de le montrer.
+ *
+ *  Ni la clé, ni le login complet, ni l'uid : le compte n'apparaît que masqué
+ *  (« ser***@kaydan.tech »). La permanence d'Odoo ne vient pas d'un jeton — il
+ *  n'y en a pas — mais du compte technique et de sa clé stockés chiffrés. */
+export interface OdooAuth {
+  etat: "connected" | "auth_required" | "error" | "disconnected" | "stale" | "connecting";
+  identifiants_complets: boolean;
+  /** Faux pour un connecteur configuré avant le chiffrement de la base et du login. */
+  identifiants_chiffres: boolean;
+  compte_de_service: string;
+  base: string;
+  version: string;
+  derniere_authentification: string | null;
+  derniere_verification: string | null;
+  latence_ms: number | null;
+  reconnexion_automatique: boolean;
+  cause_dernier_echec: string | null;
+  dernier_echec: string | null;
+  message: string;
+}
+
+export interface OdooCompanies {
+  status: string;
+  companies: { id: number; name: string; subsidiary: string }[];
+  mapping: Record<string, string>;
+  orphans?: string[];
+  subsidiaries: string[];
+  detail?: string;
+}
+
 export interface DataConnector {
   id: string;
   base_url: string;
@@ -83,6 +114,8 @@ export interface DataConnector {
   last_latency_ms?: number | null;
   /** Renseigné uniquement pour une source Kaydan Shield. */
   session_auth?: SessionAuth | null;
+  /** Renseigné uniquement pour une source Odoo RH. */
+  odoo_auth?: OdooAuth | null;
   endpoints?: unknown[];
   credentials?: { id: string; kind: string; label: string; is_set: boolean; masked: string }[];
 }

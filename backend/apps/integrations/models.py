@@ -79,6 +79,11 @@ class CredentialKind(models.TextChoices):
     CLIENT_SECRET = "client_secret", "Client Secret"
     PASSWORD = "password", "Mot de passe"
     OAUTH_REFRESH = "oauth_refresh", "OAuth refresh token"
+    # Odoo : la base et le compte de service sont stockés CHIFFRÉS eux aussi. Ce
+    # ne sont pas des secrets au sens strict, mais ensemble ils désignent le
+    # compte technique — la moitié du chemin vers une connexion.
+    DATABASE = "database", "Base de données"
+    LOGIN = "login", "Identifiant de connexion"
 
 
 class SyncTrigger(models.TextChoices):

@@ -48,8 +48,14 @@ def validate_config(source: DataSource) -> tuple[bool, str]:
         # Ces connecteurs parlent HTTP : sans URL de base, il n'y a rien à joindre.
         if not connector.base_url:
             missing.append("URL de base")
-        if t == "odoo_hr" and not cfg.get("database"):
-            missing.append("base de données Odoo")
+        if t == "odoo_hr":
+            # La base peut vivre chiffrée (compte enregistré par la fiche) ou,
+            # pour un connecteur antérieur, en clair dans `config`.
+            from .models import CredentialKind
+
+            chiffree = connector.credentials.filter(kind=CredentialKind.DATABASE).exists()
+            if not (chiffree or cfg.get("database") or cfg.get("db")):
+                missing.append("base de données Odoo")
     elif t == "edw":
         # Le mart est lu par le gateway, pas par un connecteur HTTP : rien à exiger ici.
         pass
@@ -158,6 +164,14 @@ def _real_healthcheck(source: DataSource) -> tuple[bool, str] | None:
             return False, (f"Connecteur Shield inutilisable ({type(exc).__name__}) : le secret enregistré "
                            f"est illisible. Ré-enregistrez le jeton depuis la fiche de la source.")
         return client.healthcheck()
+    if source.source_type == SourceType.ODOO_HR and getattr(source, "connector", None) is not None:
+        # Avant : une sonde purement RÉSEAU sur l'URL. Une instance joignable
+        # passait « connectée » sans qu'on se soit jamais authentifié — ni même
+        # que la base existe. Désormais : version, authentification, lecture RH.
+        from .odoo_session import verifier_odoo
+
+        ok, _cause, message = verifier_odoo(source.connector)
+        return ok, message
     return None
 
 
