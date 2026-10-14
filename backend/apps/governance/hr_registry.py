@@ -49,6 +49,16 @@ class Metrique:
     cle_source: str = ""           # clé du KPI dans la charge de la source
     domaine: str = "capital-humain"
     motif_absence: str = ""        # obligatoire quand source == AUCUNE
+    # Agrégation sur une PÉRIODE, à partir de l'historique. Écrite ici, une fois,
+    # parce qu'une moyenne de taux journaliers n'est pas le taux de la période :
+    # un jour à 10 présents pèserait autant qu'un jour à 700.
+    #   dernier : stock — dernière valeur mesurée de la période
+    #   moyenne : comptage journalier — moyenne par jour MESURÉ
+    #   ratio   : Σ numérateur ÷ Σ dénominateur × 100 (complément : 100 − ratio)
+    agregat: str = "dernier"
+    numerateur: tuple[str, ...] = ()
+    denominateur: tuple[str, ...] = ()
+    complement: bool = False
 
 
 _M: list[Metrique] = [
@@ -62,31 +72,36 @@ _M: list[Metrique] = [
              "Ouvriers déclarés dans Shield (tous statuts).", cle_source="ouvriers", instant=True),
     Metrique("hr.presents_jour", "Présents aujourd'hui", SHIELD,
              "Personnes pointées présentes aujourd'hui (synthèse du jour Shield).",
-             cle_source="presents", instant=True),
+             cle_source="presents", instant=True, agregat="moyenne"),
     Metrique("hr.absents_jour", "Absents aujourd'hui", SHIELD,
-             "Personnes attendues et non pointées aujourd'hui.", cle_source="absents", instant=True),
+             "Personnes attendues et non pointées aujourd'hui.", cle_source="absents", instant=True,
+             agregat="moyenne"),
     Metrique("hr.retards_jour", "Retards aujourd'hui", SHIELD,
-             "Pointages en retard aujourd'hui (nombre, sans durée).", cle_source="retards", instant=True),
+             "Pointages en retard aujourd'hui (nombre, sans durée).", cle_source="retards", instant=True,
+             agregat="moyenne"),
     Metrique("hr.taux_presence_jour", "Taux de présence du jour", SHIELD,
              "Présents ÷ (présents + absents) × 100, aujourd'hui. Non calculé si le "
              "dénominateur est nul.", unite="%", format="pct", cle_source="taux_presence",
-             instant=True),
+             instant=True, agregat="ratio", numerateur=("hr.presents_jour",),
+             denominateur=("hr.presents_jour", "hr.absents_jour")),
     Metrique("hr.taux_absence_jour", "Taux d'absence du jour", SHIELD,
              "Absents ÷ (présents + absents) × 100, aujourd'hui. Ce n'est PAS "
              "l'absentéisme mensuel.", unite="%", format="pct", cle_source="taux_absence_jour",
-             instant=True),
+             instant=True, agregat="ratio", numerateur=("hr.absents_jour",),
+             denominateur=("hr.presents_jour", "hr.absents_jour")),
     Metrique("hr.taux_ponctualite_jour", "Taux de ponctualité du jour", SHIELD,
              "100 − retards ÷ présents × 100, aujourd'hui.", unite="%", format="pct",
-             cle_source="taux_ponctualite", instant=True),
+             cle_source="taux_ponctualite", instant=True, agregat="ratio",
+             numerateur=("hr.retards_jour",), denominateur=("hr.presents_jour",), complement=True),
     Metrique("hr.sites", "Sites déclarés", SHIELD,
              "Sites déclarés dans Shield, tous statuts.", unite="sites", cle_source="sites",
              instant=True),
     Metrique("hr.presents_employes_jour", "Employés présents aujourd'hui", SHIELD,
              "Présents du jour dont le titulaire est un employé (holder_kind).",
-             cle_source="by_kind.employees", instant=True),
+             cle_source="by_kind.employees", instant=True, agregat="moyenne"),
     Metrique("hr.presents_ouvriers_jour", "Ouvriers présents aujourd'hui", SHIELD,
              "Présents du jour dont le titulaire est un ouvrier (holder_kind).",
-             cle_source="by_kind.workers", instant=True),
+             cle_source="by_kind.workers", instant=True, agregat="moyenne"),
 
     # ── Odoo : référentiel RH ──────────────────────────────────────────────────
     Metrique("hr.employes_actifs_odoo", "Employés actifs (Odoo)", ODOO,

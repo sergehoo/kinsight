@@ -14,6 +14,8 @@ import sys
 from datetime import timedelta
 from pathlib import Path
 
+from celery.schedules import crontab
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Domaine pur importable (src/k_insight).
@@ -134,7 +136,25 @@ CACHES = {
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", os.environ.get("REDIS_URL", "redis://localhost:6379/1"))
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "")
+# Le « jour » d'un instantané est celui de K-Insight (timezone.localdate) : les
+# tâches planifiées doivent tourner dans le même fuseau, sinon « la veille » de
+# Celery et celle de Django ne sont pas la même journée.
+CELERY_TIMEZONE = "UTC"  # = TIME_ZONE, déclaré plus bas ; Abidjan est en UTC+0
 CELERY_BEAT_SCHEDULE = {
+    # Historique RH (ADR-0009). Idempotent : rejouer une exécution met ses lignes
+    # à jour sans en ajouter.
+    "historique-presence-veille": {
+        "task": "historique.presence_veille",
+        "schedule": crontab(hour=1, minute=15),
+    },
+    "historique-stocks-shield": {
+        "task": "historique.stocks_shield",
+        "schedule": crontab(minute=5),
+    },
+    "historique-odoo-quotidien": {
+        "task": "historique.odoo_quotidien",
+        "schedule": crontab(hour=2, minute=0),
+    },
     "ai-copilot-run-due-automations": {
         "task": "ai_copilot.run_due_automations",
         "schedule": float(os.environ.get("AI_AUTOMATIONS_TICK_SECONDS", "300")),  # vérifie les automatisations dues

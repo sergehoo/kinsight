@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/urls.py": {
-    "mtime": 1782555502.4948974,
-    "ast_hash": "fce88d4b81f6914d1067102a6151ad29",
+    "mtime": 1792019897.6442943,
+    "ast_hash": "d2541c9a2dfe50eedc413e3479b2146f",
     "semantic_hash": ""
   },
   "backend/apps/governance/views.py": {
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "backend/config/__init__.py": {
-    "mtime": 1782253828.1671197,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1792019807.3460376,
+    "ast_hash": "76d8f96aa508afef3d1484a460a25949",
     "semantic_hash": ""
   },
   "backend/config/asgi.py": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "backend/config/settings.py": {
-    "mtime": 1792016320.5709279,
-    "ast_hash": "cd955dacb4028a7b8f47833152afd7a6",
+    "mtime": 1792019824.7839816,
+    "ast_hash": "b0d7cf4acd495514018b157ca225cbd9",
     "semantic_hash": ""
   },
   "backend/config/urls.py": {
@@ -2075,8 +2075,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/hr_registry.py": {
-    "mtime": 1792019403.565253,
-    "ast_hash": "da9a29893e865bb778eea8c6a2195910",
+    "mtime": 1792019695.866538,
+    "ast_hash": "ecc45ae98282c6ce37bd6d88ca769d4e",
     "semantic_hash": ""
   },
   "backend/apps/governance/hr_sources.py": {
@@ -2092,6 +2092,51 @@
   "backend/apps/integrations/partage.py": {
     "mtime": 1792018325.4746861,
     "ast_hash": "6147ed1d5b552f1ab3cf230a1f6f0be0",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/historique.py": {
+    "mtime": 1792019994.3087327,
+    "ast_hash": "350cff59b9e655491bc937b546a9095e",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/history_views.py": {
+    "mtime": 1792019994.3092656,
+    "ast_hash": "ba2869a5c768f4ac9e7006f178861c56",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/management/__init__.py": {
+    "mtime": 1792019897.6503928,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/management/commands/__init__.py": {
+    "mtime": 1792019897.6504335,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/management/commands/historiser.py": {
+    "mtime": 1792019897.6521764,
+    "ast_hash": "c67fe822f8082504eea90e762ed8686c",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/models.py": {
+    "mtime": 1792019637.1604877,
+    "ast_hash": "9a47a00b54c0037108dc22aa8028fc99",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/tasks.py": {
+    "mtime": 1792019817.58936,
+    "ast_hash": "ef6bd38ab5a31b9a2e3317b5ba0279c1",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/tests_historique.py": {
+    "mtime": 1792019994.3095117,
+    "ast_hash": "332e7aec00d55cd7fb03f03f42fabbc0",
+    "semantic_hash": ""
+  },
+  "docs/0009-capital-humain-shield-odoo-sans-mart.md": {
+    "mtime": 1792019565.0795238,
+    "ast_hash": "588ec361766e2bf39ac79cf5022ee1d1",
     "semantic_hash": ""
   }
 }
