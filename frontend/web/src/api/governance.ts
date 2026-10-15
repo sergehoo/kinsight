@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { apiDownload, apiGet, apiPost, USE_MOCK } from "@/lib/api";
+import { apiDownload, apiGet, apiPost, apiPut, USE_MOCK } from "@/lib/api";
 import { mockCatalog, mockGovernanceOverview, mockHrKpi } from "@/lib/mock";
 import type { AiAnswer, AlertsResponse, CatalogResponse, GovernanceOverviewResponse, GovernanceScoreResponse, GroupScoreResponse, HrKpiSummary , HrScoreResponse, ModuleDataResponse } from "@/types/governance";
 
@@ -186,5 +186,86 @@ export function useHrHistory(metricId: string, filtres: string, extra = "", enab
     enabled: enabled && !USE_MOCK,
     staleTime: 5 * 60_000,
     queryFn: () => apiGet<HrHistory>(`/governance/hr/history/?${query}`),
+  });
+}
+
+/* ── Signaux RH et seuils arbitrés (`/governance/hr/signaux/`, `/hr/seuils/`) ── */
+
+export type EtatSignal = "critique" | "surveillance" | "normal" | "non_mesure";
+
+export interface SeuilsSignal {
+  /** « bas » : une valeur basse est mauvaise (présence) ; « haut » : l'inverse. */
+  sens: "bas" | "haut";
+  unite: string;
+  surveillance: number;
+  critique: number;
+  par_defaut: boolean;
+  defaut: { surveillance: number; critique: number };
+}
+
+export interface SignalRh {
+  cle: string;
+  libelle: string;
+  regle: string;
+  lien: string;
+  etat: EtatSignal;
+  valeur: number | null;
+  motif?: string | null;
+  source?: string | null;
+  metric_id?: string | null;
+  seuils?: SeuilsSignal | null;
+  confiance?: "élevée" | "moyenne" | "faible" | null;
+  couverture?: { jours: number; jours_mesures: number } | null;
+  comparaison?: { value: number | null; ecart: number | null; ecart_pct: number | null; unite_ecart: "pts" | "abs" | null } | null;
+  details?: { code: string; libelle: string; valeur: number; etat: EtatSignal }[];
+  pire?: { libelle: string; valeur: number } | null;
+  sites_mesures?: number;
+  effectif?: number;
+}
+
+export interface HrSignaux {
+  signaux: SignalRh[];
+  compteurs: Record<EtatSignal, number>;
+  periode: { debut: string; fin: string; libelle: string; jusqu_a: string };
+  seuils_modifiables: boolean;
+}
+
+export function useHrSignals(filtres: string, enabled = true) {
+  return useQuery<HrSignaux>({
+    queryKey: ["hr-signaux", filtres],
+    enabled: enabled && !USE_MOCK,
+    staleTime: 5 * 60_000,
+    queryFn: () => apiGet<HrSignaux>(`/governance/hr/signaux/?${filtres}`),
+  });
+}
+
+export interface SeuilRhLigne extends SeuilsSignal {
+  signal: string;
+  libelle: string;
+  modifie_le: string | null;
+  modifie_par: string | null;
+}
+
+export function useHrThresholds(enabled = true) {
+  return useQuery<{ seuils: SeuilRhLigne[]; modifiable: boolean }>({
+    queryKey: ["hr-seuils"],
+    enabled: enabled && !USE_MOCK,
+    queryFn: () => apiGet("/governance/hr/seuils/"),
+  });
+}
+
+/** Arbitrer (ou réinitialiser) un seuil. Les signaux ET les mesures Shield qui
+ *  portent les seuils (historique, constats du jour) sont relus ensuite. */
+export function useSaveHrThreshold() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (corps: { signal: string; surveillance?: number; critique?: number; reinitialiser?: boolean }) =>
+      apiPut<{ seuils: SeuilRhLigne[]; modifiable: boolean }>("/governance/hr/seuils/", corps),
+    onSuccess: (donnees) => {
+      client.setQueryData(["hr-seuils"], donnees);
+      void client.invalidateQueries({ queryKey: ["hr-signaux"] });
+      void client.invalidateQueries({ queryKey: ["hr-history"] });
+      void client.invalidateQueries({ queryKey: ["shield", "hr-kpi"] });
+    },
   });
 }

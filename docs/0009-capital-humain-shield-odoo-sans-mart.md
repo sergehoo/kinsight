@@ -83,3 +83,21 @@ La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; 
   critique / surveillance / normal. Une case non mesurée reste vide.
 - Les sections du catalogue qu'aucune source ne sert ne rendent plus de cadre de graphe vide : elles sont
   listées « sans source » avec leur motif (`frontend/web/src/config/graphesRh.ts`).
+
+## Addendum — Signaux et seuils arbitrés (2026-10-15)
+
+- **Neuf signaux** (`backend/apps/governance/signaux_rh.py`), évalués sur la période filtrée, sous le périmètre
+  serveur : présence faible, absentéisme (absences pointées — l'absentéisme mensuel n'est pas mesuré), retards
+  élevés, site en sous-effectif, effectif critique (baisse de l'effectif déclaré vs période précédente), et
+  quatre signaux sans source (turnover, contrats à échéance, recrutement sous cible, heures supplémentaires).
+  États : normal / surveillance / critique / **non mesuré** — jamais « normal » sans mesure.
+- Chaque signal publie sa règle écrite, ses seuils (par défaut ou arbitrés), la comparaison à la période
+  précédente, la source, la couverture et une confiance qui en découle (≥ 80 % de jours mesurés : élevée ;
+  ≥ 50 % : moyenne ; sinon faible).
+- **Seuils configurables** (`SeuilRh`, API `PUT /governance/hr/seuils/`) : seules les surcharges sont stockées ;
+  l'ordre des paliers est imposé par le sens du signal ; chaque arbitrage est tracé (avant / après). Droit
+  d'arbitrage : DRH à périmètre Groupe et administration ; les autres lisent.
+- **Une seule source de vérité** : les surcharges remontent dans `shield_rules.seuils_publics()` — constats du
+  jour, carte de chaleur et signaux jugent avec les mêmes bornes ; la charge Shield en cache est oubliée après
+  un arbitrage. Le barème du score de gouvernance, lui, garde ses constantes.
+- Les douze lignes d'alertes écrites en dur du centre d'alertes RH sont retirées.

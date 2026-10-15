@@ -11,6 +11,7 @@ import { Gauge } from "@/components/overview/Gauge";
 import { AiQueryBox } from "@/components/overview/AiQueryBox";
 import { AlertsPanel } from "@/components/overview/AlertsPanel";
 import { GraphesRh } from "@/components/overview/GraphesRh";
+import { SignauxRh } from "@/components/overview/SignauxRh";
 import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
 import { ArrowUpRight, CheckCircle, TriDown, TriUp } from "@/components/overview/icons";
 import { EASE_OUT } from "@/lib/motion";
@@ -521,7 +522,9 @@ function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<str
     <div className="space-y-8">
       <DataContract module={module} />
       {module.key === "hr-executive" ? <HumanCapitalScore /> : null}
-      {isAlerts ? <AlertsPanel /> : null}
+      {/* Le centre d'alertes RH évalue les signaux RH (période, filtres,
+          périmètre) ; le centre d'alertes du Groupe garde ses scores. */}
+      {module.key === "hr-alerts" ? <SignauxRh /> : isAlerts ? <AlertsPanel /> : null}
       <AiGuardrail module={module} />
       {isAi ? <AiQueryBox /> : null}
 

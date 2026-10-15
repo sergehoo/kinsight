@@ -39,6 +39,17 @@ def charge_shield_groupe(collecteur=None) -> dict:
     return partage.lire(_cle("shield.hr_kpi", source), collecter, ttl=TTL_SHIELD)
 
 
+def oublier_charge_shield() -> None:
+    """Après un arbitrage de seuils : les constats du jour en cache ont été jugés
+    avec l'ancienne borne, ils sont recalculés à la lecture suivante."""
+    from apps.integrations import partage
+    from apps.integrations.shield import get_shield_source
+
+    source = get_shield_source()
+    if source is not None:
+        partage.oublier(_cle("shield.hr_kpi", source))
+
+
 def charge_odoo(societes: list[int] | None) -> dict:
     from apps.integrations import partage
     from apps.integrations.odoo import fetch_hr_kpis, get_odoo_source

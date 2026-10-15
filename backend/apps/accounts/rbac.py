@@ -87,3 +87,14 @@ def landing_for(user) -> str:
         return L_OVERVIEW
     _perms, landing = _BY_ROLE.get(getattr(user, "role", ""), ([P_OVERVIEW], L_OVERVIEW))
     return landing
+
+
+def peut_configurer_seuils_rh(user) -> bool:
+    """Arbitrer les seuils des signaux RH : la DRH Groupe et l'administration.
+
+    Les seuils valent pour tout le Groupe — ils jugent aussi les constats du jour.
+    Un RH de filiale les lit, il ne règle pas les bornes des autres filiales.
+    """
+    if getattr(user, "is_superuser", False) or P_SUPERADMIN in permissions_for(user):
+        return True
+    return getattr(user, "role", "") == "DRH" and user.scope().is_group

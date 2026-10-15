@@ -15,6 +15,7 @@ import { GroupGovernanceIndex } from "@/components/overview/GroupGovernanceIndex
 import { DomainPanel } from "@/components/overview/DomainPanel";
 import { AccueilRh } from "@/components/overview/AccueilRh";
 import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
+import { SignauxRh } from "@/components/overview/SignauxRh";
 import { shieldInsights } from "@/lib/adapters/shield";
 import { ArrowUpRight, ChevronDown, Dots } from "@/components/overview/icons";
 import { EmptyChartState, IconButton, StateBadge, type DataState } from "@/components/ui/kit";
@@ -422,6 +423,10 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                   (registre canonique + historique). Les autres domaines gardent
                   leur gabarit tant qu'aucune source ne les alimente. */}
               {module.id === "capital-humain" ? <AccueilRh /> : null}
+
+              {/* Signaux de période en surveillance ou critiques — les trois plus
+                  graves ; le détail et le réglage des seuils vivent au centre d'alertes. */}
+              {estRh ? <SignauxRh compact /> : null}
 
               {/* Score de Gouvernance (branché mart, gouverné N/D) :
                   Overview → indice Groupe consolidé ; autres domaines → score du domaine. */}

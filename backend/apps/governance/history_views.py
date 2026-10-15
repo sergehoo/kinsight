@@ -194,19 +194,7 @@ class HrHistoryView(APIView):
 
     @staticmethod
     def _ventiler(metric_id: str, periode: H.Periode, dimension: str) -> list[dict]:
-        metric = REGISTRE[metric_id]
-        composantes = {metric_id, *metric.numerateur, *metric.denominateur}
-        codes = (KpiSnapshot.objects.filter(metric_id__in=composantes, dimension=dimension,
-                                            jour__gte=periode.debut, jour__lte=periode.fin)
-                 .values_list("code", "libelle").distinct())
-        lignes = []
-        for code, libelle in sorted(set(codes)):
-            agregat = H.agreger(metric_id, periode, dimension=dimension, codes=[code])
-            lignes.append({"code": code, "libelle": libelle, "value": agregat["value"],
-                           "couverture": agregat["couverture"]})
-        # Tri par valeur décroissante, les inconnues à la fin : un classement ne
-        # range pas un site sans mesure parmi les plus faibles.
-        return sorted(lignes, key=lambda l: (l["value"] is None, -(l["value"] or 0)))
+        return H.ventiler(metric_id, periode, dimension)
 
 
 class HrDimensionsView(APIView):

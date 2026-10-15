@@ -244,6 +244,26 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   return (await res.json()) as T;
 }
 
+/** PUT JSON. Un refus garde le MOTIF du serveur (`detail`) : un seuil rejeté doit
+ *  dire pourquoi (ordre des paliers, droit d'arbitrage), pas « Erreur 400 ». */
+export async function apiPut<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetchAuthentifie(
+    path,
+    { method: "PUT", body: JSON.stringify(body) },
+    { "Content-Type": "application/json" },
+  );
+  if (!res.ok) {
+    let detail = "";
+    try {
+      detail = ((await res.json()) as { detail?: string }).detail ?? "";
+    } catch {
+      /* corps illisible : le statut suffit */
+    }
+    throw new Error(detail || `Erreur API ${res.status} sur ${path}`);
+  }
+  return (await res.json()) as T;
+}
+
 /** Télécharge un fichier authentifié (blob) et déclenche l'enregistrement navigateur. */
 export async function apiDownload(path: string, filename: string): Promise<void> {
   const res = await fetchAuthentifie(path);

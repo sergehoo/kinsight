@@ -22,6 +22,7 @@ le chiffre d'une filiale à partir de ses sociétés déclarées.
 
 from __future__ import annotations
 
+from django.conf import settings
 from django.db import models
 
 
@@ -73,3 +74,27 @@ class KpiSnapshot(models.Model):
 
     def __str__(self) -> str:
         return f"{self.jour} {self.metric_id} [{self.dimension}:{self.code or '*'}] = {self.valeur}"
+
+
+class SeuilRh(models.Model):
+    """Seuils d'un signal RH tels que la direction les a ARBITRÉS.
+
+    Seules les surcharges sont stockées : un signal sans ligne applique la valeur
+    par défaut écrite dans le code (`seuils_rh.DEFAUTS`). Une modification passe
+    par l'API — validée, tracée dans le journal d'accès —, jamais par l'admin.
+    """
+
+    signal = models.CharField(max_length=40, unique=True)
+    surveillance = models.FloatField()
+    critique = models.FloatField()
+    modifie_par = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
+                                    on_delete=models.SET_NULL, related_name="+")
+    modifie_le = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Seuil de signal RH"
+        verbose_name_plural = "Seuils de signaux RH"
+        ordering = ["signal"]
+
+    def __str__(self) -> str:
+        return f"{self.signal} : surveillance {self.surveillance} · critique {self.critique}"

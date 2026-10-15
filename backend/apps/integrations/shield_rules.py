@@ -11,7 +11,10 @@ formule n'est pas produit.
 
 from __future__ import annotations
 
-from typing import Any
+import logging
+from typing import Any, Callable
+
+journal = logging.getLogger(__name__)
 
 # ── Seuils ───────────────────────────────────────────────────────────────────
 # Exprimés en pourcentage de présence, sauf mention contraire.
@@ -31,13 +34,35 @@ MIN_JOURS_POUR_COMPARER = 5     # en deçà, une moyenne n'a pas de sens
 TERMINAUX_HS_CRITIQUE = 20.0
 
 
+# Les constantes ci-dessus sont les VALEURS PAR DÉFAUT. La direction peut en
+# arbitrer certaines (gouvernance, `seuils_rh`) : la configuration est branchée
+# ici au démarrage, sans que ce module dépende de la base — il reste testable seul.
+_FOURNISSEUR: Callable[[], dict[str, float]] | None = None
+
+
+def brancher_configuration(fournisseur: Callable[[], dict[str, float]] | None) -> None:
+    global _FOURNISSEUR
+    _FOURNISSEUR = fournisseur
+
+
 def seuils_publics() -> dict[str, float]:
     """Les seuils, tels que les écrans doivent les appliquer.
 
     Publiés dans la charge plutôt que recopiés côté client : un seuil recopié est
     un seuil qui divergera. Le frontend n'en garde qu'un repli identique, pour
-    une charge ancienne mise en cache.
+    une charge ancienne mise en cache. Les surcharges arbitrées remplacent les
+    valeurs par défaut ; une configuration illisible laisse les défauts.
     """
+    seuils = _defauts()
+    if _FOURNISSEUR is not None:
+        try:
+            seuils.update({k: float(v) for k, v in (_FOURNISSEUR() or {}).items() if k in seuils})
+        except Exception:  # noqa: BLE001 — un réglage illisible n'éteint pas les constats
+            journal.warning("Seuils configurés illisibles : valeurs par défaut appliquées.")
+    return seuils
+
+
+def _defauts() -> dict[str, float]:
     return {
         "presence_critique": PRESENCE_CRITIQUE,
         "presence_surveillance": PRESENCE_SURVEILLANCE,
@@ -153,32 +178,35 @@ def _insight(rid, severity, title, finding, impact, formula, source, period, act
 def evaluer_presence_globale(present, absent, late, source: str, period: str) -> list[dict]:
     """Règles portant sur la journée en cours."""
     out: list[dict] = []
+    seuils = seuils_publics()
+    critique, absenteisme, retards = (seuils["presence_critique"], seuils["absenteisme_eleve"],
+                                      seuils["retards_eleves"])
     taux = taux_presence(present, absent)
-    if taux is not None and taux < PRESENCE_CRITIQUE:
+    if taux is not None and taux < critique:
         out.append(_insight(
             "hr.presence_basse", "critical",
             "Présence globale sous le seuil d'alerte",
             f"Taux de présence de {taux} % ({present} présents, {absent} absents), "
-            f"sous le seuil de {PRESENCE_CRITIQUE} %.",
+            f"sous le seuil de {critique:g} %.",
             "Capacité de production réduite sur l'ensemble des sites.",
             FORMULES["taux_presence"], source, period))
 
     abs_pct = part_absents(present, absent)
-    if abs_pct is not None and abs_pct > ABSENTEISME_ELEVE:
+    if abs_pct is not None and abs_pct > absenteisme:
         out.append(_insight(
             "hr.absenteisme", "warning",
             "Absentéisme au-dessus du seuil",
             f"{absent} absents sur {present + absent} personnes attendues, soit {abs_pct} % "
-            f"(seuil : {ABSENTEISME_ELEVE} %).",
+            f"(seuil : {absenteisme:g} %).",
             "Charge reportée sur les équipes présentes.",
             FORMULES["part_absents"], source, period))
 
     retard_pct = part_retards(late, present)
-    if retard_pct is not None and retard_pct > RETARDS_ELEVES:
+    if retard_pct is not None and retard_pct > retards:
         out.append(_insight(
             "hr.retards", "warning",
             "Retards au-dessus du seuil",
-            f"{late} retards pour {present} présents, soit {retard_pct} % (seuil : {RETARDS_ELEVES} %).",
+            f"{late} retards pour {present} présents, soit {retard_pct} % (seuil : {retards:g} %).",
             "Démarrage de chantier décalé.",
             FORMULES["part_retards"], source, period))
     return out
@@ -186,10 +214,11 @@ def evaluer_presence_globale(present, absent, late, source: str, period: str) ->
 
 def evaluer_sites(sites: list[dict], source: str, period: str, limite: int = 3) -> list[dict]:
     """Sites dont le taux de présence passe sous le seuil critique."""
+    seuil_site = seuils_publics()["presence_site_critique"]
     faibles = [
         s for s in sites
         if isinstance(s.get("attendance_rate"), (int, float))
-        and s["attendance_rate"] < PRESENCE_SITE_CRITIQUE
+        and s["attendance_rate"] < seuil_site
     ]
     out = []
     for s in sorted(faibles, key=lambda s: s["attendance_rate"])[:limite]:
@@ -198,7 +227,7 @@ def evaluer_sites(sites: list[dict], source: str, period: str, limite: int = 3) 
             f"hr.sous_effectif.{s['site'].get('code') or s['site'].get('id')}", "warning",
             f"Sous-effectif sur {nom}",
             f"{s['present']} présents pour {s['absent']} absents, soit {s['attendance_rate']} % "
-            f"(seuil : {PRESENCE_SITE_CRITIQUE} %).",
+            f"(seuil : {seuil_site:g} %).",
             "Site potentiellement en incapacité d'assurer ses opérations du jour.",
             FORMULES["taux_presence"], source, period,
             action={"label": f"Ouvrir {nom}", "to": "/dashboard/capital-humain/presence"},
@@ -220,13 +249,14 @@ def evaluer_tendance(points: list[dict], source: str) -> list[dict]:
     dernier, precedents = mesures[-1], mesures[:-1]
     moyenne = round(sum(p["taux_presence"] for p in precedents) / len(precedents), 1)
     ecart = round(moyenne - dernier["taux_presence"], 1)
-    if ecart < BAISSE_INHABITUELLE:
+    baisse = seuils_publics()["baisse_inhabituelle"]
+    if ecart < baisse:
         return []
     return [_insight(
         "hr.baisse_presence", "critical",
         "Baisse inhabituelle de la présence",
         f"Taux de {dernier['taux_presence']} % le {dernier['date']}, contre {moyenne} % en moyenne "
         f"sur les {len(precedents)} jours mesurés précédents, soit {ecart} points de moins "
-        f"(seuil : {BAISSE_INHABITUELLE} points).",
+        f"(seuil : {baisse:g} points).",
         "Rupture de rythme à expliquer avant qu'elle ne s'installe.",
         FORMULES["baisse"], source, f"{mesures[0]['date']} → {dernier['date']}")]

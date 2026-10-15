@@ -1502,20 +1502,10 @@ export const MODULES: Record<string, ModuleDef> = {
     kind: "notifications",
     source: "mart.hr_alerts",
     home: true,
-    rows: [
-      { title: "Turnover supérieur au seuil", detail: "Critique — mart.hr_alerts", accent: "#D92B55" },
-      { title: "Employé clé en risque de départ", detail: "Critique — mart.hr_alerts", accent: "#D92B55" },
-      { title: "Contrat arrivant à échéance", detail: "Critique — mart.hr_alerts", accent: "#D92B55" },
-      { title: "Effectif critique sur un chantier", detail: "Critique — mart.hr_alerts", accent: "#D92B55" },
-      { title: "Accident grave", detail: "Critique — mart.hr_alerts", accent: "#D92B55" },
-      { title: "Masse salariale dépassant le budget", detail: "Critique — mart.hr_alerts", accent: "#D92B55" },
-      { title: "Congés en attente de validation", detail: "Important — mart.hr_alerts", accent: "#FF8735" },
-      { title: "Absentéisme élevé", detail: "Important — mart.hr_alerts", accent: "#FF8735" },
-      { title: "Formation obligatoire non suivie", detail: "Important — mart.hr_alerts", accent: "#FF8735" },
-      { title: "Nouveau recrutement", detail: "Information — mart.hr_alerts", accent: "#42BFA0" },
-      { title: "Promotion", detail: "Information — mart.hr_alerts", accent: "#42BFA0" },
-      { title: "Nouvelle certification", detail: "Information — mart.hr_alerts", accent: "#42BFA0" },
-    ],
+    // Les douze lignes « Critique — mart.hr_alerts » écrites ici s'affichaient
+    // comme des alertes en cours sans qu'aucune règle ne les ait déclenchées. Le
+    // centre d'alertes RH rend désormais les signaux évalués (`SignauxRh`).
+    rows: [],
   },
   "hr-reports": {
     key: "hr-reports",

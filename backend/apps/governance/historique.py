@@ -408,6 +408,31 @@ def comparer(actuelle: dict[str, Any], reference: dict[str, Any], *, est_taux: b
             "couverture": reference.get("couverture")}
 
 
+def ventiler(metric_id: str, periode: Periode, dimension: str,
+             codes: list[str] | None = None) -> list[dict[str, Any]]:
+    """La valeur de la période pour CHAQUE code d'une dimension (site, type,
+    département), classée de la plus forte à la plus faible ; les inconnues en
+    dernier — un classement ne range pas un site non mesuré parmi les plus faibles.
+
+    Un code dont le libellé a changé en cours de période n'apparaît qu'une fois,
+    sous son libellé le plus récent."""
+    m = REGISTRE[metric_id]
+    composantes = {metric_id, *m.numerateur, *m.denominateur}
+    qs = KpiSnapshot.objects.filter(metric_id__in=composantes, dimension=dimension,
+                                    jour__gte=periode.debut, jour__lte=periode.fin)
+    if codes is not None:
+        qs = qs.filter(code__in=codes)
+    libelles: dict[str, str] = {}
+    for code, libelle in qs.order_by("jour").values_list("code", "libelle"):
+        libelles[code] = libelle or libelles.get(code) or code
+    lignes = []
+    for code, libelle in sorted(libelles.items()):
+        agregat = agreger(metric_id, periode, dimension=dimension, codes=[code])
+        lignes.append({"code": code, "libelle": libelle, "value": agregat["value"],
+                       "couverture": agregat["couverture"]})
+    return sorted(lignes, key=lambda l: (l["value"] is None, -(l["value"] or 0)))
+
+
 def premiere_mesure(metric) -> date | None:
     """Premier jour mesuré de la métrique OU de ses composantes : c'est la date à
     partir de laquelle une période peut avoir une valeur, et l'écran la cite."""

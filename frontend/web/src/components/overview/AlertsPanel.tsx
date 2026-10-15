@@ -39,7 +39,11 @@ function AlertRow({ a }: { a: GovernanceAlert }) {
 
 export function AlertsPanel() {
   const { year, quarter, subsidiary } = useFilters();
-  const { data, isLoading } = useAlerts(year, quarter, subsidiary);
+  const { data, isLoading, isError, error } = useAlerts(year, quarter, subsidiary);
+  // Trois situations distinctes, trois messages : un refus de droit, une panne et
+  // une absence de données ne se lisent pas de la même façon — les confondre
+  // faisait passer un 403 pour « pas encore de données ».
+  const refus = isError && error instanceof Error && /Erreur API 403/.test(error.message);
 
   const counts = data?.counts ?? { critical: 0, warning: 0, info: 0 };
   const alerts = data?.alerts ?? [];
@@ -67,6 +71,12 @@ export function AlertsPanel() {
       <div className="mt-4 grid gap-2">
         {isLoading ? (
           <div className="rounded-xl bg-white/60 px-4 py-6 text-center text-[13px] font-semibold text-[#8A9291]">Chargement…</div>
+        ) : isError ? (
+          <div className="rounded-xl bg-white/60 px-4 py-6 text-center text-[12.5px] font-semibold text-[#8A6E36]">
+            {refus
+              ? "Accès non autorisé : le centre d'alertes Groupe relève de la vue d'ensemble, que votre rôle ne couvre pas."
+              : "Alertes momentanément indisponibles — aucune alerte n'est déduite d'une erreur."}
+          </div>
         ) : alerts.length ? (
           alerts.map((a, i) => <AlertRow key={`${a.source}-${i}`} a={a} />)
         ) : data?.available ? (
@@ -75,7 +85,7 @@ export function AlertsPanel() {
           </div>
         ) : (
           <div className="rounded-xl bg-white/60 px-4 py-6 text-center text-[12px] font-semibold text-[#9AA09D]">
-            Données EDW — gouverné : les alertes s'activeront dès que les scores du mart seront disponibles (aucune alerte inventée).
+            Aucun score de gouvernance disponible sur la période : aucune alerte n'est évaluée (aucune alerte inventée).
           </div>
         )}
       </div>
