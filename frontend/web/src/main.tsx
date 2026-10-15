@@ -9,10 +9,8 @@ import { PwaLayer } from "@/pwa/PwaLayer";
 import "./index.css";
 
 const LoginPage = lazy(() => import("@/pages/LoginPage").then((module) => ({ default: module.LoginPage })));
-const AppLayout = lazy(() => import("@/layouts/AppLayout").then((module) => ({ default: module.AppLayout })));
 const GovernanceOverview = lazy(() => import("@/pages/GovernanceOverview").then((module) => ({ default: module.GovernanceOverview })));
-const HrDashboard = lazy(() => import("@/pages/HrDashboard").then((module) => ({ default: module.HrDashboard })));
-const ModulePage = lazy(() => import("@/pages/ModulePage").then((module) => ({ default: module.ModulePage })));
+const LegacyModuleRoute = lazy(() => import("@/components/navigation/LegacyModuleRoute").then((module) => ({ default: module.LegacyModuleRoute })));
 const ModuleRouter = lazy(() => import("@/components/navigation/ModuleRouter").then((module) => ({ default: module.ModuleRouter })));
 const ModuleHome = lazy(() => import("@/pages/ModuleHome").then((module) => ({ default: module.ModuleHome })));
 const ModulesHome = lazy(() => import("@/pages/ModulesHome").then((module) => ({ default: module.ModulesHome })));
@@ -53,12 +51,15 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 {/* Entrée racine : atterrissage selon le rôle de l'utilisateur connecté */}
                 <Route index element={<RootRedirect />} />
                 <Route path="/dashboard" element={<RootRedirect />} />
+                {/* Le « Pilotage RH » de la vue historique lisait le mart (absent en
+                    production) : l'accueil Capital Humain le remplace. */}
+                <Route path="/d/hr" element={<Navigate to="/dashboard/capital-humain" replace />} />
                 <Route path="/d/:dashboard" element={<GovernanceOverview />} />
 
                 {/* Navigation modulaire canonique : /dashboard/:domaine[/:vue] */}
                 <Route path="/dashboard/:moduleId" element={<ModuleHome />} />
                 <Route path="/dashboard/:moduleId/:itemId" element={<ModuleRouter />} />
-                <Route path="/modules/:key" element={<ModulePage />} />
+                <Route path="/modules/:key" element={<LegacyModuleRoute />} />
 
                 {/* Administration : Connecteurs & Intégrations */}
                 <Route path="/admin/integrations" element={<IntegrationsList />} />
@@ -66,10 +67,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 <Route path="/admin/integrations/health" element={<IntegrationHealth />} />
                 <Route path="/admin/integrations/:id" element={<IntegrationForm />} />
 
-                {/* Vue RH détaillée historique (lecture seule) */}
-                <Route element={<AppLayout />}>
-                  <Route path="/legacy/rh" element={<HrDashboard />} />
-                </Route>
+                {/* Ancienne vue RH détaillée (lisait `mart.hr_kpi`) : redirigée vers
+                    l'accueil Capital Humain, sur données Shield + Odoo. */}
+                <Route path="/legacy/rh" element={<Navigate to="/dashboard/capital-humain" replace />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />
