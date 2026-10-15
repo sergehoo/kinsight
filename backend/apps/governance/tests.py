@@ -172,93 +172,6 @@ SCORE_ROWS = [
 ]
 
 
-class HrScoreApiTest(TestCase):
-    """Human Capital Score : pondération renormalisée, périmètre, période, gouverné N/D."""
-
-    def setUp(self):
-        gateway.set_mart_gateway(InMemoryMartGateway(build_hr_kpi_rows(EMP, PAY), SCORE_ROWS))
-        self.kre = Subsidiary.objects.create(code="KRE", name="K-Express")
-        self.ksh = Subsidiary.objects.create(code="KSH", name="K-Shield")
-        Subsidiary.objects.create(code="MYK", name="MyKaydan")
-        self.dg = User.objects.create_user("dg", password="x", role="DG_GROUP", is_group_scope=True)
-        self.drh_kre = User.objects.create_user("drh_kre", password="x", role="DRH")
-        self.drh_kre.subsidiaries.add(self.kre)
-        self.client = APIClient()
-
-    def tearDown(self):
-        gateway.set_mart_gateway(None)
-
-    def test_score_global_pondere_et_renormalise(self):
-        self.client.force_authenticate(self.dg)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
-        self.assertEqual(resp.status_code, 200)
-        self.assertTrue(resp.data["available"])
-        # (80*15 + 90*5 + 60*15) / 35 = 72.9
-        self.assertEqual(resp.data["global"], 72.9)
-        dims = {d["key"]: d for d in resp.data["dimensions"]}
-        self.assertEqual(len(resp.data["dimensions"]), 9)
-        self.assertEqual(dims["effectifs_stabilite"]["score"], 80.0)
-        self.assertEqual(dims["effectifs_stabilite"]["weight"], 15)
-        self.assertEqual(dims["conformite"]["score"], 90.0)
-        self.assertIsNone(dims["recrutement"]["score"])  # gouverné : dimension non alimentée
-
-    def test_score_par_filiale(self):
-        self.client.force_authenticate(self.dg)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
-        by_sub = {s["code"]: s["score"] for s in resp.data["by_subsidiary"]}
-        self.assertEqual(by_sub["KRE"], 82.5)  # (80*15 + 90*5) / 20
-        self.assertEqual(by_sub["KSH"], 60.0)  # (60*15) / 15
-
-    def test_trend_inclut_les_mois_hors_periode(self):
-        self.client.force_authenticate(self.dg)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
-        trend = {t["month"]: t["score"] for t in resp.data["trend"]}
-        self.assertEqual(trend["2025-12-01"], 50.0)  # mois hors Q1, présent dans la courbe
-        self.assertEqual(trend["2026-01-01"], 72.9)
-        self.assertEqual(trend["2026-02-01"], 72.9)
-
-    def test_filtre_filiale_query_param(self):
-        self.client.force_authenticate(self.dg)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1&subsidiary=KSH")
-        self.assertEqual(resp.data["global"], 60.0)
-        self.assertEqual([s["code"] for s in resp.data["by_subsidiary"]], ["KSH"])
-
-    def test_perimetre_restreint(self):
-        self.client.force_authenticate(self.drh_kre)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
-        self.assertEqual(resp.data["scope"], ["KRE"])
-        self.assertEqual(resp.data["global"], 82.5)  # KRE uniquement
-        self.assertEqual([s["code"] for s in resp.data["by_subsidiary"]], ["KRE"])
-
-    def test_gouverne_si_aucune_donnee(self):
-        gateway.set_mart_gateway(InMemoryMartGateway(build_hr_kpi_rows(EMP, PAY)))  # pas de score
-        self.client.force_authenticate(self.dg)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
-        self.assertEqual(resp.status_code, 200)
-        self.assertFalse(resp.data["available"])
-        self.assertIsNone(resp.data["global"])
-        self.assertTrue(all(d["score"] is None for d in resp.data["dimensions"]))
-        self.assertEqual(resp.data["by_subsidiary"], [])
-        self.assertEqual(resp.data["trend"], [])
-
-    def test_score_journalise(self):
-        self.client.force_authenticate(self.dg)
-        self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1")
-        log = AccessLog.objects.latest("occurred_at")
-        self.assertEqual(log.action, "query_hr_score")
-        self.assertEqual(log.metric_key, "hr.human_capital_score")
-
-    def test_filiale_hors_perimetre_ne_fuit_pas(self):
-        # drh_kre (périmètre KRE) demande explicitement KSH → aucune donnée KSH ne doit fuiter.
-        self.client.force_authenticate(self.drh_kre)
-        resp = self.client.get("/api/v1/governance/hr/score/?year=2026&quarter=1&subsidiary=KSH")
-        self.assertEqual(resp.status_code, 200)
-        self.assertFalse(resp.data["available"])
-        self.assertIsNone(resp.data["global"])
-        self.assertEqual(resp.data["by_subsidiary"], [])
-
-
-# Lignes mart.domain_score de démo (domain, month, sub, dim, score).
 DOMAIN_SCORE_ROWS = [
     ("immobilier", date(2025, 12, 1), "KRE", "maitrise_fonciere", 40.0),  # hors Q1 → trend
     ("immobilier", date(2026, 1, 1), "KRE", "maitrise_fonciere", 80.0),   # poids 20
@@ -268,6 +181,7 @@ DOMAIN_SCORE_ROWS = [
     ("immobilier", date(2026, 1, 1), "KSH", "pilotage_risques", 50.0),    # poids 10
     ("finance", date(2026, 1, 1), "KRE", "liquidite_tresorerie", 90.0),   # autre domaine : ignoré
 ]
+
 
 
 class DomainScoreApiTest(TestCase):
@@ -610,7 +524,9 @@ class MartUnavailableDegradationTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         body = resp.json()
         self.assertFalse(body["available"])
-        self.assertEqual(body["source_state"], "error")
+        # Le score ne lit plus le mart (ADR-0009) : son indisponibilité ne le met
+        # pas en erreur. Sans historique, il est simplement non alimenté.
+        self.assertEqual(body["source_state"], "disconnected")
         self.assertIsNone(body["global"])
         # Aucune dimension ne doit porter de score inventé.
         self.assertTrue(all(d["score"] is None for d in body["dimensions"]))
@@ -678,9 +594,12 @@ class FuiteInterFilialeTest(TestCase):
     """
 
     # Endpoints RH et consolidés qui acceptent un paramètre `subsidiary`.
+    # `/hr/score/` n'y figure plus : calculé sur l'historique Shield (ADR-0009), il
+    # ne porte AUCUNE donnée par filiale — le groupe n'y « voit » donc pas KSH, et
+    # la prémisse du test ne tient plus. Son refus d'une filiale hors périmètre
+    # (403) est vérifié dans `tests_score_rh`.
     CHEMINS = (
         "/api/v1/governance/hr/kpi/",
-        "/api/v1/governance/hr/score/",
         "/api/v1/governance/score-group/",
     )
 

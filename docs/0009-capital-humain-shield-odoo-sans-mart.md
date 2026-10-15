@@ -56,3 +56,17 @@ lecture seule du dépôt (huit audits indépendants, octobre 2026) a constaté :
   légitimes jusqu'à la lecture des dates Odoo et de la paie — avec leur motif.
 - Les filtres de période ne s'appliquent aux mesures Shield/Odoo qu'une fois l'historique PostgreSQL en
   place (lot 2) ; d'ici là, les mesures « aujourd'hui » le disent.
+
+## Addendum — Score de gouvernance RH (2026-10-15)
+
+Le score lit l'historique K-Insight, plus `mart.hr_score` (que seul un jeu de démonstration alimentait).
+La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; les règles ajoutées sont :
+
+- **Présence & ponctualité** = moyenne de deux sous-scores linéaires bornés 0–100 :
+  présence (70 % → 0, seuil critique de `shield_rules` ; 95 % → 100) et ponctualité (85 % → 0 ; 99 % → 100).
+  Exige les deux taux et au moins 50 % de jours mesurés sur la période.
+- Les huit autres dimensions n'ont pas de source dans l'architecture Shield + Odoo : N/D avec leur motif.
+- **Score global publié seulement si les dimensions mesurées couvrent au moins 50 % du poids total.** La
+  renormalisation seule produirait un « global » à partir de 10 % du poids : un chiffre d'apparence consolidée
+  qui ne mesure qu'un dixième de ce qu'il prétend.
+- Aucun score par filiale tant que la présence Shield n'est pas rattachée aux filiales.

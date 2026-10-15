@@ -324,3 +324,27 @@ class HistoriqueApiTest(APITestCase):
         trace = AccessLog.objects.filter(action="query_hr_history").last()
         self.assertEqual(trace.metric_key, "hr.presents_jour")
         self.assertEqual(trace.payload["periode"], "30 derniers jours")
+
+
+class MatriceSitesTest(APITestCase):
+    # Emprunter le socle plutôt qu'hériter : l'héritage rejouerait tous les tests
+    # de HistoriqueApiTest sous ce nom.
+    setUp = HistoriqueApiTest.setUp
+    _get = HistoriqueApiTest._get
+
+    def test_matrice_jours_sites_avec_trous(self):
+        for code, nom, p, a in (("1", "Chantier A", 50, 50), ("2", "Siège", 90, 10)):
+            _poser("hr.presents_jour", HIER, p, dimension=Dimension.SITE, code=code)
+            _poser("hr.absents_jour", HIER, a, dimension=Dimension.SITE, code=code)
+            KpiSnapshot.objects.filter(dimension=Dimension.SITE, code=code).update(libelle=nom)
+        d = self._get(self.drh, metric="hr.taux_presence_jour", periode="7j", matrice="site").json()
+        m = d["matrice"]
+        self.assertEqual([l["libelle"] for l in m["lignes"]], ["Chantier A", "Siège"])
+        self.assertEqual(len(m["jours"]), 7)
+        self.assertEqual(m["valeurs"][1][-1], 90.0)
+        # Les jours sans mesure restent des trous, jamais des zéros.
+        self.assertIsNone(m["valeurs"][0][0])
+
+    def test_pas_de_matrice_hors_groupe(self):
+        d = self._get(self.drh_kre, metric="hr.taux_presence_jour", periode="7j", matrice="site").json()
+        self.assertIsNone(d.get("matrice"))

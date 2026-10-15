@@ -90,14 +90,29 @@ export interface HrScoreDimension {
   label: string;
   weight: number;
   score: number | null;
+  /** Pourquoi la dimension n'est pas scorée (source absente, couverture…). */
+  motif?: string | null;
+  /** Règle de conversion appliquée, écrite en clair. */
+  formule?: string;
+  source?: string;
+  entrees?: { taux_presence: number | null; taux_ponctualite: number | null; jours_mesures: number; jours: number } | null;
+  sous_scores?: { presence: number; ponctualite: number } | null;
+  /** Score de la même dimension sur la période précédente. */
+  precedent?: number | null;
 }
 export interface HrScoreResponse {
   available: boolean;
   global: number | null;
+  /** Pourquoi le global n'est pas publié (couverture insuffisante du poids). */
+  motif_global?: string | null;
+  couverture?: { poids_couvert: number; poids_total: number; dimensions_scorees: number; dimensions: number; seuil: number };
+  source?: string;
+  source_state?: string;
+  by_subsidiary_motif?: string;
   dimensions: HrScoreDimension[];
   by_subsidiary: { code: string; score: number | null }[];
   trend: { month: string; score: number | null }[];
-  period?: { start: string; end: string };
+  period?: { start: string; end: string; label?: string };
   scope?: "GROUP" | string[];
 }
 

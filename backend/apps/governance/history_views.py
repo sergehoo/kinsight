@@ -14,6 +14,8 @@ reste live (`aujourd_hui`). Une période sans mesure rend `unknown`, jamais 0.
 
 from __future__ import annotations
 
+from datetime import timedelta
+
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -84,6 +86,14 @@ class HrHistoryView(APIView):
         if demandee in DIMENSIONS_VENTILABLES and dimension_lue == Dimension.GROUPE and codes_lus is None:
             ventilation = self._ventiler(metric.id, periode, demandee)
 
+        # Matrice jours × sites (carte de chaleur) : même règle que la ventilation,
+        # périmètre Groupe uniquement. Bornée à 92 jours : au-delà, une case par
+        # jour n'est plus lisible et la requête devient coûteuse.
+        matrice = None
+        if (p.get("matrice") == Dimension.SITE and dimension_lue == Dimension.GROUPE
+                and codes_lus is None and periode.jours <= 92):
+            matrice = self._matrice(metric.id, periode)
+
         premiere = H.premiere_mesure(metric)
 
         # La valeur du JOUR, live, à côté de la période — marquée comme telle.
@@ -109,11 +119,30 @@ class HrHistoryView(APIView):
             "points": points,
             "comparaisons": comparaisons,
             "ventilation": ventilation,
+            "matrice": matrice,
             "aujourd_hui": aujourd_hui,
             "historique_depuis": premiere.isoformat() if premiere else None,
             "dimension": dimension_lue, "codes": codes_lus,
             "perimetre": "GROUP" if scope.is_group else sorted(scope.subsidiaries),
         })
+
+    @staticmethod
+    def _matrice(metric_id: str, periode: H.Periode) -> dict:
+        metric = REGISTRE[metric_id]
+        composantes = {metric_id, *metric.numerateur, *metric.denominateur}
+        sites = sorted({(c, l) for c, l in KpiSnapshot.objects.filter(
+            metric_id__in=composantes, dimension=Dimension.SITE,
+            jour__gte=periode.debut, jour__lte=periode.fin).values_list("code", "libelle")},
+            key=lambda cl: cl[1] or cl[0])
+        vus: dict[str, str] = {}
+        for code, libelle in sites:
+            vus.setdefault(code, libelle or code)
+        jours = [(periode.debut + timedelta(days=i)).isoformat() for i in range(periode.jours)]
+        valeurs = []
+        for code in vus:
+            points = H.serie(metric_id, periode, dimension=Dimension.SITE, codes=[code])
+            valeurs.append([pt["value"] for pt in points])
+        return {"lignes": [{"code": c, "libelle": l} for c, l in vus.items()], "jours": jours, "valeurs": valeurs}
 
     @staticmethod
     def _ventiler(metric_id: str, periode: H.Periode, dimension: str) -> list[dict]:

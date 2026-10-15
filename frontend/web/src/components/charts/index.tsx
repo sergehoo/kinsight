@@ -260,3 +260,138 @@ export function FunnelChart({
     />
   );
 }
+
+/* ── HeatmapChart ──────────────────────────────────────────────────────────────
+ * Présence jours × sites. Une case sans mesure reste VIDE (non tracée) : la
+ * colorer au minimum de l'échelle la ferait lire comme une journée catastrophique. */
+export function HeatmapChart({
+  lignes,
+  colonnes,
+  valeurs,
+  unit,
+  min = 0,
+  max = 100,
+  state,
+  source,
+  height,
+  emptyMessage,
+  emptyAction,
+}: CommonProps & {
+  lignes: string[];
+  colonnes: string[];
+  /** valeurs[i][j] : ligne i, colonne j ; `null` = non mesuré. */
+  valeurs: Array<Array<number | null>>;
+  unit?: string;
+  min?: number;
+  max?: number;
+}) {
+  const accent = useAccent();
+  const donnees: Array<[number, number, number]> = [];
+  valeurs.forEach((ligne, i) => ligne.forEach((v, j) => { if (v !== null && v !== undefined) donnees.push([j, i, v]); }));
+  const option = React.useMemo<EChartsOption>(
+    () => ({
+      grid: { ...BASE_GRID, left: 8, bottom: 44 },
+      tooltip: {
+        ...BASE_TOOLTIP,
+        trigger: "item",
+        formatter: (p: unknown) => {
+          const [j, i, v] = (p as { value: [number, number, number] }).value;
+          return `${lignes[i]} · ${colonnes[j]}<br/><b>${new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 }).format(v)}${unit ? ` ${unit}` : ""}</b>`;
+        },
+      },
+      xAxis: { type: "category", data: colonnes, axisLabel: AXIS_LABEL, splitArea: { show: false }, axisTick: { show: false } },
+      yAxis: { type: "category", data: lignes, axisLabel: { ...AXIS_LABEL, width: 120, overflow: "truncate" }, axisTick: { show: false } },
+      visualMap: {
+        min, max, calculable: false, orient: "horizontal", left: "center", bottom: 0, itemHeight: 120, itemWidth: 10,
+        textStyle: { ...AXIS_LABEL, fontSize: 10 },
+        inRange: { color: ["#F6D6D9", "#F5E7C6", "#D6EEE3", accent] },
+      },
+      series: [{
+        type: "heatmap",
+        data: donnees,
+        itemStyle: { borderColor: "rgba(255,255,255,0.9)", borderWidth: 2, borderRadius: 4 },
+        emphasis: { itemStyle: { shadowBlur: 6, shadowColor: "rgba(0,0,0,0.2)" } },
+      }],
+    }),
+    [lignes, colonnes, donnees, unit, min, max, accent],
+  );
+  return (
+    <ChartFrame hasData={donnees.length > 0} state={state} option={option} height={height ?? Math.max(220, 34 * lignes.length + 80)}
+                source={source} emptyMessage={emptyMessage} emptyAction={emptyAction} ariaLabel="Carte de chaleur" />
+  );
+}
+
+/* ── StackedBarChart ───────────────────────────────────────────────────────────
+ * Composition par période (employés / ouvriers…). Une barre absente n'est pas
+ * une barre à zéro : la pile du jour non mesuré est simplement vide. */
+export function StackedBarChart({
+  categories,
+  series,
+  unit,
+  state,
+  source,
+  height,
+  emptyMessage,
+  emptyAction,
+}: CommonProps & {
+  categories: string[];
+  series: Array<{ name: string; values: Array<number | null>; color?: string }>;
+  unit?: string;
+}) {
+  const accent = useAccent();
+  const couleurs = [accent, "#42BFA0", "#E08A1E", "#8A63D2"];
+  const aDesDonnees = series.some((s) => s.values.some((v) => v !== null && v !== undefined));
+  const option = React.useMemo<EChartsOption>(
+    () => ({
+      grid: { ...BASE_GRID, bottom: 30 },
+      legend: { bottom: 0, itemWidth: 14, itemHeight: 8, textStyle: { ...AXIS_LABEL, fontSize: 11 } },
+      tooltip: { ...BASE_TOOLTIP, valueFormatter: (v) => (v === null ? "N/D" : `${v}${unit ? ` ${unit}` : ""}`) },
+      xAxis: { type: "category", data: categories, axisLabel: AXIS_LABEL, axisTick: { show: false } },
+      yAxis: { type: "value", axisLabel: AXIS_LABEL, splitLine: SPLIT_LINE },
+      series: series.map((s, i) => ({
+        name: s.name, type: "bar", stack: "total", barMaxWidth: 22,
+        itemStyle: { color: s.color ?? couleurs[i % couleurs.length], borderRadius: i === series.length - 1 ? [6, 6, 0, 0] : 0 },
+        data: toEchartsValues(s.values),
+      })),
+    }),
+    [categories, series, unit, accent],
+  );
+  return (
+    <ChartFrame hasData={aDesDonnees} state={state} option={option} height={height} source={source}
+                emptyMessage={emptyMessage} emptyAction={emptyAction} ariaLabel="Composition empilée" />
+  );
+}
+
+/* ── DonutChart ────────────────────────────────────────────────────────────────
+ * Structure d'un ensemble (types de personnel, départements). Les parts sans
+ * valeur sont écartées, pas mises à zéro. */
+export function DonutChart({
+  items,
+  unit,
+  state,
+  source,
+  height,
+  emptyMessage,
+  emptyAction,
+}: CommonProps & { items?: KBreakdownItem[]; unit?: string }) {
+  const accent = useAccent();
+  const reelles = (items ?? []).filter((i) => i.value !== null && i.value !== undefined && (i.value as number) > 0);
+  const couleurs = [accent, "#42BFA0", "#E08A1E", "#8A63D2", "#D92B55", "#37A0DD", GREY];
+  const option = React.useMemo<EChartsOption>(
+    () => ({
+      tooltip: { ...BASE_TOOLTIP, trigger: "item", valueFormatter: (v) => `${v}${unit ? ` ${unit}` : ""}` },
+      legend: { bottom: 0, type: "scroll", itemWidth: 10, itemHeight: 10, textStyle: { ...AXIS_LABEL, fontSize: 11 } },
+      series: [{
+        type: "pie", radius: ["48%", "72%"], center: ["50%", "44%"], avoidLabelOverlap: true,
+        itemStyle: { borderColor: "#fff", borderWidth: 2, borderRadius: 6 },
+        label: { show: false },
+        data: reelles.map((i, k) => ({ name: i.label, value: i.value as number, itemStyle: { color: couleurs[k % couleurs.length] } })),
+      }],
+    }),
+    [reelles, unit, accent],
+  );
+  return (
+    <ChartFrame hasData={reelles.length > 0} state={state} option={option} height={height} source={source}
+                emptyMessage={emptyMessage} emptyAction={emptyAction} ariaLabel="Répartition" />
+  );
+}

@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/tests.py": {
-    "mtime": 1788808128.5118651,
-    "ast_hash": "ac64db4e8629496baec618bbfd4f1bec",
+    "mtime": 1792056719.587323,
+    "ast_hash": "980209b7a084743497fb82d841bf02b0",
     "semantic_hash": ""
   },
   "backend/apps/governance/urls.py": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/api/governance.ts": {
-    "mtime": 1792030345.9757347,
-    "ast_hash": "53985895df15894f845f65e0428bd1ba",
+    "mtime": 1792056381.6557033,
+    "ast_hash": "ba4aacaa7d3178b974e87142c503d0ea",
     "semantic_hash": ""
   },
   "frontend/web/src/components/GlobalFilters.tsx": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/types/governance.ts": {
-    "mtime": 1792021220.49216,
-    "ast_hash": "b1473274af7bd1587ca34a0bcd38ddb2",
+    "mtime": 1792056455.8684409,
+    "ast_hash": "533db80411f8e269f15d9b0cfab7af0e",
     "semantic_hash": ""
   },
   "frontend/web/src/vite-env.d.ts": {
@@ -740,8 +740,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/module_views.py": {
-    "mtime": 1792020574.6670663,
-    "ast_hash": "ec598bff15b296c4639be3f988eb053b",
+    "mtime": 1792056312.8213499,
+    "ast_hash": "b63997a0c69ffd7cb09c02d9656a03ef",
     "semantic_hash": ""
   },
   "backend/apps/integrations/__init__.py": {
@@ -895,8 +895,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/charts/index.tsx": {
-    "mtime": 1792021303.6462874,
-    "ast_hash": "c669c5b456f4389ea9c4e6151e67b51e",
+    "mtime": 1792056642.1687462,
+    "ast_hash": "63a9b8e54b757fc423a0ada280544ee5",
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/BrandFooter.tsx": {
@@ -990,8 +990,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainScoreCard.tsx": {
-    "mtime": 1788659261.8525336,
-    "ast_hash": "a38c32f033a2f6a514622b488d4f9e78",
+    "mtime": 1792056435.3270965,
+    "ast_hash": "c1469b16e5a5de54b4c7cbf6e0ec28b7",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/GroupGovernanceIndex.tsx": {
@@ -1000,8 +1000,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/HumanCapitalScore.tsx": {
-    "mtime": 1782551229.0731733,
-    "ast_hash": "f17e135fb0888a2d65d7a3d74c7c56da",
+    "mtime": 1792056548.716789,
+    "ast_hash": "a566dcc12c1949c2a83b07e3bba94dae",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/ShieldHrKpis.tsx": {
@@ -1085,8 +1085,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/DomainHome.tsx": {
-    "mtime": 1792031364.1914487,
-    "ast_hash": "01bb49f368a3721c28e770ca05a2cb7a",
+    "mtime": 1792056435.3276992,
+    "ast_hash": "a1ef8854fa9326a64f2b5859b19ba4de",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/LoginPage.tsx": {
@@ -2100,8 +2100,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/history_views.py": {
-    "mtime": 1792020530.5125926,
-    "ast_hash": "da5226cc7369fe02a832f29246f56140",
+    "mtime": 1792056663.6840653,
+    "ast_hash": "fe2a7880c1c2b41336c8e1ad98dc6d67",
     "semantic_hash": ""
   },
   "backend/apps/governance/management/__init__.py": {
@@ -2130,13 +2130,13 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/tests_historique.py": {
-    "mtime": 1792020366.0340114,
-    "ast_hash": "9c55fee524f01215f14d2d12d1c5f5d9",
+    "mtime": 1792056759.669203,
+    "ast_hash": "6f7206e224166805c09743d2615ea523",
     "semantic_hash": ""
   },
   "docs/0009-capital-humain-shield-odoo-sans-mart.md": {
-    "mtime": 1792019565.0795238,
-    "ast_hash": "588ec361766e2bf39ac79cf5022ee1d1",
+    "mtime": 1792056577.4005833,
+    "ast_hash": "e0c34806a27a4f809db12d70c15d7564",
     "semantic_hash": ""
   },
   "backend/apps/governance/admin.py": {
@@ -2177,6 +2177,16 @@
   "frontend/web/src/lib/odooHr.ts": {
     "mtime": 1792021456.8855608,
     "ast_hash": "337f73b8f98333b623e1d40e173cc71d",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/score_rh.py": {
+    "mtime": 1792056705.4350834,
+    "ast_hash": "16546da68ef4dd6f9ddf8fa682c11eb9",
+    "semantic_hash": ""
+  },
+  "backend/apps/governance/tests_score_rh.py": {
+    "mtime": 1792056719.5875697,
+    "ast_hash": "d8d8bf26e826d5d0c5421984dccec0eb",
     "semantic_hash": ""
   }
 }

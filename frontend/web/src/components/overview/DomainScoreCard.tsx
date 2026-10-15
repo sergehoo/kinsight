@@ -106,9 +106,12 @@ export function DomainScoreCard({ domainId, accent = "#416FF4" }: { domainId: st
         </div>
       </div>
 
-      {/* Par filiale */}
+      {/* Par filiale — uniquement les filiales que la source sert. Les cases
+          KRE / KSH / MYK écrites en dur nommaient des filiales hors périmètre
+          et affichaient des N/D que rien n'avait mesurés. */}
+      {bySub.length ? (
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
-        {(bySub.length ? bySub : [{ code: "KRE", score: null }, { code: "KSH", score: null }, { code: "MYK", score: null }]).map((s) => (
+        {bySub.map((s) => (
           <div key={s.code} className="rounded-xl bg-white/65 px-4 py-2.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-[#8A9291]">{s.code}</span>
@@ -123,6 +126,7 @@ export function DomainScoreCard({ domainId, accent = "#416FF4" }: { domainId: st
           </div>
         ))}
       </div>
+      ) : null}
     </motion.section>
   );
 }

@@ -14,6 +14,7 @@ import { DomainScoreCard } from "@/components/overview/DomainScoreCard";
 import { GroupGovernanceIndex } from "@/components/overview/GroupGovernanceIndex";
 import { DomainPanel } from "@/components/overview/DomainPanel";
 import { AccueilRh } from "@/components/overview/AccueilRh";
+import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
 import { shieldInsights } from "@/lib/adapters/shield";
 import { ArrowUpRight, ChevronDown, Dots } from "@/components/overview/icons";
 import { EmptyChartState, IconButton, StateBadge, type DataState } from "@/components/ui/kit";
@@ -426,6 +427,10 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                   Overview → indice Groupe consolidé ; autres domaines → score du domaine. */}
               {module.id === "overview" ? (
                 <GroupGovernanceIndex accent={accentHex} />
+              ) : estRh ? (
+                // Capital Humain : le score calculé sur l'historique, avec le
+                // détail de son calcul et la couverture qui conditionne le global.
+                <HumanCapitalScore />
               ) : (
                 <DomainScoreCard domainId={module.id} accent={accentHex} />
               )}

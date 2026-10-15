@@ -42,6 +42,7 @@ from .gateway import fetch_or_unavailable, get_mart_gateway
 from django.utils import timezone
 
 from . import filtres as F
+from . import score_rh
 from .hr_registry import REGISTRE, liaisons, resoudre
 from .lecture_rh import valeur_du_jour, valeur_periode
 from .hr_sources import contexte_pour
@@ -257,54 +258,53 @@ class ModuleDataView(APIView):
 
 
 class HrScoreView(APIView):
-    """Human Capital Score : global, dimensions, par filiale, tendance 12 mois.
+    """Human Capital Score calculé sur données RÉELLES (`score_rh`), sous filtres.
 
-    Lit `mart.hr_score`. Gouverné : si une dimension/filiale n'a pas de donnée → None (N/D).
+    Lisait `mart.hr_score`, qu'un seul jeu de démonstration alimentait, affiché
+    « Données EDW — réel ». Désormais : chaque dimension scorée si ses données le
+    permettent (règle de conversion écrite), N/D motivé sinon ; global publié
+    seulement si les dimensions scorées couvrent assez du poids total.
     """
 
     def get(self, request):
         if not can_access_domain(request.user, "capital-humain"):
             return _forbidden("capital-humain")
         try:
-            year = int(request.query_params.get("year") or timezone.localdate().year)
-            quarter = int(request.query_params.get("quarter") or F.trimestre_courant(timezone.localdate()))
-        except (TypeError, ValueError):
-            return Response({"detail": "Paramètres 'year'/'quarter' invalides."}, status=status.HTTP_400_BAD_REQUEST)
+            filtres = F.lire(request.query_params, timezone.localdate())
+        except F.FiltreInvalide as refus:
+            if refus.code_http != status.HTTP_200_OK:
+                return Response({"detail": refus.motif}, status=refus.code_http)
+            return Response({"available": False, "global": None, "motif_global": refus.motif,
+                             "dimensions": [], "by_subsidiary": [], "trend": []})
+        try:
+            resultat = score_rh.calculer(request.user, filtres)
+        except F.FiltreInvalide as refus:
+            return Response({"detail": refus.motif}, status=refus.code_http)
 
-        period = period_from_quarter(year, quarter)
         scope = request.user.scope()
-        sub_param = request.query_params.get("subsidiary")
-
-        def allowed(code: str) -> bool:
-            return scope.allows(code) and (not sub_param or sub_param == "all" or code == sub_param)
-
-        raw, mart_ok = fetch_or_unavailable(lambda: get_mart_gateway().fetch_hr_score(), [])
-        rows = [r for r in raw if allowed(r[1])]
-        dim_meta = [{"key": d.key, "label": d.label, "weight": d.weight} for d in HC_DIMENSIONS]
-        global_score, dimensions, by_subsidiary, trend = aggregate_score(
-            rows, period, dim_meta, human_capital_score
-        )
-
         AccessLog.record(
-            user=request.user,
-            action="query_hr_score",
-            **audit_source(request),
-            metric_key="hr.human_capital_score",
+            user=request.user, action="query_hr_score", metric_key="hr.human_capital_score",
             scope_codes=(["*"] if scope.is_group else sorted(scope.subsidiaries)),
-            payload={"year": year, "quarter": quarter},
+            payload=filtres.comme_trace(), **audit_source(request),
         )
-        return Response(
-            {
-                "available": global_score is not None,
-                "source_state": "connected" if mart_ok else "error",
-                "global": global_score,
-                "dimensions": dimensions,
-                "by_subsidiary": by_subsidiary,
-                "trend": trend,
-                "period": {"start": period.start.isoformat(), "end": period.end.isoformat()},
-                "scope": "GROUP" if scope.is_group else sorted(scope.subsidiaries),
-            }
-        )
+        return Response({
+            "available": resultat["global"] is not None,
+            "source": "historique K-Insight (Kaydan Shield + Odoo)",
+            "source_state": "connected" if any(d["score"] is not None for d in resultat["dimensions"])
+                            else "disconnected",
+            "global": resultat["global"],
+            "motif_global": resultat["motif_global"],
+            "couverture": resultat["couverture"],
+            "dimensions": resultat["dimensions"],
+            # Aucun score PAR FILIALE : Shield ne rattache pas ses sites aux
+            # filiales. Le dire vaut mieux que des cartes KRE/KSH/MYK à N/D.
+            "by_subsidiary": [],
+            "by_subsidiary_motif": "Non rattaché : la présence Shield n'est pas ventilée par filiale.",
+            "trend": resultat["tendance"],
+            "period": {"start": filtres.periode.debut.isoformat(), "end": filtres.periode.fin.isoformat(),
+                       "label": filtres.libelle},
+            "scope": "GROUP" if scope.is_group else sorted(scope.subsidiaries),
+        })
 
 
 class DomainScoreView(APIView):

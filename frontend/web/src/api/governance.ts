@@ -73,26 +73,29 @@ export function useGovernanceOverview(year: number, quarter: number) {
 /** Human Capital Score (global, dimensions pondérées, par filiale, tendance 12 mois).
  *  Gouverné : si le mart n'est pas branché ou ne renvoie rien, `available=false` → N/D côté UI.
  *  Pas de variante mock : on n'invente jamais de score. */
-export function useHrScore(year: number, quarter: number, subsidiary = "all") {
-  const sub = subsidiary && subsidiary !== "all" ? `&subsidiary=${subsidiary}` : "";
+/** Score de gouvernance RH sous TOUS les filtres du cockpit (`parametresFiltres`). */
+export function useHrScore(filtres: string) {
   return useQuery<HrScoreResponse>({
-    queryKey: ["hr-score", year, quarter, subsidiary],
+    queryKey: ["hr-score", filtres],
     enabled: !USE_MOCK,
-    queryFn: () => apiGet<HrScoreResponse>(`/governance/hr/score/?year=${year}&quarter=${quarter}${sub}`),
+    queryFn: () => apiGet<HrScoreResponse>(`/governance/hr/score/?${filtres}`),
   });
 }
 
 /** Score de Gouvernance d'un domaine. `capital-humain` lit /hr/score/, les autres /score/<domaine>/.
  *  Même forme de réponse. Gouverné : `available=false` → N/D côté UI. Pas de mock (jamais de score inventé). */
-export function useDomainScore(domainId: string | undefined, year: number, quarter: number, subsidiary = "all") {
+export function useDomainScore(domainId: string | undefined, year: number, quarter: number, subsidiary = "all",
+                               filtresRh = "") {
   const sub = subsidiary && subsidiary !== "all" ? `&subsidiary=${subsidiary}` : "";
   const enabled = Boolean(domainId) && !USE_MOCK && SCORE_DOMAINS.includes(domainId as (typeof SCORE_DOMAINS)[number]);
+  // Capital Humain : le score est calculé sur l'historique, sous TOUS les filtres
+  // du cockpit — pas seulement année et trimestre.
   const path =
     domainId === "capital-humain"
-      ? `/governance/hr/score/?year=${year}&quarter=${quarter}${sub}`
+      ? `/governance/hr/score/?${filtresRh || `year=${year}&quarter=${quarter}${sub}`}`
       : `/governance/score/${domainId}/?year=${year}&quarter=${quarter}${sub}`;
   return useQuery<GovernanceScoreResponse>({
-    queryKey: ["domain-score", domainId, year, quarter, subsidiary],
+    queryKey: ["domain-score", domainId, year, quarter, subsidiary, filtresRh],
     enabled,
     queryFn: () => apiGet<GovernanceScoreResponse>(path),
   });
