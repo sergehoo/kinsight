@@ -130,3 +130,21 @@ La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; 
   la DRH Groupe et l'administration peuvent ajouter des utilisateurs ayant accès au Capital Humain — jamais une
   adresse libre. L'échéance avance sous verrou avant l'envoi (pas de double envoi). Sans SMTP (`EMAIL_HOST`),
   rien ne part et chaque échéance est journalisée « Non envoyé » avec le motif.
+
+## Addendum — Profils RBAC du Capital Humain (2026-10-15)
+
+| Profil | Rôle / périmètre | Capital Humain | Paie | Carrière | Performance |
+|---|---|---|---|---|---|
+| DG Groupe, CODIR | `DG_GROUP`, `CODIR` — Groupe | oui | oui | oui | oui |
+| DRH Groupe | `DRH` — Groupe | oui | oui | oui | oui |
+| Directeur de filiale | `DIR_FILIALE` — **toujours** ses filiales | sa filiale (+ autres métiers) | oui | non | non |
+| RH filiale | `DRH` — filiales | sa filiale | non | non | non |
+| Assistant RH | `ASSISTANT_RH` | pages affectées seulement (`affectations_rh`) | selon pages | — | — |
+
+- Frontière serveur (`rbac.peut_module_rh`) : les pages paie / carrière / performance exigent leur permission ;
+  un Assistant RH n'ouvre que ses pages (et les actions qu'elles portent : signaux → `hr-alerts`, aide à la
+  décision → `hr-ai`, exports et programmation → `hr-reports`, score → `hr-executive`). La navigation ne fait
+  que masquer.
+- `DIR_FILIALE` reste limité à ses filiales même si le drapeau « groupe » est coché.
+- La masse salariale exige la permission paie partout (historique 403, rapport « Réservé aux profils habilités
+  à la paie »). Aucun filtre n'élargit un périmètre (403).

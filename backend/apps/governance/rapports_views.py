@@ -20,7 +20,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.accounts.rbac import can_access_domain, peut_configurer_seuils_rh
+from apps.accounts.rbac import peut_configurer_seuils_rh, peut_module_rh
 from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
@@ -34,7 +34,7 @@ User = get_user_model()
 
 
 def _refus():
-    return Response({"detail": "Accès au domaine « capital-humain » non autorisé pour votre rôle."},
+    return Response({"detail": "Rapports RH non autorisés pour votre profil."},
                     status=status.HTTP_403_FORBIDDEN)
 
 
@@ -46,7 +46,7 @@ def _possibles(user) -> list:
     if not peut_configurer_seuils_rh(user):
         return [user]
     return [u for u in User.objects.filter(is_active=True).exclude(email="").order_by("username")
-            if can_access_domain(u, "capital-humain")]
+            if peut_module_rh(u, "hr-reports")]
 
 
 def _serialiser(r: RapportProgramme) -> dict:
@@ -129,7 +129,7 @@ class _Base(APIView):
 
 class RapportsProgrammesView(_Base):
     def get(self, request):
-        if not can_access_domain(request.user, "capital-humain"):
+        if not peut_module_rh(request.user, "hr-reports"):
             return _refus()
         return Response({
             "rapports": [_serialiser(r) for r in self._visibles(request.user)],
@@ -140,7 +140,7 @@ class RapportsProgrammesView(_Base):
         })
 
     def post(self, request):
-        if not can_access_domain(request.user, "capital-humain"):
+        if not peut_module_rh(request.user, "hr-reports"):
             return _refus()
         donnees = request.data if isinstance(request.data, dict) else {}
         try:
@@ -156,7 +156,7 @@ class RapportsProgrammesView(_Base):
 
 class RapportProgrammeView(_Base):
     def _trouver(self, request, pk):
-        if not can_access_domain(request.user, "capital-humain"):
+        if not peut_module_rh(request.user, "hr-reports"):
             return None, _refus()
         rapport = self._visibles(request.user).filter(pk=pk).first()
         if rapport is None:

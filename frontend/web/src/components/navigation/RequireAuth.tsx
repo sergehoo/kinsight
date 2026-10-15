@@ -2,7 +2,7 @@ import * as React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { renouvelerSiProche } from "@/lib/api";
-import { getStoredUser, isAuthenticated } from "@/lib/auth";
+import { getStoredUser, isAuthenticated, rafraichirProfil } from "@/lib/auth";
 import { ecrireFiltresDansUrl, lireFiltresDepuisUrl, useFilters } from "@/store/filters";
 
 /** Les écrans dont l'adresse porte les filtres : ceux qui affichent des données. */
@@ -42,6 +42,16 @@ export function RequireAuth() {
   React.useEffect(() => {
     lireFiltresDepuisUrl();
   }, []);
+
+  // Le profil relu une fois par chargement : les droits servis par le serveur
+  // s'appliquent à la navigation sans reconnexion (re-rendu si changement).
+  const [, setRevision] = React.useState(0);
+  React.useEffect(() => {
+    if (!authentifie) return;
+    rafraichirProfil()
+      .then((change) => { if (change) setRevision((r) => r + 1); })
+      .catch(() => { /* hors ligne : le profil connu reste en place */ });
+  }, [authentifie]);
   React.useEffect(() => {
     if (!PAGES_FILTREES.test(location.pathname)) return undefined;
     ecrireFiltresDansUrl(useFilters.getState());

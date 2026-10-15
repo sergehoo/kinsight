@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.accounts.rbac import can_access_domain, peut_configurer_seuils_rh
+from apps.accounts.rbac import can_access_domain, peut_configurer_seuils_rh, peut_module_rh
 from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 
@@ -33,6 +33,16 @@ def _refus_domaine():
                     status=status.HTTP_403_FORBIDDEN)
 
 
+def _refus_page(user, cle: str):
+    """Domaine RH requis, puis la page elle-même (Assistant RH : pages affectées)."""
+    if not can_access_domain(user, "capital-humain"):
+        return _refus_domaine()
+    if not peut_module_rh(user, cle):
+        return Response({"detail": "Page réservée : votre profil n'y est pas habilité."},
+                        status=status.HTTP_403_FORBIDDEN)
+    return None
+
+
 def _perimetre(user):
     scope = user.scope()
     return ["*"] if scope.is_group else sorted(scope.subsidiaries)
@@ -42,8 +52,9 @@ class HrSignalsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        if not can_access_domain(request.user, "capital-humain"):
-            return _refus_domaine()
+        refus = _refus_page(request.user, "hr-alerts")
+        if refus:
+            return refus
         try:
             filtres = F.lire(request.query_params, timezone.localdate())
             resultat = evaluer(request.user, filtres)
@@ -67,8 +78,9 @@ class HrThresholdsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        if not can_access_domain(request.user, "capital-humain"):
-            return _refus_domaine()
+        refus = _refus_page(request.user, "hr-alerts")
+        if refus:
+            return refus
         return Response(self._etat(request.user))
 
     def put(self, request):
@@ -131,8 +143,9 @@ class HrDecisionView(APIView):
     def get(self, request):
         from .decision_rh import HRDecisionEngine
 
-        if not can_access_domain(request.user, "capital-humain"):
-            return _refus_domaine()
+        refus = _refus_page(request.user, "hr-ai")
+        if refus:
+            return refus
         try:
             filtres = F.lire(request.query_params, timezone.localdate())
             moteur = HRDecisionEngine(request.user, filtres)
@@ -173,8 +186,9 @@ class HrReportExportView(APIView):
         from .rapport_formats import RENDUS
         from .rapport_rh import assembler
 
-        if not can_access_domain(request.user, "capital-humain"):
-            return _refus_domaine()
+        refus = _refus_page(request.user, "hr-reports")
+        if refus:
+            return refus
         if ext not in RENDUS:
             return Response({"detail": "Format non supporté (xlsx, pdf, pptx)."}, status=status.HTTP_400_BAD_REQUEST)
         try:

@@ -22,7 +22,7 @@ from django.core.mail import EmailMessage
 from django.db import transaction
 from django.utils import timezone
 
-from apps.accounts.rbac import can_access_domain
+from apps.accounts.rbac import peut_module_rh
 from apps.audit.models import AccessLog
 
 from . import filtres as F
@@ -84,8 +84,8 @@ def envoyer(rapport: RapportProgramme, *, maintenant=None) -> list[EnvoiRapport]
             traces.append(EnvoiRapport.objects.create(rapport=rapport, destinataire=destinataire,
                                                       statut=statut, detail=detail[:300]))
 
-        if not destinataire.is_active or not can_access_domain(destinataire, "capital-humain"):
-            tracer(EnvoiRapport.Statut.IGNORE, "Destinataire sans accès au Capital Humain.")
+        if not destinataire.is_active or not peut_module_rh(destinataire, "hr-reports"):
+            tracer(EnvoiRapport.Statut.IGNORE, "Destinataire sans accès aux rapports Capital Humain.")
             continue
         if not destinataire.email:
             tracer(EnvoiRapport.Statut.IGNORE, "Destinataire sans adresse e-mail.")

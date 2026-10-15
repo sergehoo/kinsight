@@ -1,7 +1,7 @@
 /** Authentification réelle : login JWT + profil /me (rôle, permissions, atterrissage). */
 
-import { API_BASE, clearSession, getToken, setSession, TOKEN_KEY, USER_KEY } from "@/lib/api";
-import { applyAuthPermissions } from "@/lib/permissions";
+import { API_BASE, clearSession, fetchAuthentifie, getToken, setSession, TOKEN_KEY, USER_KEY } from "@/lib/api";
+import { applyAuthPermissions, getCurrentPermissions, getCurrentRole } from "@/lib/permissions";
 
 export interface MeProfile {
   username: string;
@@ -40,6 +40,23 @@ export async function fetchMe(): Promise<MeProfile> {
   window.localStorage.setItem(USER_KEY, JSON.stringify(me));
   applyAuthPermissions(me.permissions, me.role);
   return me;
+}
+
+/** Relit le profil au chargement de l'application.
+ *
+ *  Les permissions n'étaient écrites qu'à la connexion : un rôle modifié ou une
+ *  permission ajoutée côté serveur (paie pour la DRH Groupe, pages d'un
+ *  Assistant RH) n'apparaissait qu'après reconnexion — et une permission
+ *  RETIRÉE restait affichée dans la navigation. Rend `true` si quelque chose a
+ *  changé. Un échec laisse le profil connu : le serveur reste la frontière. */
+export async function rafraichirProfil(): Promise<boolean> {
+  const avant = JSON.stringify([getCurrentPermissions(), getCurrentRole()]);
+  const res = await fetchAuthentifie("/auth/me/");
+  if (!res.ok) return false;
+  const me = (await res.json()) as MeProfile;
+  window.localStorage.setItem(USER_KEY, JSON.stringify(me));
+  applyAuthPermissions(me.permissions, me.role);
+  return JSON.stringify([getCurrentPermissions(), getCurrentRole()]) !== avant;
 }
 
 /** Échec de connexion portant le code HTTP, pour que l'écran dise la vraie cause.

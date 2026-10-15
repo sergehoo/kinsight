@@ -24,14 +24,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.accounts.rbac import can_access_domain
+from apps.accounts.rbac import can_access_domain, peut_voir_permission
 from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
 from apps.integrations import shield_rules as R
 
 from . import filtres as F
 from . import historique as H
-from .hr_registry import ODOO, REGISTRE, SHIELD, resoudre
+from .hr_registry import MOTIF_PERMISSION, ODOO, PERMISSION_REQUISE, REGISTRE, SHIELD, resoudre
 from .hr_sources import contexte_pour
 from .lecture_rh import VENTILEES_PAR_PRESENCE, portee
 from .models import Dimension, KpiSnapshot
@@ -58,6 +58,9 @@ class HrHistoryView(APIView):
         if not can_access_domain(request.user, metric.domaine):
             return Response({"detail": f"Accès au domaine « {metric.domaine} » non autorisé pour votre rôle."},
                             status=status.HTTP_403_FORBIDDEN)
+        requise = PERMISSION_REQUISE.get(metric.id)
+        if requise and not peut_voir_permission(request.user, requise):
+            return Response({"detail": MOTIF_PERMISSION[requise]}, status=status.HTTP_403_FORBIDDEN)
 
         base = {"metric_id": metric.id, "label": metric.libelle, "definition": metric.definition,
                 "unit": metric.unite, "format": metric.format, "source": metric.source,

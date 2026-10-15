@@ -19,6 +19,13 @@ P_RISK = "view_risk"
 P_AI = "view_ai"
 P_REPORTS = "view_reports"
 P_ALL = "view_all_dashboards"      # DG / CODIR : tous les domaines
+# Permissions RENFORCÉES du Capital Humain : avoir le domaine RH ne suffit pas.
+P_HR_PAYROLL = "view_hr_payroll"
+P_HR_CAREER = "view_hr_career"
+P_HR_PERFORMANCE = "view_hr_performance"
+RH_RENFORCEES = [P_HR_PAYROLL, P_HR_CAREER, P_HR_PERFORMANCE]
+# Préfixe des pages affectées à un Assistant RH (`hr_module:hr-attendance`).
+P_HR_MODULE = "hr_module:"
 P_SUPERADMIN = "SUPER_ADMIN"       # accès total (admin)
 
 # Routes d'atterrissage (chemins frontend).
@@ -36,7 +43,13 @@ _BY_ROLE = {
     "DG_GROUP": ([P_ALL], L_OVERVIEW),
     "CODIR": ([P_ALL], L_OVERVIEW),
     "DAF": ([P_OVERVIEW, P_FINANCE, P_REPORTS], L_FINANCE),
-    "DRH": ([P_HR], L_HR),
+    "DRH": ([P_HR], L_HR),  # + paie / carrière / performance au périmètre Groupe (voir permissions_for)
+    # Directeur de filiale : tous les métiers, TOUJOURS restreint à ses filiales
+    # (`User.scope`) ; la paie de sa filiale, pas carrière ni performance.
+    "DIR_FILIALE": ([P_OVERVIEW, P_IMMO, P_HR, P_FINANCE, P_OPS, P_COMMERCIAL, P_RISK, P_REPORTS, P_HR_PAYROLL],
+                    L_OVERVIEW),
+    # Assistant RH : le domaine RH, réduit aux pages explicitement affectées.
+    "ASSISTANT_RH": ([P_HR], L_HR),
     "DIR_OPS": ([P_OVERVIEW, P_OPS, P_IMMO, P_COMMERCIAL], L_OPS),
     "RESP_METIER": ([P_OVERVIEW, P_IMMO, P_OPS, P_COMMERCIAL, P_REPORTS], L_OVERVIEW),
     "ADMIN_INTEGRATION": ([P_OVERVIEW], L_INTEGRATIONS),
@@ -47,8 +60,44 @@ _BY_ROLE = {
 def permissions_for(user) -> list[str]:
     if getattr(user, "is_superuser", False):
         return [P_SUPERADMIN]
-    perms, _landing = _BY_ROLE.get(getattr(user, "role", ""), ([P_OVERVIEW], L_OVERVIEW))
-    return list(perms)
+    role = getattr(user, "role", "")
+    perms, _landing = _BY_ROLE.get(role, ([P_OVERVIEW], L_OVERVIEW))
+    perms = list(perms)
+    # DRH GROUPE : paie, carrière, performance. Un RH de filiale (DRH restreint)
+    # garde le domaine sans ces trois volets.
+    if role == "DRH" and getattr(user, "is_group_scope", False):
+        perms += RH_RENFORCEES
+    if role == "ASSISTANT_RH":
+        perms += [f"{P_HR_MODULE}{cle}" for cle in (getattr(user, "affectations_rh", None) or [])
+                  if isinstance(cle, str)]
+    return perms
+
+
+# Pages RH qui exigent une permission renforcée en plus du domaine.
+MODULES_RENFORCES = {"hr-payroll": P_HR_PAYROLL, "hr-career": P_HR_CAREER, "hr-performance": P_HR_PERFORMANCE}
+
+
+def peut_module_rh(user, cle: str) -> bool:
+    """Une page (ou action) du Capital Humain est-elle ouverte à cet utilisateur ?
+
+    Domaine RH requis ; paie / carrière / performance exigent leur permission ;
+    un Assistant RH n'ouvre que les pages qui lui sont affectées. Frontière
+    serveur : la navigation ne fait que masquer.
+    """
+    if not can_access_domain(user, "capital-humain"):
+        return False
+    perms = permissions_for(user)
+    if P_SUPERADMIN in perms or P_ALL in perms:
+        return True
+    if getattr(user, "role", "") == "ASSISTANT_RH" and f"{P_HR_MODULE}{cle}" not in perms:
+        return False
+    requise = MODULES_RENFORCES.get(cle)
+    return requise is None or requise in perms
+
+
+def peut_voir_permission(user, permission: str) -> bool:
+    perms = permissions_for(user)
+    return P_SUPERADMIN in perms or P_ALL in perms or permission in perms
 
 
 # Domaine (clé frontend) → permission requise pour accéder à SES données (endpoints par domaine).

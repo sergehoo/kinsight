@@ -18,7 +18,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.accounts.rbac import can_access_domain
+from apps.accounts.rbac import can_access_domain, peut_module_rh
 
 from k_insight.access import filter_by_scope
 from k_insight.kpi.alerts import SCORE_RULES, SEVERITY_ORDER, TREND_DROP_RULES, most_severe
@@ -187,6 +187,12 @@ class ModuleDataView(APIView):
     """
 
     def get(self, request, key: str):
+        # Paie, carrière, performance : permission renforcée ; Assistant RH : pages
+        # affectées seulement. Le domaine RH ne suffit pas — et la garde passe
+        # AVANT tout, y compris pour une page qui n'a encore aucune liaison.
+        if key.startswith("hr-") and not peut_module_rh(request.user, key):
+            return Response({"detail": "Page réservée : votre profil n'y est pas habilité."},
+                            status=status.HTTP_403_FORBIDDEN)
         lies = liaisons(key)
         if not lies:
             return _governed(key)
@@ -269,6 +275,9 @@ class HrScoreView(APIView):
     def get(self, request):
         if not can_access_domain(request.user, "capital-humain"):
             return _forbidden("capital-humain")
+        if not peut_module_rh(request.user, "hr-executive"):
+            return Response({"detail": "Score réservé : votre profil n'y est pas habilité."},
+                            status=status.HTTP_403_FORBIDDEN)
         try:
             filtres = F.lire(request.query_params, timezone.localdate())
         except F.FiltreInvalide as refus:

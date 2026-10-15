@@ -24,7 +24,7 @@ import {
   Users,
   Wallet,
 } from "@/components/overview/icons";
-import { canAccess, DOMAIN_PERMISSION, type Permission } from "@/lib/permissions";
+import { canAccess, DOMAIN_PERMISSION, getCurrentRole, type Permission } from "@/lib/permissions";
 
 export type ModuleIcon = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
@@ -139,10 +139,10 @@ export const dashboardModules: DashboardModuleConfig[] = [
       { label: "Recrutement", path: "/recrutement", icon: Briefcase, moduleKey: "hr-recruitment" },
       { label: "Onboarding", path: "/onboarding", icon: CheckCircle, moduleKey: "hr-onboarding" },
       { label: "Paie", path: "/paie", icon: Wallet, moduleKey: "hr-payroll", requiredPermissions: ["view_hr_payroll"] },
-      { label: "Performance", path: "/performance", icon: BarChart, moduleKey: "hr-performance" },
+      { label: "Performance", path: "/performance", icon: BarChart, moduleKey: "hr-performance", requiredPermissions: ["view_hr_performance"] },
       { label: "Formation", path: "/formation", icon: FileText, moduleKey: "hr-training" },
       { label: "Compétences", path: "/competences", icon: Grid, moduleKey: "hr-skills" },
-      { label: "Carrière", path: "/carriere", icon: CheckCircle, moduleKey: "hr-career" },
+      { label: "Carrière", path: "/carriere", icon: CheckCircle, moduleKey: "hr-career", requiredPermissions: ["view_hr_career"] },
       { label: "Engagement", path: "/engagement", icon: User, moduleKey: "hr-experience" },
       { label: "Santé & Sécurité", path: "/sante-securite", icon: Shield, moduleKey: "hr-health-safety" },
       { label: "Conformité RH", path: "/conformite", icon: Receipt, moduleKey: "hr-compliance" },
@@ -307,8 +307,21 @@ export function visibleDashboardModules(permissions: readonly Permission[]) {
   return dashboardModules.filter((module) => canAccess(module.requiredPermissions, [...permissions]));
 }
 
-export function visibleSidebarItems(module: DashboardModuleConfig, permissions: readonly Permission[]) {
-  return module.sidebarItems.filter((item) => canAccess(item.requiredPermissions, [...permissions]));
+/** Préfixe des pages affectées à un Assistant RH (`hr_module:hr-attendance`),
+ *  servies par le backend dans les permissions de `/auth/me`. */
+const HR_MODULE = "hr_module:";
+
+export function visibleSidebarItems(
+  module: DashboardModuleConfig,
+  permissions: readonly Permission[],
+  role: string = getCurrentRole(),
+) {
+  // Assistant RH : seules les pages explicitement affectées — aucune si la liste
+  // est vide. Le serveur refuse les autres (403) ; la navigation ne les propose pas.
+  const assistant = module.id === "capital-humain" && role === "ASSISTANT_RH";
+  const affectees = permissions.filter((p) => p.startsWith(HR_MODULE)).map((p) => p.slice(HR_MODULE.length));
+  return module.sidebarItems.filter((item) => canAccess(item.requiredPermissions, [...permissions])
+    && (!assistant || affectees.includes(item.moduleKey)));
 }
 
 export function getModuleById(moduleId: string | undefined) {

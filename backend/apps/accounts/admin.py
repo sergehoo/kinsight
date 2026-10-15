@@ -31,11 +31,13 @@ class UtilisateurAdmin(UserAdmin):
         (
             "Gouvernance K-Insight",
             {
-                "fields": ("role", "is_group_scope", "subsidiaries"),
+                "fields": ("role", "is_group_scope", "subsidiaries", "affectations_rh"),
                 "description": (
                     "Le rôle gouverne l'accès aux domaines et au centre d'intégrations. "
                     "Un périmètre « groupe » donne accès à toutes les filiales ; sinon, "
-                    "seules les filiales cochées sont visibles."
+                    "seules les filiales cochées sont visibles. Un directeur de filiale reste "
+                    "toujours limité à ses filiales. Assistant RH : liste des pages affectées "
+                    "(ex. [\"hr-attendance\", \"hr-leave\"])."
                 ),
             },
         ),

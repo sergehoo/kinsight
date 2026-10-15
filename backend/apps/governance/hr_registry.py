@@ -162,6 +162,13 @@ REGISTRE: dict[str, Metrique] = {m.id: m for m in _M}
 _PAR_CLE_SOURCE: dict[tuple[str, str], str] = {(m.source, m.cle_source): m.id for m in _M if m.cle_source}
 
 
+# Métriques à permission RENFORCÉE : le domaine RH ne suffit pas pour les lire.
+PERMISSION_REQUISE: dict[str, str] = {
+    "hr.masse_salariale": "view_hr_payroll",
+}
+MOTIF_PERMISSION = {"view_hr_payroll": "Réservé aux profils habilités à la paie."}
+
+
 def identifiant(source: str, cle: str) -> str | None:
     """L'identifiant canonique d'un KPI de source (`shield`, `presents`) → `hr.presents_jour`.
 

@@ -20,7 +20,14 @@ class Role(models.TextChoices):
     DRH = "DRH", "Directeur des ressources humaines"
     DIR_OPS = "DIR_OPS", "Directeur opérationnel"
     RESP_METIER = "RESP_METIER", "Responsable métier"
+    DIR_FILIALE = "DIR_FILIALE", "Directeur de filiale"
+    ASSISTANT_RH = "ASSISTANT_RH", "Assistant RH"
     READER = "READER", "Lecteur"
+
+
+# Rôles dont le périmètre est TOUJOURS restreint à leurs filiales : un drapeau
+# « groupe » coché par erreur ne leur ouvre pas les autres filiales.
+ROLES_TOUJOURS_RESTREINTS = {Role.DIR_FILIALE}
 
 
 # Rôles habilités à voir des données nominatives (ex. salaire individuel). Les autres
@@ -36,10 +43,13 @@ class User(AbstractUser):
     subsidiaries = models.ManyToManyField(
         "organizations.Subsidiary", blank=True, related_name="users"
     )
+    # Assistant RH : les pages Capital Humain EXPLICITEMENT affectées (clés de
+    # module, ex. « hr-attendance »). Vide = aucune page. Ignoré pour les autres rôles.
+    affectations_rh = models.JSONField(default=list, blank=True)
 
     def scope(self) -> Scope:
         """Périmètre de visibilité (domaine pur)."""
-        if self.is_group_scope:
+        if self.is_group_scope and self.role not in ROLES_TOUJOURS_RESTREINTS:
             return Scope.group()
         codes = list(self.subsidiaries.values_list("code", flat=True))
         return Scope.of(*codes) if codes else Scope.none()

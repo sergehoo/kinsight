@@ -16,7 +16,9 @@ from rest_framework import status
 
 from . import historique as H
 from .filtres import FiltreInvalide, Filtres
-from .hr_registry import ODOO, REGISTRE, SHIELD, Metrique
+from apps.accounts.rbac import peut_voir_permission
+
+from .hr_registry import MOTIF_PERMISSION, ODOO, PERMISSION_REQUISE, REGISTRE, SHIELD, Metrique
 from .hr_sources import societes_des_filiales
 from .models import Dimension
 
@@ -84,6 +86,9 @@ def valeur_periode(user, metric_id: str, filtres: Filtres, *, comparer: bool = T
     Ne lève jamais : un refus de portée devient `{status: disconnected, reason}`
     — sauf un 403, qui doit remonter tel quel à l'appelant."""
     metric = REGISTRE[metric_id]
+    requise = PERMISSION_REQUISE.get(metric_id)
+    if requise and not peut_voir_permission(user, requise):
+        return {"value": None, "status": "disconnected", "reason": MOTIF_PERMISSION[requise]}
     if metric.source not in (SHIELD, ODOO):
         return {"value": None, "status": "disconnected", "reason": metric.motif_absence}
     try:
