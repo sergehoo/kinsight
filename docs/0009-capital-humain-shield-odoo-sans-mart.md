@@ -114,3 +114,19 @@ La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; 
   les causes sont préfixées « Hypothèse : ». Sans modèle, la synthèse est composée des constats et le dit.
 - Périmètre : un utilisateur restreint ne reçoit aucun constat tiré des chiffres Groupe de Shield ; ses angles
   morts deviennent des questions à investiguer.
+
+## Addendum — Exports et rapports programmés (2026-10-15)
+
+- **Une assemblée, trois formats** (`rapport_rh.assembler`) : périmètre, filtres, période, auteur, KPI avec
+  source et comparaison, séries quotidiennes, classement des sites, signaux, constats, score, fraîcheur des
+  sources — lus par les mêmes fonctions que les écrans. Excel (détail + synthèse, graphiques natifs), PDF
+  (rapport exécutif, courbe vectorielle), PowerPoint (synthèse, KPI, tendance, risques, recommandations,
+  sources). Un jour non mesuré reste une case vide / un trou de courbe ; un KPI sans source reste N/D avec motif.
+- `GET /governance/hr/rapport.<xlsx|pdf|pptx>` : RBAC et filtres identiques aux écrans (filiale hors
+  périmètre → 403). Chaque extraction est tracée : utilisateur, rôle, périmètre, filtres, format, date, taille.
+- **Rapports programmés** (`RapportProgramme`, `EnvoiRapport`, tâche `rapports.envoyer_dus` toutes les 15 min) :
+  fréquence quotidienne / hebdomadaire (lundi) / mensuelle (1er), envoi à 07:00, période **relative**
+  résolue à l'envoi. **Chaque destinataire reçoit le rapport sous ses propres droits.** Destinataires : soi-même ;
+  la DRH Groupe et l'administration peuvent ajouter des utilisateurs ayant accès au Capital Humain — jamais une
+  adresse libre. L'échéance avance sous verrou avant l'envoi (pas de double envoi). Sans SMTP (`EMAIL_HOST`),
+  rien ne part et chaque échéance est journalisée « Non envoyé » avec le motif.

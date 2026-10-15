@@ -1515,10 +1515,9 @@ export const MODULES: Record<string, ModuleDef> = {
     kind: "default",
     source: "mart.hr_reporting",
     home: true,
-    kpis: metricKpis("mart.hr_reporting", ["Rapports générés", "Exports PDF", "Exports Excel", "Exports PowerPoint", "Validations en attente", "Destinataires"]),
-    sections: [
-      section("Rapports RH programmés", "DRH, CODIR, filiales, départements, conformité et paie", "mart.hr_report_schedule", "gantt", ["DRH", "CODIR", "Filiales", "Départements", "Conformité", "Paie"]),
-    ],
+    // Les six cartes N/D (« Rapports générés », « Exports PowerPoint »…) et le
+    // Gantt vide sont retirés : la page rend désormais les exports réels et la
+    // programmation des envois (`RapportsRh`), avec leur journal.
   },
   "finance-executive": {
     key: "finance-executive",

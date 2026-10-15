@@ -12,6 +12,7 @@ import { AiQueryBox } from "@/components/overview/AiQueryBox";
 import { AlertsPanel } from "@/components/overview/AlertsPanel";
 import { DecisionRh } from "@/components/overview/DecisionRh";
 import { GraphesRh } from "@/components/overview/GraphesRh";
+import { RapportsRh } from "@/components/overview/RapportsRh";
 import { SignauxRh } from "@/components/overview/SignauxRh";
 import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
 import { ArrowUpRight, CheckCircle, TriDown, TriUp } from "@/components/overview/icons";
@@ -547,6 +548,7 @@ function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<str
       {module.key === "hr-alerts" ? <SignauxRh /> : isAlerts ? <AlertsPanel /> : null}
       <AiGuardrail module={module} />
       {module.key === "hr-ai" ? <DecisionRh /> : isAi ? <AiQueryBox /> : null}
+      {module.key === "hr-reports" ? <RapportsRh /> : null}
 
       {hasKpis ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { apiDownload, apiGet, apiPost, apiPut, USE_MOCK } from "@/lib/api";
+import { apiDelete, apiDownload, apiGet, apiPatch, apiPost, apiPostDetail, apiPut, USE_MOCK } from "@/lib/api";
 import { mockCatalog, mockGovernanceOverview, mockHrKpi } from "@/lib/mock";
 import type { AiAnswer, AlertsResponse, CatalogResponse, GovernanceOverviewResponse, GovernanceScoreResponse, GroupScoreResponse, HrKpiSummary , HrScoreResponse, ModuleDataResponse } from "@/types/governance";
 
@@ -22,6 +22,13 @@ export function useAiQuery() {
 }
 
 /** Télécharge l'export du tableau de bord Gouvernance Groupe (xlsx | pdf). */
+/** Rapport Capital Humain sous les filtres COURANTS (période, filiale, site,
+ *  type, département) : le serveur y applique le périmètre de l'utilisateur. */
+export function downloadHrReport(ext: "xlsx" | "pdf" | "pptx", filtres: string, libelle: string) {
+  const nom = `k-insight-capital-humain-${libelle.replace(/[^\p{L}\p{N}]+/gu, "-").toLowerCase()}.${ext}`;
+  return apiDownload(`/governance/hr/rapport.${ext}?${filtres}`, nom);
+}
+
 export function downloadGroupExport(ext: "xlsx" | "pdf", year: number, quarter: number, subsidiary = "all") {
   const sub = subsidiary && subsidiary !== "all" ? `&subsidiary=${subsidiary}` : "";
   return apiDownload(
@@ -326,4 +333,68 @@ export function useHrSynthese(filtres: string, demandee: boolean) {
     staleTime: 10 * 60_000,
     queryFn: () => apiGet<DecisionRh>(`/governance/hr/decision/?${filtres}&synthese=1`),
   });
+}
+
+/* ── Rapports programmés (`/governance/hr/rapports-programmes/`) ─────────── */
+
+export interface EnvoiRapport { destinataire: string; statut: "envoye" | "echec" | "ignore"; statut_libelle: string; detail: string; le: string }
+
+export interface RapportProgramme {
+  id: number;
+  nom: string;
+  frequence: "quotidien" | "hebdomadaire" | "mensuel";
+  frequence_libelle: string;
+  format: "xlsx" | "pdf" | "pptx";
+  filtres: Record<string, string>;
+  periode_libelle: string;
+  actif: boolean;
+  auteur: string;
+  destinataires: { id: number; nom: string }[];
+  prochain_envoi: string | null;
+  dernier_envoi: string | null;
+  envois: EnvoiRapport[];
+}
+
+export interface RapportsProgrammes {
+  rapports: RapportProgramme[];
+  smtp_configure: boolean;
+  peut_programmer_pour_autrui: boolean;
+  destinataires_possibles: { id: number; nom: string }[];
+  periodes: Record<string, string>;
+}
+
+const CLE_RAPPORTS = ["hr-rapports-programmes"];
+
+export function useRapportsProgrammes() {
+  return useQuery<RapportsProgrammes>({
+    queryKey: CLE_RAPPORTS,
+    enabled: !USE_MOCK,
+    queryFn: () => apiGet<RapportsProgrammes>("/governance/hr/rapports-programmes/"),
+  });
+}
+
+/** Créer, modifier, supprimer, envoyer : chaque écriture relit la liste. */
+export function useEcrireRapport() {
+  const client = useQueryClient();
+  const relire = () => client.invalidateQueries({ queryKey: CLE_RAPPORTS });
+  return {
+    creer: useMutation({
+      mutationFn: (corps: Omit<Partial<RapportProgramme>, "destinataires"> & { destinataires?: number[] }) =>
+        apiPostDetail<RapportProgramme>("/governance/hr/rapports-programmes/", corps),
+      onSuccess: relire,
+    }),
+    modifier: useMutation({
+      mutationFn: ({ id, ...corps }: { id: number; actif?: boolean }) =>
+        apiPatch<RapportProgramme>(`/governance/hr/rapports-programmes/${id}/`, corps),
+      onSuccess: relire,
+    }),
+    supprimer: useMutation({
+      mutationFn: (id: number) => apiDelete(`/governance/hr/rapports-programmes/${id}/`),
+      onSuccess: relire,
+    }),
+    envoyer: useMutation({
+      mutationFn: (id: number) => apiPostDetail<RapportProgramme>(`/governance/hr/rapports-programmes/${id}/envoyer/`),
+      onSuccess: relire,
+    }),
+  };
 }

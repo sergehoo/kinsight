@@ -102,3 +102,11 @@ def rattrapage_presence(depuis: str, jusqu_a: str):
         resultats.append({"jour": jour.isoformat(), "statut": bilan.statut})
         jour += timedelta(days=1)
     return resultats
+
+
+@shared_task(name="rapports.envoyer_dus")
+def rapports_envoyer_dus() -> dict:
+    """Rapports Capital Humain programmés arrivés à échéance (Celery Beat, 15 min)."""
+    from .rapports_programmes import envoyer_les_dus
+
+    return envoyer_les_dus()

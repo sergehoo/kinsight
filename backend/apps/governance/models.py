@@ -98,3 +98,64 @@ class SeuilRh(models.Model):
 
     def __str__(self) -> str:
         return f"{self.signal} : surveillance {self.surveillance} · critique {self.critique}"
+
+
+class RapportProgramme(models.Model):
+    """Un rapport Capital Humain envoyé périodiquement par e-mail.
+
+    LE PÉRIMÈTRE EST CELUI DU DESTINATAIRE. Chaque destinataire reçoit le rapport
+    assemblé sous SES droits, jamais sous ceux de l'auteur : programmer un envoi
+    ne peut pas faire sortir un chiffre qu'un destinataire ne verrait pas à
+    l'écran. Les filtres sont RELATIFS (« 30 derniers jours », « trimestre en
+    cours ») et se résolvent au moment de l'envoi.
+    """
+
+    class Frequence(models.TextChoices):
+        QUOTIDIEN = "quotidien", "Chaque jour"
+        HEBDOMADAIRE = "hebdomadaire", "Chaque lundi"
+        MENSUEL = "mensuel", "Le 1er du mois"
+
+    class Format(models.TextChoices):
+        XLSX = "xlsx", "Excel"
+        PDF = "pdf", "PDF"
+        PPTX = "pptx", "PowerPoint"
+
+    nom = models.CharField(max_length=120)
+    auteur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="rapports_programmes")
+    destinataires = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="rapports_recus")
+    frequence = models.CharField(max_length=16, choices=Frequence.choices, default=Frequence.HEBDOMADAIRE)
+    format = models.CharField(max_length=8, choices=Format.choices, default=Format.PDF)
+    filtres = models.JSONField(default=dict, blank=True)
+    actif = models.BooleanField(default=True)
+    prochain_envoi = models.DateTimeField()
+    dernier_envoi = models.DateTimeField(null=True, blank=True)
+    cree_le = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Rapport programmé"
+        verbose_name_plural = "Rapports programmés"
+        ordering = ["nom"]
+
+    def __str__(self) -> str:
+        return f"{self.nom} ({self.get_frequence_display()}, {self.format})"
+
+
+class EnvoiRapport(models.Model):
+    """Trace d'un envoi : à qui, quand, avec quel résultat. Un échec SMTP est un
+    échec — jamais un « envoyé » optimiste."""
+
+    class Statut(models.TextChoices):
+        ENVOYE = "envoye", "Envoyé"
+        ECHEC = "echec", "Échec"
+        IGNORE = "ignore", "Non envoyé"
+
+    rapport = models.ForeignKey(RapportProgramme, on_delete=models.CASCADE, related_name="envois")
+    destinataire = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+")
+    statut = models.CharField(max_length=8, choices=Statut.choices)
+    detail = models.CharField(max_length=300, blank=True)
+    envoye_le = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Envoi de rapport"
+        verbose_name_plural = "Envois de rapports"
+        ordering = ["-envoye_le"]

@@ -152,7 +152,6 @@ export const GRAPHES_RH: Record<string, GraphesModuleRh> = {
   "hr-planning": { graphes: [], motif: "Aucune prévision n'est publiée tant que les mouvements d'effectif ne sont pas mesurés." },
   "hr-diversity": { graphes: [], motif: "Genre, âge et nationalité ne sont pas lus (données personnelles non importées)." },
   "hr-ai": { graphes: [], motif: "Les prévisions IA attendent des séries de mouvements et de paie qui ne sont pas lues." },
-  "hr-reports": { graphes: [], motif: "Le calendrier des rapports programmés n'est pas encore en place." },
 };
 
 /** Les sections du catalogue que rien ne trace, avec leur motif. */

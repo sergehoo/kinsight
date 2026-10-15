@@ -40,6 +40,14 @@ x-backend-env: &backend-env
   EDW_DB_PASSWORD: ${EDW_DB_PASSWORD:?EDW_DB_PASSWORD is required}
   REDIS_URL: redis://kinsight-redis:6379/0
   CELERY_BROKER_URL: redis://kinsight-redis:6379/1
+  # E-mail sortant des rapports Capital Humain programmés. Optionnel : sans
+  # EMAIL_HOST, aucun rapport ne part et chaque envoi est journalisé « non envoyé ».
+  EMAIL_HOST: ${EMAIL_HOST:-}
+  EMAIL_PORT: ${EMAIL_PORT:-587}
+  EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+  EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+  EMAIL_USE_TLS: ${EMAIL_USE_TLS:-true}
+  DEFAULT_FROM_EMAIL: "${DEFAULT_FROM_EMAIL:-K-Insight <no-reply@kaydan.tech>}"
 
 networks:
   dokploy-network:

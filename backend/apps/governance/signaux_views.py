@@ -155,3 +155,43 @@ class HrDecisionView(APIView):
             "periode": {"debut": periode.debut.isoformat(), "fin": periode.fin.isoformat(),
                         "libelle": filtres.libelle, "jusqu_a": "veille"},
         })
+
+
+class HrReportExportView(APIView):
+    """GET /api/v1/governance/hr/rapport.<xlsx|pdf|pptx>?<filtres du cockpit>
+
+    Le rapport reprend EXACTEMENT ce que l'utilisateur voit : son périmètre, ses
+    filtres, sa période — assemblé par les mêmes lectures que les écrans. Chaque
+    extraction est tracée : qui, rôle, périmètre, filtres, format, date.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, ext: str):
+        from django.http import HttpResponse
+
+        from .rapport_formats import RENDUS
+        from .rapport_rh import assembler
+
+        if not can_access_domain(request.user, "capital-humain"):
+            return _refus_domaine()
+        if ext not in RENDUS:
+            return Response({"detail": "Format non supporté (xlsx, pdf, pptx)."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            filtres = F.lire(request.query_params, timezone.localdate())
+            rapport = assembler(request.user, filtres)
+        except F.FiltreInvalide as refus:
+            return Response({"detail": refus.motif}, status=refus.code_http)
+
+        rendu, type_contenu = RENDUS[ext]
+        contenu = rendu(rapport)
+        AccessLog.record(user=request.user, action="export_hr_report", metric_key="hr.rapport",
+                         scope_codes=_perimetre(request.user),
+                         payload={"format": ext, "role": getattr(request.user, "role", ""),
+                                  "perimetre": rapport["perimetre"], **filtres.comme_trace(),
+                                  "genere_le": rapport["genere_le"], "octets": len(contenu)},
+                         **audit_source(request))
+        reponse = HttpResponse(contenu, content_type=type_contenu)
+        nom = f"k-insight-capital-humain-{filtres.periode.debut.isoformat()}-{filtres.periode.fin.isoformat()}.{ext}"
+        reponse["Content-Disposition"] = f'attachment; filename="{nom}"'
+        return reponse

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { downloadGroupExport, useHrHistory } from "@/api/governance";
+import { downloadGroupExport, downloadHrReport, useHrHistory } from "@/api/governance";
 import { TrendChart } from "@/components/charts";
 import type { KSeriesPoint } from "@/lib/kmetric";
 import { AppHeader } from "@/components/chrome/AppHeader";
@@ -61,43 +61,63 @@ function PeriodMenu() {
   );
 }
 
-function ActionsMenu() {
-  const { year, quarter, subsidiary } = useFilters();
+function ActionsMenu({ domainId }: { domainId: string }) {
+  const filtres = useFilters();
+  const { year, quarter, subsidiary } = filtres;
+  const estRh = domainId === "capital-humain";
   const [busy, setBusy] = React.useState(false);
+  const [echec, setEchec] = React.useState<string | null>(null);
+  const navigate = useNavigate();
   const fullscreen = () => {
     if (typeof document === "undefined") return;
     if (document.fullscreenElement) document.exitFullscreen?.();
     else document.documentElement.requestFullscreen?.();
   };
-  const exportAs = async (ext: "xlsx" | "pdf") => {
+  // Capital Humain : le rapport du domaine, sous les filtres courants (le DRH
+  // n'a pas la vue Groupe — l'export Groupe lui répondait 403). Les autres
+  // domaines gardent l'export de l'indice Groupe.
+  const exportAs = async (ext: "xlsx" | "pdf" | "pptx") => {
     setBusy(true);
+    setEchec(null);
     try {
-      await downloadGroupExport(ext, year, quarter, subsidiary);
-    } catch {
-      /* l'échec réseau reste silencieux ici ; l'API journalise l'accès */
+      if (estRh) await downloadHrReport(ext, parametresFiltres(filtres).toString(), libelleFiltrePeriode(filtres));
+      else if (ext !== "pptx") await downloadGroupExport(ext, year, quarter, subsidiary);
+    } catch (e) {
+      // Un échec se DIT : un clic sans effet se lit comme un outil cassé.
+      setEchec(e instanceof Error && / 403 /.test(e.message) ? "Export non autorisé pour votre rôle." : "Export impossible pour le moment.");
     } finally {
       setBusy(false);
     }
   };
   return (
-    <Menu
-      align="right"
-      width={230}
-      trigger={({ open, toggle }) => (
-        <button type="button" aria-label="Plus d'options" aria-haspopup="menu" aria-expanded={open} onClick={toggle} className="grid h-12 w-12 place-items-center rounded-full text-[#242424]" style={glass}>
-          <Dots width={20} height={20} />
-        </button>
-      )}
-    >
-      {(close) => (
-        <>
-          <MenuItem onClick={() => { fullscreen(); close(); }}>Plein écran</MenuItem>
-          <MenuItem onClick={() => { exportAs("xlsx"); close(); }}>{busy ? "Export…" : "Exporter (Excel)"}</MenuItem>
-          <MenuItem onClick={() => { exportAs("pdf"); close(); }}>Exporter (PDF)</MenuItem>
-          <MenuItem onClick={close}>Programmer un rapport (bientôt)</MenuItem>
-        </>
-      )}
-    </Menu>
+    <div className="relative">
+      <Menu
+        align="right"
+        width={230}
+        trigger={({ open, toggle }) => (
+          <button type="button" aria-label="Plus d'options" aria-haspopup="menu" aria-expanded={open} onClick={toggle} className="grid h-12 w-12 place-items-center rounded-full text-[#242424]" style={glass}>
+            <Dots width={20} height={20} />
+          </button>
+        )}
+      >
+        {(close) => (
+          <>
+            <MenuItem onClick={() => { fullscreen(); close(); }}>Plein écran</MenuItem>
+            <MenuItem onClick={() => { exportAs("xlsx"); close(); }}>{busy ? "Export…" : "Exporter (Excel)"}</MenuItem>
+            <MenuItem onClick={() => { exportAs("pdf"); close(); }}>Exporter (PDF)</MenuItem>
+            {estRh ? <MenuItem onClick={() => { exportAs("pptx"); close(); }}>Exporter (PowerPoint)</MenuItem> : null}
+            {estRh ? (
+              <MenuItem onClick={() => { navigate("/dashboard/capital-humain/rapports"); close(); }}>Programmer un rapport</MenuItem>
+            ) : null}
+          </>
+        )}
+      </Menu>
+      {echec ? (
+        <p role="alert" className="absolute right-0 top-[52px] z-10 w-[220px] rounded-xl bg-white/95 px-3 py-2 text-[11.5px] font-semibold text-[#C43252] shadow">
+          {echec}
+        </p>
+      ) : null}
+    </div>
   );
 }
 
@@ -445,7 +465,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
             <aside className="flex flex-col gap-4">
               <div className="mb-1 flex flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <PeriodMenu />
-                <ActionsMenu />
+                <ActionsMenu domainId={module.id} />
               </div>
               <DomainPanel domainId={module.id} />
               <SignalsCard spec={spec} domainId={module.id} />

@@ -8,7 +8,7 @@ série des mesures et une saisie, sans que rien ne les distingue.
 
 from django.contrib import admin
 
-from .models import KpiSnapshot, SeuilRh
+from .models import EnvoiRapport, KpiSnapshot, RapportProgramme, SeuilRh
 
 
 @admin.register(KpiSnapshot)
@@ -46,4 +46,25 @@ class SeuilRhAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(RapportProgramme)
+class RapportProgrammeAdmin(admin.ModelAdmin):
+    list_display = ("nom", "auteur", "frequence", "format", "actif", "prochain_envoi", "dernier_envoi")
+    list_filter = ("frequence", "format", "actif")
+
+
+@admin.register(EnvoiRapport)
+class EnvoiRapportAdmin(admin.ModelAdmin):
+    """Journal : consultation seule."""
+
+    list_display = ("rapport", "destinataire", "statut", "detail", "envoye_le")
+    list_filter = ("statut",)
+    readonly_fields = [f.name for f in EnvoiRapport._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
         return False

@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .history_views import HrDimensionsView, HrHistoryView
-from .signaux_views import HrDecisionView, HrSignalsView, HrThresholdsView
+from .rapports_views import EnvoyerRapportView, RapportProgrammeView, RapportsProgrammesView
+from .signaux_views import HrDecisionView, HrReportExportView, HrSignalsView, HrThresholdsView
 from .module_views import (
     AiQueryView,
     AlertsView,
@@ -24,6 +25,10 @@ urlpatterns = [
     path("hr/signaux/", HrSignalsView.as_view(), name="hr-signals"),
     path("hr/seuils/", HrThresholdsView.as_view(), name="hr-thresholds"),
     path("hr/decision/", HrDecisionView.as_view(), name="hr-decision"),
+    path("hr/rapport.<str:ext>", HrReportExportView.as_view(), name="hr-report-export"),
+    path("hr/rapports-programmes/", RapportsProgrammesView.as_view(), name="hr-scheduled-reports"),
+    path("hr/rapports-programmes/<int:pk>/", RapportProgrammeView.as_view(), name="hr-scheduled-report"),
+    path("hr/rapports-programmes/<int:pk>/envoyer/", EnvoyerRapportView.as_view(), name="hr-scheduled-report-send"),
     path("score-group/", GroupScoreView.as_view(), name="group-score"),
     path("alerts/", AlertsView.as_view(), name="alerts"),
     path("ai/query/", AiQueryView.as_view(), name="ai-query"),

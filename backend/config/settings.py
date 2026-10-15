@@ -155,11 +155,29 @@ CELERY_BEAT_SCHEDULE = {
         "task": "historique.odoo_quotidien",
         "schedule": crontab(hour=2, minute=0),
     },
+    # Rapports Capital Humain programmés : chaque rapport dû part à l'heure
+    # près ; l'envoi lui-même est idempotent sur la période (`prochain_envoi`).
+    "rapports-rh-programmes": {
+        "task": "rapports.envoyer_dus",
+        "schedule": crontab(minute="*/15"),
+    },
     "ai-copilot-run-due-automations": {
         "task": "ai_copilot.run_due_automations",
         "schedule": float(os.environ.get("AI_AUTOMATIONS_TICK_SECONDS", "300")),  # vérifie les automatisations dues
     },
 }
+
+# --- E-mail sortant (rapports programmés) ---
+# Lu de l'environnement uniquement ; le mot de passe SMTP ne vit jamais dans le
+# dépôt. Sans EMAIL_HOST, aucun rapport ne part : chaque envoi est journalisé
+# « non envoyé » avec ce motif, jamais compté comme envoyé.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() in ("1", "true", "yes")
+EMAIL_TIMEOUT = 30
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "K-Insight <no-reply@kaydan.tech>")
 
 # --- K-Insight AI Copilot : moteurs LLM (multi-provider, fallback) ---
 # DeepSeek = principal, Claude = fallback. Sans clé, le router bascule sur le repli
