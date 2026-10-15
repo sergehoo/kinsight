@@ -53,6 +53,12 @@ export function anneesDisponibles(d: Date = new Date()): number[] {
 
 const courant = trimestreCourant();
 
+// L'état INITIAL vient déjà de l'adresse. Lue dans un effet, elle arrivait APRÈS
+// les premières requêtes des écrans : chacun chargeait le trimestre par défaut,
+// puis recommençait avec la période du lien — double charge et période fausse à
+// l'écran pendant un instant.
+const depuisUrl: Partial<FiltresLus> = typeof window !== "undefined" ? filtresDeLUrl(window.location.search) : {};
+
 export const useFilters = create<FiltersState>((set) => ({
   periode: "trimestre",
   year: courant.year,
@@ -63,6 +69,7 @@ export const useFilters = create<FiltersState>((set) => ({
   site: "",
   personnel: "",
   departement: "",
+  ...depuisUrl,
   setPeriode: (periode) => set({ periode }),
   setYear: (year) => set({ year }),
   setQuarter: (quarter) => set({ quarter, periode: "trimestre" }),
@@ -135,7 +142,8 @@ const CLES_URL: Record<string, keyof FiltresLus> = {
   subsidiary: "subsidiary", site: "site", type: "personnel", departement: "departement",
 };
 
-export function lireFiltresDepuisUrl(search: string = window.location.search): void {
+/** Les filtres portés par l'adresse, validés. Pure : ne modifie rien. */
+function filtresDeLUrl(search: string): Partial<FiltresLus> {
   const q = new URLSearchParams(search);
   const lu: Partial<FiltresLus> = {};
   const modes: ModePeriode[] = ["trimestre", "annee", "7j", "30j", "90j", "personnalisee"];
@@ -156,6 +164,11 @@ export function lireFiltresDepuisUrl(search: string = window.location.search): v
   if (type === "employee" || type === "worker") lu.personnel = type;
   if (q.get("departement")) lu.departement = q.get("departement") as string;
   if (lu.site && lu.personnel) delete lu.personnel; // le serveur refuserait le croisement
+  return lu;
+}
+
+export function lireFiltresDepuisUrl(search: string = window.location.search): void {
+  const lu = filtresDeLUrl(search);
   if (Object.keys(lu).length) useFilters.setState(lu);
 }
 

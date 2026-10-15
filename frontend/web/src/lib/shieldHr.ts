@@ -135,9 +135,12 @@ export interface ShieldHrQuery {
   cachedAt?: string;
 }
 
-export function useShieldHrKpis() {
+export function useShieldHrKpis(enabled = true) {
   return useQuery<ShieldHrQuery>({
     queryKey: ["shield", "hr-kpi"],
+    // Désactivable : un accueil de domaine hors RH appelait cet endpoint pour
+    // rien — et recevait un 403 quand le rôle n'a pas le Capital Humain.
+    enabled,
     queryFn: async () => {
       const { data, stale, cachedAt } = await apiGetMeta<ShieldHrResponse>("/integrations/shield/hr-kpi/");
       return { payload: data, stale, cachedAt };
@@ -152,9 +155,10 @@ export function useShieldHrKpis() {
 }
 
 /** Indicateurs Sécurité & Conformité (cockpit Risques). */
-export function useShieldSecurity() {
+export function useShieldSecurity(enabled = true) {
   return useQuery<ShieldHrQuery>({
     queryKey: ["shield", "security"],
+    enabled,
     queryFn: async () => {
       const { data, stale, cachedAt } = await apiGetMeta<ShieldHrResponse>("/integrations/shield/security/");
       return { payload: data, stale, cachedAt };
@@ -168,9 +172,10 @@ export function useShieldSecurity() {
 }
 
 /** Agrégats Shield pour la vue Groupe. */
-export function useShieldOverview() {
+export function useShieldOverview(enabled = true) {
   return useQuery<ShieldHrQuery>({
     queryKey: ["shield", "overview"],
+    enabled,
     queryFn: async () => {
       const { data, stale, cachedAt } = await apiGetMeta<ShieldHrResponse>("/integrations/shield/overview/");
       return { payload: data, stale, cachedAt };
@@ -240,11 +245,12 @@ export interface Periode {
  *  clé de cache porte les deux, sinon un changement de trimestre resservirait la
  *  réponse du précédent.
  */
-export function useShieldAttendanceSeries(days: SeriesWindow = 30, periode?: Periode) {
+export function useShieldAttendanceSeries(days: SeriesWindow = 30, periode?: Periode, enabled = true) {
   const requete = periode
     ? `date_from=${periode.dateFrom}&date_to=${periode.dateTo}`
     : `days=${days}`;
   return useQuery<ShieldSeriesQuery>({
+    enabled,
     queryKey: ["shield", "attendance-series", periode ? [periode.dateFrom, periode.dateTo] : days],
     queryFn: async () => {
       const { data, stale, cachedAt } = await apiGetMeta<ShieldSeriesResponse>(

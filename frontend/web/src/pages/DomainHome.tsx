@@ -2,7 +2,9 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-import { downloadGroupExport } from "@/api/governance";
+import { downloadGroupExport, useHrHistory } from "@/api/governance";
+import { TrendChart } from "@/components/charts";
+import type { KSeriesPoint } from "@/lib/kmetric";
 import { AppHeader } from "@/components/chrome/AppHeader";
 import { BrandFooter } from "@/components/chrome/BrandFooter";
 import { HeroImage } from "@/components/chrome/HeroImage";
@@ -11,6 +13,8 @@ import { BLACK, FRAME_BG, ORANGE, glass } from "@/components/chrome/theme";
 import { DomainScoreCard } from "@/components/overview/DomainScoreCard";
 import { GroupGovernanceIndex } from "@/components/overview/GroupGovernanceIndex";
 import { DomainPanel } from "@/components/overview/DomainPanel";
+import { AccueilRh } from "@/components/overview/AccueilRh";
+import { shieldInsights } from "@/lib/adapters/shield";
 import { ArrowUpRight, ChevronDown, Dots } from "@/components/overview/icons";
 import { EmptyChartState, IconButton, StateBadge, type DataState } from "@/components/ui/kit";
 import { Menu, MenuItem } from "@/components/ui/Menu";
@@ -21,7 +25,7 @@ import type { DomainHeroSpec } from "@/config/domainHome.config";
 import { getCurrentPermissions } from "@/lib/permissions";
 import { EASE_OUT } from "@/lib/motion";
 import { PeriodePicker } from "@/components/navigation/PeriodePicker";
-import { libelleFiltrePeriode, useFilters } from "@/store/filters";
+import { libelleFiltrePeriode, parametresFiltres, useFilters } from "@/store/filters";
 import { formatInt } from "@/lib/format";
 import { useShieldHrKpis } from "@/lib/shieldHr";
 import { useNavigationStore } from "@/state/navigationStore";
@@ -95,8 +99,44 @@ function ActionsMenu() {
   );
 }
 
-function SignalsCard({ spec }: { spec: DomainHeroSpec }) {
+function SignalsCard({ spec, domainId }: { spec: DomainHeroSpec; domainId: string }) {
   const [open, setOpen] = React.useState(true);
+  // Capital Humain : les constats que Shield produit réellement (règles et seuils
+  // de `shield_rules`, publiés par le backend). Les autres domaines n'ont aucune
+  // source : leurs seuils restent déclarés et vides, ce qui est vrai.
+  const shield = useShieldHrKpis(domainId === "capital-humain");
+  const constats = domainId === "capital-humain" ? shieldInsights(shield.data) : [];
+  if (domainId === "capital-humain") {
+    return (
+      <motion.article className="rounded-[26px] p-5" style={glass}
+        initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5, ease: EASE_OUT }}>
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="text-[17px] font-semibold text-black">Signaux &amp; seuils</h3>
+          <StateBadge state={shield.isLoading ? "connecting" : shield.data ? shield.data.payload.status : "disconnected"} />
+        </div>
+        <p className="mt-0.5 text-[11.5px] font-medium text-[#8A8F8E]">
+          {constats.length ? `${constats.length} constat(s) aujourd'hui · Kaydan Shield` : "Aucun seuil franchi aujourd'hui"}
+        </p>
+        {constats.length ? (
+          <div className="mt-3 grid gap-2">
+            {constats.slice(0, 5).map((c) => (
+              <div key={c.id} className="rounded-[12px] bg-white/60 px-3 py-2"
+                   style={{ borderLeft: `3px solid ${c.severity === "critical" ? "#D92B55" : c.severity === "warning" ? "#EF9F27" : "#42BFA0"}` }}>
+                <div className="text-[12px] font-semibold text-[#2C3132]">{c.title}</div>
+                <div className="text-[11px] font-medium leading-snug text-[#7C8384]">{c.finding}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-[11.5px] font-medium leading-relaxed text-[#8C9391]">
+            {shield.data?.payload.restriction ?? shield.data?.payload.detail
+              ?? "Les seuils de présence, d'absence et de retard sont surveillés à chaque lecture."}
+          </p>
+        )}
+      </motion.article>
+    );
+  }
   return (
     <motion.article
       className="rounded-[26px] p-5"
@@ -147,8 +187,8 @@ function SignalsCard({ spec }: { spec: DomainHeroSpec }) {
 function ValeurVedette({ spec, sourceParDefaut }: { spec: DomainHeroSpec; sourceParDefaut: string }) {
   // Le hook est appelé sans condition — règle des hooks — mais la requête n'est
   // activée que pour les domaines qui déclarent cette source.
-  const shield = useShieldHrKpis();
   const attendu = spec.featuredMetric;
+  const shield = useShieldHrKpis(Boolean(attendu));
 
   if (!attendu) {
     return (
@@ -194,10 +234,19 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
   // Décalage sidebar appliqué à partir de md seulement (rail masqué en mobile).
   const padLeft = sidebarExpanded ? "md:pl-[296px]" : "md:pl-[120px]";
   const [showFeatured, setShowFeatured] = React.useState(true);
-  // Aucune série temporelle n'est encore publiée par le mart, quel que soit le
-  // domaine : on l'assume explicitement plutôt que d'afficher un graphe décoratif.
-  const chartState: DataState = "disconnected";
-  const chartSource = "Mart EDW";
+  // Capital Humain : la série vient de l'historique K-Insight (effectif déclaré
+  // Shield, un instantané par heure). Les autres domaines n'ont encore aucune
+  // série : on l'assume explicitement plutôt que d'afficher un graphe décoratif.
+  const estRh = module.id === "capital-humain";
+  const filtres = useFilters();
+  const effectif = useHrHistory("hr.effectif_total", parametresFiltres(filtres).toString(), "compare=aucune", estRh);
+  const pointsEffectif: KSeriesPoint[] = (effectif.data?.points ?? []).map((pt) => ({
+    label: `${pt.date.slice(8, 10)}/${pt.date.slice(5, 7)}`, value: pt.value,
+  }));
+  const effectifMesure = pointsEffectif.some((pt) => pt.value !== null);
+  const chartState: DataState = !estRh ? "disconnected"
+    : effectif.isLoading ? "connecting" : effectifMesure ? "connected" : "disconnected";
+  const chartSource = estRh ? "Kaydan Shield" : "Mart EDW";
   // Pose les tokens --domain-* sur <html> : header, rail et panneaux flottants
   // partagent le même accent, la transition étant gérée en CSS.
   useDomainTheme(module.id);
@@ -306,7 +355,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                             {initials}
                           </span>
                         ))}
-                        <span className="-ml-2 grid h-8 w-8 place-items-center rounded-full border-2 border-white/70 bg-white/65 text-[11px] font-bold text-[#333]">+3</span>
+
                       </div>
                     </div>
                   </motion.div>
@@ -342,7 +391,9 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                       <StateBadge state={chartState} />
                     </div>
                     <p className="mt-1 text-[11.5px] font-medium text-[#8C9391]">
-                      Série {spec.chartUnit} · périmètre Groupe consolidé
+                      {estRh
+                        ? `Effectif déclaré dans Shield · ${effectif.data?.periode?.libelle ?? libelleFiltrePeriode(filtres)} · périmètre Groupe`
+                        : `Série ${spec.chartUnit} · périmètre Groupe consolidé`}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 pt-1 text-[14px] font-semibold text-[#242424]">
@@ -351,13 +402,25 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                   </div>
                 </div>
                 <div className="mt-4 min-h-[230px]">
-                  <EmptyChartState
-                    state={chartState}
-                    source={chartSource}
-                    action={{ label: "Configurer la source", to: "/admin/integrations" }}
-                  />
+                  {estRh ? (
+                    <TrendChart series={pointsEffectif} label="Effectif déclaré" state={chartState} source={chartSource}
+                                emptyMessage={effectif.data?.reason
+                                  ?? "Historique de l'effectif en constitution : un instantané est déposé chaque heure, la série commence à la première journée close."}
+                                emptyAction={{ label: "Centre de connecteurs", to: "/admin/integrations" }} />
+                  ) : (
+                    <EmptyChartState
+                      state={chartState}
+                      source={chartSource}
+                      action={{ label: "Configurer la source", to: "/admin/integrations" }}
+                    />
+                  )}
                 </div>
               </motion.section>
+
+              {/* Capital Humain : les sections décisionnelles, sur données réelles
+                  (registre canonique + historique). Les autres domaines gardent
+                  leur gabarit tant qu'aucune source ne les alimente. */}
+              {module.id === "capital-humain" ? <AccueilRh /> : null}
 
               {/* Score de Gouvernance (branché mart, gouverné N/D) :
                   Overview → indice Groupe consolidé ; autres domaines → score du domaine. */}
@@ -375,7 +438,7 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                 <ActionsMenu />
               </div>
               <DomainPanel domainId={module.id} />
-              <SignalsCard spec={spec} />
+              <SignalsCard spec={spec} domainId={module.id} />
             </aside>
           </motion.div>
 

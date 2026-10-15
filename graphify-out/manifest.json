@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/api/governance.ts": {
-    "mtime": 1792021106.6143646,
-    "ast_hash": "5b10000345f50d398ad4c0cd9cde80cb",
+    "mtime": 1792030345.9757347,
+    "ast_hash": "53985895df15894f845f65e0428bd1ba",
     "semantic_hash": ""
   },
   "frontend/web/src/components/GlobalFilters.tsx": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/store/filters.ts": {
-    "mtime": 1792020724.9621887,
-    "ast_hash": "80c6b5677fe485b59715b1f94f1265eb",
+    "mtime": 1792033001.3171635,
+    "ast_hash": "f3b189683f716140a4ed11af6c4297f1",
     "semantic_hash": ""
   },
   "frontend/web/src/types/governance.ts": {
@@ -985,8 +985,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainPanel.tsx": {
-    "mtime": 1792019088.7246022,
-    "ast_hash": "93262ddd621d04b607af8c6bf39d1259",
+    "mtime": 1792032336.4740775,
+    "ast_hash": "f9f9ee91207cec9e92af72dbc1f4f70e",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainScoreCard.tsx": {
@@ -1025,8 +1025,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainHome.config.ts": {
-    "mtime": 1788923333.4011211,
-    "ast_hash": "64aac62a19082d5b848e768dec849443",
+    "mtime": 1792028730.1822455,
+    "ast_hash": "e2a84835dd6f82d97928120d0a57bfff",
     "semantic_hash": ""
   },
   "frontend/web/src/config/domainMetrics.ts": {
@@ -1075,8 +1075,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/shieldHr.ts": {
-    "mtime": 1792019088.7242277,
-    "ast_hash": "37309dc649c77b594afdaf65460b3db4",
+    "mtime": 1792031701.258817,
+    "ast_hash": "887863526d98ee9e0708c4fb4053005e",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/useDomainTheme.ts": {
@@ -1085,8 +1085,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/DomainHome.tsx": {
-    "mtime": 1792020810.030513,
-    "ast_hash": "ba00fd4dc2c9f355d98a8d89416b7b91",
+    "mtime": 1792031364.1914487,
+    "ast_hash": "01bb49f368a3721c28e770ca05a2cb7a",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/LoginPage.tsx": {
@@ -2075,8 +2075,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/hr_registry.py": {
-    "mtime": 1792021131.2094474,
-    "ast_hash": "aaa822c0dee94db84f4ea917a286abab",
+    "mtime": 1792021779.3575277,
+    "ast_hash": "64614d69d582f2ded5c22d5950a89191",
     "semantic_hash": ""
   },
   "backend/apps/governance/hr_sources.py": {
@@ -2167,6 +2167,16 @@
   "frontend/web/src/lib/ecarts.ts": {
     "mtime": 1792021147.7326348,
     "ast_hash": "c68ca741f252ba9d2a4e03144f252179",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/components/overview/AccueilRh.tsx": {
+    "mtime": 1792028553.593818,
+    "ast_hash": "0efd779f7478f636782f3ebc5cdcf056",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/lib/odooHr.ts": {
+    "mtime": 1792021456.8855608,
+    "ast_hash": "337f73b8f98333b623e1d40e173cc71d",
     "semantic_hash": ""
   }
 }

@@ -164,11 +164,11 @@ export interface HrHistory {
 /** Historique d'une métrique sous les filtres du cockpit. `extra` ajoute des
  *  paramètres propres à l'appel (ventilation par site, par type…). Lecture en
  *  base seulement : aucun appel Shield ni Odoo n'est déclenché. */
-export function useHrHistory(metricId: string, filtres: string, extra = "") {
+export function useHrHistory(metricId: string, filtres: string, extra = "", enabled = true) {
   const query = `metric=${encodeURIComponent(metricId)}&${filtres}${extra ? `&${extra}` : ""}`;
   return useQuery<HrHistory>({
     queryKey: ["hr-history", query],
-    enabled: !USE_MOCK,
+    enabled: enabled && !USE_MOCK,
     staleTime: 5 * 60_000,
     queryFn: () => apiGet<HrHistory>(`/governance/hr/history/?${query}`),
   });

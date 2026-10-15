@@ -74,7 +74,9 @@ const photoHeroes: Record<string, DomainHeroSpec> = {
     tagline: "Effectifs, présence, masse salariale et performance du Groupe.",
     accent: "#416FF4",
     featuredTitle: "Effectif Groupe",
-    featuredSubtitle: "Consolidé multi-filiales",
+    // Shield ne rattache pas ses sites aux filiales : c'est un total GROUPE
+    // déclaré aujourd'hui, pas une consolidation multi-filiales.
+    featuredSubtitle: "Déclaré dans Shield · aujourd'hui",
     featuredBadges: ["RH", "DG"],
     // `effectif_total` est la MÊME clé que celle de la grille de KPI : la carte
     // vedette affichait « N/D · Mart EDW à raccorder » pendant que la carte

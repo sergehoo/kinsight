@@ -28,7 +28,6 @@ import {
   useShieldSecurity,
   type SeriesWindow,
 } from "@/lib/shieldHr";
-import { useHrKpi } from "@/api/governance";
 import {
   shieldAttendanceRateBreakdown,
   shieldBreakdownStatus,
@@ -40,8 +39,8 @@ import {
   shieldSeriesInsights,
   shieldSeriesPoints,
 } from "@/lib/adapters/shield";
-import { hrMartMetrics, payrollBreakdown } from "@/lib/adapters/governance";
-import { useFilters } from "@/store/filters";
+import { payrollBreakdown } from "@/lib/adapters/governance";
+import { useOdooHealth } from "@/lib/odooHr";
 
 /** Nombre de KPI mis en avant dans la colonne ; le reste est replié. */
 const VISIBLE = 6;
@@ -61,15 +60,16 @@ function useDomainMetrics(domainId: string, seriesWindow: SeriesWindow) {
   const isHr = domainId === "capital-humain";
   const isRisk = domainId === "risques-conformite";
   const isOverview = domainId === "overview";
-  const { year, quarter } = useFilters();
 
   // Shield alimente trois cockpits avec trois jeux d'indicateurs distincts ;
-  // chaque requête n'est activée que sur le domaine concerné.
-  const shield = useShieldHrKpis();
-  const security = useShieldSecurity();
-  const overview = useShieldOverview();
-  const hrKpi = useHrKpi(year, quarter);
-  const series = useShieldAttendanceSeries(seriesWindow);
+  // chaque requête n'est activée que sur le domaine concerné. Ce commentaire le
+  // promettait déjà sans que les hooks aient d'option `enabled` : chaque accueil
+  // lançait les cinq requêtes, dont celle du mart, qui n'alimente plus rien ici.
+  const shield = useShieldHrKpis(isHr);
+  const security = useShieldSecurity(isRisk);
+  const overview = useShieldOverview(isOverview);
+  const series = useShieldAttendanceSeries(seriesWindow, undefined, isHr);
+  const odooSante = useOdooHealth();
 
   const shieldQuery = isRisk ? security : isOverview ? overview : shield;
 
@@ -80,7 +80,7 @@ function useDomainMetrics(domainId: string, seriesWindow: SeriesWindow) {
     if (isRisk) return shieldPayloadToMetrics(security.data, "risk", "/dashboard/risques-conformite/alertes");
     if (isOverview) return shieldPayloadToMetrics(overview.data, "groupe");
     return [];
-  }, [isHr, isRisk, isOverview, shield.data, security.data, overview.data, hrKpi.data, quarter, year]);
+  }, [isHr, isRisk, isOverview, shield.data, security.data, overview.data]);
 
   // La ventilation de la masse salariale venait du mart : aucune source ne la
   // sert dans l'architecture Shield + Odoo.
@@ -94,32 +94,23 @@ function useDomainMetrics(domainId: string, seriesWindow: SeriesWindow) {
         ? "stale"
         : shieldQuery.data.payload.status;
 
-  // Le mart peut répondre 200 tout en signalant qu'il n'a rien à publier
-  // (`available: false`) ou qu'il est injoignable (`source_state: "error"`).
-  // Se fier au seul succès HTTP afficherait « connecté » sur une source en panne.
-  const martState: DataState = !isHr
-    ? "disconnected"
-    : hrKpi.isLoading
-      ? "connecting"
-      : hrKpi.isError || !hrKpi.data
-        ? "error"
-        : hrKpi.data.source_state === "error"
-          ? "error"
-          : hrKpi.data.available === false
-            ? "disconnected"
-            : "connected";
+  // Le mart n'alimente plus aucun indicateur de ce panneau (ADR-0009) : aucun
+  // domaine ne le déclare comme source vivante, son état est donc « non connecté ».
+  const martState: DataState = "disconnected";
+  const odooState: DataState = odooSante.isLoading ? "connecting"
+    : odooSante.isError || !odooSante.data ? "error"
+      : odooSante.data.status === "auth_required" ? "error" : (odooSante.data.status as DataState);
 
   return {
     metrics: mergeMetrics(domainId, live),
     breakdown,
-    breakdownState: (breakdown.length
-      ? "connected"
-      : martState === "connecting"
-        ? "connecting"
-        : "disconnected") as DataState,
-    loading: isHr && (shield.isLoading || hrKpi.isLoading),
+    // Sans mart, la ventilation de la masse salariale n'a plus de source.
+    breakdownState: (breakdown.length ? "connected" : "disconnected") as DataState,
+    loading: isHr && shield.isLoading,
     shieldState,
     martState,
+    odooState,
+    odooDetail: odooSante.data?.detail,
     // Répartitions et constats issus de Shield, disponibles sur le domaine RH.
     presenceBySite: isHr ? shieldPresenceBreakdown(shield.data) : [],
     attendanceRateBySite: isHr ? shieldAttendanceRateBreakdown(shield.data) : [],
@@ -149,7 +140,7 @@ export function DomainPanel({ domainId }: { domainId: string }) {
   const [expanded, setExpanded] = React.useState(false);
   const [seriesWindow, setSeriesWindow] = React.useState<SeriesWindow>(30);
   const {
-    metrics, breakdown, breakdownState, shieldState, martState,
+    metrics, breakdown, breakdownState, shieldState, martState, odooState, odooDetail,
     presenceBySite, attendanceRateBySite, siteState, siteNote, insights,
     seriesPoints, seriesState, seriesMeasured, seriesTotal, presenceByKind, kindState,
   } = useDomainMetrics(domainId, seriesWindow);
@@ -170,6 +161,13 @@ export function DomainPanel({ domainId }: { domainId: string }) {
         state: martState,
         detail: domainId === "capital-humain" ? "Masse salariale, mouvements" : "Aucun mart alimenté pour ce domaine",
       };
+    }
+    if (source.code === "odoo") {
+      // L'état RÉEL du connecteur Odoo : le transport existe, « non branché »
+      // écrit en dur était faux. Une authentification requise est une erreur
+      // d'exploitation, pas une source « déconnectée » qui attendrait un mart.
+      return { code: source.code, label: source.label, state: odooState,
+               detail: odooDetail ?? "Référentiel RH : départements, postes" };
     }
     return { code: source.code, label: source.label, state: "disconnected", detail: "Connecteur non branché" };
   });
