@@ -29,23 +29,38 @@ de serveur : il se répond 401, et le navigateur ramène alors à la connexion.
 
 from __future__ import annotations
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
+
+MOTIF = "Jeton de renouvellement invalide : reconnectez-vous."
 
 
 class SerialiseurRenouvellement(TokenRefreshSerializer):
     def validate(self, attrs):
+        # Le compte porté par le jeton doit EXISTER et être ACTIF. simplejwt ne le
+        # vérifie qu'à partir de 5.4 ; la production épingle 5.3.1, où un compte
+        # désactivé ou supprimé renouvelait sa session (200) — la vérification est
+        # donc faite ici, quelle que soit la version.
+        try:
+            porteur = RefreshToken(attrs["refresh"]).payload.get(api_settings.USER_ID_CLAIM)
+        except TokenError:
+            porteur = None  # jeton illisible : le parent lève l'InvalidToken habituel
+        if porteur is not None:
+            compte = get_user_model().objects.filter(**{api_settings.USER_ID_FIELD: porteur}).first()
+            if compte is None or not api_settings.USER_AUTHENTICATION_RULE(compte):
+                raise InvalidToken(MOTIF)
         try:
             return super().validate(attrs)
         except ObjectDoesNotExist as exc:
             # On ne dit PAS « ce compte n'existe pas » : la réponse servirait à
             # énumérer les comptes. Le porteur d'un jeton n'a besoin que de
             # savoir que ce jeton ne vaut plus rien.
-            raise InvalidToken(
-                "Jeton de renouvellement invalide : reconnectez-vous."
-            ) from exc
+            raise InvalidToken(MOTIF) from exc
 
 
 class VueRenouvellement(TokenRefreshView):
