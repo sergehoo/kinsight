@@ -119,3 +119,39 @@ class HrThresholdsView(APIView):
                            "modifie_par": ((ligne.modifie_par.get_full_name() or ligne.modifie_par.username)
                                            if ligne and ligne.modifie_par else None)})
         return {"seuils": seuils, "modifiable": peut_configurer_seuils_rh(user)}
+
+
+class HrDecisionView(APIView):
+    """GET /api/v1/governance/hr/decision/ — constats prioritaires (3 à 7, jamais
+    complétés pour atteindre un quota) ; `synthese=1` ajoute la synthèse rédigée
+    par l'IA à partir de ces seuls constats, sous garde-fou numérique."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from .decision_rh import HRDecisionEngine
+
+        if not can_access_domain(request.user, "capital-humain"):
+            return _refus_domaine()
+        try:
+            filtres = F.lire(request.query_params, timezone.localdate())
+            moteur = HRDecisionEngine(request.user, filtres)
+            constats = moteur.constats()
+        except F.FiltreInvalide as refus:
+            return Response({"detail": refus.motif}, status=refus.code_http)
+
+        synthese = moteur.synthese(constats) if request.query_params.get("synthese") == "1" else None
+        AccessLog.record(user=request.user, action="query_hr_decision", metric_key="hr.decision",
+                         scope_codes=_perimetre(request.user),
+                         payload={**filtres.comme_trace(), "constats": [c["id"] for c in constats],
+                                  "synthese": (synthese or {}).get("fournisseur"),
+                                  "phrases_retirees": (synthese or {}).get("phrases_retirees", 0)},
+                         **audit_source(request))
+        periode = filtres.periode
+        return Response({
+            "constats": constats,
+            "angles_morts": moteur.angles_morts(),
+            "synthese": synthese,
+            "periode": {"debut": periode.debut.isoformat(), "fin": periode.fin.isoformat(),
+                        "libelle": filtres.libelle, "jusqu_a": "veille"},
+        })

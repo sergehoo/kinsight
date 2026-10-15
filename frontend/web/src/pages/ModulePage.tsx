@@ -10,6 +10,7 @@ import { AnimatedNumber } from "@/components/overview/AnimatedNumber";
 import { Gauge } from "@/components/overview/Gauge";
 import { AiQueryBox } from "@/components/overview/AiQueryBox";
 import { AlertsPanel } from "@/components/overview/AlertsPanel";
+import { DecisionRh } from "@/components/overview/DecisionRh";
 import { GraphesRh } from "@/components/overview/GraphesRh";
 import { SignauxRh } from "@/components/overview/SignauxRh";
 import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
@@ -490,6 +491,25 @@ function DataContract({ module }: { module: ModuleDef }) {
 
 function AiGuardrail({ module }: { module: ModuleDef }) {
   if (module.kind !== "ai") return null;
+  if (estModuleRh(module)) {
+    return (
+      <motion.div
+        className="rounded-[30px] p-6"
+        style={{ ...glass, background: "linear-gradient(135deg,rgba(10,10,10,0.86),rgba(35,38,39,0.74))", color: "#fff" }}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.48, ease: EASE_OUT }}
+      >
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/58">Principe IA</p>
+        <h3 className="mt-2 text-[22px] font-semibold">L&apos;IA analyse, elle ne chiffre pas</h3>
+        <p className="mt-2 max-w-[820px] text-[14px] font-medium leading-relaxed text-white/68">
+          Données réelles (Kaydan Shield, Odoo) → calculs déterministes → constats → synthèse. Chaque chiffre vient
+          d&apos;un constat calculé sur l&apos;historique ; le modèle ne fait que rédiger, et une phrase qui avancerait un
+          chiffre absent des constats est retirée.
+        </p>
+      </motion.div>
+    );
+  }
   return (
     <motion.div
       className="rounded-[30px] p-6"
@@ -526,7 +546,7 @@ function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<str
           périmètre) ; le centre d'alertes du Groupe garde ses scores. */}
       {module.key === "hr-alerts" ? <SignauxRh /> : isAlerts ? <AlertsPanel /> : null}
       <AiGuardrail module={module} />
-      {isAi ? <AiQueryBox /> : null}
+      {module.key === "hr-ai" ? <DecisionRh /> : isAi ? <AiQueryBox /> : null}
 
       {hasKpis ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">

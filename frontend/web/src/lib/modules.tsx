@@ -1481,12 +1481,10 @@ export const MODULES: Record<string, ModuleDef> = {
     source: "analytics.hr_ai_insights",
     home: true,
     kpis: metricKpis("analytics.hr_ai_insights", ["Situation RH", "Effectifs", "Turnover", "Productivité", "Présence", "Masse salariale", "Départs probables", "Recrutements", "Compétences futures", "Budget RH"]),
-    rows: [
-      { title: "Pourquoi le turnover augmente ?", detail: "Réponse autorisée uniquement si mart.hr_turnover_monthly est disponible", accent: "#D92B55" },
-      { title: "Quels départements sont sous-effectifs ?", detail: "Analyse basée sur mart.hr_workforce_kpi et analytics.hr_workforce_planning", accent: "#416FF4" },
-      { title: "Quelle sera la masse salariale dans 12 mois ?", detail: "Prévision basée sur analytics.hr_payroll_forecast", accent: "#42BFA0" },
-      { title: "Quelles compétences seront nécessaires dans les 3 prochaines années ?", detail: "Scénario basé sur analytics.hr_skills_forecast", accent: "#8A63D2" },
-    ],
+    // Les quatre questions écrites ici renvoyaient à des tables de mart absentes
+    // (« réponse autorisée uniquement si mart.hr_turnover_monthly… »). Les
+    // questions à investiguer viennent désormais des angles morts du moteur RH.
+    rows: [],
     sections: [
       section("Prévisions IA RH", "Turnover, présence, recrutement, compétences et masse salariale", "analytics.hr_forecasts", "line", ["Turnover", "Présence", "Recrutement", "Masse salariale"]),
       section("Priorités DRH", "Recommandations classées par risque, urgence et impact", "analytics.hr_recommendations", "radar", ["Risque", "Urgence", "Impact", "Coût", "Talent"]),

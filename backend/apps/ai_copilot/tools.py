@@ -235,13 +235,16 @@ def _tool_group_score(args: dict, user, context: dict) -> dict:
 
 def _tool_run_connector_sync(args: dict, user, context: dict) -> dict:
     """Lance une synchronisation d'un connecteur (écriture sensible — passe par approbation)."""
-    from apps.integrations.models import IntegrationSource
+    # `IntegrationSource` n'a jamais existé : l'outil levait ImportError à chaque
+    # appel. La source d'un connecteur est `DataSource`.
+    from apps.integrations.models import DataSource
     from apps.integrations.services import run_sync
 
-    source = IntegrationSource.objects.filter(pk=args.get("source_id")).first()
+    source = DataSource.objects.filter(pk=args.get("source_id")).first()
     if source is None:
         raise ValueError("Connecteur introuvable.")
-    return {"sync": run_sync(source)}
+    job = run_sync(source)
+    return {"sync": {"id": job.pk, "status": job.status, "rows_ingested": job.rows_ingested}}
 
 
 def _tool_generate_report(args: dict, user, context: dict) -> dict:
@@ -265,9 +268,9 @@ def _tool_generate_report(args: dict, user, context: dict) -> dict:
 
 def _tool_delete_connector(args: dict, user, context: dict) -> dict:
     """Supprime un connecteur (DESTRUCTIF — double validation)."""
-    from apps.integrations.models import IntegrationSource
+    from apps.integrations.models import DataSource
 
-    source = IntegrationSource.objects.filter(pk=args.get("source_id")).first()
+    source = DataSource.objects.filter(pk=args.get("source_id")).first()
     if source is None:
         raise ValueError("Connecteur introuvable.")
     name = str(source)

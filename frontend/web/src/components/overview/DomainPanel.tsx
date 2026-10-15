@@ -8,6 +8,7 @@
 import * as React from "react";
 
 import { MetricCard, StateBadge, type DataState } from "@/components/ui/kit";
+import { ConstatsRh } from "@/components/overview/DecisionRh";
 import {
   DecisionInsightCard,
   NoInsights,
@@ -295,7 +296,12 @@ export function DomainPanel({ domainId }: { domainId: string }) {
 
       <SourceHealth sources={sources} />
 
-      {insights.length ? (
+      {/* Capital Humain : l'aide à la décision du moteur RH — constats chiffrés
+          sur la période filtrée, par criticité, avec action et exploration.
+          Les constats live de Shield restent dans « Signaux & seuils ». */}
+      {domainId === "capital-humain" ? (
+        <ConstatsRh compact />
+      ) : insights.length ? (
         insights.map((insight) => <DecisionInsightCard key={insight.id} insight={insight} />)
       ) : (
         <NoInsights

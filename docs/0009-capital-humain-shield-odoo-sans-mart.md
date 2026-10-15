@@ -101,3 +101,16 @@ La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; 
   jour, carte de chaleur et signaux jugent avec les mêmes bornes ; la charge Shield en cache est oubliée après
   un arbitrage. Le barème du score de gouvernance, lui, garde ses constantes.
 - Les douze lignes d'alertes écrites en dur du centre d'alertes RH sont retirées.
+
+## Addendum — Aide à la décision RH (2026-10-15)
+
+- `HRDecisionEngine` (`backend/apps/governance/decision_rh.py`) : **données réelles → calculs déterministes →
+  IA → synthèse**. Les constats sont des règles écrites sur l'historique (signaux hors zone normale, sites à
+  ≥ 10 pts sous le Groupe, retards concentrés à ≥ 50 % sur 3 sites dès 4 sites, variation de présence ≥ 3 pts,
+  historique < 50 % de jours mesurés), avec valeur, comparaison, période, source, confiance, exploration et
+  action recommandée écrite. Trois à sept par criticité ; **jamais complétés pour atteindre un quota**.
+- La synthèse (`GET /governance/hr/decision/?synthese=1`, sur demande) est rédigée par le routeur IA existant à
+  partir des seuls constats. **Garde-fou** : toute phrase contenant un nombre absent des constats est retirée ;
+  les causes sont préfixées « Hypothèse : ». Sans modèle, la synthèse est composée des constats et le dit.
+- Périmètre : un utilisateur restreint ne reçoit aucun constat tiré des chiffres Groupe de Shield ; ses angles
+  morts deviennent des questions à investiguer.

@@ -269,3 +269,61 @@ export function useSaveHrThreshold() {
     },
   });
 }
+
+/* ── Aide à la décision RH (`/governance/hr/decision/`) ──────────────────── */
+
+export interface ConstatRh {
+  id: string;
+  titre: string;
+  /** Le constat chiffré, calculé — jamais rédigé par un modèle. */
+  constat: string;
+  severite: "critique" | "surveillance" | "info";
+  periode: string;
+  lien: string;
+  valeur?: number | null;
+  unite?: string;
+  comparaison?: string | null;
+  source?: string | null;
+  confiance?: "élevée" | "moyenne" | "faible" | null;
+  regle?: string;
+  action?: string | null;
+  details?: { code: string; libelle: string; valeur: number }[] | null;
+}
+
+export type SectionSynthese = "resume" | "anomalies" | "hypotheses" | "risques" | "recommandations" | "priorites" | "questions";
+
+export interface SyntheseRh {
+  sections: Record<SectionSynthese, string[]>;
+  /** Fournisseur ayant rédigé ; `ia` faux = synthèse composée des constats, sans modèle. */
+  fournisseur: string | null;
+  ia: boolean;
+  /** Phrases retirées par le garde-fou (nombre absent des constats). */
+  phrases_retirees: number;
+  note?: string;
+}
+
+export interface DecisionRh {
+  constats: ConstatRh[];
+  angles_morts: { libelle: string; motif: string }[];
+  synthese: SyntheseRh | null;
+  periode: { debut: string; fin: string; libelle: string; jusqu_a: string };
+}
+
+export function useHrDecision(filtres: string, enabled = true) {
+  return useQuery<DecisionRh>({
+    queryKey: ["hr-decision", filtres],
+    enabled: enabled && !USE_MOCK,
+    staleTime: 5 * 60_000,
+    queryFn: () => apiGet<DecisionRh>(`/governance/hr/decision/?${filtres}`),
+  });
+}
+
+/** La synthèse rédigée : sur demande seulement (appel à un modèle). */
+export function useHrSynthese(filtres: string, demandee: boolean) {
+  return useQuery<DecisionRh>({
+    queryKey: ["hr-decision", filtres, "synthese"],
+    enabled: demandee && !USE_MOCK,
+    staleTime: 10 * 60_000,
+    queryFn: () => apiGet<DecisionRh>(`/governance/hr/decision/?${filtres}&synthese=1`),
+  });
+}
