@@ -5,6 +5,8 @@ Paramètres :
   compare      precedente | n-1 | les-deux | aucune                       — défaut les-deux
   ventilation  site | type | departement → la valeur de la période pour CHAQUE
                code de la dimension (périmètre Groupe)
+  matrice      site | type → la série JOUR PAR JOUR de chaque code (carte de
+               chaleur jours × sites, barres empilées employés / ouvriers)
   + les filtres communs du cockpit (`filtres.py`) : periode, year, quarter,
     date_from, date_to, subsidiary, site, type, departement.
 
@@ -25,15 +27,22 @@ from rest_framework.views import APIView
 from apps.accounts.rbac import can_access_domain
 from apps.audit.middleware import audit_source
 from apps.audit.models import AccessLog
+from apps.integrations import shield_rules as R
 
 from . import filtres as F
 from . import historique as H
 from .hr_registry import ODOO, REGISTRE, SHIELD, resoudre
 from .hr_sources import contexte_pour
-from .lecture_rh import portee
+from .lecture_rh import VENTILEES_PAR_PRESENCE, portee
 from .models import Dimension, KpiSnapshot
 
 DIMENSIONS_VENTILABLES = {Dimension.SITE, Dimension.TYPE, Dimension.DEPARTEMENT}
+# Matrices jours × codes : seules les dimensions de la collecte de présence.
+DIMENSIONS_MATRICE = {Dimension.SITE, Dimension.TYPE}
+# Au-delà, une case par jour n'est plus lisible et la requête devient coûteuse.
+MATRICE_JOURS_MAX = 92
+NOM_DIMENSION = {Dimension.SITE: "site", Dimension.TYPE: "type de personnel",
+                 Dimension.DEPARTEMENT: "département"}
 
 
 class HrHistoryView(APIView):
@@ -53,6 +62,10 @@ class HrHistoryView(APIView):
         base = {"metric_id": metric.id, "label": metric.libelle, "definition": metric.definition,
                 "unit": metric.unite, "format": metric.format, "source": metric.source,
                 "regle": metric.agregat}
+        if metric.source == SHIELD:
+            # Les seuils de décision, publiés avec la mesure : une carte de chaleur
+            # colorée par « critique / surveillance / normal » ne les recopie pas.
+            base["seuils"] = R.seuils_publics()
         if metric.source not in (SHIELD, ODOO):
             return Response({**base, "status": "disconnected", "reason": metric.motif_absence,
                              "points": []})
@@ -80,19 +93,30 @@ class HrHistoryView(APIView):
             comparaisons["n_1"] = H.comparer(resultat, ref, est_taux=est_taux)
 
         # Ventilation : la valeur de la période pour CHAQUE code d'une dimension —
-        # réservée au périmètre Groupe, comme les dimensions elles-mêmes.
-        ventilation = None
+        # réservée au périmètre Groupe, comme les dimensions elles-mêmes. Non
+        # servie, elle dit pourquoi : un classement vide sans motif se lirait
+        # comme « aucun site ».
+        ventilation, ventilation_motif = None, None
         demandee = p.get("ventilation")
-        if demandee in DIMENSIONS_VENTILABLES and dimension_lue == Dimension.GROUPE and codes_lus is None:
-            ventilation = self._ventiler(metric.id, periode, demandee)
+        if demandee in DIMENSIONS_VENTILABLES:
+            if dimension_lue == Dimension.GROUPE and codes_lus is None:
+                ventilation = self._ventiler(metric.id, periode, demandee)
+            elif dimension_lue in NOM_DIMENSION:
+                ventilation_motif = (f"Classement par {NOM_DIMENSION[demandee]} servi sur l'ensemble des "
+                                     f"codes seulement : retirez le filtre {NOM_DIMENSION[dimension_lue]}.")
+            else:
+                ventilation_motif = (f"Classement par {NOM_DIMENSION[demandee]} réservé au périmètre Groupe : "
+                                     f"il n'est pas historisé par société.")
 
-        # Matrice jours × sites (carte de chaleur) : même règle que la ventilation,
-        # périmètre Groupe uniquement. Bornée à 92 jours : au-delà, une case par
-        # jour n'est plus lisible et la requête devient coûteuse.
-        matrice = None
-        if (p.get("matrice") == Dimension.SITE and dimension_lue == Dimension.GROUPE
-                and codes_lus is None and periode.jours <= 92):
-            matrice = self._matrice(metric.id, periode)
+        # Matrice jours × codes (carte de chaleur par site, composition par type).
+        # Elle SUIT les filtres : un filtre site restreint les lignes à ce site ;
+        # un filtre sur l'AUTRE dimension la rend impossible, car le croisement
+        # site × type n'est pas historisé — on le dit plutôt que de l'ignorer.
+        matrice, matrice_motif = None, None
+        demandee_m = p.get("matrice")
+        if demandee_m in DIMENSIONS_MATRICE:
+            matrice, matrice_motif = self._matrice_ou_motif(metric.id, periode, demandee_m,
+                                                            dimension_lue, codes_lus)
 
         premiere = H.premiere_mesure(metric)
 
@@ -119,30 +143,54 @@ class HrHistoryView(APIView):
             "points": points,
             "comparaisons": comparaisons,
             "ventilation": ventilation,
+            "ventilation_motif": ventilation_motif,
             "matrice": matrice,
+            "matrice_motif": matrice_motif,
             "aujourd_hui": aujourd_hui,
             "historique_depuis": premiere.isoformat() if premiere else None,
             "dimension": dimension_lue, "codes": codes_lus,
             "perimetre": "GROUP" if scope.is_group else sorted(scope.subsidiaries),
         })
 
+    @classmethod
+    def _matrice_ou_motif(cls, metric_id: str, periode: H.Periode, dimension: str,
+                          dimension_lue: str, codes_lus: list[str] | None):
+        nom = NOM_DIMENSION[dimension]
+        if metric_id not in VENTILEES_PAR_PRESENCE:
+            return None, f"Non historisée par {nom} : pas de série jour par jour à cette maille."
+        if dimension_lue == Dimension.GROUPE and codes_lus is None:
+            codes = None
+        elif dimension_lue == dimension:
+            codes = codes_lus
+        else:
+            autre = NOM_DIMENSION.get(dimension_lue, "actif")
+            return None, (f"Non ventilé par {nom} sous un filtre {autre} : le croisement site × type "
+                          f"de personnel n'est pas historisé.")
+        if periode.jours > MATRICE_JOURS_MAX:
+            return None, (f"Vue jour par jour limitée à {MATRICE_JOURS_MAX} jours (la période en compte "
+                          f"{periode.jours}) : choisissez un trimestre ou moins.")
+        return cls._matrice(metric_id, periode, dimension, codes), None
+
     @staticmethod
-    def _matrice(metric_id: str, periode: H.Periode) -> dict:
+    def _matrice(metric_id: str, periode: H.Periode, dimension: str = Dimension.SITE,
+                 codes: list[str] | None = None) -> dict:
         metric = REGISTRE[metric_id]
         composantes = {metric_id, *metric.numerateur, *metric.denominateur}
-        sites = sorted({(c, l) for c, l in KpiSnapshot.objects.filter(
-            metric_id__in=composantes, dimension=Dimension.SITE,
-            jour__gte=periode.debut, jour__lte=periode.fin).values_list("code", "libelle")},
-            key=lambda cl: cl[1] or cl[0])
+        lignes = KpiSnapshot.objects.filter(metric_id__in=composantes, dimension=dimension,
+                                            jour__gte=periode.debut, jour__lte=periode.fin)
+        if codes is not None:
+            lignes = lignes.filter(code__in=codes)
+        connus = sorted(set(lignes.values_list("code", "libelle")), key=lambda cl: cl[1] or cl[0])
         vus: dict[str, str] = {}
-        for code, libelle in sites:
+        for code, libelle in connus:
             vus.setdefault(code, libelle or code)
         jours = [(periode.debut + timedelta(days=i)).isoformat() for i in range(periode.jours)]
         valeurs = []
         for code in vus:
-            points = H.serie(metric_id, periode, dimension=Dimension.SITE, codes=[code])
+            points = H.serie(metric_id, periode, dimension=dimension, codes=[code])
             valeurs.append([pt["value"] for pt in points])
-        return {"lignes": [{"code": c, "libelle": l} for c, l in vus.items()], "jours": jours, "valeurs": valeurs}
+        return {"dimension": dimension, "lignes": [{"code": c, "libelle": l} for c, l in vus.items()],
+                "jours": jours, "valeurs": valeurs}
 
     @staticmethod
     def _ventiler(metric_id: str, periode: H.Periode, dimension: str) -> list[dict]:

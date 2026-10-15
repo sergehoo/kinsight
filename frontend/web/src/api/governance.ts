@@ -160,6 +160,18 @@ export interface HrHistory {
     n_1?: { value: number | null; ecart: number | null; ecart_pct: number | null; unite_ecart: "pts" | "abs" | null; debut?: string; fin?: string };
   };
   ventilation?: { code: string; libelle: string; value: number | null; couverture: { jours: number; jours_mesures: number } }[] | null;
+  /** Pourquoi la ventilation demandée n'est pas servie (filtre ou périmètre). */
+  ventilation_motif?: string | null;
+  /** Série jour par jour de chaque code (`matrice=site|type`) ; `null` dans une case = non mesuré. */
+  matrice?: {
+    dimension: "site" | "type";
+    lignes: { code: string; libelle: string }[];
+    jours: string[];
+    valeurs: Array<Array<number | null>>;
+  } | null;
+  matrice_motif?: string | null;
+  /** Seuils de décision publiés avec une mesure Shield (`shield_rules`). */
+  seuils?: { presence_critique: number; presence_surveillance: number; [cle: string]: number };
   aujourd_hui?: { value: number | null; status: string; reason?: string | null; date: string } | null;
   historique_depuis?: string | null;
 }

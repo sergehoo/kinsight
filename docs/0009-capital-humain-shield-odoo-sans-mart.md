@@ -70,3 +70,16 @@ La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; 
   renormalisation seule produirait un « global » à partir de 10 % du poids : un chiffre d'apparence consolidée
   qui ne mesure qu'un dixième de ce qu'il prétend.
 - Aucun score par filiale tant que la présence Shield n'est pas rattachée aux filiales.
+
+## Addendum — Graphiques (2026-10-15)
+
+- Un graphe RH lit l'historique K-Insight (`/governance/hr/history/`) sous les filtres du cockpit et le périmètre
+  serveur. Le type suit la donnée : courbe (tendance), barres (sites, départements), donut (structure), barres
+  empilées (employés / ouvriers, `matrice=type`), carte de chaleur (jours × sites, `matrice=site`).
+- La matrice SUIT les filtres : un filtre site restreint ses lignes ; un filtre sur l'autre dimension la rend
+  impossible (le croisement site × type n'est pas historisé) et le serveur le dit (`matrice_motif`). Elle est
+  bornée à 92 jours. Une ventilation non servie porte de même son `ventilation_motif`.
+- La carte de chaleur est colorée par les seuils **publiés** avec la mesure (`seuils`, `shield_rules`) :
+  critique / surveillance / normal. Une case non mesurée reste vide.
+- Les sections du catalogue qu'aucune source ne sert ne rendent plus de cadre de graphe vide : elles sont
+  listées « sans source » avec leur motif (`frontend/web/src/config/graphesRh.ts`).

@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/api/governance.ts": {
-    "mtime": 1792056381.6557033,
-    "ast_hash": "ba4aacaa7d3178b974e87142c503d0ea",
+    "mtime": 1792061188.4839344,
+    "ast_hash": "cd85000677cc85b2725c1b3d832b7b7c",
     "semantic_hash": ""
   },
   "frontend/web/src/components/GlobalFilters.tsx": {
@@ -615,8 +615,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulePage.tsx": {
-    "mtime": 1792021147.7559178,
-    "ast_hash": "a2f88af96cda7e4feaefd9f831788693",
+    "mtime": 1792061291.0752583,
+    "ast_hash": "348c8ef126f759f73e984a6c016b25cd",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/ModulesHome.tsx": {
@@ -895,8 +895,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/charts/index.tsx": {
-    "mtime": 1792056642.1687462,
-    "ast_hash": "63a9b8e54b757fc423a0ada280544ee5",
+    "mtime": 1792061487.9494925,
+    "ast_hash": "4bf4a439f3655209960268857ae9f5f6",
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/BrandFooter.tsx": {
@@ -940,8 +940,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/DynamicSidebar.tsx": {
-    "mtime": 1792015365.5714836,
-    "ast_hash": "bc204c2ea825ecc73bf6d28560fca5d7",
+    "mtime": 1792061409.5621214,
+    "ast_hash": "c1fca6e532c5c78f3d92026701703a80",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/GlobalDashboardFilters.tsx": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/TopDashboardNav.tsx": {
-    "mtime": 1788655529.073412,
-    "ast_hash": "4f8a57062dce470f303efc74ec11da16",
+    "mtime": 1792061409.5629878,
+    "ast_hash": "39fb5f81bc14288e6dbbf14d64a26c21",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/AiQueryBox.tsx": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/modules.config.ts": {
-    "mtime": 1792020781.4468982,
-    "ast_hash": "616301de1066ce90279323016250a411",
+    "mtime": 1792061409.5614448,
+    "ast_hash": "811f889d8874f250c0a49717c271f2d1",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/adapters/governance.ts": {
@@ -1890,8 +1890,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/AttendancePage.tsx": {
-    "mtime": 1792021283.0331662,
-    "ast_hash": "c5d3260214e7cd19c9b20628e144d684",
+    "mtime": 1792061487.9503791,
+    "ast_hash": "4028bd327cac82b0f78aa740b40f6b10",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/subsidiaries.ts": {
@@ -2100,8 +2100,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/history_views.py": {
-    "mtime": 1792056663.6840653,
-    "ast_hash": "fe2a7880c1c2b41336c8e1ad98dc6d67",
+    "mtime": 1792061188.4644465,
+    "ast_hash": "a7a5d87808946e1e5241f00409b755cb",
     "semantic_hash": ""
   },
   "backend/apps/governance/management/__init__.py": {
@@ -2130,13 +2130,13 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/tests_historique.py": {
-    "mtime": 1792056759.669203,
-    "ast_hash": "6f7206e224166805c09743d2615ea523",
+    "mtime": 1792061188.464868,
+    "ast_hash": "f6b86657f3ee053e558c51e4f6734057",
     "semantic_hash": ""
   },
   "docs/0009-capital-humain-shield-odoo-sans-mart.md": {
-    "mtime": 1792056577.4005833,
-    "ast_hash": "e0c34806a27a4f809db12d70c15d7564",
+    "mtime": 1792061553.3529913,
+    "ast_hash": "bfcbdac70bda75388b1b746f8d86a164",
     "semantic_hash": ""
   },
   "backend/apps/governance/admin.py": {
@@ -2187,6 +2187,16 @@
   "backend/apps/governance/tests_score_rh.py": {
     "mtime": 1792056719.5875697,
     "ast_hash": "d8d8bf26e826d5d0c5421984dccec0eb",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/components/overview/GraphesRh.tsx": {
+    "mtime": 1792061487.949907,
+    "ast_hash": "fb910944bedbe8a899d41a31da92bdfe",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/config/graphesRh.ts": {
+    "mtime": 1792061311.5535257,
+    "ast_hash": "f87d9bf69fa9a3ccde974799ad30e57c",
     "semantic_hash": ""
   }
 }

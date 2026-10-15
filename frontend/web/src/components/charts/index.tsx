@@ -1,8 +1,9 @@
 /** Graphiques K-Insight pilotés par le contrat KMetric.
  *
- *  Quatre briques manquantes de la mission, bâties sur le socle ECharts existant :
- *  TrendChart (3/6/12 mois), ComparisonChart (réel vs objectif/budget/N-1),
- *  BreakdownChart (répartition filiale/site/catégorie) et FunnelChart (pipeline).
+ *  Bâtis sur le socle ECharts existant : TrendChart (tendance sur la période
+ *  filtrée), ComparisonChart (réel vs référence), BreakdownChart (classement
+ *  site / département), FunnelChart (pipeline), HeatmapChart (jours × sites),
+ *  StackedBarChart (composition) et DonutChart (structure).
  *  Aucune ne trace quoi que ce soit sans point réel : elles délèguent alors à
  *  EmptyChartState, déjà présent dans le kit.
  */
@@ -261,9 +262,20 @@ export function FunnelChart({
   );
 }
 
+/** Un palier de décision (critique / surveillance / normal) : bornes publiées par
+ *  le backend, jamais choisies pour l'esthétique du dégradé. */
+export interface Palier {
+  min?: number;
+  max?: number;
+  label: string;
+  color: string;
+}
+
 /* ── HeatmapChart ──────────────────────────────────────────────────────────────
  * Présence jours × sites. Une case sans mesure reste VIDE (non tracée) : la
- * colorer au minimum de l'échelle la ferait lire comme une journée catastrophique. */
+ * colorer au minimum de l'échelle la ferait lire comme une journée catastrophique.
+ * Avec `paliers`, la couleur dit l'ÉTAT de la case selon les seuils de décision
+ * plutôt qu'une position sur un dégradé — la valeur exacte reste dans l'info-bulle. */
 export function HeatmapChart({
   lignes,
   colonnes,
@@ -271,6 +283,7 @@ export function HeatmapChart({
   unit,
   min = 0,
   max = 100,
+  paliers,
   state,
   source,
   height,
@@ -284,6 +297,7 @@ export function HeatmapChart({
   unit?: string;
   min?: number;
   max?: number;
+  paliers?: Palier[];
 }) {
   const accent = useAccent();
   const donnees: Array<[number, number, number]> = [];
@@ -300,12 +314,19 @@ export function HeatmapChart({
         },
       },
       xAxis: { type: "category", data: colonnes, axisLabel: AXIS_LABEL, splitArea: { show: false }, axisTick: { show: false } },
-      yAxis: { type: "category", data: lignes, axisLabel: { ...AXIS_LABEL, width: 120, overflow: "truncate" }, axisTick: { show: false } },
-      visualMap: {
-        min, max, calculable: false, orient: "horizontal", left: "center", bottom: 0, itemHeight: 120, itemWidth: 10,
-        textStyle: { ...AXIS_LABEL, fontSize: 10 },
-        inRange: { color: ["#F6D6D9", "#F5E7C6", "#D6EEE3", accent] },
-      },
+      // `inverse` : la première ligne en HAUT, dans l'ordre servi (ECharts empile par défaut de bas en haut).
+      yAxis: { type: "category", data: lignes, inverse: true, axisLabel: { ...AXIS_LABEL, width: 120, overflow: "truncate" }, axisTick: { show: false } },
+      visualMap: paliers?.length
+        ? {
+            type: "piecewise", orient: "horizontal", left: "center", bottom: 0, itemWidth: 12, itemHeight: 10,
+            textStyle: { ...AXIS_LABEL, fontSize: 10 },
+            pieces: paliers.map((p) => ({ min: p.min, max: p.max, label: p.label, color: p.color })),
+          }
+        : {
+            min, max, calculable: false, orient: "horizontal", left: "center", bottom: 0, itemHeight: 120, itemWidth: 10,
+            textStyle: { ...AXIS_LABEL, fontSize: 10 },
+            inRange: { color: ["#F6D6D9", "#F5E7C6", "#D6EEE3", accent] },
+          },
       series: [{
         type: "heatmap",
         data: donnees,
@@ -313,7 +334,7 @@ export function HeatmapChart({
         emphasis: { itemStyle: { shadowBlur: 6, shadowColor: "rgba(0,0,0,0.2)" } },
       }],
     }),
-    [lignes, colonnes, donnees, unit, min, max, accent],
+    [lignes, colonnes, donnees, unit, min, max, paliers, accent],
   );
   return (
     <ChartFrame hasData={donnees.length > 0} state={state} option={option} height={height ?? Math.max(220, 34 * lignes.length + 80)}

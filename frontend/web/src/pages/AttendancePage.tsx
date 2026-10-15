@@ -24,8 +24,10 @@ import { useHrHistory, useModuleData } from "@/api/governance";
 import { BreakdownChart, ComparisonChart, TrendChart } from "@/components/charts";
 import { PageShell } from "@/components/chrome/PageShell";
 import { glass } from "@/components/chrome/theme";
+import { CarteGraphe } from "@/components/overview/GraphesRh";
 import { CheckCircle } from "@/components/overview/icons";
 import { MetricCard, ResponsiveGrid, SignalCard, StateBadge, type DataState } from "@/components/ui/kit";
+import { CHALEUR_SITES, PRESENTS_PAR_TYPE } from "@/config/graphesRh";
 import { ecartAffiche } from "@/lib/ecarts";
 import {
   shieldAttendanceRateBreakdown,
@@ -278,6 +280,19 @@ export function AttendancePage() {
               <TrendChart series={pointsRetards} label="Retards" state={etatSerie}
                           source={SOURCE} emptyMessage={motifSerie} height={200} />
             </div>
+          </div>
+        </section>
+
+        {/* Jour par jour : la carte de chaleur et la composition suivent les
+            filtres ; quand un filtre les rend impossibles (croisement site × type
+            non historisé, période > 92 j), le serveur dit pourquoi. */}
+        <section>
+          <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-[#8B9394]">
+            Jour par jour
+          </h2>
+          <div className="grid gap-5 xl:grid-cols-2">
+            <CarteGraphe g={CHALEUR_SITES} parametres={parametres} />
+            <CarteGraphe g={PRESENTS_PAR_TYPE} parametres={parametres} index={1} large />
           </div>
         </section>
 

@@ -344,7 +344,60 @@ class MatriceSitesTest(APITestCase):
         self.assertEqual(m["valeurs"][1][-1], 90.0)
         # Les jours sans mesure restent des trous, jamais des zéros.
         self.assertIsNone(m["valeurs"][0][0])
+        # Les seuils de coloration viennent du backend, pas d'une copie client.
+        self.assertEqual(d["seuils"]["presence_critique"], 70.0)
 
     def test_pas_de_matrice_hors_groupe(self):
         d = self._get(self.drh_kre, metric="hr.taux_presence_jour", periode="7j", matrice="site").json()
         self.assertIsNone(d.get("matrice"))
+
+    def _deux_sites(self):
+        for code, nom, p, a in (("1", "Chantier A", 50, 50), ("2", "Siège", 90, 10)):
+            _poser("hr.presents_jour", HIER, p, dimension=Dimension.SITE, code=code)
+            _poser("hr.absents_jour", HIER, a, dimension=Dimension.SITE, code=code)
+            KpiSnapshot.objects.filter(dimension=Dimension.SITE, code=code).update(libelle=nom)
+
+    def test_un_filtre_site_restreint_les_lignes(self):
+        """La matrice SUIT le filtre : sous « site=2 », une seule ligne — jamais
+        tous les sites sous l'étiquette du site filtré."""
+        self._deux_sites()
+        d = self._get(self.drh, metric="hr.taux_presence_jour", periode="7j", matrice="site", site="2").json()
+        self.assertEqual([l["code"] for l in d["matrice"]["lignes"]], ["2"])
+        self.assertIsNone(d["matrice_motif"])
+
+    def test_matrice_par_type_jour_par_jour(self):
+        for kind, v in (("employee", 30), ("worker", 50)):
+            _poser("hr.presents_jour", HIER, v, dimension=Dimension.TYPE, code=kind)
+        d = self._get(self.drh, metric="hr.presents_jour", periode="7j", matrice="type").json()
+        m = d["matrice"]
+        self.assertEqual(m["dimension"], "type")
+        self.assertEqual(sorted(l["code"] for l in m["lignes"]), ["employee", "worker"])
+        ligne = [l["code"] for l in m["lignes"]].index("worker")
+        self.assertEqual(m["valeurs"][ligne][-1], 50)
+        self.assertIsNone(m["valeurs"][ligne][0], "un jour non collecté reste un trou")
+
+    def test_croisement_site_type_refuse_avec_motif(self):
+        self._deux_sites()
+        d = self._get(self.drh, metric="hr.presents_jour", periode="7j", matrice="type", site="2").json()
+        self.assertIsNone(d["matrice"])
+        self.assertIn("croisement site × type", d["matrice_motif"])
+
+    def test_matrice_bornee_avec_motif(self):
+        d = self._get(self.drh, metric="hr.taux_presence_jour", periode="personnalisee",
+                      date_from=(HIER - timedelta(days=120)).isoformat(), date_to=HIER.isoformat(),
+                      matrice="site").json()
+        self.assertIsNone(d["matrice"])
+        self.assertIn("92 jours", d["matrice_motif"])
+
+    def test_matrice_d_une_metrique_non_ventilee(self):
+        _poser("hr.effectif_total", HIER, 640)
+        d = self._get(self.drh, metric="hr.effectif_total", periode="7j", matrice="site").json()
+        self.assertIsNone(d["matrice"])
+        self.assertIn("Non historisée par site", d["matrice_motif"])
+
+    def test_ventilation_refusee_sous_filtre_dit_pourquoi(self):
+        self._deux_sites()
+        d = self._get(self.drh, metric="hr.taux_presence_jour", periode="7j", ventilation="site",
+                      type="employee").json()
+        self.assertIsNone(d["ventilation"])
+        self.assertIn("retirez le filtre type de personnel", d["ventilation_motif"])

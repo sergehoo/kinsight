@@ -324,9 +324,17 @@ export function getModuleFromPath(pathname: string) {
   return dashboardModules.find((module) => pathname === module.basePath || pathname.startsWith(`${module.basePath}/`));
 }
 
-export function getModuleFromLegacyKey(moduleKey: string | undefined) {
+/** Domaine d'une clé de module (`/modules/hr-executive`).
+ *
+ *  Une même clé figure dans plusieurs domaines — « hr-executive » est aussi
+ *  l'entrée Capital Humain de la Vue Groupe. Chercher dans TOUS les domaines
+ *  rendait la Vue Groupe à un DRH qui ne la voit pas : la barre latérale le
+ *  renvoyait vers son domaine, la navigation haute vers la Vue Groupe, et les
+ *  deux se relançaient jusqu'à l'écran blanc. Les appelants passent donc les
+ *  domaines VISIBLES. */
+export function getModuleFromLegacyKey(moduleKey: string | undefined, modules: DashboardModuleConfig[] = dashboardModules) {
   if (!moduleKey) return undefined;
-  return dashboardModules.find((module) => module.sidebarItems.some((item) => item.moduleKey === moduleKey));
+  return modules.find((module) => module.sidebarItems.some((item) => item.moduleKey === moduleKey));
 }
 
 export function getSidebarItemFromPath(module: DashboardModuleConfig, itemSlug: string | undefined) {

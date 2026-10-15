@@ -53,7 +53,7 @@ export function DynamicSidebar() {
         : pathname === "/d/finance"
           ? getModuleById("finance")
           : undefined;
-  const moduleFromUrl = getModuleFromPath(pathname) ?? getModuleFromLegacyKey(legacyKey) ?? legacyDashboardModule;
+  const moduleFromUrl = getModuleFromPath(pathname) ?? getModuleFromLegacyKey(legacyKey, visibleModules) ?? legacyDashboardModule;
   const candidate = moduleFromUrl ?? getModuleById(selectedModuleId);
   // Filet permissions : ne jamais afficher les sous-modules d'un domaine non autorisé.
   const activeModule = candidate && visibleModules.some((module) => module.id === candidate.id) ? candidate : visibleModules[0];

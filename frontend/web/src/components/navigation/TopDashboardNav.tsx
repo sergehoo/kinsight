@@ -42,16 +42,18 @@ export function TopDashboardNav() {
         : pathname === "/d/finance"
           ? getModuleById("finance")
           : undefined;
-  const urlModule = getModuleFromPath(pathname) ?? getModuleFromLegacyKey(legacyKey) ?? legacyDashboardModule;
+  const urlModule = getModuleFromPath(pathname) ?? getModuleFromLegacyKey(legacyKey, visibleModules) ?? legacyDashboardModule;
   const candidate = urlModule ?? visibleModules.find((module) => module.id === selectedModuleId);
   const activeModule =
     candidate && visibleModules.some((module) => module.id === candidate.id) ? candidate : visibleModules[0];
 
   useEffect(() => {
-    if (urlModule && urlModule.id !== selectedModuleId) {
+    // Un domaine de l'URL que l'utilisateur ne voit pas n'est jamais sélectionné :
+    // la barre latérale le remplacerait aussitôt, et les deux boucleraient.
+    if (urlModule && urlModule.id !== selectedModuleId && visibleModules.some((m) => m.id === urlModule.id)) {
       setSelectedModule(urlModule.id);
     }
-  }, [selectedModuleId, setSelectedModule, urlModule]);
+  }, [selectedModuleId, setSelectedModule, urlModule, visibleModules]);
 
   const selectModule = (moduleId: string) => {
     const nextModule = visibleModules.find((module) => module.id === moduleId);

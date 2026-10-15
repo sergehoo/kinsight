@@ -10,6 +10,7 @@ import { AnimatedNumber } from "@/components/overview/AnimatedNumber";
 import { Gauge } from "@/components/overview/Gauge";
 import { AiQueryBox } from "@/components/overview/AiQueryBox";
 import { AlertsPanel } from "@/components/overview/AlertsPanel";
+import { GraphesRh } from "@/components/overview/GraphesRh";
 import { HumanCapitalScore } from "@/components/overview/HumanCapitalScore";
 import { ArrowUpRight, CheckCircle, TriDown, TriUp } from "@/components/overview/icons";
 import { EASE_OUT } from "@/lib/motion";
@@ -538,7 +539,12 @@ function ModuleBody({ module, values }: { module: ModuleDef; values?: Record<str
         </div>
       ) : null}
 
-      {module.sections?.length ? (
+      {/* Capital Humain : les graphes RÉELS du module, lus dans l'historique sous
+          les filtres, et la liste motivée de ce que rien ne trace — plus aucun
+          cadre de graphe vide. Les autres domaines gardent le catalogue. */}
+      {estModuleRh(module) ? (
+        <GraphesRh moduleKey={module.key} sections={module.sections ?? []} />
+      ) : module.sections?.length ? (
         <div className="grid gap-6">
           {module.sections.map((section, index) => (
             <AnalyticsSection key={`${section.title}-${index}`} section={section} accent={module.accent} index={index} />
