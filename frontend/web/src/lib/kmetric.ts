@@ -52,6 +52,10 @@ export interface KMetric {
   severity?: SignalSeverity;
   series?: KSeriesPoint[];
   breakdown?: KBreakdownItem[];
+  /** Motif servi par la source quand la mesure manque (périmètre non rattaché,
+   *  champ absent, panne…). Affiché tel quel : un texte générique « à raccorder »
+   *  disait « source déconnectée » à un utilisateur dont la source était connectée. */
+  note?: string;
   /** Code machine de la source : kaydan_shield | odoo_hr | edw | sap | api_interne. */
   source: string;
   sourceLabel: string;

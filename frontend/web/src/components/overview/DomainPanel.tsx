@@ -198,6 +198,7 @@ export function DomainPanel({ domainId }: { domainId: string }) {
             scope={metric.period}
             highlighted={index === 0}
             href={metric.drilldownUrl}
+            unavailableNote={metric.note}
           />
         ))}
       </Grid>

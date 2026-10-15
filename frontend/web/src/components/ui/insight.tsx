@@ -130,7 +130,7 @@ export function VarianceCard({ metric, targetLabel = "objectif" }: { metric: KMe
         <p className="mt-2 text-[11px] font-medium leading-snug text-[#8C9391]">
           {hasValue(metric)
             ? `Aucun ${targetLabel} défini pour cette mesure — écart non calculable.`
-            : `${metric.sourceLabel} à raccorder — aucune donnée publiée.`}
+            : metric.note ?? `${metric.sourceLabel} à raccorder — aucune donnée publiée.`}
         </p>
       )}
 

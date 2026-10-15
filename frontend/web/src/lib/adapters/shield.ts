@@ -57,6 +57,9 @@ export function shieldKpisToMetrics(query: ShieldHrQuery | undefined): KMetric[]
       formula: kpi.formula || undefined,
       sourceField: kpi.source_field || undefined,
       drilldownUrl: "/dashboard/capital-humain/presence",
+      // Le motif du serveur (restriction de périmètre, champ non publié…) : c'est
+      // lui qu'on affiche quand la valeur manque, pas un générique.
+      note: kpi.detail || payload.restriction || undefined,
     };
     assertGoverned(metric);
     return metric;

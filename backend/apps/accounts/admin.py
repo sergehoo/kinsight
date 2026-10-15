@@ -56,10 +56,15 @@ class UtilisateurAdmin(UserAdmin):
         Afficher la liste des filiales plutôt que le booléen seul évite la question
         « groupe coché ou pas ? » à chaque vérification de droits.
         """
-        if obj.is_group_scope:
-            return "Groupe (toutes filiales)"
-        codes = [s.code for s in obj.subsidiaries.all()]
-        return ", ".join(codes) if codes else "Aucun"
+        # Le périmètre EFFECTIF (`User.scope`), pas la seule case : un
+        # superutilisateur sans filiale voit le Groupe, un directeur de filiale ne
+        # le voit jamais.
+        perimetre = obj.scope()
+        if perimetre.is_group:
+            return "Groupe (toutes filiales)" if obj.is_group_scope else "Groupe (accès total administrateur)"
+        if perimetre.subsidiaries:
+            return ", ".join(sorted(perimetre.subsidiaries))
+        return "⚠ Aucun — écrans entièrement N/D" if obj.role in ("DG_GROUP", "CODIR") else "Aucun"
 
     @admin.display(description="Rôle")
     def role_libelle(self, obj):

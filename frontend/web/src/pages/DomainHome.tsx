@@ -237,13 +237,16 @@ function ValeurVedette({ spec, sourceParDefaut }: { spec: DomainHeroSpec; source
       <span className="block text-[36px] font-semibold leading-none">
         {enCours ? "…" : valeurReelle ? formatInt(kpi.value as number) : "N/D"}
       </span>
-      <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.06em] text-white/75">
+      <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.06em] text-white/75"
+            title={!valeurReelle ? (kpi?.detail ?? shield.data?.payload.restriction ?? undefined) : undefined}>
         <span className="h-1.5 w-1.5 rounded-full" style={{ background: valeurReelle && !datee ? "#7FE0BE" : "rgba(255,255,255,0.6)" }} />
         {enCours
           ? "Lecture en cours"
           : valeurReelle
             ? datee ? `${source} · donnée datée` : source
-            : `${source} · mesure non servie`}
+            // Le motif réel quand il existe : « non servie » laissait croire à
+            // une panne alors qu'il s'agissait du périmètre.
+            : shield.data?.payload.restriction ? `${source} · réservé au périmètre Groupe` : `${source} · mesure non servie`}
       </span>
     </>
   );
@@ -414,7 +417,13 @@ export function DomainHome({ spec, module }: { spec: DomainHeroSpec; module: Das
                     </div>
                     <p className="mt-1 text-[11.5px] font-medium text-[#8C9391]">
                       {estRh
-                        ? `Effectif déclaré dans Shield · ${effectif.data?.periode?.libelle ?? libelleFiltrePeriode(filtres)} · périmètre Groupe`
+                        // Le périmètre DIT par le serveur : « périmètre Groupe » écrit en dur
+                        // s'affichait au-dessus d'un refus « Non rattaché ».
+                        ? [`Effectif déclaré dans Shield · ${effectif.data?.periode?.libelle ?? libelleFiltrePeriode(filtres)}`,
+                          /^(Non rattaché|Hors périmètre)/.test(effectif.data?.reason ?? "") ? "réservé au périmètre Groupe"
+                            : Array.isArray(effectif.data?.perimetre) ? `périmètre ${effectif.data.perimetre.join(", ")}`
+                              : effectif.data?.perimetre === "GROUP" ? "périmètre Groupe" : null,
+                        ].filter(Boolean).join(" · ")
                         : `Série ${spec.chartUnit} · périmètre Groupe consolidé`}
                     </p>
                   </div>

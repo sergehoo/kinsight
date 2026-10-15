@@ -48,11 +48,31 @@ class User(AbstractUser):
     affectations_rh = models.JSONField(default=list, blank=True)
 
     def scope(self) -> Scope:
-        """Périmètre de visibilité (domaine pur)."""
+        """Périmètre de visibilité (domaine pur). L'ordre est la règle :
+
+        1. Un rôle toujours restreint (directeur de filiale) : ses filiales, rien
+           d'autre — même superutilisateur, même case « groupe » cochée.
+        2. Case « groupe » cochée : le Groupe.
+        3. Filiales cochées : ces filiales — un compte rattaché à une filiale reste
+           restreint, même superutilisateur (sinon un RH de KRE à qui l'on ouvre
+           l'admin Django recevrait les totaux Groupe).
+        4. AUCUN périmètre explicite et accès total (superutilisateur, ADMIN_CA) :
+           le Groupe. C'est le compte créé par `createsuperuser` (case décochée par
+           défaut) ; il recevait un périmètre VIDE, donc N/D et « Non rattaché »
+           partout alors que la source était connectée — régression prod du
+           2026-10-15, depuis la règle ADR-0009 « total Shield = Groupe seulement ».
+        5. Sinon : aucun périmètre.
+        """
         if self.is_group_scope and self.role not in ROLES_TOUJOURS_RESTREINTS:
-            return Scope.group()
+            return Scope.group()   # sans requête : le cas courant d'un compte Groupe
         codes = list(self.subsidiaries.values_list("code", flat=True))
-        return Scope.of(*codes) if codes else Scope.none()
+        if self.role in ROLES_TOUJOURS_RESTREINTS:
+            return Scope.of(*codes) if codes else Scope.none()
+        if codes:
+            return Scope.of(*codes)
+        if self.is_superuser or self.role == Role.ADMIN_CA:
+            return Scope.group()
+        return Scope.none()
 
     @property
     def can_see_nominative(self) -> bool:

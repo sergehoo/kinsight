@@ -79,6 +79,13 @@ préfixée.**
    python manage.py createsuperuser
    ```
 
+   **Périmètre.** Le rôle donne les DOMAINES, le périmètre donne les FILIALES visibles.
+   Un superutilisateur sans filiale cochée voit le Groupe ; s'il est rattaché à une
+   filiale, il reste limité à celle-ci. Un compte DG Groupe / CODIR doit avoir la case
+   « périmètre groupe » cochée (Admin → Utilisateurs → Gouvernance K-Insight), sinon ses
+   écrans RH sont entièrement N/D — `manage.py check` le signale (`accounts.W001`) et
+   `admin_access <identifiant>` affiche le périmètre effectif.
+
    Pour un compte qui EXISTE déjà mais que l'admin refuse : `role` gouverne
    l'application, `is_staff` gouverne l'admin Django, et Django affiche le même
    message dans les deux cas. La commande lève l'ambiguïté, et peut accorder l'accès.

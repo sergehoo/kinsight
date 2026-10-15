@@ -60,7 +60,13 @@ class Command(BaseCommand):
         self.stdout.write(f"Rôle       : {getattr(compte, 'role', '—')}  (droits APPLICATIFS)")
         self.stdout.write(f"actif      : {compte.is_active}")
         self.stdout.write(f"is_staff   : {compte.is_staff}      (droit d'ouvrir l'admin Django)")
-        self.stdout.write(f"is_superuser: {compte.is_superuser}\n")
+        self.stdout.write(f"is_superuser: {compte.is_superuser}")
+        if hasattr(compte, "scope"):
+            perimetre = compte.scope()
+            effectif = ("Groupe" if perimetre.is_group
+                        else ", ".join(sorted(perimetre.subsidiaries)) or "AUCUN — écrans N/D partout")
+            self.stdout.write(f"périmètre effectif : {effectif}  (case groupe : {compte.is_group_scope})")
+        self.stdout.write("")
 
         if options["accorder"] or options["superutilisateur"]:
             self._accorder(compte, superutilisateur=options["superutilisateur"])

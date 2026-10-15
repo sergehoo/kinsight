@@ -30,13 +30,13 @@
     "semantic_hash": ""
   },
   "backend/apps/accounts/apps.py": {
-    "mtime": 1782253903.3824172,
-    "ast_hash": "ae69df3a0cd03ec363e96cab83581ec9",
+    "mtime": 1792071584.259413,
+    "ast_hash": "5e4cfc6d3badaee4268a86e098586c88",
     "semantic_hash": ""
   },
   "backend/apps/accounts/models.py": {
-    "mtime": 1792063809.4783986,
-    "ast_hash": "4b74ea16758af830f2cb67d54a00144d",
+    "mtime": 1792071633.487567,
+    "ast_hash": "ad48a53abb3b0935ef028165eefecb3b",
     "semantic_hash": ""
   },
   "backend/apps/audit/__init__.py": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/api/governance.ts": {
-    "mtime": 1792063346.2902932,
-    "ast_hash": "aa58b67781cac4f9475904bd2556dd04",
+    "mtime": 1792071644.2733712,
+    "ast_hash": "b075689879bc0d9e4ca3dcb228517d4a",
     "semantic_hash": ""
   },
   "frontend/web/src/components/GlobalFilters.tsx": {
@@ -635,8 +635,8 @@
     "semantic_hash": ""
   },
   "infra/dokploy/README.md": {
-    "mtime": 1788805880.3733037,
-    "ast_hash": "6d10c01e9f953f66dd7b77e020527fc5",
+    "mtime": 1792071671.5075083,
+    "ast_hash": "8431f186c3545def8fe56b38eef49fe3",
     "semantic_hash": ""
   },
   "backend/apps/accounts/rbac.py": {
@@ -980,8 +980,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainPanel.tsx": {
-    "mtime": 1792062587.996373,
-    "ast_hash": "785b7af239b944b30e54abe10b5fddf0",
+    "mtime": 1792070717.7481232,
+    "ast_hash": "f1e03cc37880fcf737fce8e1d8fd1e2e",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/DomainScoreCard.tsx": {
@@ -1005,8 +1005,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/ui/insight.tsx": {
-    "mtime": 1788658537.2123806,
-    "ast_hash": "2f0a8d9c73bb90e1e624be1864eed01b",
+    "mtime": 1792070717.7485807,
+    "ast_hash": "e70df59a2c6957e64c795211a627d612",
     "semantic_hash": ""
   },
   "frontend/web/src/components/ui/kit.tsx": {
@@ -1045,8 +1045,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/adapters/shield.ts": {
-    "mtime": 1792019088.7244298,
-    "ast_hash": "30f623531bace51906384aa8f5406f79",
+    "mtime": 1792070717.7478266,
+    "ast_hash": "a8d97554703fdeb62a34e71cfeeda057",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/auth.ts": {
@@ -1060,8 +1060,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/kmetric.ts": {
-    "mtime": 1788658391.9466543,
-    "ast_hash": "64e6b256d6d86e9e35a7060614afd28a",
+    "mtime": 1792070717.7474763,
+    "ast_hash": "9ea17ca5cc452c7b60a62b78f40c8427",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/permissions.ts": {
@@ -1080,8 +1080,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/pages/DomainHome.tsx": {
-    "mtime": 1792063057.5388212,
-    "ast_hash": "8fe316f8397fe7a1a0fccdc7adf558bc",
+    "mtime": 1792071655.5536454,
+    "ast_hash": "7a6333d77664efd0271504902db4b5dd",
     "semantic_hash": ""
   },
   "frontend/web/src/pages/LoginPage.tsx": {
@@ -1805,8 +1805,8 @@
     "semantic_hash": ""
   },
   "backend/apps/accounts/admin.py": {
-    "mtime": 1792063642.3977292,
-    "ast_hash": "a521c417bd0d14e75638732ea314b757",
+    "mtime": 1792071584.259774,
+    "ast_hash": "4272a47817143ded3bd57f858c7e6bf8",
     "semantic_hash": ""
   },
   "backend/apps/ai_copilot/admin.py": {
@@ -1870,8 +1870,8 @@
     "semantic_hash": ""
   },
   "backend/apps/accounts/management/commands/admin_access.py": {
-    "mtime": 1788805798.7013254,
-    "ast_hash": "4931195b480a6aed34fdf1030033fadf",
+    "mtime": 1792071584.2601256,
+    "ast_hash": "ca8f7d9263631076558fefaaf84eef80",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_auth.py": {
@@ -2277,6 +2277,16 @@
   "backend/apps/governance/tests_rbac_rh.py": {
     "mtime": 1792063795.9401455,
     "ast_hash": "3c850ba1f565dceccba3a02c82cabfe7",
+    "semantic_hash": ""
+  },
+  "backend/apps/accounts/checks.py": {
+    "mtime": 1792071584.2158575,
+    "ast_hash": "55c648ffffa1dadbdf8499dc2e5027c2",
+    "semantic_hash": ""
+  },
+  "backend/apps/accounts/tests_perimetre_admin.py": {
+    "mtime": 1792071600.6789353,
+    "ast_hash": "169a5639723ee919c70f5843331aeaec",
     "semantic_hash": ""
   }
 }

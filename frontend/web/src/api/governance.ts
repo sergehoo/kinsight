@@ -181,6 +181,8 @@ export interface HrHistory {
   seuils?: { presence_critique: number; presence_surveillance: number; [cle: string]: number };
   aujourd_hui?: { value: number | null; status: string; reason?: string | null; date: string } | null;
   historique_depuis?: string | null;
+  /** Périmètre réellement appliqué par le serveur : "GROUP" ou les codes filiales. */
+  perimetre?: "GROUP" | string[];
 }
 
 /** Historique d'une métrique sous les filtres du cockpit. `extra` ajoute des
