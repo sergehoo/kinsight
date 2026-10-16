@@ -25,6 +25,7 @@ import {
   Wallet,
 } from "@/components/overview/icons";
 import { canAccess, DOMAIN_PERMISSION, getCurrentRole, type Permission } from "@/lib/permissions";
+import { ongletsVisibles, sectionParCle } from "@/config/sectionsRh";
 
 export type ModuleIcon = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
@@ -131,26 +132,17 @@ export const dashboardModules: DashboardModuleConfig[] = [
     featureFlag: "domain_hr",
     filters: FILTERS_HR,
     sidebarItems: [
-      { label: "Executive HR Overview", path: "/overview", icon: Target, moduleKey: "hr-executive" },
-      { label: "Workforce Analytics", path: "/workforce", icon: Users, moduleKey: "hr-workforce" },
-      { label: "Organigramme", path: "/organigramme", icon: Network, moduleKey: "hr-organization" },
-      { label: "Présence", path: "/presence", icon: CheckCircle, moduleKey: "hr-attendance" },
-      { label: "Congés", path: "/conges", icon: Calendar, moduleKey: "hr-leave" },
-      { label: "Recrutement", path: "/recrutement", icon: Briefcase, moduleKey: "hr-recruitment" },
-      { label: "Onboarding", path: "/onboarding", icon: CheckCircle, moduleKey: "hr-onboarding" },
-      { label: "Paie", path: "/paie", icon: Wallet, moduleKey: "hr-payroll", requiredPermissions: ["view_hr_payroll"] },
-      { label: "Performance", path: "/performance", icon: BarChart, moduleKey: "hr-performance", requiredPermissions: ["view_hr_performance"] },
-      { label: "Formation", path: "/formation", icon: FileText, moduleKey: "hr-training" },
-      { label: "Compétences", path: "/competences", icon: Grid, moduleKey: "hr-skills" },
-      { label: "Carrière", path: "/carriere", icon: CheckCircle, moduleKey: "hr-career", requiredPermissions: ["view_hr_career"] },
-      { label: "Engagement", path: "/engagement", icon: User, moduleKey: "hr-experience" },
-      { label: "Santé & Sécurité", path: "/sante-securite", icon: Shield, moduleKey: "hr-health-safety" },
-      { label: "Conformité RH", path: "/conformite", icon: Receipt, moduleKey: "hr-compliance" },
-      { label: "Productivité", path: "/productivite", icon: BarChart, moduleKey: "hr-productivity" },
-      { label: "Workforce Planning", path: "/planning", icon: ChartPie, moduleKey: "hr-planning" },
-      { label: "IA RH", path: "/ia", icon: CheckCircle, moduleKey: "hr-ai" },
-      { label: "Centre d'Alertes RH", path: "/alertes", icon: Bell, moduleKey: "hr-alerts" },
-      { label: "Rapports RH", path: "/rapports", icon: FileText, moduleKey: "hr-reports" },
+      // Huit entrées (l'accueil est servi par la page du domaine). Les anciennes
+      // vues sont devenues des ONGLETS de ces sections (`config/sectionsRh.ts`) et
+      // leurs adresses redirigent vers elles.
+      { label: "Executive Overview", path: "/overview", icon: Target, moduleKey: "hr-executive" },
+      { label: "Effectifs & Organisation", path: "/effectifs", icon: Users, moduleKey: "hr-section-effectifs" },
+      { label: "Temps & Présence", path: "/temps-presence", icon: CheckCircle, moduleKey: "hr-section-temps" },
+      { label: "Recrutement & Intégration", path: "/recrutement-integration", icon: Briefcase, moduleKey: "hr-section-recrutement" },
+      { label: "Performance & Talents", path: "/talents", icon: BarChart, moduleKey: "hr-section-talents" },
+      { label: "Rémunération", path: "/paie", icon: Wallet, moduleKey: "hr-payroll", requiredPermissions: ["view_hr_payroll"] },
+      { label: "Engagement & Conformité", path: "/engagement-conformite", icon: Shield, moduleKey: "hr-section-conformite" },
+      { label: "Intelligence RH", path: "/intelligence", icon: Bell, moduleKey: "hr-section-intelligence" },
     ],
   },
   {
@@ -320,8 +312,13 @@ export function visibleSidebarItems(
   // est vide. Le serveur refuse les autres (403) ; la navigation ne les propose pas.
   const assistant = module.id === "capital-humain" && role === "ASSISTANT_RH";
   const affectees = permissions.filter((p) => p.startsWith(HR_MODULE)).map((p) => p.slice(HR_MODULE.length));
-  return module.sidebarItems.filter((item) => canAccess(item.requiredPermissions, [...permissions])
-    && (!assistant || affectees.includes(item.moduleKey)));
+  return module.sidebarItems.filter((item) => {
+    if (!canAccess(item.requiredPermissions, [...permissions])) return false;
+    // Une section n'est proposée que si au moins un de ses onglets l'est.
+    const section = sectionParCle(item.moduleKey);
+    if (section) return ongletsVisibles(section, permissions, role).length > 0;
+    return !assistant || affectees.includes(item.moduleKey);
+  });
 }
 
 export function getModuleById(moduleId: string | undefined) {

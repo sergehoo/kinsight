@@ -20,8 +20,25 @@ interface PageShellProps {
   children: React.ReactNode;
 }
 
+/** Vrai à l'intérieur d'un onglet de section : la page du module y est rendue
+ *  SANS son cadre (en-tête, barre latérale, filtres), que la section porte déjà. */
+export const PageShellIntegree = React.createContext(false);
+
 /** Cadre commun des pages secondaires : même fond/verre que le dashboard hero. */
-export function PageShell({ title, subtitle, status, icon, accent = "#FF8735", children }: PageShellProps) {
+export function PageShell(props: PageShellProps) {
+  const integree = React.useContext(PageShellIntegree);
+  if (integree) {
+    return (
+      <div className="space-y-6">
+        {props.subtitle ? <p className="max-w-[90ch] text-[13px] font-medium leading-relaxed text-[#697071]">{props.subtitle}</p> : null}
+        {props.children}
+      </div>
+    );
+  }
+  return <CadrePage {...props} />;
+}
+
+function CadrePage({ title, subtitle, status, icon, accent = "#FF8735", children }: PageShellProps) {
   const navigate = useNavigate();
   const sidebarExpanded = useNavigationStore((state) => state.sidebarExpanded);
   const mainPadLeft = sidebarExpanded ? "pl-[96px] md:pl-[296px]" : "pl-[96px] md:pl-[120px]";

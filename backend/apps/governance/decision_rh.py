@@ -102,6 +102,9 @@ class HRDecisionEngine:
         mince = self._couverture_mince(presence)
         if mince:
             sortie.append(mince)
+        echeances = self._echeances_contrats()
+        if echeances:
+            sortie.append(echeances)
 
         sortie.sort(key=lambda c: ORDRE[c["severite"]])
         return sortie[:MAX_CONSTATS]
@@ -222,6 +225,26 @@ class HRDecisionEngine:
             source="Kaydan Shield", confiance="faible",
             regle=f"Moins de {int(COUVERTURE_MINCE * 100)} % des jours de la période sont mesurés.",
             action="Rejouer la collecte des journées manquantes (historiser --presence).")
+
+    def _echeances_contrats(self) -> dict[str, Any] | None:
+        """Contrats dont la date de fin (Shield) tombe dans les 30 jours."""
+        from .rapport_rh import structure_pour
+
+        contrats = (structure_pour(self.user) or {}).get("contrats")
+        if not contrats:
+            return None
+        sous_30 = contrats["par_horizon"].get("30", 0)
+        if not sous_30:
+            return None
+        detail = ", ".join(f"{c['libelle']} {c['valeur']}" for c in contrats.get("par_contrat") or [])
+        return self._base(
+            "contrats.echeance", "Contrats arrivant à échéance",
+            f"{sous_30} contrat(s) arrivent à échéance sous 30 jours"
+            + (f" ; sous 90 jours, par type : {detail}" if detail else "") + ".",
+            "surveillance", valeur=sous_30, unite="contrats", source="Kaydan Shield", periode="aujourd'hui",
+            regle="Contrats Shield dont la date de fin tombe dans les 30 prochains jours.",
+            action="Décider du renouvellement, de la titularisation ou de la sortie avant l'échéance.",
+            lien="/dashboard/capital-humain/effectifs?onglet=structure")
 
     # ── 2. Synthèse (IA sous garde-fou) ──────────────────────────────────────
     def synthese(self, constats: list[dict], router=None) -> dict[str, Any]:

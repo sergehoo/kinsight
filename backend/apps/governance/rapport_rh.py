@@ -80,6 +80,21 @@ def _fraicheur() -> list[dict]:
             for s in (SHIELD, ODOO)]
 
 
+def structure_pour(user) -> dict[str, Any] | None:
+    """Structure des effectifs Shield sous le périmètre de `user` (None si rien de visible
+    ou source indisponible) — la même règle que l'écran."""
+    try:
+        from apps.integrations.shield_structure import lire_structure
+        from apps.integrations.views import structure_visible
+
+        charge = structure_visible(user)
+    except Exception:  # noqa: BLE001 — une source indisponible n'empêche pas le rapport
+        return None
+    if not charge or not charge.get("lignes"):
+        return None
+    return lire_structure(charge, {})
+
+
 def assembler(user, filtres: Filtres) -> dict[str, Any]:
     """Tout le rapport, sous le périmètre de `user`. Lève `FiltreInvalide` (403, 400)."""
     scope = user.scope()
@@ -121,6 +136,7 @@ def assembler(user, filtres: Filtres) -> dict[str, Any]:
         "constats": constats,
         "synthese": synthese_deterministe(constats, moteur.angles_morts()),
         "score": calculer(user, filtres),
+        "structure": structure_pour(user),
         "sources": _fraicheur(),
     }
 

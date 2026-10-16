@@ -119,6 +119,21 @@ def rapport_xlsx(r: dict) -> bytes:
             graphe.display_blanks = "gap"   # un jour non mesuré reste un trou
             wq.add_chart(graphe, "G2")
 
+    structure = r.get("structure")
+    if structure and structure.get("repartitions"):
+        wst = wb.create_sheet("Structure (Shield)")
+        wst.append(["Notion", "Catégorie", "Effectif", "Part (%)"])
+        for c in wst[1]:
+            c.font, c.fill = gras, entete
+        for notion, lignes in structure["repartitions"].items():
+            for l in lignes:
+                wst.append([structure.get("libelles", {}).get(notion, notion), l["libelle"], l["valeur"], l["part"]])
+        if structure.get("contrats"):
+            wst.append([])
+            for h, n in structure["contrats"]["par_horizon"].items():
+                wst.append(["Contrats à échéance", f"≤ {h} jours", n, None])
+        wst.column_dimensions["A"].width, wst.column_dimensions["B"].width = 22, 34
+
     if r["sites"]:
         wsite = wb.create_sheet("Sites")
         wsite.append(["Site", "Taux de présence (%)", "Jours mesurés"])
@@ -222,6 +237,14 @@ def rapport_pdf(r: dict) -> bytes:
         # Le titre ne se sépare pas de son graphe en bas de page.
         h.append(KeepTogether([Paragraph("Taux de présence, jour par jour", styles["Heading2"]),
                                _graphe_pdf(presence["points"], largeur, 5 * cm)]))
+
+    structure = r.get("structure")
+    if structure and structure.get("repartitions", {}).get("contrat"):
+        h.append(Paragraph("Effectifs par type de contrat (Kaydan Shield, aujourd'hui)", styles["Heading2"]))
+        h.append(table([["Contrat", "Effectif", "Part"]]
+                       + [[l["libelle"], l["valeur"], f"{l['part']:g} %" if l["part"] is not None else ""]
+                          for l in structure["repartitions"]["contrat"]],
+                       [6 * cm, 3 * cm, largeur - 9 * cm]))
 
     h.append(Paragraph("Signaux", styles["Heading2"]))
     h.append(table([["Signal", "État", "Valeur", "Seuils", "Motif"]]

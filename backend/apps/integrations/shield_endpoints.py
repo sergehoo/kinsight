@@ -15,6 +15,11 @@ EMPLOYEES = "/api/v1/employees/employees/"          # filtres : company, contrac
 WORKERS = "/api/v1/ouvriers/workers/"               # filtres : site, status, trade, subcontractor, tenant
 SITES = "/api/v1/sites/sites/"                      # filtres : company, status, type, tenant
 DEPARTMENTS = "/api/v1/employees/departments/"
+POSITIONS = "/api/v1/employees/positions/"
+CONTRACTS = "/api/v1/employees/contracts/"
+# Schéma OpenAPI (drf-spectacular) : protégé, lu avec le compte de service pour
+# la découverte des champs réellement exposés (`shield_structure.decouvrir`).
+SCHEMA = "/api/schema/"
 
 # ── Présence ─────────────────────────────────────────────────────────────────
 ATTENDANCE_TODAY = "/api/v1/attendance/summary/today/"   # aucun filtre ; compteurs du jour

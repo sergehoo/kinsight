@@ -767,3 +767,87 @@ class WebhookReceiver(APIView):
         if not signature_valid and expected:
             return Response({"detail": "Signature invalide."}, status=http_status.HTTP_401_UNAUTHORIZED)
         return Response({"received": True}, status=http_status.HTTP_202_ACCEPTED)
+
+
+# ── Structure des effectifs (Shield) ─────────────────────────────────────────
+
+MOTIF_STRUCTURE_HORS_PERIMETRE = (
+    "Hors périmètre : aucune société Shield n'est rattachée à votre filiale. Les effectifs "
+    "Shield d'un périmètre restreint ne sont servis que pour les sociétés déclarées dans la "
+    "correspondance du connecteur (clé `company_mapping`)."
+)
+
+
+def _societes_shield_de(user) -> set[str] | None:
+    """Sociétés Shield visibles : None = toutes (Groupe) ; sinon celles que la
+    correspondance du connecteur rattache aux filiales de l'utilisateur."""
+    scope = user.scope()
+    if scope.is_group:
+        return None
+    from .shield import get_shield_source
+
+    source = get_shield_source()
+    connecteur = getattr(source, "connector", None)
+    correspondance = ((getattr(connecteur, "config", None) or {}).get("company_mapping") or {})
+    filiales = set(scope.subsidiaries)
+    return {str(code) for code, filiale in correspondance.items() if filiale in filiales}
+
+
+class ShieldStructureView(APIView):
+    """GET /integrations/shield/structure/ — effectifs Shield par contrat, département,
+    poste, société, statut, genre, âge, ancienneté ; échéances de contrat.
+
+    Filtres (listes servies par la réponse elle-même) : nature, societe, departement,
+    poste, contrat, statut, site, metier. Une collecte partagée pour tout le cockpit.
+    Un périmètre restreint ne voit que les sociétés rattachées à ses filiales par
+    une correspondance DÉCLARÉE ; sans elle, rien — jamais le total Groupe.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from apps.accounts.rbac import peut_module_rh
+
+        from .shield_structure import FILTRABLES, charge_structure, lire_structure
+
+        if not can_access_domain(request.user, "capital-humain"):
+            return _refus_de_domaine("capital-humain")
+        if not peut_module_rh(request.user, "hr-workforce"):
+            return Response({"detail": "Page réservée : votre profil n'y est pas habilité."}, status=403)
+        charge = structure_visible(request.user)
+        if charge is None:
+            _audit_shield(request, "shield.structure")
+            return Response({"status": "disconnected", "restriction": MOTIF_STRUCTURE_HORS_PERIMETRE,
+                             "effectifs": None, "repartitions": {}, "filtres": {}, "motifs": {}})
+        filtres = {k: request.query_params.get(k, "") for k in FILTRABLES}
+        _audit_shield(request, "shield.structure")
+        return Response(lire_structure(charge, filtres))
+
+
+def structure_visible(user) -> dict | None:
+    """La charge de structure réduite au périmètre de `user` (None = rien de visible).
+    Partagée par l'écran, les exports et l'aide à la décision : une seule règle."""
+    from .shield_structure import charge_structure
+
+    charge = charge_structure()
+    visibles = _societes_shield_de(user)
+    if visibles is None:
+        return charge
+    if not visibles:
+        return None
+    return {**charge, "lignes": [l for l in charge.get("lignes") or []
+                                 if isinstance(l.get("societe"), (list, tuple)) and str(l["societe"][0]) in visibles]}
+
+
+class ShieldDiscoveryView(APIView):
+    """GET /integrations/shield/decouverte/ — chemins et champs que Shield expose
+    réellement (schéma OpenAPI live + clés des enregistrements), sans valeur
+    personnelle. Réservé aux administrateurs d'intégration."""
+
+    permission_classes = [IsIntegrationAdmin]
+
+    def get(self, request):
+        from .shield_structure import decouvrir
+
+        _audit_shield(request, "shield.decouverte")
+        return Response(decouvrir())

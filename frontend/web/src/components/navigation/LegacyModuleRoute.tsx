@@ -1,6 +1,7 @@
 import { Navigate, useLocation, useParams } from "react-router-dom";
 
 import { visibleDashboardModules, visibleSidebarItems } from "@/config/modules.config";
+import { sectionDuModule } from "@/config/sectionsRh";
 import { getCurrentPermissions } from "@/lib/permissions";
 import { ModulePage } from "@/pages/ModulePage";
 
@@ -18,6 +19,13 @@ export function LegacyModuleRoute() {
   const { search } = useLocation();
   if (!key?.startsWith("hr-")) return <ModulePage />;
 
+  // Un module devenu onglet d'une section : la section, sur cet onglet.
+  const section = sectionDuModule(key);
+  if (section) {
+    const suite = new URLSearchParams(search);
+    suite.set("onglet", key);
+    return <Navigate to={`/dashboard/capital-humain${section.path}?${suite.toString()}`} replace />;
+  }
   const permissions = getCurrentPermissions();
   for (const module of visibleDashboardModules(permissions)) {
     const item = visibleSidebarItems(module, permissions).find((i) => i.moduleKey === key);

@@ -266,3 +266,40 @@ export function useShieldAttendanceSeries(days: SeriesWindow = 30, periode?: Per
     retry: false,
   });
 }
+
+/* ── Structure des effectifs (`/integrations/shield/structure/`) ─────────── */
+
+export interface LigneRepartition { code: string; libelle: string; valeur: number; part: number | null }
+
+export interface ShieldStructure {
+  status: DataState;
+  source?: string;
+  detail?: string;
+  restriction?: string;
+  collecte_le?: string;
+  cache?: { collecte_le?: string; age_s?: number };
+  tronque?: boolean;
+  effectifs: { total: number; employes: number; ouvriers: number; actifs: number | null; inactifs: number | null } | null;
+  repartitions: Record<string, LigneRepartition[]>;
+  libelles?: Record<string, string>;
+  /** Notion sans champ exposé par Shield → motif (jamais une valeur supposée). */
+  motifs: Record<string, string>;
+  contrats?: { par_horizon: Record<string, number>; echus: number; par_contrat: LigneRepartition[]; renseignes: number } | null;
+  contrats_motif?: string | null;
+  /** Listes de filtres construites depuis les données LIVE. */
+  filtres: Record<string, { code: string; libelle: string }[]>;
+  applique?: Record<string, string>;
+}
+
+export function useShieldStructure(filtres: Record<string, string>, enabled = true) {
+  const query = new URLSearchParams(Object.entries(filtres).filter(([, v]) => v)).toString();
+  return useQuery<{ payload: ShieldStructure; stale: boolean; cachedAt?: string }>({
+    queryKey: ["shield", "structure", query],
+    enabled,
+    queryFn: async () => {
+      const { data, stale, cachedAt } = await apiGetMeta<ShieldStructure>(`/integrations/shield/structure/${query ? `?${query}` : ""}`);
+      return { payload: data, stale, cachedAt };
+    },
+    staleTime: 5 * 60_000,
+  });
+}

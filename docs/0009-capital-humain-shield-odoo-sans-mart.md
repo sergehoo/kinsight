@@ -148,3 +148,20 @@ La formule pondérée (`k_insight.kpi.hr_score`, 9 dimensions) est inchangée ; 
 - `DIR_FILIALE` reste limité à ses filiales même si le drapeau « groupe » est coché.
 - La masse salariale exige la permission paie partout (historique 403, rapport « Réservé aux profils habilités
   à la paie »). Aucun filtre n'élargit un périmètre (403).
+
+## Addendum — Sections et structure Shield (2026-10-16)
+
+- **Navigation** : 8 entrées (Executive Overview, Effectifs & Organisation, Temps & Présence, Recrutement &
+  Intégration, Performance & Talents, Rémunération, Engagement & Conformité, Intelligence RH) au lieu de 20.
+  Chaque section rend les pages EXISTANTES de ses modules en onglets (`config/sectionsRh.ts`) ; les anciennes
+  adresses redirigent vers section + onglet, filtres conservés. Un onglet suit la permission de son module.
+- **Structure des effectifs** (`apps/integrations/shield_structure.py`, `GET /integrations/shield/structure/`) :
+  employés et ouvriers Shield par contrat, département, poste, société, statut, genre, âge, ancienneté, site,
+  métier ; échéances de contrat. Une collecte partagée (15 min). Les champs sont ceux des filtres documentés ;
+  les autres notions ne sont retenues que si présentes dans les enregistrements live — sinon N/D avec motif.
+  Les catégories (CDI, CDD…) sont celles que Shield renvoie : aucune énumération en dur. Seuls des attributs
+  catégoriels sont conservés : ni nom, ni matricule, ni date exacte.
+- **Périmètre** : un périmètre restreint ne voit que les sociétés Shield rattachées à ses filiales par une
+  correspondance DÉCLARÉE (`company_mapping` du connecteur Shield) ; sans elle, rien.
+- **Découverte** (`GET /integrations/shield/decouverte/`, administrateurs) : chemins et champs exposés par le
+  schéma OpenAPI live (lu avec le compte de service) et clés réellement présentes — sans valeur personnelle.

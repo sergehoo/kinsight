@@ -13,7 +13,9 @@ from .views import (
     OdooHrKpiView,
     OdooReferenceView,
     ShieldHealthView,
+    ShieldDiscoveryView,
     ShieldHrKpiView,
+    ShieldStructureView,
     ShieldOverviewView,
     ShieldSecurityView,
     SyncErrorViewSet,
@@ -36,6 +38,8 @@ router.register("webhook-events", WebhookEventViewSet, basename="webhookevent")
 
 urlpatterns = router.urls + [
     path("shield/hr-kpi/", ShieldHrKpiView.as_view(), name="shield-hr-kpi"),
+    path("shield/structure/", ShieldStructureView.as_view(), name="shield-structure"),
+    path("shield/decouverte/", ShieldDiscoveryView.as_view(), name="shield-decouverte"),
     path("shield/attendance-series/", ShieldAttendanceSeriesView.as_view(), name="shield-attendance-series"),
     path("shield/security/", ShieldSecurityView.as_view(), name="shield-security"),
     path("shield/overview/", ShieldOverviewView.as_view(), name="shield-overview"),

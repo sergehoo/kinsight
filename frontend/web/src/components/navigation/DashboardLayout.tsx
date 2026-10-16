@@ -1,7 +1,9 @@
 import type * as React from "react";
 
+import { sectionParCle } from "@/config/sectionsRh";
 import { AttendancePage } from "@/pages/AttendancePage";
 import { ModulePage } from "@/pages/ModulePage";
+import { SectionRhPage } from "@/pages/SectionRhPage";
 
 interface DashboardLayoutProps {
   moduleKey: string;
@@ -26,6 +28,8 @@ const PAGES_REELLES: Record<string, React.ComponentType> = {
 };
 
 export function DashboardLayout({ moduleKey }: DashboardLayoutProps) {
+  // Sections du Capital Humain : des onglets qui rendent les pages des modules.
+  if (sectionParCle(moduleKey)) return <SectionRhPage key={moduleKey} sectionKey={moduleKey} />;
   const PageReelle = PAGES_REELLES[moduleKey];
   return PageReelle ? <PageReelle /> : <ModulePage moduleKey={moduleKey} />;
 }

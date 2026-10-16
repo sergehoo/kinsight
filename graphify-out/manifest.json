@@ -580,8 +580,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/PageShell.tsx": {
-    "mtime": 1788655669.6371212,
-    "ast_hash": "e8e4851e3c8c353e325500a73fee7028",
+    "mtime": 1792142102.580762,
+    "ast_hash": "67ab1fb8cc13e80421d26eae45a94f3a",
     "semantic_hash": ""
   },
   "frontend/web/src/components/chrome/SideRail.tsx": {
@@ -790,13 +790,13 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/urls.py": {
-    "mtime": 1792015973.0148337,
-    "ast_hash": "e33967b7779a49837c73102dae5366d1",
+    "mtime": 1792141999.8864462,
+    "ast_hash": "9de69586924c78f87ce011252f31445f",
     "semantic_hash": ""
   },
   "backend/apps/integrations/views.py": {
-    "mtime": 1792018752.0294173,
-    "ast_hash": "dd5cd84239faab83a48108d8f50fe4ac",
+    "mtime": 1792142219.9863172,
+    "ast_hash": "11488dd849b35ca1b467934cc3ba648c",
     "semantic_hash": ""
   },
   "backend/src/k_insight/kpi/alerts.py": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/DashboardLayout.tsx": {
-    "mtime": 1788866600.3479187,
-    "ast_hash": "0fbd3ba52e68a8c4887ee3a145f3f864",
+    "mtime": 1792142190.8490868,
+    "ast_hash": "92112150e32cd843775e1528167ba390",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/DynamicSidebar.tsx": {
@@ -945,8 +945,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/ModuleRouter.tsx": {
-    "mtime": 1782486486.7939491,
-    "ast_hash": "4738f71f0041a61368c86d95d63e10f6",
+    "mtime": 1792142190.849864,
+    "ast_hash": "8bf20ff4826f489a22e129d0cadc795c",
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/PermissionGuard.tsx": {
@@ -1035,8 +1035,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/config/modules.config.ts": {
-    "mtime": 1792063752.9151356,
-    "ast_hash": "2511cb718ea4e5fdd773fc6a3c094ca9",
+    "mtime": 1792142091.0017388,
+    "ast_hash": "09529ef81757697324af3187658812b3",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/adapters/governance.ts": {
@@ -1070,8 +1070,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/lib/shieldHr.ts": {
-    "mtime": 1792031701.258817,
-    "ast_hash": "887863526d98ee9e0708c4fb4053005e",
+    "mtime": 1792142114.8784838,
+    "ast_hash": "8c91456e5b843aa3ae34f5ec272c128f",
     "semantic_hash": ""
   },
   "frontend/web/src/lib/useDomainTheme.ts": {
@@ -1775,8 +1775,8 @@
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_endpoints.py": {
-    "mtime": 1788711359.2230036,
-    "ast_hash": "5752872d4e0031e200c0e4f0a8da2fe4",
+    "mtime": 1792141916.884976,
+    "ast_hash": "8255c4dd27b548ce4e8b64c5cf74533a",
     "semantic_hash": ""
   },
   "backend/apps/integrations/shield_rules.py": {
@@ -2055,8 +2055,8 @@
     "semantic_hash": ""
   },
   "backend/apps/accounts/jwt_views.py": {
-    "mtime": 1792014260.3438132,
-    "ast_hash": "9d9bc49cdbd1e34a8a689e7198565c7b",
+    "mtime": 1792106195.087844,
+    "ast_hash": "dfc6ee36bff3af451db5f8d7b952e93a",
     "semantic_hash": ""
   },
   "backend/apps/integrations/odoo_session.py": {
@@ -2130,8 +2130,8 @@
     "semantic_hash": ""
   },
   "docs/0009-capital-humain-shield-odoo-sans-mart.md": {
-    "mtime": 1792063850.8069522,
-    "ast_hash": "78261397ff8fbd9df879decc4ff19e29",
+    "mtime": 1792142405.4810522,
+    "ast_hash": "7127098f9acd963252fc5a7a56945eaf",
     "semantic_hash": ""
   },
   "backend/apps/governance/admin.py": {
@@ -2195,8 +2195,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/decision_rh.py": {
-    "mtime": 1792062622.7148075,
-    "ast_hash": "bc8c106326bc4dddaea53b1d23928f31",
+    "mtime": 1792142239.0007331,
+    "ast_hash": "e90ce645059dc97670940c11f55ec577",
     "semantic_hash": ""
   },
   "backend/apps/governance/seuils_rh.py": {
@@ -2225,8 +2225,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/rapport_rh.py": {
-    "mtime": 1792062942.9694762,
-    "ast_hash": "c7cebeb517874335ab6869c7723091c0",
+    "mtime": 1792142238.9989192,
+    "ast_hash": "e726fc2c09c8ee6cb6cb86c1444e9305",
     "semantic_hash": ""
   },
   "backend/apps/governance/tests_decision.py": {
@@ -2240,8 +2240,8 @@
     "semantic_hash": ""
   },
   "backend/apps/governance/rapport_formats.py": {
-    "mtime": 1792063039.6086228,
-    "ast_hash": "a3bb75238116c25ac41ca4d10174e871",
+    "mtime": 1792142238.9996467,
+    "ast_hash": "6a232428e199014dd1fd60b87ba7f3b7",
     "semantic_hash": ""
   },
   "backend/apps/governance/rapports_programmes.py": {
@@ -2265,8 +2265,8 @@
     "semantic_hash": ""
   },
   "frontend/web/src/components/navigation/LegacyModuleRoute.tsx": {
-    "mtime": 1792063488.2195027,
-    "ast_hash": "4ef914e0d073aa8c28e4e74eb8c47c75",
+    "mtime": 1792142190.850501,
+    "ast_hash": "a99f89b7e90fb2d9ac87395350d7f223",
     "semantic_hash": ""
   },
   "frontend/web/src/components/overview/RapportsRh.tsx": {
@@ -2287,6 +2287,31 @@
   "backend/apps/accounts/tests_perimetre_admin.py": {
     "mtime": 1792071600.6789353,
     "ast_hash": "169a5639723ee919c70f5843331aeaec",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/shield_structure.py": {
+    "mtime": 1792142363.9846528,
+    "ast_hash": "a5d44d4f805ab00973b63d5580aa0250",
+    "semantic_hash": ""
+  },
+  "backend/apps/integrations/tests_structure.py": {
+    "mtime": 1792142363.9852955,
+    "ast_hash": "2ced1f298b41059b4c1a1392006a9e83",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/components/overview/StructureRh.tsx": {
+    "mtime": 1792142165.000566,
+    "ast_hash": "eb530c0e3eead8d2a6ef5628f6ceda49",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/config/sectionsRh.ts": {
+    "mtime": 1792142077.1708908,
+    "ast_hash": "573512f4b131499c4f44d6e37b1efe33",
+    "semantic_hash": ""
+  },
+  "frontend/web/src/pages/SectionRhPage.tsx": {
+    "mtime": 1792142180.4148734,
+    "ast_hash": "225078dfafea28fb25d62cdf7a42f398",
     "semantic_hash": ""
   }
 }
